@@ -1,6 +1,7 @@
 //! A bitmap chess board representation.
 
 use core::fmt;
+use core::ops;
 
 /// A mapping of sixty-four bits to squares of a chess board.
 #[derive(Copy, Clone, Hash, PartialEq, Eq)]
@@ -25,4 +26,11 @@ impl fmt::Debug for Bitboard {
         // 2 for "0x" + 16 for number
         write!(f, "Bitboard({:#018X})", self)
     }
+}
+
+impl ops::Not for Bitboard {
+    type Output = Self;
+
+    #[inline]
+    fn not(self) -> Self { Bitboard(!self.0) }
 }
