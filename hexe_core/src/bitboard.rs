@@ -75,6 +75,18 @@ forward_bit_ops_impl! {
     BitOr  bitor  BitOrAssign  bitor_assign
 }
 
+impl<T: Into<Bitboard>> ops::Sub<T> for Bitboard {
+    type Output = Self;
+
+    #[inline]
+    fn sub(self, other: T) -> Self { Bitboard(self.0 & !other.into().0) }
+}
+
+impl<T: Into<Bitboard>> ops::SubAssign<T> for Bitboard {
+    #[inline]
+    fn sub_assign(&mut self, other: T) { self.0 &= !other.into().0 }
+}
+
 impl ops::Not for Bitboard {
     type Output = Self;
 
