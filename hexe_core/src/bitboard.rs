@@ -61,11 +61,6 @@ impl From<u64> for Bitboard {
     fn from(bits: u64) -> Self { Bitboard(bits) }
 }
 
-impl From<Bitboard> for u64 {
-    #[inline(always)]
-    fn from(bb: Bitboard) -> Self { bb.0 }
-}
-
 impl AsRef<u64> for Bitboard {
     #[inline(always)]
     fn as_ref(&self) -> &u64 { &self.0 }
@@ -74,6 +69,11 @@ impl AsRef<u64> for Bitboard {
 impl AsMut<u64> for Bitboard {
     #[inline(always)]
     fn as_mut(&mut self) -> &mut u64 { &mut self.0 }
+}
+
+impl From<Bitboard> for u64 {
+    #[inline(always)]
+    fn from(bb: Bitboard) -> Self { bb.0 }
 }
 
 impl AsRef<Bitboard> for u64 {
