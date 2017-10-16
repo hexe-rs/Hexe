@@ -36,7 +36,7 @@ impl ops::Not for Bitboard {
 }
 
 macro_rules! forward_sh_impl {
-    ($($t1:ident, $f1:ident, $t2:ident, $f2:ident;)+) => {
+    ($($t1:ident $f1:ident $t2:ident $f2:ident)+) => {
         $(impl<T> ops::$t1<T> for Bitboard where u64: ops::$t1<T, Output=u64> {
             type Output = Self;
 
@@ -52,6 +52,6 @@ macro_rules! forward_sh_impl {
 }
 
 forward_sh_impl! {
-    Shl, shl, ShlAssign, shl_assign;
-    Shr, shr, ShrAssign, shr_assign;
+    Shl shl ShlAssign shl_assign
+    Shr shr ShrAssign shr_assign
 }
