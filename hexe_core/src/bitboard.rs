@@ -56,6 +56,32 @@ forward_sh_impl! {
     Shr shr ShrAssign shr_assign
 }
 
+macro_rules! forward_bit_ops_impl {
+    ($($t1:ident $f1:ident $t2:ident $f2:ident)+) => {
+        $(impl<T: Into<Bitboard>> ops::$t1<T> for Bitboard {
+            type Output = Self;
+
+            #[inline]
+            fn $f1(self, other: T) -> Self {
+                Bitboard((self.0).$f1(other.into().0))
+            }
+        }
+
+        impl<T: Into<Bitboard>> ops::$t2<T> for Bitboard {
+            #[inline]
+            fn $f2(&mut self, other: T) {
+                (self.0).$f2(other.into().0)
+            }
+        })+
+    }
+}
+
+forward_bit_ops_impl! {
+    BitAnd bitand BitAndAssign bitand_assign
+    BitXor bitxor BitXorAssign bitxor_assign
+    BitOr  bitor  BitOrAssign  bitor_assign
+}
+
 impl From<u64> for Bitboard {
     #[inline(always)]
     fn from(bits: u64) -> Self { Bitboard(bits) }
