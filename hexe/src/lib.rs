@@ -1,3 +1,3 @@
 extern crate hexe_core;
 
-pub use hexe_core::bitboard;
+pub use hexe_core::{bitboard, square};
