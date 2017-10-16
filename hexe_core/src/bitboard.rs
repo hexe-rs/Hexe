@@ -35,26 +35,23 @@ impl ops::Not for Bitboard {
     fn not(self) -> Self { Bitboard(!self.0) }
 }
 
-impl<T> ops::Shl<T> for Bitboard where u64: ops::Shl<T, Output=u64> {
-    type Output = Self;
+macro_rules! forward_sh_impl {
+    ($($t1:ident, $f1:ident, $t2:ident, $f2:ident;)+) => {
+        $(impl<T> ops::$t1<T> for Bitboard where u64: ops::$t1<T, Output=u64> {
+            type Output = Self;
 
-    #[inline]
-    fn shl(self, shift: T) -> Self { Bitboard(self.0.shl(shift)) }
+            #[inline]
+            fn $f1(self, shift: T) -> Self { Bitboard((self.0).$f1(shift)) }
+        }
+
+        impl<T> ops::$t2<T> for Bitboard where u64: ops::$t2<T> {
+            #[inline]
+            fn $f2(&mut self, shift: T) { (self.0).$f2(shift) }
+        })+
+    }
 }
 
-impl<T> ops::Shr<T> for Bitboard where u64: ops::Shr<T, Output=u64> {
-    type Output = Self;
-
-    #[inline]
-    fn shr(self, shift: T) -> Self { Bitboard(self.0.shr(shift)) }
-}
-
-impl<T> ops::ShlAssign<T> for Bitboard where u64: ops::ShlAssign<T> {
-    #[inline]
-    fn shl_assign(&mut self, shift: T) { self.0.shl_assign(shift) }
-}
-
-impl<T> ops::ShrAssign<T> for Bitboard where u64: ops::ShrAssign<T> {
-    #[inline]
-    fn shr_assign(&mut self, shift: T) { self.0.shr_assign(shift) }
+forward_sh_impl! {
+    Shl, shl, ShlAssign, shl_assign;
+    Shr, shr, ShrAssign, shr_assign;
 }
