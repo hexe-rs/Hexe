@@ -75,3 +75,17 @@ impl AsMut<u64> for Bitboard {
     #[inline(always)]
     fn as_mut(&mut self) -> &mut u64 { &mut self.0 }
 }
+
+impl AsRef<Bitboard> for u64 {
+    #[inline(always)]
+    fn as_ref(&self) -> &Bitboard {
+        unsafe { &*(self as *const _ as *const _) }
+    }
+}
+
+impl AsMut<Bitboard> for u64 {
+    #[inline(always)]
+    fn as_mut(&mut self) -> &mut Bitboard {
+        unsafe { &mut *(self as *mut _ as *mut _) }
+    }
+}
