@@ -28,13 +28,6 @@ impl fmt::Debug for Bitboard {
     }
 }
 
-impl ops::Not for Bitboard {
-    type Output = Self;
-
-    #[inline]
-    fn not(self) -> Self { Bitboard(!self.0) }
-}
-
 macro_rules! forward_sh_impl {
     ($($t1:ident $f1:ident $t2:ident $f2:ident)+) => {
         $(impl<T> ops::$t1<T> for Bitboard where u64: ops::$t1<T, Output=u64> {
@@ -80,6 +73,13 @@ forward_bit_ops_impl! {
     BitAnd bitand BitAndAssign bitand_assign
     BitXor bitxor BitXorAssign bitxor_assign
     BitOr  bitor  BitOrAssign  bitor_assign
+}
+
+impl ops::Not for Bitboard {
+    type Output = Self;
+
+    #[inline]
+    fn not(self) -> Self { Bitboard(!self.0) }
 }
 
 impl From<u64> for Bitboard {
