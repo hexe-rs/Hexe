@@ -55,3 +55,13 @@ forward_sh_impl! {
     Shl shl ShlAssign shl_assign
     Shr shr ShrAssign shr_assign
 }
+
+impl From<u64> for Bitboard {
+    #[inline(always)]
+    fn from(bits: u64) -> Self { Bitboard(bits) }
+}
+
+impl From<Bitboard> for u64 {
+    #[inline(always)]
+    fn from(bb: Bitboard) -> Self { bb.0 }
+}
