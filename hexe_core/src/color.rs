@@ -27,6 +27,7 @@ impl FromStr for Color {
                 b'b' => (Color::Black, "lack"),
                 _ => return Err(FromStrError(())),
             };
+            // We know that the first character is either "w" or "b"
             let rem = unsafe { s.get_unchecked(1..) };
             if rem.len() == 4 {
                 for (&a, &b) in rem.as_bytes().iter().zip(exp.as_bytes().iter()) {
