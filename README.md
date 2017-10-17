@@ -1,9 +1,12 @@
 <p align="center">
+    <a href="https://github.com/hexe-rs/Hexe/">
     <img
         src="https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png"
         alt="Hexe"
         width="250"
-    ><br>
+    >
+    </a>
+    <br>
     A pure Rust chess engine
 </p>
 
