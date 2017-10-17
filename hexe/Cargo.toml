@@ -4,6 +4,7 @@ version = "0.0.0"
 authors = ["Nikolai Vazquez"]
 license = "Apache-2.0"
 description = "A chess engine."
+include = ["Cargo.toml", "src/**/*.rs", "README*", "CHANGELOG*", "LICENSE*"]
 
 [dependencies]
 hexe_core = { path = "../hexe_core", version = "0.0.0" }
