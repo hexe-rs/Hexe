@@ -1,3 +1,7 @@
+//! # Hexe Core
+//!
+//! This crate defines the building blocks for the Hexe chess engine.
+
 #![no_std]
 
 #[cfg(test)]
