@@ -1,5 +1,8 @@
 //! A chess board square and its components.
 
+use bitboard::Bitboard;
+use color::Color;
+
 /// A square on a chess board.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
@@ -44,6 +47,26 @@ impl Square {
     #[inline]
     pub fn rank(&self) -> Rank {
         ((*self as u8) >> 3).into()
+    }
+
+    /// Returns the `Color` for `self`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::color::Color;
+    /// # use hexe_core::square::Square;
+    /// let a = Square::A1;
+    /// assert_eq!(a.color(), Color::Black);
+    ///
+    /// let b = Square::B5;
+    /// assert_eq!(b.color(), Color::White);
+    /// ```
+    #[inline]
+    pub fn color(&self) -> Color {
+        (Bitboard::BLACK >> *self as u64).0.into()
     }
 }
 
