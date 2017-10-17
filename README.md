@@ -10,6 +10,8 @@
     A pure <a href="https://www.rust-lang.org">Rust</a> chess engine
 </p>
 
+[![Build Status][travis-badge]][travis]
+
 This project is split into two crates
 
 - `hexe`: The chess engine itself.
@@ -35,3 +37,6 @@ Hexe is licensed under the [Apache License, Version 2.0][license-apache].
 
 > **Note:** This project initially began on 2017-01-04 in a separate repository.
 > This repo is a rewrite and expansion of that one.
+
+[travis]:       https://travis-ci.org/hexe-rs/Hexe
+[travis-badge]: https://travis-ci.org/hexe-rs/Hexe.svg?branch=master
