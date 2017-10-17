@@ -1,5 +1,8 @@
 //! A chess board square and its components.
 
+use core::iter::Map;
+use core::ops::Range;
+
 use bitboard::Bitboard;
 use color::Color;
 
@@ -19,6 +22,24 @@ pub enum Square {
 }
 
 impl Square {
+    /// An efficient iterator over all squares.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::square::Square;
+    /// // Print from A1 through H8
+    /// for square in Square::all() {
+    ///     println!("{:?}", square);
+    /// }
+    /// ```
+    #[inline]
+    pub fn all() -> Map<Range<u8>, fn(u8) -> Square> {
+        (0..64).map(From::from)
+    }
+
     /// Initializes a `Square` from a `File` and `Rank`.
     ///
     /// # Examples
