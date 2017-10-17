@@ -3,6 +3,8 @@
 use core::fmt;
 use core::ops;
 
+use square::{Square, File, Rank};
+
 /// A mapping of sixty-four bits to squares of a chess board.
 #[derive(Copy, Clone, Hash, PartialEq, Eq)]
 pub struct Bitboard(pub u64);
@@ -125,6 +127,27 @@ impl AsMut<Bitboard> for u64 {
     #[inline(always)]
     fn as_mut(&mut self) -> &mut Bitboard {
         unsafe { &mut *(self as *mut _ as *mut _) }
+    }
+}
+
+impl From<Square> for Bitboard {
+    #[inline]
+    fn from(square: Square) -> Self {
+        Bitboard(1 << square as usize)
+    }
+}
+
+impl From<File> for Bitboard {
+    #[inline]
+    fn from(file: File) -> Self {
+        masks::FILE_A << file as usize
+    }
+}
+
+impl From<Rank> for Bitboard {
+    #[inline]
+    fn from(rank: Rank) -> Self {
+        masks::RANK_1 << ((rank as usize) << 3)
     }
 }
 
