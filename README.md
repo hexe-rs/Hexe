@@ -9,6 +9,16 @@ This project is split into two crates
 - `hexe_core`: The chess engine's building blocks. This crate may be used by
 other chess programs for ease of code reuse.
 
+## Why Hexe?
+
+"Hexe" is German for witch. It denotes the use of magic bitboards within this
+project.
+
+It also refers to Clarke's Third Law: "Any sufficiently advanced technology is
+indistinguishable from magic."
+
+Also, if she weighs the same as a duck... she's made of wood. And therefore...
+
 ## License
 
 Hexe is licensed under the [Apache License, Version 2.0][license-apache].
