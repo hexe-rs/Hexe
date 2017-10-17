@@ -2,6 +2,8 @@
 //!
 //! This crate defines the building blocks for the Hexe chess engine.
 
+#![doc(html_logo_url = "https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png")]
+
 #![no_std]
 
 #[cfg(test)]
