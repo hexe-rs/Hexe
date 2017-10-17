@@ -11,5 +11,4 @@ matrix:
     - rust: stable
       os: osx
 
-script:
-  - cargo test
+script: ./travis.sh
