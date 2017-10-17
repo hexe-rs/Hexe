@@ -15,6 +15,38 @@ pub enum Square {
     A8, B8, C8, D8, E8, F8, G8, H8,
 }
 
+impl Square {
+    /// Initializes a `Square` from a `File` and `Rank`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::square::*;
+    /// let s = Square::new(File::B, Rank::Five);
+    ///
+    /// assert_eq!(s.file(), File::B);
+    /// assert_eq!(s.rank(), Rank::Five);
+    /// ```
+    #[inline]
+    pub fn new(file: File, rank: Rank) -> Square {
+        (((rank as u8) << 3) | (file as u8)).into()
+    }
+
+    /// Returns the `File` for `self`.
+    #[inline]
+    pub fn file(&self) -> File {
+        ((*self as u8) & 7).into()
+    }
+
+    /// Returns the `Rank` for `self`.
+    #[inline]
+    pub fn rank(&self) -> Rank {
+        ((*self as u8) >> 3).into()
+    }
+}
+
 /// A file (or column) for a chess board.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
