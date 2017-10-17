@@ -1,6 +1,13 @@
 # Hexe
 
-A pure Rust chess engine.
+<p align="center">
+    <img
+        src="https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png"
+        alt="Hexe"
+        width="250"
+    ><br>
+    A pure Rust chess engine
+</p>
 
 This project is split into two crates
 
