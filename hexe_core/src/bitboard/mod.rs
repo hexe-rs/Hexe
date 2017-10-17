@@ -8,6 +8,12 @@ mod impls;
 pub struct Bitboard(pub u64);
 
 impl Bitboard {
+    /// A bitboard with all bits set to 1.
+    pub const FULL: Bitboard = Bitboard(!0);
+
+    /// A bitboard with all bits set to 0.
+    pub const EMPTY: Bitboard = Bitboard(0);
+
     /// White board squares.
     pub const WHITE: Bitboard = Bitboard(!Self::BLACK.0);
 
