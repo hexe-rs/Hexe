@@ -4,7 +4,10 @@
 
 #![doc(html_logo_url = "https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png")]
 
-#![no_std]
+#![cfg_attr(not(feature = "std"), no_std)]
+
+#[cfg(feature = "std")]
+extern crate core;
 
 #[cfg(test)]
 extern crate rand;
