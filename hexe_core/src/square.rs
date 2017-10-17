@@ -68,6 +68,27 @@ impl Square {
     pub fn color(&self) -> Color {
         (Bitboard::BLACK >> *self as u64).0.into()
     }
+
+    /// Returns the rook attacks for `self` and `occupied`.
+    ///
+    /// Whether or not `occupied` contains `self` does not matter.
+    pub fn rook_attacks(&self, occupied: Bitboard) -> Bitboard {
+        ::magic::rook_attacks(*self, occupied)
+    }
+
+    /// Returns the bishop attacks for `self` and `occupied`.
+    ///
+    /// Whether or not `occupied` contains `self` does not matter.
+    pub fn bishop_attacks(&self, occupied: Bitboard) -> Bitboard {
+        ::magic::bishop_attacks(*self, occupied)
+    }
+
+    /// Returns the queen attacks for `self` and `occupied`.
+    ///
+    /// Whether or not `occupied` contains `self` does not matter.
+    pub fn queen_attacks(&self, occupied: Bitboard) -> Bitboard {
+        self.rook_attacks(occupied) | self.bishop_attacks(occupied)
+    }
 }
 
 /// A file (or column) for a chess board.

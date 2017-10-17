@@ -7,3 +7,5 @@ extern crate uncon;
 pub mod bitboard;
 pub mod color;
 pub mod square;
+
+mod magic;
