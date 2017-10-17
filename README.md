@@ -1,5 +1,3 @@
-# Hexe
-
 <p align="center">
     <img
         src="https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png"
