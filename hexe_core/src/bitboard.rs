@@ -3,6 +3,7 @@
 use core::fmt;
 use core::ops;
 
+use color::Color;
 use square::{Square, File, Rank};
 
 /// A mapping of sixty-four bits to squares of a chess board.
@@ -148,6 +149,16 @@ impl From<Rank> for Bitboard {
     #[inline]
     fn from(rank: Rank) -> Self {
         masks::RANK_1 << ((rank as usize) << 3)
+    }
+}
+
+impl From<Color> for Bitboard {
+    #[inline]
+    fn from(color: Color) -> Self {
+        match color {
+            Color::White => Bitboard::WHITE,
+            Color::Black => Bitboard::BLACK,
+        }
     }
 }
 
