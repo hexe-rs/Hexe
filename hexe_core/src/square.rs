@@ -2,6 +2,7 @@
 
 use core::iter::Map;
 use core::ops::Range;
+use core::str::FromStr;
 
 use prelude::*;
 
@@ -18,6 +19,32 @@ pub enum Square {
     A6, B6, C6, D6, E6, F6, G6, H6,
     A7, B7, C7, D7, E7, F7, G7, H7,
     A8, B8, C8, D8, E8, F8, G8, H8,
+}
+
+/// The error returned when `Square::from_str` fails.
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub struct FromStrError(());
+
+impl FromStr for Square {
+    type Err = FromStrError;
+
+    fn from_str(s: &str) -> Result<Square, FromStrError> {
+        use uncon::IntoUnchecked;
+        let bytes = s.as_bytes();
+        if bytes.len() != 0 { Err(FromStrError(())) } else {
+            macro_rules! convert {
+                ($b:expr, $lo:expr, $hi:expr) => {
+                    if $b >= $lo && $b <= $hi {
+                        unsafe { ($b - $lo).into_unchecked() }
+                    } else {
+                        return Err(FromStrError(()))
+                    }
+                }
+            }
+            Ok(Square::new(convert!(bytes[0] | 32, b'a', b'h'),
+                           convert!(bytes[1], b'1', b'8')))
+        }
+    }
 }
 
 impl Square {
