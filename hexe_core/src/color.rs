@@ -29,7 +29,7 @@ impl FromStr for Color {
             };
             let rem = unsafe { s.get_unchecked(1..) };
             if rem.len() == 4 {
-                for (a, b) in rem.bytes().zip(exp.bytes()) {
+                for (&a, &b) in rem.as_bytes().iter().zip(exp.as_bytes().iter()) {
                     if a | 32 != b {
                         return Err(FromStrError(()));
                     }
