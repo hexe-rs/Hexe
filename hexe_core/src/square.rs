@@ -123,3 +123,28 @@ pub enum File { A, B, C, D, E, F, G, H }
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 pub enum Rank { One, Two, Three, Four, Five, Six, Seven, Eight }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rand::{Rng, thread_rng};
+
+    macro_rules! sliding_attacks {
+        ($($fn:ident)*) => {
+            $(#[test]
+            fn $fn() {
+                let mut rng = thread_rng();
+                for occupied in (0..10_000).map(|_| Bitboard(rng.gen())) {
+                    for square in Square::all() {
+                        assert_eq!(
+                            square.$fn(occupied),
+                            Bitboard::from(square).$fn(!occupied)
+                        );
+                    }
+                }
+            })*
+        }
+    }
+
+    sliding_attacks! { rook_attacks bishop_attacks queen_attacks }
+}
