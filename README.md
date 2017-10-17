@@ -7,7 +7,7 @@
     >
     </a>
     <br>
-    A pure Rust chess engine
+    A pure <a href="https://www.rust-lang.org">Rust</a> chess engine
 </p>
 
 This project is split into two crates
