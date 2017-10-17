@@ -1,3 +1,5 @@
+//! Castling rights for two players of a chess game.
+
 /// Castle rights for a chess game.
 #[derive(PartialEq, Eq, Clone, Copy, Hash)]
 pub struct CastleRights(u8);
