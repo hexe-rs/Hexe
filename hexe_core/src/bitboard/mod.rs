@@ -23,6 +23,25 @@ impl Bitboard {
     /// Black board squares.
     pub const BLACK: Bitboard = Bitboard(0xAA55AA55AA55AA55);
 
+    /// Generates bishop attacks for each of the bits of `self`.
+    pub fn bishop_attacks(self, empty: Bitboard) -> Bitboard {
+        use self::Direction::*;
+        self.fill_shift(Northeast, empty) | self.fill_shift(Northwest, empty) |
+        self.fill_shift(Southeast, empty) | self.fill_shift(Southwest, empty)
+    }
+
+    /// Generates rook attacks for each of the bits of `self`.
+    pub fn rook_attacks(self, empty: Bitboard) -> Bitboard {
+        use self::Direction::*;
+        self.fill_shift(North, empty) | self.fill_shift(East, empty) |
+        self.fill_shift(South, empty) | self.fill_shift(West, empty)
+    }
+
+    /// Generates queen attacks for each of the bits of `self`.
+    pub fn queen_attacks(self, empty: Bitboard) -> Bitboard {
+        self.bishop_attacks(empty) | self.rook_attacks(empty)
+    }
+
     /// Returns `self` shifted in a direction.
     #[inline]
     pub fn shift(self, direction: Direction) -> Bitboard {
@@ -73,6 +92,10 @@ impl Bitboard {
             Northwest, NOT_FILE_H, 7, <<;
             Southwest, NOT_FILE_H, 9, >>;
         }
+    }
+
+    fn fill_shift(self, direction: Direction, empty: Bitboard) -> Bitboard {
+        self.fill(direction, empty).shift(direction)
     }
 }
 
