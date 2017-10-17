@@ -8,6 +8,9 @@ categories = ["no-std"]
 description = "The core components of the hexe chess engine crate."
 include = ["Cargo.toml", "src/**/*.rs", "README*", "CHANGELOG*", "LICENSE*"]
 
+[badges]
+travis-ci = { repository = "hexe-rs/Hexe" }
+
 [dependencies]
 uncon        = { version = "1.1.0", default-features = false }
 uncon_derive = { version = "1.1.0", default-features = false }
