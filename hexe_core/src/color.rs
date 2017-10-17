@@ -1,5 +1,6 @@
 //! A color to represent pieces or board squares.
 
+use core::fmt;
 use core::str::FromStr;
 
 /// A black or white color.
@@ -16,6 +17,21 @@ pub enum Color {
 /// The error returned when `Color::from_str` fails.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct FromStrError(());
+
+static FROM_STR_ERROR: &str = "failed to parse a string as a color";
+
+impl fmt::Display for FromStrError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}", FROM_STR_ERROR)
+    }
+}
+
+#[cfg(feature = "std")]
+impl ::std::error::Error for FromStrError {
+    fn description(&self) -> &str {
+        FROM_STR_ERROR
+    }
+}
 
 impl FromStr for Color {
     type Err = FromStrError;
