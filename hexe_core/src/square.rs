@@ -91,6 +91,7 @@ impl Square {
     /// Returns the rook attacks for `self` and `occupied`.
     ///
     /// Whether or not `occupied` contains `self` does not matter.
+    #[inline]
     pub fn rook_attacks(&self, occupied: Bitboard) -> Bitboard {
         ::magic::rook_attacks(*self, occupied)
     }
@@ -98,6 +99,7 @@ impl Square {
     /// Returns the bishop attacks for `self` and `occupied`.
     ///
     /// Whether or not `occupied` contains `self` does not matter.
+    #[inline]
     pub fn bishop_attacks(&self, occupied: Bitboard) -> Bitboard {
         ::magic::bishop_attacks(*self, occupied)
     }
@@ -105,6 +107,7 @@ impl Square {
     /// Returns the queen attacks for `self` and `occupied`.
     ///
     /// Whether or not `occupied` contains `self` does not matter.
+    #[inline]
     pub fn queen_attacks(&self, occupied: Bitboard) -> Bitboard {
         self.rook_attacks(occupied) | self.bishop_attacks(occupied)
     }

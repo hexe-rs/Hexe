@@ -9,10 +9,12 @@ static MAGICS: [[Magic; 64]; 2] = [
 const BISHOP_MAGICS_INDEX: usize = 0;
 const ROOK_MAGICS_INDEX: usize = 1;
 
+#[inline]
 pub fn bishop_magic(square: Square) -> &'static Magic {
     &MAGICS[BISHOP_MAGICS_INDEX][square as usize]
 }
 
+#[inline]
 pub fn rook_magic(square: Square) -> &'static Magic {
     &MAGICS[ROOK_MAGICS_INDEX][square as usize]
 }
