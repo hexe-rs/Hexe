@@ -151,6 +151,14 @@ impl From<Rank> for Bitboard {
     }
 }
 
+impl Bitboard {
+    /// White board squares.
+    pub const WHITE: Bitboard = Bitboard(!Self::BLACK.0);
+
+    /// Black board squares.
+    pub const BLACK: Bitboard = Bitboard(0xAA55AA55AA55AA55);
+}
+
 /// Bitboard masks for each file and rank.
 pub mod masks {
     use super::*;
