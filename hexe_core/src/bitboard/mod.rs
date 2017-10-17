@@ -41,53 +41,39 @@ impl Bitboard {
 
     /// Returns `self` filled in a direction, blocked off by non-empty squares.
     #[inline]
-    pub fn fill(self, direction: Direction, empty: Bitboard) -> Bitboard {
-        use self::Direction::*;
-        match direction {
-            North     => self.fill_north(empty),
-            South     => self.fill_south(empty),
-            East      => self.fill_east(empty),
-            West      => self.fill_west(empty),
-            Northeast => self.fill_northeast(empty),
-            Southeast => self.fill_southeast(empty),
-            Northwest => self.fill_northwest(empty),
-            Southwest => self.fill_southwest(empty),
-        }
-    }
-}
+    pub fn fill(mut self, direction: Direction, mut empty: Bitboard) -> Bitboard {
+        macro_rules! impl_fills {
+            ($($v:ident, $mask:expr, $shift:expr, $op:tt;)+) => {
+                match direction {
+                    $(Direction::$v => {
+                        const SHIFT_1: u8 = $shift;
+                        const SHIFT_2: u8 = SHIFT_1 * 2;
+                        const SHIFT_3: u8 = SHIFT_2 * 2;
 
-macro_rules! impl_fills {
-    ($($f:ident, $mask:expr, $shift:expr, $op:tt;)+) => {
-        impl Bitboard { $(
-            #[inline]
-            fn $f(mut self, mut empty: Bitboard) -> Bitboard {
-                const SHIFT_1: u8 = $shift;
-                const SHIFT_2: u8 = SHIFT_1 * 2;
-                const SHIFT_3: u8 = SHIFT_2 * 2;
-
-                empty &= $mask;
-                self  |= empty & (self $op SHIFT_1);
-                empty &= empty $op SHIFT_1;
-                self  |= empty & (self $op SHIFT_2);
-                empty &= empty $op SHIFT_2;
-                self  |= empty & (self $op SHIFT_3);
+                        empty &= $mask;
+                        self  |= empty & (self $op SHIFT_1);
+                        empty &= empty $op SHIFT_1;
+                        self  |= empty & (self $op SHIFT_2);
+                        empty &= empty $op SHIFT_2;
+                        self  |= empty & (self $op SHIFT_3);
+                    }),+
+                }
                 self
             }
-        )+ }
+        }
+        impl_fills! {
+            North, Bitboard::FULL, 8, <<;
+            South, Bitboard::FULL, 8, >>;
+
+            East, NOT_FILE_A, 1, <<;
+            West, NOT_FILE_H, 1, >>;
+
+            Northeast, NOT_FILE_A, 9, <<;
+            Southeast, NOT_FILE_A, 7, >>;
+            Northwest, NOT_FILE_H, 7, <<;
+            Southwest, NOT_FILE_H, 9, >>;
+        }
     }
-}
-
-impl_fills! {
-    fill_north, Bitboard::FULL, 8, <<;
-    fill_south, Bitboard::FULL, 8, >>;
-
-    fill_east, NOT_FILE_A, 1, <<;
-    fill_west, NOT_FILE_H, 1, >>;
-
-    fill_northeast, NOT_FILE_A, 9, <<;
-    fill_southeast, NOT_FILE_A, 7, >>;
-    fill_northwest, NOT_FILE_H, 7, <<;
-    fill_southwest, NOT_FILE_H, 9, >>;
 }
 
 /// A cardinal direction that can be used to shift or fill the bits of a
