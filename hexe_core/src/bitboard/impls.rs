@@ -1,7 +1,6 @@
 use super::*;
 use core::{fmt, ops};
-use color::Color;
-use square::{Square, File, Rank};
+use prelude::*;
 
 macro_rules! forward_fmt_impl {
     ($($f:ident)+) => {

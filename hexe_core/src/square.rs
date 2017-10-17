@@ -3,8 +3,7 @@
 use core::iter::Map;
 use core::ops::Range;
 
-use bitboard::Bitboard;
-use color::Color;
+use prelude::*;
 
 /// A square on a chess board.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
@@ -77,8 +76,7 @@ impl Square {
     /// Basic usage:
     ///
     /// ```
-    /// # use hexe_core::color::Color;
-    /// # use hexe_core::square::Square;
+    /// # use hexe_core::prelude::*;
     /// let a = Square::A1;
     /// assert_eq!(a.color(), Color::Black);
     ///

@@ -7,6 +7,8 @@ extern crate rand;
 extern crate uncon_derive;
 extern crate uncon;
 
+pub mod prelude;
+
 pub mod bitboard;
 pub mod color;
 pub mod square;
