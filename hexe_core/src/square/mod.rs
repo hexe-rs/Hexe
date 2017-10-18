@@ -5,6 +5,8 @@ use core::str::FromStr;
 
 use prelude::*;
 
+mod tables;
+
 /// A square on a chess board.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
@@ -114,6 +116,18 @@ impl Square {
         (Bitboard::BLACK >> *self as u64).0.into()
     }
 
+    /// Returns the pawn attacks for `self` and `color`.
+    #[inline]
+    pub fn pawn_attacks(&self, color: Color) -> Bitboard {
+        Bitboard(self::tables::PAWN_ATTACKS[color as usize][*self as usize])
+    }
+
+    /// Returns the knight attacks for `self`.
+    #[inline]
+    pub fn knight_attacks(&self) -> Bitboard {
+        Bitboard(self::tables::KNIGHT_ATTACKS[*self as usize])
+    }
+
     /// Returns the rook attacks for `self` and `occupied`.
     ///
     /// Whether or not `occupied` contains `self` does not matter.
@@ -159,6 +173,12 @@ impl Square {
     #[inline]
     pub fn bishop_attacks(&self, occupied: Bitboard) -> Bitboard {
         ::magic::bishop_attacks(*self, occupied)
+    }
+
+    /// Returns the king attacks for `self`.
+    #[inline]
+    pub fn king_attacks(&self) -> Bitboard {
+        Bitboard(self::tables::KING_ATTACKS[*self as usize])
     }
 
     /// Returns the queen attacks for `self` and `occupied`.
