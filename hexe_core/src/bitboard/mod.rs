@@ -39,6 +39,26 @@ impl Bitboard {
         self::tables::LINE[start as usize][end as usize].into()
     }
 
+    /// Generates pawn pushes for each of the bits of `self`.
+    #[inline]
+    pub fn pawn_pushes(self, color: Color) -> Bitboard {
+        let direction = match color {
+            Color::White => Direction::North,
+            Color::Black => Direction::South,
+        };
+        self.shift(direction)
+    }
+
+    /// Generates pawn attacks for each of the bits of `self`.
+    #[inline]
+    pub fn pawn_attacks(self, color: Color) -> Bitboard {
+        use self::Direction::*;
+        match color {
+            Color::White => self.shift(Northeast) | self.shift(Northwest),
+            Color::Black => self.shift(Southeast) | self.shift(Southwest),
+        }
+    }
+
     /// Generates bishop attacks for each of the bits of `self`.
     pub fn bishop_attacks(self, empty: Bitboard) -> Bitboard {
         use self::Direction::*;
