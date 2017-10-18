@@ -37,9 +37,11 @@ impl FromStr for Color {
     type Err = FromStrError;
 
     fn from_str(s: &str) -> Result<Color, FromStrError> {
+        const LOW: u8 = 32;
         if s.len() != 0 {
             let bytes = s.as_bytes();
-            let (color, exp) = match bytes[0] | 32 {
+            // Compare against ASCII lowercase
+            let (color, exp) = match bytes[0] | LOW {
                 b'w' => (Color::White, b"hite"),
                 b'b' => (Color::Black, b"lack"),
                 _ => return Err(FromStrError(())),
@@ -47,7 +49,8 @@ impl FromStr for Color {
             let rem = &bytes[1..];
             if rem.len() == exp.len() {
                 for (&a, &b) in rem.iter().zip(exp.iter()) {
-                    if a | 32 != b {
+                    // Lowercase comparison
+                    if a | LOW != b {
                         return Err(FromStrError(()));
                     }
                 }
