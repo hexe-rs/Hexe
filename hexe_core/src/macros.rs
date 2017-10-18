@@ -37,6 +37,16 @@ macro_rules! impl_set_ops {
         impl<T: Into<$t>> ::core::ops::SubAssign<T> for $t {
             #[inline]
             fn sub_assign(&mut self, other: T) { self.0 &= !other.into().0 }
+        }
+
+        /// Set operations.
+        impl $t {
+            /// Returns whether `self` contains `other`.
+            #[inline]
+            pub fn contains<T: Into<Self>>(&self, other: T) -> bool {
+                let other = other.into().0;
+                self.0 & other == other
+            }
         })+
     }
 }
