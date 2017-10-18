@@ -117,6 +117,23 @@ impl Square {
     /// Returns the rook attacks for `self` and `occupied`.
     ///
     /// Whether or not `occupied` contains `self` does not matter.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::prelude::*;
+    /// let start = Square::A1;
+    ///
+    /// let occ = Bitboard::from(Square::A3)
+    ///         | Bitboard::from(Square::C1);
+    /// let exp = Bitboard::from(Square::A2)
+    ///         | Bitboard::from(Square::B1)
+    ///         | occ;
+    ///
+    /// assert_eq!(start.rook_attacks(occ), exp);
+    /// ```
     #[inline]
     pub fn rook_attacks(&self, occupied: Bitboard) -> Bitboard {
         ::magic::rook_attacks(*self, occupied)
@@ -125,6 +142,20 @@ impl Square {
     /// Returns the bishop attacks for `self` and `occupied`.
     ///
     /// Whether or not `occupied` contains `self` does not matter.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::prelude::*;
+    /// let start = Square::A1;
+    ///
+    /// let occ = Bitboard::from(Square::C3);
+    /// let exp = Bitboard::from(Square::B2) | occ;
+    ///
+    /// assert_eq!(start.bishop_attacks(occ), exp);
+    /// ```
     #[inline]
     pub fn bishop_attacks(&self, occupied: Bitboard) -> Bitboard {
         ::magic::bishop_attacks(*self, occupied)
@@ -132,7 +163,8 @@ impl Square {
 
     /// Returns the queen attacks for `self` and `occupied`.
     ///
-    /// Whether or not `occupied` contains `self` does not matter.
+    /// This works the same as combining the results of `rook_attacks` and
+    /// `bishop_attacks`.
     #[inline]
     pub fn queen_attacks(&self, occupied: Bitboard) -> Bitboard {
         self.rook_attacks(occupied) | self.bishop_attacks(occupied)
