@@ -1,6 +1,5 @@
 //! A chess board square and its components.
 
-use core::iter::Map;
 use core::ops::Range;
 use core::str::FromStr;
 
@@ -62,8 +61,8 @@ impl Square {
     /// }
     /// ```
     #[inline]
-    pub fn all() -> Map<Range<u8>, fn(u8) -> Square> {
-        (0..64).map(From::from)
+    pub fn all() -> Squares {
+        Squares { iter: 0..64 }
     }
 
     /// Initializes a `Square` from a `File` and `Rank`.
@@ -137,6 +136,72 @@ impl Square {
     #[inline]
     pub fn queen_attacks(&self, occupied: Bitboard) -> Bitboard {
         self.rook_attacks(occupied) | self.bishop_attacks(occupied)
+    }
+}
+
+/// An iterator over all squares.
+#[derive(Clone, PartialEq, Eq)]
+pub struct Squares {
+    // Range for iterating in reverse
+    // Invariant: always within 0..64
+    iter: Range<u8>
+}
+
+impl Iterator for Squares {
+    type Item = Square;
+
+    #[inline]
+    fn next(&mut self) -> Option<Square> {
+        use uncon::IntoUnchecked;
+        if let Some(n) = self.iter.next() {
+            unsafe { Some(n.into_unchecked()) }
+        } else {
+            None
+        }
+    }
+
+    #[inline]
+    fn count(self) -> usize {
+        self.len()
+    }
+
+    #[inline]
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = self.len();
+        (len, Some(len))
+    }
+
+    #[inline]
+    fn last(mut self) -> Option<Square> {
+        self.next_back()
+    }
+}
+
+impl DoubleEndedIterator for Squares {
+    #[inline]
+    fn next_back(&mut self) -> Option<Square> {
+        use uncon::IntoUnchecked;
+        if let Some(n) = self.iter.next_back() {
+            unsafe { Some(n.into_unchecked()) }
+        } else {
+            None
+        }
+    }
+}
+
+impl ExactSizeIterator for Squares {
+    #[inline]
+    fn len(&self) -> usize {
+        self.iter.len()
+    }
+}
+
+impl Squares {
+    /// Returns whether `self` contains `square`.
+    #[inline]
+    pub fn contains(&self, square: Square) -> bool {
+        let value = square as u8;
+        (self.iter.start <= value) && (value < self.iter.end)
     }
 }
 
