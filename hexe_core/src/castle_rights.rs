@@ -18,6 +18,8 @@ impl CastleRights {
     pub const BLACK_QUEENSIDE: CastleRights = CastleRights(0b1000);
 }
 
+impl_set_ops! { CastleRights }
+
 impl From<CastleRight> for CastleRights {
     #[inline]
     fn from(right: CastleRight) -> Self {
