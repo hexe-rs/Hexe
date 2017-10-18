@@ -13,6 +13,9 @@ pub struct Bitboard(pub u64);
 const NOT_FILE_A: u64 = !masks::FILE_A.0;
 const NOT_FILE_H: u64 = !masks::FILE_H.0;
 
+const NOT_FILE_AB: u64 = !(masks::FILE_A.0 | masks::FILE_B.0);
+const NOT_FILE_GH: u64 = !(masks::FILE_G.0 | masks::FILE_H.0);
+
 impl Bitboard {
     /// A bitboard with all bits set to 1.
     pub const FULL: Bitboard = Bitboard(!0);
@@ -57,6 +60,18 @@ impl Bitboard {
             Color::White => self.shift(Northeast) | self.shift(Northwest),
             Color::Black => self.shift(Southeast) | self.shift(Southwest),
         }
+    }
+
+    /// Generates knight attacks for each of the bits of `self`.
+    #[inline]
+    pub fn knight_attacks(self) -> Bitboard {
+        let l1 = (self >> 1) & NOT_FILE_H;
+        let l2 = (self >> 2) & NOT_FILE_GH;
+        let r1 = (self << 1) & NOT_FILE_A;
+        let r2 = (self << 2) & NOT_FILE_AB;
+        let h1 = l1 | r1;
+        let h2 = l2 | r2;
+        (h1 << 16) | (h1 >> 16) | (h2 << 8) | (h2 >> 8)
     }
 
     /// Generates bishop attacks for each of the bits of `self`.
