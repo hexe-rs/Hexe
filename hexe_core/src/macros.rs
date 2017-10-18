@@ -47,6 +47,18 @@ macro_rules! impl_set_ops {
                 let other = other.into().0;
                 self.0 & other == other
             }
+
+            /// Returns the number of bits set in `self`.
+            #[inline]
+            pub fn len(&self) -> usize {
+                self.0.count_ones() as usize
+            }
+
+            /// Returns whether `self` is empty.
+            #[inline]
+            pub fn is_empty(&self) -> bool {
+                self.0 == 0
+            }
         })+
     }
 }
