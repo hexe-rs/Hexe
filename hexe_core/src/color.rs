@@ -38,15 +38,15 @@ impl FromStr for Color {
 
     fn from_str(s: &str) -> Result<Color, FromStrError> {
         if s.len() != 0 {
-            let (color, exp) = match s.as_bytes()[0] | 32 {
+            let bytes = s.as_bytes();
+            let (color, exp) = match bytes[0] | 32 {
                 b'w' => (Color::White, b"hite"),
                 b'b' => (Color::Black, b"lack"),
                 _ => return Err(FromStrError(())),
             };
-            // We know that the first character is either "w" or "b"
-            let rem = unsafe { s.get_unchecked(1..) };
+            let rem = &bytes[1..];
             if rem.len() == exp.len() {
-                for (&a, &b) in rem.as_bytes().iter().zip(exp.iter()) {
+                for (&a, &b) in rem.iter().zip(exp.iter()) {
                     if a | 32 != b {
                         return Err(FromStrError(()));
                     }
