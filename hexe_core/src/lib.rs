@@ -16,6 +16,9 @@ extern crate rand;
 extern crate uncon_derive;
 extern crate uncon;
 
+#[macro_use]
+mod macros;
+
 pub mod prelude;
 
 pub mod bitboard;
