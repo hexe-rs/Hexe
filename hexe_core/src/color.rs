@@ -37,7 +37,7 @@ impl FromStr for Color {
     type Err = FromStrError;
 
     fn from_str(s: &str) -> Result<Color, FromStrError> {
-        if s.len() > 1 {
+        if s.len() != 0 {
             let (color, exp) = match s.as_bytes()[0] | 32 {
                 b'w' => (Color::White, b"hite"),
                 b'b' => (Color::Black, b"lack"),
@@ -73,11 +73,14 @@ mod tests {
             ("white", White), ("black", Black),
             ("WHITE", White), ("BLACK", Black),
             ("wHiTe", White), ("BlAcK", Black),
+            ("w", White),     ("b", Black),
+            ("W", White),     ("B", Black),
         ];
 
         static FAILS: &[&str] = &[
             "whit",  "blac",
             "whits", "block",
+            "a", "c", "d"
         ];
 
         for &(s, c) in STRINGS {
