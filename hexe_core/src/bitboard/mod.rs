@@ -2,6 +2,9 @@
 
 pub mod masks;
 mod impls;
+mod tables;
+
+use prelude::*;
 
 /// A mapping of sixty-four bits to squares of a chess board.
 #[derive(Copy, Clone, Hash, PartialEq, Eq)]
@@ -22,6 +25,19 @@ impl Bitboard {
 
     /// Black board squares.
     pub const BLACK: Bitboard = Bitboard(0xAA55AA55AA55AA55);
+
+    /// Returns a `Bitboard` containing squares between `start` and `end`.
+    #[inline]
+    pub fn between(start: Square, end: Square) -> Bitboard {
+        self::tables::BETWEEN[start as usize][end as usize].into()
+    }
+
+    /// Returns a `Bitboard` line spanning the entire board from edge to edge,
+    /// intersecting `start` and `end`.
+    #[inline]
+    pub fn line(start: Square, end: Square) -> Bitboard {
+        self::tables::LINE[start as usize][end as usize].into()
+    }
 
     /// Generates bishop attacks for each of the bits of `self`.
     pub fn bishop_attacks(self, empty: Bitboard) -> Bitboard {
