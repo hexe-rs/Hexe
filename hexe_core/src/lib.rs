@@ -6,6 +6,8 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
+#![cfg_attr(feature = "try-from", feature(try_from))]
+
 #[cfg(feature = "std")]
 extern crate core;
 

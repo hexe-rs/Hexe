@@ -20,4 +20,6 @@ rand = "0.3"
 
 [features]
 default = ["std"]
+nightly = ["try-from"]
 std = ["uncon/std", "uncon_derive/std"]
+try-from = []
