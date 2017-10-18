@@ -118,6 +118,20 @@ impl From<Color> for Bitboard {
     }
 }
 
+impl<'a, T: Into<Bitboard> + Clone> From<&'a T> for Bitboard {
+    #[inline]
+    fn from(value: &T) -> Self {
+        T::clone(value).into()
+    }
+}
+
+impl<'a, T: Into<Bitboard> + Clone> From<&'a mut T> for Bitboard {
+    #[inline]
+    fn from(value: &mut T) -> Self {
+        T::clone(value).into()
+    }
+}
+
 impl<A: Into<Bitboard>> iter::FromIterator<A> for Bitboard {
     #[inline]
     fn from_iter<T: IntoIterator<Item=A>>(iter: T) -> Self {
