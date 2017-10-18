@@ -1,5 +1,7 @@
 //! A chess board square and its components.
 
+#[cfg(feature = "try-from")]
+use core::convert::TryFrom;
 use core::ops::Range;
 use core::str::FromStr;
 
@@ -292,6 +294,30 @@ impl Rank {
         } else {
             None
         }
+    }
+}
+
+/// The error returned when `try_from` fails for `File` or `Rank`.
+#[cfg(feature = "try-from")]
+pub struct TryFromCharError(());
+
+#[cfg(feature = "try-from")]
+impl TryFrom<char> for File {
+    type Error = TryFromCharError;
+
+    #[inline]
+    fn try_from(ch: char) -> Result<Self, TryFromCharError> {
+        Self::from_char(ch).ok_or(TryFromCharError(()))
+    }
+}
+
+#[cfg(feature = "try-from")]
+impl TryFrom<char> for Rank {
+    type Error = TryFromCharError;
+
+    #[inline]
+    fn try_from(ch: char) -> Result<Self, TryFromCharError> {
+        Self::from_char(ch).ok_or(TryFromCharError(()))
     }
 }
 
