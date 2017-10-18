@@ -88,6 +88,15 @@ impl Bitboard {
         self.fill_shift(South, empty) | self.fill_shift(West, empty)
     }
 
+    /// Generates king attacks for each of the bits of `self`.
+    #[inline]
+    pub fn king_attacks(self) -> Bitboard {
+        use self::Direction::*;
+        let attacks = self.shift(East) | self.shift(West);
+        let combine = self | attacks;
+        attacks | combine.shift(North) | combine.shift(South)
+    }
+
     /// Generates queen attacks for each of the bits of `self`.
     pub fn queen_attacks(self, empty: Bitboard) -> Bitboard {
         self.bishop_attacks(empty) | self.rook_attacks(empty)
