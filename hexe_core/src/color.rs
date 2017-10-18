@@ -39,14 +39,14 @@ impl FromStr for Color {
     fn from_str(s: &str) -> Result<Color, FromStrError> {
         if s.len() > 1 {
             let (color, exp) = match s.as_bytes()[0] | 32 {
-                b'w' => (Color::White, "hite"),
-                b'b' => (Color::Black, "lack"),
+                b'w' => (Color::White, b"hite"),
+                b'b' => (Color::Black, b"lack"),
                 _ => return Err(FromStrError(())),
             };
             // We know that the first character is either "w" or "b"
             let rem = unsafe { s.get_unchecked(1..) };
-            if rem.len() == 4 {
-                for (&a, &b) in rem.as_bytes().iter().zip(exp.as_bytes().iter()) {
+            if rem.len() == exp.len() {
+                for (&a, &b) in rem.as_bytes().iter().zip(exp.iter()) {
                     if a | 32 != b {
                         return Err(FromStrError(()));
                     }
