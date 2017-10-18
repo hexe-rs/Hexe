@@ -263,11 +263,37 @@ impl Squares {
 #[repr(u8)]
 pub enum File { A, B, C, D, E, F, G, H }
 
+impl File {
+    /// Returns a file from the parsed character.
+    pub fn from_char(ch: char) -> Option<File> {
+        use uncon::IntoUnchecked;
+        let b = 32 | ch as u8;
+        if b >= b'a' && b <= b'f' {
+            unsafe { Some((b - b'a').into_unchecked()) }
+        } else {
+            None
+        }
+    }
+}
+
 /// A rank (or row) for a chess board.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 pub enum Rank { One, Two, Three, Four, Five, Six, Seven, Eight }
+
+impl Rank {
+    /// Returns a file from the parsed character.
+    pub fn from_char(ch: char) -> Option<Rank> {
+        use uncon::IntoUnchecked;
+        let b = ch as u8;
+        if b >= b'1' && b <= b'8' {
+            unsafe { Some((b - b'1').into_unchecked()) }
+        } else {
+            None
+        }
+    }
+}
 
 #[cfg(test)]
 mod tests {
@@ -292,4 +318,20 @@ mod tests {
     }
 
     sliding_attacks! { rook_attacks bishop_attacks queen_attacks }
+
+    #[test]
+    fn file_from_char() {
+        for ch in b'A'..(b'F' + 1) {
+            for &ch in &[ch, ch | 32] {
+                assert!(File::from_char(ch as _).is_some());
+            }
+        }
+    }
+
+    #[test]
+    fn rank_from_char() {
+        for ch in b'1'..(b'8' + 1) {
+            assert!(Rank::from_char(ch as _).is_some());
+        }
+    }
 }
