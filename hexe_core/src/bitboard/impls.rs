@@ -1,5 +1,5 @@
 use super::*;
-use core::{fmt, ops};
+use core::{fmt, iter, ops};
 use prelude::*;
 
 macro_rules! forward_fmt_impl {
@@ -115,5 +115,19 @@ impl From<Color> for Bitboard {
             Color::White => Bitboard::WHITE,
             Color::Black => Bitboard::BLACK,
         }
+    }
+}
+
+impl<A: Into<Bitboard>> iter::FromIterator<A> for Bitboard {
+    #[inline]
+    fn from_iter<T: IntoIterator<Item=A>>(iter: T) -> Self {
+        iter.into_iter().fold(Bitboard::EMPTY, ops::BitOr::bitor)
+    }
+}
+
+impl<A: Into<Bitboard>> Extend<A> for Bitboard {
+    #[inline]
+    fn extend<T: IntoIterator<Item=A>>(&mut self, iter: T) {
+        *self |= iter.into_iter().collect::<Bitboard>();
     }
 }
