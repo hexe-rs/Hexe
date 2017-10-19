@@ -10,5 +10,7 @@ matrix:
   include:
     - rust: stable
       os: osx
+    - rust: nightly
+      env: FEATURES="--features nightly"
 
 script: ./travis.sh
