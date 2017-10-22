@@ -284,10 +284,10 @@ impl File {
     ///
     /// ```
     /// # use hexe_core::prelude::*;
-    /// let file = File::C;
-    /// let adj  = File::B | File::D;
+    /// let val = File::C;
+    /// let adj = File::B | File::D;
     ///
-    /// assert_eq!(file.adjacent_mask(), adj);
+    /// assert_eq!(val.adjacent_mask(), adj);
     /// ```
     pub fn adjacent_mask(&self) -> Bitboard {
         use bitboard::masks::*;
@@ -326,10 +326,10 @@ impl Rank {
     ///
     /// ```
     /// # use hexe_core::prelude::*;
-    /// let file = Rank::Five;
-    /// let adj  = Rank::Four | Rank::Six;
+    /// let val = Rank::Five;
+    /// let adj = Rank::Four | Rank::Six;
     ///
-    /// assert_eq!(file.adjacent_mask(), adj);
+    /// assert_eq!(val.adjacent_mask(), adj);
     /// ```
     pub fn adjacent_mask(&self) -> Bitboard {
         use bitboard::masks::*;
