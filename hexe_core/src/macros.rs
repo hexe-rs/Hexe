@@ -62,3 +62,35 @@ macro_rules! impl_set_ops {
         })+
     }
 }
+
+// Allows for chaining `|`, `&`, and `^` without calling `T::from`
+macro_rules! impl_composition_ops {
+    ($u:ty => $($t:ty)+) => {
+        $(impl<T: Into<$u>> ::core::ops::BitOr<T> for $t {
+            type Output = $u;
+
+            #[inline]
+            fn bitor(self, other: T) -> $u {
+                other.into().bitor(self)
+            }
+        }
+
+        impl<T: Into<$u>> ::core::ops::BitAnd<T> for $t {
+            type Output = $u;
+
+            #[inline]
+            fn bitand(self, other: T) -> $u {
+                other.into().bitand(self)
+            }
+        }
+
+        impl<T: Into<$u>> ::core::ops::BitXor<T> for $t {
+            type Output = $u;
+
+            #[inline]
+            fn bitxor(self, other: T) -> $u {
+                other.into().bitxor(self)
+            }
+        })*
+    }
+}

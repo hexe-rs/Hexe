@@ -1,6 +1,21 @@
 //! Castling rights for two players of a chess game.
 
 /// Castle rights for a chess game.
+///
+/// # Examples
+///
+/// Similar to with [`Bitboard`], castle rights can be composed with set
+/// operations.
+///
+/// ```
+/// # use hexe_core::prelude::*;
+/// assert!(
+///     CastleRight::WhiteKingside   | CastleRight::WhiteQueenside ==
+///     CastleRights::WHITE_KINGSIDE | CastleRights::WHITE_QUEENSIDE
+/// );
+/// ```
+///
+/// [`Bitboard`]: ../bitboard/struct.Bitboard.html
 #[derive(PartialEq, Eq, Clone, Copy, Hash)]
 pub struct CastleRights(u8);
 
@@ -19,6 +34,8 @@ impl CastleRights {
 }
 
 impl_set_ops! { CastleRights }
+
+impl_composition_ops! { CastleRights => CastleRight }
 
 impl From<CastleRight> for CastleRights {
     #[inline]
