@@ -7,6 +7,31 @@ mod tables;
 use prelude::*;
 
 /// A mapping of sixty-four bits to squares of a chess board.
+///
+/// # Examples
+///
+/// Board components ([`Square`], [`File`], and [`Rank`]) can be used first in
+/// an operation chain to construct a bitboard.
+///
+/// This syntax should not be misused to create obscure operations that are hard
+/// to follow.
+///
+/// ```
+/// # use hexe_core::prelude::*;
+/// let f = File::B;
+/// let r = Rank::Seven;
+/// let s = Square::new(f, r);
+///
+/// assert_eq!(f & r, // Note: slower than `Square::new(f, r).into()`
+///            Bitboard::from(s));
+///
+/// assert_eq!(f | r, r | f);
+/// assert_eq!(s & (f ^ r), Bitboard::EMPTY);
+/// ```
+///
+/// [`Square`]: ../square/enum.Square.html
+/// [`File`]:   ../square/enum.File.html
+/// [`Rank`]:   ../square/enum.Rank.html
 #[derive(Copy, Clone, Hash, PartialEq, Eq)]
 pub struct Bitboard(pub u64);
 

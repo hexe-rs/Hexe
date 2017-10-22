@@ -145,3 +145,37 @@ impl<A: Into<Bitboard>> Extend<A> for Bitboard {
         *self |= iter.into_iter().collect::<Bitboard>();
     }
 }
+
+macro_rules! impl_composition_ops {
+    ($($t:ty)*) => {
+        $(impl<T: Into<Bitboard>> ops::BitOr<T> for $t {
+            type Output = Bitboard;
+
+            #[inline]
+            fn bitor(self, other: T) -> Bitboard {
+                other.into().bitor(self)
+            }
+        }
+
+        impl<T: Into<Bitboard>> ops::BitAnd<T> for $t {
+            type Output = Bitboard;
+
+            #[inline]
+            fn bitand(self, other: T) -> Bitboard {
+                other.into().bitand(self)
+            }
+        }
+
+        impl<T: Into<Bitboard>> ops::BitXor<T> for $t {
+            type Output = Bitboard;
+
+            #[inline]
+            fn bitxor(self, other: T) -> Bitboard {
+                other.into().bitxor(self)
+            }
+        })*
+    }
+}
+
+// Allows for chaining `|`, `&`, and `^` without calling `Bitboard::from`
+impl_composition_ops! { Square File Rank }

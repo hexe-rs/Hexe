@@ -142,11 +142,8 @@ impl Square {
     /// # use hexe_core::prelude::*;
     /// let start = Square::A1;
     ///
-    /// let occ = Bitboard::from(Square::A3)
-    ///         | Bitboard::from(Square::C1);
-    /// let exp = Bitboard::from(Square::A2)
-    ///         | Bitboard::from(Square::B1)
-    ///         | occ;
+    /// let occ = Square::A3 | Square::C1;
+    /// let exp = Square::A2 | Square::B1 | occ;
     ///
     /// assert_eq!(start.rook_attacks(occ), exp);
     /// ```
@@ -167,10 +164,10 @@ impl Square {
     /// # use hexe_core::prelude::*;
     /// let start = Square::A1;
     ///
-    /// let occ = Bitboard::from(Square::C3);
-    /// let exp = Bitboard::from(Square::B2) | occ;
+    /// let occ = Square::C3;
+    /// let exp = Square::B2 | occ;
     ///
-    /// assert_eq!(start.bishop_attacks(occ), exp);
+    /// assert_eq!(start.bishop_attacks(occ.into()), exp);
     /// ```
     #[inline]
     pub fn bishop_attacks(&self, occupied: Bitboard) -> Bitboard {
