@@ -274,6 +274,29 @@ impl File {
             None
         }
     }
+
+    /// Returns the adjacent mask for `self`, containing all squares on the
+    /// files directly to the left and right of `self`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::prelude::*;
+    /// let file = File::C;
+    /// let adj  = File::B | File::D;
+    ///
+    /// assert_eq!(file.adjacent_mask(), adj);
+    /// ```
+    pub fn adjacent_mask(&self) -> Bitboard {
+        use bitboard::masks::*;
+        static ADJACENT: [u64; 8] = [
+            FILE_B.0, FILE_A.0 | FILE_C.0, FILE_B.0 | FILE_D.0, FILE_C.0 | FILE_E.0,
+            FILE_D.0 | FILE_F.0, FILE_E.0 | FILE_G.0, FILE_F.0 | FILE_H.0, FILE_G.0,
+        ];
+        Bitboard(ADJACENT[*self as usize])
+    }
 }
 
 /// A rank (or row) for a chess board.
@@ -292,6 +315,29 @@ impl Rank {
         } else {
             None
         }
+    }
+
+    /// Returns the adjacent mask for `self`, containing all squares on the
+    /// ranks directly ahead and behind `self`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::prelude::*;
+    /// let file = Rank::Five;
+    /// let adj  = Rank::Four | Rank::Six;
+    ///
+    /// assert_eq!(file.adjacent_mask(), adj);
+    /// ```
+    pub fn adjacent_mask(&self) -> Bitboard {
+        use bitboard::masks::*;
+        static ADJACENT: [u64; 8] = [
+            RANK_2.0, RANK_1.0 | RANK_3.0, RANK_2.0 | RANK_4.0, RANK_3.0 | RANK_5.0,
+            RANK_4.0 | RANK_6.0, RANK_5.0 | RANK_7.0, RANK_6.0 | RANK_8.0, RANK_7.0,
+        ];
+        Bitboard(ADJACENT[*self as usize])
     }
 }
 
