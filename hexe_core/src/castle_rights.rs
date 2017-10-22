@@ -1,5 +1,7 @@
 //! Castling rights for two players of a chess game.
 
+use core::fmt;
+
 /// Castle rights for a chess game.
 ///
 /// # Examples
@@ -9,8 +11,8 @@
 ///
 /// ```
 /// # use hexe_core::prelude::*;
-/// assert!(
-///     CastleRight::WhiteKingside   | CastleRight::WhiteQueenside ==
+/// assert_eq!(
+///     CastleRight::WhiteKingside   | CastleRight::WhiteQueenside,
 ///     CastleRights::WHITE_KINGSIDE | CastleRights::WHITE_QUEENSIDE
 /// );
 /// ```
@@ -18,6 +20,13 @@
 /// [`Bitboard`]: ../bitboard/struct.Bitboard.html
 #[derive(PartialEq, Eq, Clone, Copy, Hash)]
 pub struct CastleRights(u8);
+
+impl fmt::Debug for CastleRights {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        // 2 for "0b" + 4 for number
+        write!(f, "CastleRights({:#06b})", self.0)
+    }
+}
 
 impl CastleRights {
     /// White kingside.
