@@ -35,6 +35,7 @@ impl FromStr for Square {
         use uncon::IntoUnchecked;
         let bytes = s.as_bytes();
         if bytes.len() != 2 { Err(FromStrError(())) } else {
+            // Gets better optimized as a macro for some strange reason
             macro_rules! convert {
                 ($b:expr, $lo:expr, $hi:expr) => {
                     if $b >= $lo && $b <= $hi {
