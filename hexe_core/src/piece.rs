@@ -1,5 +1,6 @@
 /// A chess piece.
-#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, FromUnchecked)]
+#[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 pub enum Piece {
     WhitePawn,
@@ -17,7 +18,8 @@ pub enum Piece {
 }
 
 /// A chess piece kind.
-#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, FromUnchecked)]
+#[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 pub enum PieceKind {
     Pawn,
