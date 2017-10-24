@@ -26,6 +26,7 @@ pub mod prelude;
 pub mod bitboard;
 pub mod castle_rights;
 pub mod color;
+pub mod piece;
 pub mod square;
 
 mod magic;
