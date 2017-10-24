@@ -37,6 +37,12 @@ impl Piece {
     pub fn new(kind: PieceKind, color: Color) -> Piece {
         unsafe { Piece::from_unchecked((kind as u8) << 1 | color as u8) }
     }
+
+    /// Converts `self` into a character.
+    #[inline]
+    pub fn into_char(self) -> char {
+        self.into()
+    }
 }
 
 /// A chess piece kind.
@@ -94,5 +100,11 @@ impl PieceKind {
     #[inline]
     pub fn into_str(self) -> &'static str {
         KINDS[self as usize]
+    }
+
+    /// Converts `self` into a character.
+    #[inline]
+    pub fn into_char(self) -> char {
+        self.into()
     }
 }
