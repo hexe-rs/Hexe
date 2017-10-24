@@ -81,6 +81,13 @@ impl From<PieceKind> for char {
     }
 }
 
+impl From<Promotion> for PieceKind {
+    #[inline]
+    fn from(promotion: Promotion) -> PieceKind {
+        unsafe { PieceKind::from_unchecked((promotion as u8) + 1) }
+    }
+}
+
 impl PieceKind {
     /// Returns a piece kind from the parsed character.
     pub fn from_char(ch: char) -> Option<PieceKind> {
