@@ -1,5 +1,6 @@
 /// A chess piece.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
+#[repr(u8)]
 pub enum Piece {
     WhitePawn,
     BlackPawn,
@@ -17,6 +18,7 @@ pub enum Piece {
 
 /// A chess piece kind.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
+#[repr(u8)]
 pub enum PieceKind {
     Pawn,
     Knight,
