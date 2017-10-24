@@ -4,4 +4,5 @@
 pub use bitboard::Bitboard;
 pub use castle_rights::{CastleRights, CastleRight};
 pub use color::Color;
+pub use piece::{Piece, PieceKind};
 pub use square::{Square, File, Rank};
