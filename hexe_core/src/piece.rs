@@ -38,6 +38,18 @@ impl Piece {
         unsafe { Piece::from_unchecked((kind as u8) << 1 | color as u8) }
     }
 
+    /// Returns the `PieceKind` for the `Piece`.
+    #[inline]
+    pub fn kind(&self) -> PieceKind {
+        unsafe { PieceKind::from_unchecked((*self as u8) >> 1) }
+    }
+
+    /// Returns the `Color` for the `Piece`.
+    #[inline]
+    pub fn color(&self) -> Color {
+        ((*self as u8) & 1).into()
+    }
+
     /// Converts `self` into a character.
     #[inline]
     pub fn into_char(self) -> char {
