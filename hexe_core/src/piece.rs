@@ -20,6 +20,15 @@ pub enum Piece {
     BlackKing,
 }
 
+static PIECE_CHARS_ASCII: &[u8; 12] = b"PpNnBbRrQqKk";
+
+impl From<Piece> for char {
+    #[inline]
+    fn from(p: Piece) -> char {
+        PIECE_CHARS_ASCII[p as usize] as char
+    }
+}
+
 impl Piece {
     /// Creates a new `Piece` with a `PieceKind` and `Color`.
     #[inline]
