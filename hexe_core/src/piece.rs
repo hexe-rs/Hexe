@@ -1,3 +1,6 @@
+use color::Color;
+use uncon::*;
+
 /// A chess piece.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
@@ -15,6 +18,14 @@ pub enum Piece {
     BlackQueen,
     WhiteKing,
     BlackKing,
+}
+
+impl Piece {
+    /// Creates a new `Piece` with a `PieceKind` and `Color`.
+    #[inline]
+    pub fn new(kind: PieceKind, color: Color) -> Piece {
+        unsafe { Piece::from_unchecked((kind as u8) << 1 | color as u8) }
+    }
 }
 
 /// A chess piece kind.
