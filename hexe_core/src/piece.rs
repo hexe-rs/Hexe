@@ -108,3 +108,19 @@ impl PieceKind {
         self.into()
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn piece_kind_char() {
+        static CHARS: [char; 6] = ['P', 'N', 'B', 'R', 'Q', 'K'];
+
+        for i in 0..6 {
+            let ch = CHARS[i];
+            let pk = PieceKind::from(i);
+            assert_eq!(pk.into_char(), ch);
+        }
+    }
+}
