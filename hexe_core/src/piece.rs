@@ -77,7 +77,7 @@ impl fmt::Display for PieceKind {
 impl From<PieceKind> for char {
     #[inline]
     fn from(pk: PieceKind) -> char {
-        PIECE_CHARS_ASCII[(self as usize) << 1] as char
+        PIECE_CHARS_ASCII[(pk as usize) << 1] as char
     }
 }
 
