@@ -64,7 +64,7 @@ impl fmt::Debug for PieceKind {
 impl fmt::Display for PieceKind {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(KINDS[*self as usize], f)
+        fmt::Display::fmt(self.into_str(), f)
     }
 }
 
@@ -81,5 +81,11 @@ impl PieceKind {
             b'k' => Some(King),
             _ => None,
         }
+    }
+
+    /// Converts `self` into a static string.
+    #[inline]
+    pub fn into_str(self) -> &'static str {
+        KINDS[self as usize]
     }
 }
