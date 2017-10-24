@@ -1,3 +1,5 @@
+use core::fmt;
+
 use color::Color;
 use uncon::*;
 
@@ -38,7 +40,7 @@ impl Piece {
 }
 
 /// A chess piece kind.
-#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, FromUnchecked)]
+#[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 pub enum PieceKind {
@@ -48,6 +50,22 @@ pub enum PieceKind {
     Rook,
     Queen,
     King,
+}
+
+static KINDS: [&str; 6] = ["Pawn", "Knight", "Bishop", "Rook", "Queen", "King"];
+
+impl fmt::Debug for PieceKind {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(self, f)
+    }
+}
+
+impl fmt::Display for PieceKind {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(KINDS[*self as usize], f)
+    }
 }
 
 impl PieceKind {
