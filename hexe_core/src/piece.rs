@@ -129,6 +129,25 @@ impl PieceKind {
 #[repr(u8)]
 pub enum Promotion { Knight, Bishop, Rook, Queen }
 
+impl FromUnchecked<PieceKind> for Promotion {
+    #[inline]
+    unsafe fn from_unchecked(pk: PieceKind) -> Promotion {
+        Promotion::from_unchecked((pk as u8) - 1)
+    }
+}
+
+impl Promotion {
+    /// Returns a promotion for the piece kind, if possible.
+    // #[inline]
+    pub fn from_kind(pk: PieceKind) -> Option<Promotion> {
+        if pk.is_promotion() {
+            unsafe { Some(pk.into_unchecked()) }
+        } else {
+            None
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
