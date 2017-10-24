@@ -109,6 +109,12 @@ impl PieceKind {
     }
 }
 
+/// A promotion piece kind.
+#[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
+#[uncon(impl_from, other(u16, u32, u64, usize))]
+#[repr(u8)]
+pub enum Promotion { Knight, Bishop, Rook, Queen }
+
 #[cfg(test)]
 mod tests {
     use super::*;
