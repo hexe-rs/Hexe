@@ -138,7 +138,7 @@ impl FromUnchecked<PieceKind> for Promotion {
 
 impl Promotion {
     /// Returns a promotion for the piece kind, if possible.
-    // #[inline]
+    #[inline]
     pub fn from_kind(pk: PieceKind) -> Option<Promotion> {
         if pk.is_promotion() {
             unsafe { Some(pk.into_unchecked()) }
