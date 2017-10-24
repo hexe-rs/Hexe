@@ -114,6 +114,13 @@ impl PieceKind {
     pub fn into_char(self) -> char {
         self.into()
     }
+
+    /// The kind is a promotion.
+    #[inline]
+    pub fn is_promotion(&self) -> bool {
+        use self::PieceKind::*;
+        *self == Knight || *self == Bishop || *self == Rook || *self == Queen
+    }
 }
 
 /// A promotion piece kind.
