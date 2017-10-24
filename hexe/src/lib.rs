@@ -7,6 +7,6 @@
 
 extern crate hexe_core;
 
-pub use hexe_core::{bitboard, castle_rights, color, square};
+pub use hexe_core::{bitboard, castle_rights, color, piece, square};
 
 pub mod prelude;
