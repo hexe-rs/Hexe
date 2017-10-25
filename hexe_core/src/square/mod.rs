@@ -76,6 +76,17 @@ impl Serialize for Square {
     }
 }
 
+#[cfg(feature = "serde")]
+impl<'de> Deserialize<'de> for Square {
+    fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
+        use serde::de;
+
+        <&str>::deserialize(de)?.parse().map_err(|_| {
+            de::Error::custom("failed to parse square")
+        })
+    }
+}
+
 impl Square {
     /// An efficient iterator over all squares.
     ///
