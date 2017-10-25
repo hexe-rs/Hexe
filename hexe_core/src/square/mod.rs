@@ -263,6 +263,13 @@ impl Squares {
 #[repr(u8)]
 pub enum File { A, B, C, D, E, F, G, H }
 
+impl From<File> for char {
+    #[inline]
+    fn from(f: File) -> char {
+        (b'A' + f as u8) as char
+    }
+}
+
 impl File {
     /// Returns a file from the parsed character.
     pub fn from_char(ch: char) -> Option<File> {
@@ -304,6 +311,13 @@ impl File {
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 pub enum Rank { One, Two, Three, Four, Five, Six, Seven, Eight }
+
+impl From<Rank> for char {
+    #[inline]
+    fn from(r: Rank) -> char {
+        (b'1' + r as u8) as char
+    }
+}
 
 impl Rank {
     /// Returns a file from the parsed character.
