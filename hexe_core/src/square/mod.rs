@@ -313,6 +313,7 @@ pub enum File { A, B, C, D, E, F, G, H }
 
 impl File {
     /// Returns a file from the parsed character.
+    #[inline]
     pub fn from_char(ch: char) -> Option<File> {
         use uncon::IntoUnchecked;
         let b = 32 | ch as u8;
@@ -337,6 +338,7 @@ impl File {
     ///
     /// assert_eq!(val.adjacent_mask(), adj);
     /// ```
+    #[inline]
     pub fn adjacent_mask(&self) -> Bitboard {
         use bitboard::masks::*;
         static ADJACENT: [u64; 8] = [
@@ -355,6 +357,7 @@ pub enum Rank { One, Two, Three, Four, Five, Six, Seven, Eight }
 
 impl Rank {
     /// Returns a file from the parsed character.
+    #[inline]
     pub fn from_char(ch: char) -> Option<Rank> {
         use uncon::IntoUnchecked;
         let b = ch as u8;
@@ -379,6 +382,7 @@ impl Rank {
     ///
     /// assert_eq!(val.adjacent_mask(), adj);
     /// ```
+    #[inline]
     pub fn adjacent_mask(&self) -> Bitboard {
         use bitboard::masks::*;
         static ADJACENT: [u64; 8] = [
