@@ -316,11 +316,11 @@ impl File {
     #[inline]
     pub fn from_char(ch: char) -> Option<File> {
         use uncon::IntoUnchecked;
-        let b = 32 | ch as u8;
-        if b >= b'a' && b <= b'f' {
-            unsafe { Some((b - b'a').into_unchecked()) }
-        } else {
-            None
+        match 32 | ch as u8 {
+            b @ b'a' ... b'f' => unsafe {
+                Some((b - b'a').into_unchecked())
+            },
+            _ => None,
         }
     }
 
@@ -360,11 +360,11 @@ impl Rank {
     #[inline]
     pub fn from_char(ch: char) -> Option<Rank> {
         use uncon::IntoUnchecked;
-        let b = ch as u8;
-        if b >= b'1' && b <= b'8' {
-            unsafe { Some((b - b'1').into_unchecked()) }
-        } else {
-            None
+        match ch as u8 {
+            b @ b'1' ... b'8' => unsafe {
+                Some((b - b'1').into_unchecked())
+            },
+            _ => None,
         }
     }
 
