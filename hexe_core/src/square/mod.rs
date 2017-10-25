@@ -393,32 +393,22 @@ impl Rank {
 #[cfg(feature = "try-from")]
 pub struct TryFromCharError(());
 
-#[cfg(feature = "try-from")]
-impl TryFrom<char> for File {
-    type Error = TryFromCharError;
-
-    #[inline]
-    fn try_from(ch: char) -> Result<Self, TryFromCharError> {
-        Self::from_char(ch).ok_or(TryFromCharError(()))
-    }
-}
-
-#[cfg(feature = "try-from")]
-impl TryFrom<char> for Rank {
-    type Error = TryFromCharError;
-
-    #[inline]
-    fn try_from(ch: char) -> Result<Self, TryFromCharError> {
-        Self::from_char(ch).ok_or(TryFromCharError(()))
-    }
-}
-
 macro_rules! impl_components {
     ($($t:ty, $c:expr, $m:expr;)+) => {
         $(impl From<$t> for char {
             #[inline]
             fn from(val: $t) -> char {
                 ($c + val as u8) as char
+            }
+        }
+
+        #[cfg(feature = "try-from")]
+        impl TryFrom<char> for $t {
+            type Error = TryFromCharError;
+
+            #[inline]
+            fn try_from(ch: char) -> Result<Self, TryFromCharError> {
+                Self::from_char(ch).ok_or(TryFromCharError(()))
             }
         }
 
