@@ -3,7 +3,7 @@
 #[cfg(feature = "try-from")]
 use core::convert::TryFrom;
 use core::ops::Range;
-use core::str::FromStr;
+use core::str;
 
 use prelude::*;
 
@@ -28,7 +28,7 @@ pub enum Square {
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct FromStrError(());
 
-impl FromStr for Square {
+impl str::FromStr for Square {
     type Err = FromStrError;
 
     fn from_str(s: &str) -> Result<Square, FromStrError> {
@@ -117,6 +117,18 @@ impl Square {
     #[inline]
     pub fn color(&self) -> Color {
         (Bitboard::BLACK >> *self as u64).0.into()
+    }
+
+    /// Returns the result of applying a function to a mutable string
+    /// representation of `self`.
+    #[inline]
+    pub fn map_str<T, F>(&self, f: F) -> T
+        where F: for<'a> FnOnce(&'a mut str) -> T
+    {
+        let mut buf = [0; 2];
+        buf[0] = char::from(self.file()) as u8;
+        buf[1] = char::from(self.rank()) as u8;
+        unsafe { f(str::from_utf8_unchecked_mut(&mut buf)) }
     }
 
     /// Returns the pawn attacks for `self` and `color`.
