@@ -2,6 +2,25 @@ use super::*;
 use core::{fmt, iter, ops};
 use prelude::*;
 
+#[cfg(feature = "serde")]
+use serde::*;
+
+#[cfg(feature = "serde")]
+impl Serialize for Bitboard {
+    #[inline]
+    fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
+        ser.serialize_u64(self.0)
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<'de> Deserialize<'de> for Bitboard {
+    #[inline]
+    fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
+        u64::deserialize(de).map(From::from)
+    }
+}
+
 macro_rules! forward_fmt_impl {
     ($($f:ident)+) => {
         $(impl fmt::$f for Bitboard {
