@@ -39,6 +39,22 @@ impl Piece {
         unsafe { Piece::from_unchecked((kind as u8) << 1 | color as u8) }
     }
 
+    /// Returns a piece from the parsed character.
+    #[inline]
+    pub fn from_char(ch: char) -> Option<Piece> {
+        use self::Piece::*;
+        let pc = match ch {
+            'P' => WhitePawn,   'p' => BlackPawn,
+            'N' => WhiteKnight, 'n' => BlackKnight,
+            'B' => WhiteBishop, 'b' => BlackBishop,
+            'R' => WhiteRook,   'r' => BlackRook,
+            'Q' => WhiteQueen,  'q' => BlackQueen,
+            'K' => WhiteKing,   'k' => BlackKing,
+            _ => return None,
+        };
+        Some(pc)
+    }
+
     /// Returns the `PieceKind` for the `Piece`.
     #[inline]
     pub fn kind(&self) -> PieceKind {
