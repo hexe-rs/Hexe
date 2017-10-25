@@ -4,7 +4,7 @@ use core::fmt;
 use core::str::FromStr;
 
 /// A black or white color.
-#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
+#[derive(Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 pub enum Color {
@@ -12,6 +12,20 @@ pub enum Color {
     White,
     /// Black color.
     Black,
+}
+
+static COLORS: [&str; 2] = ["White", "Black"];
+
+impl fmt::Debug for Color {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(self, f)
+    }
+}
+
+impl fmt::Display for Color {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(COLORS[*self as usize], f)
+    }
 }
 
 /// The error returned when `Color::from_str` fails.
