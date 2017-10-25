@@ -311,29 +311,6 @@ impl Squares {
 #[repr(u8)]
 pub enum File { A, B, C, D, E, F, G, H }
 
-impl From<File> for char {
-    #[inline]
-    fn from(f: File) -> char {
-        (b'A' + f as u8) as char
-    }
-}
-
-#[cfg(feature = "serde")]
-impl Serialize for File {
-    fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
-        ser.serialize_char((*self).into())
-    }
-}
-
-#[cfg(feature = "serde")]
-impl<'de> Deserialize<'de> for File {
-    fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
-        Self::from_char(char::deserialize(de)?).ok_or_else(|| {
-            de::Error::custom("failed to parse board file")
-        })
-    }
-}
-
 impl File {
     /// Returns a file from the parsed character.
     pub fn from_char(ch: char) -> Option<File> {
@@ -375,29 +352,6 @@ impl File {
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 pub enum Rank { One, Two, Three, Four, Five, Six, Seven, Eight }
-
-impl From<Rank> for char {
-    #[inline]
-    fn from(r: Rank) -> char {
-        (b'1' + r as u8) as char
-    }
-}
-
-#[cfg(feature = "serde")]
-impl Serialize for Rank {
-    fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
-        ser.serialize_char((*self).into())
-    }
-}
-
-#[cfg(feature = "serde")]
-impl<'de> Deserialize<'de> for Rank {
-    fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
-        Self::from_char(char::deserialize(de)?).ok_or_else(|| {
-            de::Error::custom("failed to parse board rank")
-        })
-    }
-}
 
 impl Rank {
     /// Returns a file from the parsed character.
@@ -457,6 +411,38 @@ impl TryFrom<char> for Rank {
     fn try_from(ch: char) -> Result<Self, TryFromCharError> {
         Self::from_char(ch).ok_or(TryFromCharError(()))
     }
+}
+
+macro_rules! impl_components {
+    ($($t:ty, $c:expr, $m:expr;)+) => {
+        $(impl From<$t> for char {
+            #[inline]
+            fn from(val: $t) -> char {
+                ($c + val as u8) as char
+            }
+        }
+
+        #[cfg(feature = "serde")]
+        impl Serialize for $t {
+            fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
+                ser.serialize_char((*self).into())
+            }
+        }
+
+        #[cfg(feature = "serde")]
+        impl<'de> Deserialize<'de> for $t {
+            fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
+                Self::from_char(char::deserialize(de)?).ok_or_else(|| {
+                    de::Error::custom($m)
+                })
+            }
+        })+
+    }
+}
+
+impl_components! {
+    File, b'A', "failed to parse board file";
+    Rank, b'1', "failed to parse board rank";
 }
 
 #[cfg(test)]
