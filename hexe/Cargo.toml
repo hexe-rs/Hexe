@@ -16,3 +16,4 @@ hexe_core = { path = "../hexe_core", version = "0.0.0" }
 [features]
 nightly = ["hexe_core/nightly", "try-from"]
 try-from = ["hexe_core/try-from"]
+serde = ["hexe_core/serde"]
