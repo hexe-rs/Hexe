@@ -22,7 +22,7 @@ static FROM_STR_ERROR: &str = "failed to parse a string as a color";
 
 impl fmt::Display for FromStrError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}", FROM_STR_ERROR)
+        fmt::Display::fmt(FROM_STR_ERROR, f)
     }
 }
 
