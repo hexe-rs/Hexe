@@ -14,8 +14,6 @@ pub enum Color {
     Black,
 }
 
-static COLORS: [&str; 2] = ["White", "Black"];
-
 impl fmt::Debug for Color {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Display::fmt(self, f)
@@ -24,7 +22,7 @@ impl fmt::Debug for Color {
 
 impl fmt::Display for Color {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(COLORS[*self as usize], f)
+        fmt::Display::fmt(self.into_str(), f)
     }
 }
 
@@ -74,6 +72,15 @@ impl FromStr for Color {
             }
             Ok(color)
         }
+    }
+}
+
+impl Color {
+    /// Converts `self` into a static string.
+    #[inline]
+    pub fn into_str(self) -> &'static str {
+        static COLORS: [&str; 2] = ["White", "Black"];
+        COLORS[self as usize]
     }
 }
 
