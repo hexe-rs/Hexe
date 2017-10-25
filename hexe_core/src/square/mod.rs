@@ -6,6 +6,9 @@ use core::fmt;
 use core::ops::Range;
 use core::str;
 
+#[cfg(feature = "serde")]
+use serde::*;
+
 use prelude::*;
 
 mod tables;
@@ -63,6 +66,13 @@ impl str::FromStr for Square {
             Ok(Square::new(convert!(bytes[0] | 32, b'a', b'h'),
                            convert!(bytes[1], b'1', b'8')))
         }
+    }
+}
+
+#[cfg(feature = "serde")]
+impl Serialize for Square {
+    fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
+        self.map_str(|s| ser.serialize_str(s))
     }
 }
 
