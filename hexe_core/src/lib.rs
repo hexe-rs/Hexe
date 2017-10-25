@@ -17,6 +17,7 @@ extern crate rand;
 #[macro_use]
 extern crate uncon_derive;
 extern crate uncon;
+extern crate serde;
 
 #[macro_use]
 mod macros;
