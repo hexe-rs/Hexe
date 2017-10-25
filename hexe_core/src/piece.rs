@@ -236,8 +236,10 @@ mod tests {
     #[test]
     fn piece_kind_from_str() {
         for pk in (0..6u8).map(PieceKind::from) {
-            let s = format!("{:?}", pk);
-            assert_eq!(Some(pk), s.parse().ok());
+            assert_eq!(
+                Some(pk),
+                pk.into_str().parse().ok()
+            );
         }
 
         for (i, ch) in CHARS.iter().enumerate() {
