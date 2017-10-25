@@ -14,10 +14,12 @@ extern crate core;
 #[cfg(test)]
 extern crate rand;
 
+#[cfg(feature = "serde")]
+extern crate serde;
+
 #[macro_use]
 extern crate uncon_derive;
 extern crate uncon;
-extern crate serde;
 
 #[macro_use]
 mod macros;
