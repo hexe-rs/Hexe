@@ -32,7 +32,7 @@ use prelude::*;
 /// [`Square`]: ../square/enum.Square.html
 /// [`File`]:   ../square/enum.File.html
 /// [`Rank`]:   ../square/enum.Rank.html
-#[derive(Copy, Clone, Hash, PartialEq, Eq)]
+#[derive(Copy, Clone, Default, Hash, PartialEq, Eq)]
 pub struct Bitboard(pub u64);
 
 const NOT_FILE_A: u64 = !masks::FILE_A.0;
