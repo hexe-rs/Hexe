@@ -3,6 +3,9 @@
 use core::fmt;
 use core::str::FromStr;
 
+#[cfg(feature = "serde")]
+use serde::*;
+
 /// A black or white color.
 #[derive(Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
@@ -72,6 +75,22 @@ impl FromStr for Color {
             }
             Ok(color)
         }
+    }
+}
+
+#[cfg(feature = "serde")]
+impl Serialize for Color {
+    fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
+        ser.serialize_str(self.into_str())
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<'de> Deserialize<'de> for Color {
+    fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
+        <&str>::deserialize(de)?.parse().map_err(|_| {
+            de::Error::custom(FROM_STR_ERROR)
+        })
     }
 }
 
