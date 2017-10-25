@@ -2,6 +2,7 @@
 
 #[cfg(feature = "try-from")]
 use core::convert::TryFrom;
+use core::fmt;
 use core::ops::Range;
 use core::str;
 
@@ -10,7 +11,7 @@ use prelude::*;
 mod tables;
 
 /// A square on a chess board.
-#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
+#[derive(Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 pub enum Square {
@@ -22,6 +23,13 @@ pub enum Square {
     A6, B6, C6, D6, E6, F6, G6, H6,
     A7, B7, C7, D7, E7, F7, G7, H7,
     A8, B8, C8, D8, E8, F8, G8, H8,
+}
+
+impl fmt::Debug for Square {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.map_str(|s| fmt::Display::fmt(s, f))
+    }
 }
 
 /// The error returned when `Square::from_str` fails.
