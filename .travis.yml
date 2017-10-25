@@ -11,7 +11,7 @@ matrix:
     - rust: stable
       os: osx
     - rust: stable
-      env: FEATURES="--all-features"
+      env: FEATURES="--features serde"
     - rust: nightly
       env: FEATURES="--features nightly"
 
