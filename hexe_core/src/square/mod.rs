@@ -28,6 +28,13 @@ pub enum Square {
 impl fmt::Debug for Square {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(self, f)
+    }
+}
+
+impl fmt::Display for Square {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.map_str(|s| fmt::Display::fmt(s, f))
     }
 }
