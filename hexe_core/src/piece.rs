@@ -1,4 +1,5 @@
 use core::fmt;
+use core::str;
 
 use color::Color;
 use uncon::*;
@@ -100,6 +101,47 @@ impl From<Promotion> for PieceKind {
     }
 }
 
+impl str::FromStr for PieceKind {
+    type Err = ();
+
+    fn from_str(s: &str) -> Result<PieceKind, ()> {
+        use self::PieceKind::*;
+        const ERR: Result<PieceKind, ()> = Err(());
+        const LOW: u8 = 32;
+        let bytes = s.as_bytes();
+
+        let (kind, exp, rem): (_, &[_], _) = match bytes.len() {
+            1 => return PieceKind::from_char(bytes[0] as char).ok_or(()),
+            4 => {
+                let rem = &bytes[1..];
+                match bytes[0] | LOW {
+                    b'p' => (Pawn, b"awn", rem),
+                    b'r' => (Rook, b"ook", rem),
+                    b'k' => (King, b"ing", rem),
+                    _ => return ERR,
+                }
+            },
+            5 => (Queen, b"queen", bytes),
+            6 => {
+                let rem = &bytes[1..];
+                match bytes[0] | LOW {
+                    b'k' => (Knight, b"night", rem),
+                    b'b' => (Bishop, b"ishop", rem),
+                    _ => return ERR,
+                }
+            },
+            _ => return ERR,
+        };
+
+        for (&a, &b) in rem.iter().zip(exp.iter()) {
+            if a | LOW != b {
+                return ERR;
+            }
+        }
+        Ok(kind)
+    }
+}
+
 impl PieceKind {
     /// Returns a piece kind from the parsed character.
     pub fn from_char(ch: char) -> Option<PieceKind> {
@@ -164,14 +206,29 @@ impl Promotion {
 mod tests {
     use super::*;
 
+    static CHARS: [char; 6] = ['P', 'N', 'B', 'R', 'Q', 'K'];
+
     #[test]
     fn piece_kind_char() {
-        static CHARS: [char; 6] = ['P', 'N', 'B', 'R', 'Q', 'K'];
-
         for i in 0..6 {
             let ch = CHARS[i];
             let pk = PieceKind::from(i);
             assert_eq!(pk.into_char(), ch);
+        }
+    }
+
+    #[test]
+    fn piece_kind_from_str() {
+        for pk in (0..6u8).map(PieceKind::from) {
+            let s = format!("{:?}", pk);
+            assert_eq!(Some(pk), s.parse().ok());
+        }
+
+        for (i, ch) in CHARS.iter().enumerate() {
+            assert_eq!(
+                Some(PieceKind::from(i)),
+                ch.encode_utf8(&mut [0; 1]).parse().ok()
+            );
         }
     }
 }
