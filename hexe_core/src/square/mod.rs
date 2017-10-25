@@ -325,6 +325,15 @@ impl Serialize for File {
     }
 }
 
+#[cfg(feature = "serde")]
+impl<'de> Deserialize<'de> for File {
+    fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
+        Self::from_char(char::deserialize(de)?).ok_or_else(|| {
+            de::Error::custom("failed to parse board file")
+        })
+    }
+}
+
 impl File {
     /// Returns a file from the parsed character.
     pub fn from_char(ch: char) -> Option<File> {
@@ -378,6 +387,15 @@ impl From<Rank> for char {
 impl Serialize for Rank {
     fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
         ser.serialize_char((*self).into())
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<'de> Deserialize<'de> for Rank {
+    fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
+        Self::from_char(char::deserialize(de)?).ok_or_else(|| {
+            de::Error::custom("failed to parse board rank")
+        })
     }
 }
 
