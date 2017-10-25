@@ -318,6 +318,13 @@ impl From<File> for char {
     }
 }
 
+#[cfg(feature = "serde")]
+impl Serialize for File {
+    fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
+        ser.serialize_char((*self).into())
+    }
+}
+
 impl File {
     /// Returns a file from the parsed character.
     pub fn from_char(ch: char) -> Option<File> {
@@ -364,6 +371,13 @@ impl From<Rank> for char {
     #[inline]
     fn from(r: Rank) -> char {
         (b'1' + r as u8) as char
+    }
+}
+
+#[cfg(feature = "serde")]
+impl Serialize for Rank {
+    fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
+        ser.serialize_char((*self).into())
     }
 }
 
