@@ -22,5 +22,5 @@ rand = "0.3"
 [features]
 default = ["std"]
 nightly = ["try-from"]
-std = ["serde/std", "uncon/std", "uncon_derive/std"]
+std = ["uncon/std", "uncon_derive/std"]
 try-from = []
