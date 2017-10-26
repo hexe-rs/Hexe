@@ -49,7 +49,7 @@ impl CastleRights {
     pub const BLACK_QUEENSIDE: CastleRights = CastleRights(0b1000);
 }
 
-impl_set_ops! { CastleRights }
+impl_bit_set! { CastleRights => CastleRight }
 
 impl_composition_ops! { CastleRights => CastleRight }
 
@@ -61,7 +61,9 @@ impl From<CastleRight> for CastleRights {
 }
 
 /// An individual castle right for a chess game.
-#[derive(PartialEq, Eq, Clone, Copy, Debug, Hash)]
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Hash, FromUnchecked)]
+#[uncon(impl_from, other(u16, u32, u64, usize))]
+#[repr(u8)]
 pub enum CastleRight {
     WhiteKingside,
     BlackKingside,

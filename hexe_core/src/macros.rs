@@ -18,8 +18,8 @@ macro_rules! forward_bit_ops_impl {
     }
 }
 
-macro_rules! impl_set_ops {
-    ($($t:ident)+) => {
+macro_rules! impl_bit_set {
+    ($($t:ident => $x:ident);+ $(;)*) => {
         $(forward_bit_ops_impl! {
             $t =>
             BitAnd bitand BitAndAssign bitand_assign
@@ -39,7 +39,7 @@ macro_rules! impl_set_ops {
             fn sub_assign(&mut self, other: T) { self.0 &= !other.into().0 }
         }
 
-        /// Set operations.
+        /// Bit set operations.
         impl $t {
             /// Returns whether `self` contains `other`.
             #[inline]
@@ -58,6 +58,70 @@ macro_rules! impl_set_ops {
             #[inline]
             pub fn is_empty(&self) -> bool {
                 self.0 == 0
+            }
+
+            /// Returns the least significant bit of `self`.
+            #[inline]
+            pub fn lsb(&self) -> Option<$x> {
+                if self.is_empty() { None } else {
+                    unsafe { Some(self.lsb_unchecked()) }
+                }
+            }
+
+            /// Returns the most significant bit of `self`.
+            #[inline]
+            pub fn msb(&self) -> Option<$x> {
+                if self.is_empty() { None } else {
+                    unsafe { Some(self.msb_unchecked()) }
+                }
+            }
+
+            /// Returns the least significant bit of `self` without checking
+            /// whether `self` is empty.
+            #[inline]
+            pub unsafe fn lsb_unchecked(&self) -> $x {
+                use uncon::*;
+                self.0.trailing_zeros().into_unchecked()
+            }
+
+            /// Returns the least significant bit of `self` without checking
+            /// whether `self` is empty.
+            #[inline]
+            pub unsafe fn msb_unchecked(&self) -> $x {
+                use core::mem;
+                use uncon::*;
+                let bits = mem::size_of::<Self>() * 8 - 1;
+                (bits ^ self.0.leading_zeros() as usize).into_unchecked()
+            }
+
+            /// Removes the least significant bit from `self`.
+            #[inline]
+            pub fn remove_lsb(&mut self) {
+                self.0 &= self.0.wrapping_sub(1);
+            }
+
+            /// Removes the most significant bit from `self`.
+            #[inline]
+            pub fn remove_msb(&mut self) {
+                self.pop_msb();
+            }
+
+            /// Removes the least significant bit from `self` and returns it.
+            #[inline]
+            pub fn pop_lsb(&mut self) -> Option<$x> {
+                self.lsb().map(|x| {
+                    self.remove_lsb();
+                    x
+                })
+            }
+
+            /// Removes the most significant bit from `self` and returns it.
+            #[inline]
+            pub fn pop_msb(&mut self) -> Option<$x> {
+                self.msb().map(|x| {
+                    self.0 ^= Self::from(x).0;
+                    x
+                })
             }
         })+
     }

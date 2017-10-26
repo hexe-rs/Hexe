@@ -63,7 +63,7 @@ forward_sh_impl! {
     Shr shr ShrAssign shr_assign
 }
 
-impl_set_ops! { Bitboard }
+impl_bit_set! { Bitboard => Square }
 
 impl_composition_ops! { Bitboard => Square File Rank }
 
