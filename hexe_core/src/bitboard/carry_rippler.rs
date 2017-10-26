@@ -51,6 +51,29 @@ impl Iterator for CarryRippler {
     }
 
     #[inline]
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        if self.is_first {
+            const FULL: u64 = !0;
+            let len = if self.set == FULL {
+                FULL
+            } else {
+                1 << self.set.count_ones()
+            };
+            let lower = len as usize;
+            let upper = if lower as u64 == len {
+                Some(lower)
+            } else {
+                None
+            };
+            (lower, upper)
+        } else if self.sub == 0 {
+            (0, Some(0))
+        } else {
+            (0, None)
+        }
+    }
+
+    #[inline]
     fn last(self) -> Option<Bitboard> {
         if self.is_first || self.sub != 0 {
             // The last result is always the initial set
@@ -82,12 +105,15 @@ mod tests {
         let mut iter = Bitboard(superset).carry_rippler();
         let mut has_some = false;
 
+        assert_eq!(iter.size_hint().0, SUBSETS.len());
+
         for (a, b) in iter.by_ref().zip(SUBSETS.iter()) {
             has_some = true;
             assert_eq!(a, b.into());
         }
 
         assert!(has_some, "the iterator had no values");
+        assert_eq!(iter.size_hint(), (0, Some(0)));
         assert_eq!(iter.next(), None);
     }
 }
