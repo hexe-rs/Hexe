@@ -49,4 +49,14 @@ impl Iterator for CarryRippler {
             None
         }
     }
+
+    #[inline]
+    fn last(self) -> Option<Bitboard> {
+        if self.is_first || self.sub != 0 {
+            // The last result is always the initial set
+            Some(self.set.into())
+        } else {
+            None
+        }
+    }
 }
