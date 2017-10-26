@@ -28,6 +28,13 @@ pub struct CarryRippler {
     is_first: bool,
 }
 
+impl Default for CarryRippler {
+    #[inline]
+    fn default() -> CarryRippler {
+        CarryRippler::new(Bitboard::FULL)
+    }
+}
+
 impl CarryRippler {
     /// Creates an instance for `bitboard`.
     #[inline]
