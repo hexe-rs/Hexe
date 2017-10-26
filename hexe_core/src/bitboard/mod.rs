@@ -16,6 +16,7 @@ use prelude::*;
 /// with a `for` loop. This also works in reverse with `.rev()`.
 ///
 /// ```
+/// # use hexe_core::*;
 /// for square in Bitboard::FULL {
 ///     /* ... */
 /// }
