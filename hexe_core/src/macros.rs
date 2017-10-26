@@ -46,6 +46,34 @@ macro_rules! impl_bit_set {
             fn not(self) -> Self { $t(!self.0) }
         }
 
+        impl<'a, T: Into<$t> + Clone> From<&'a T> for $t {
+            #[inline]
+            fn from(value: &T) -> Self {
+                T::clone(value).into()
+            }
+        }
+
+        impl<'a, T: Into<$t> + Clone> From<&'a mut T> for $t {
+            #[inline]
+            fn from(value: &mut T) -> Self {
+                T::clone(value).into()
+            }
+        }
+
+        impl<A: Into<$t>> ::core::iter::FromIterator<A> for $t {
+            #[inline]
+            fn from_iter<T: IntoIterator<Item=A>>(iter: T) -> Self {
+                iter.into_iter().fold($t(0), ::core::ops::BitOr::bitor)
+            }
+        }
+
+        impl<A: Into<$t>> Extend<A> for $t {
+            #[inline]
+            fn extend<T: IntoIterator<Item=A>>(&mut self, iter: T) {
+                *self |= iter.into_iter().collect::<$t>();
+            }
+        }
+
         /// Bit set operations.
         impl $t {
             /// Returns whether `self` contains `other`.
