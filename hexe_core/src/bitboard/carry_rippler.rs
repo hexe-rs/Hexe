@@ -126,16 +126,16 @@ mod tests {
 
         let superset = *SUBSETS.last().unwrap();
         let mut iter = Bitboard(superset).carry_rippler();
-        let mut has_some = false;
+        let mut sum  = 0usize;
 
         assert_eq!(iter.size_hint().0, SUBSETS.len());
 
         for (a, b) in iter.by_ref().zip(SUBSETS.iter()) {
-            has_some = true;
+            sum += 1;
             assert_eq!(a, b.into());
         }
 
-        assert!(has_some, "the iterator had no values");
+        assert_eq!(sum, SUBSETS.len());
         assert_eq!(iter.size_hint(), (0, Some(0)));
         assert_eq!(iter.next(), None);
     }
