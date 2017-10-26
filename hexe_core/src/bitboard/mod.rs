@@ -1,10 +1,12 @@
 //! A bitmap chess board representation.
 
 pub mod masks;
+mod carry_rippler;
 mod impls;
 mod tables;
 
 use prelude::*;
+pub use self::carry_rippler::*;
 
 /// A mapping of sixty-four bits to squares of a chess board.
 ///
@@ -74,6 +76,12 @@ impl Bitboard {
     #[inline]
     pub fn line(start: Square, end: Square) -> Bitboard {
         self::tables::LINE[start as usize][end as usize].into()
+    }
+
+    /// Returns an iterator over the subsets of `self`.
+    #[inline]
+    pub fn carry_rippler(self) -> CarryRippler {
+        CarryRippler::new(self)
     }
 
     /// Generates pawn pushes for each of the bits of `self`.
