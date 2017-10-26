@@ -155,6 +155,23 @@ impl Square {
 
     /// Returns the result of applying a function to a mutable string
     /// representation of `self`.
+    ///
+    /// This is a _much_ preferred way of getting the string representation of
+    /// a square, especially in when using `#[no_std]`. The alternative would be
+    /// to use `format!`, which performs a heap allocation whereas this uses a
+    /// stack-allocated string.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::prelude::*;
+    /// let sq = Square::A5;
+    /// sq.map_str(|s| {
+    ///     assert_eq!(s, "A5");
+    /// });
+    /// ```
     #[inline]
     pub fn map_str<T, F>(&self, f: F) -> T
         where F: for<'a> FnOnce(&'a mut str) -> T
