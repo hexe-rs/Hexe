@@ -80,11 +80,14 @@ mod tests {
 
         let superset = *SUBSETS.last().unwrap();
         let mut iter = Bitboard(superset).carry_rippler();
+        let mut has_some = false;
 
         for (a, b) in iter.by_ref().zip(SUBSETS.iter()) {
+            has_some = true;
             assert_eq!(a, b.into());
         }
 
+        assert!(has_some, "the iterator had no values");
         assert_eq!(iter.next(), None);
     }
 }
