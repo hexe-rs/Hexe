@@ -17,6 +17,8 @@ pub enum Color {
     Black,
 }
 
+static COLORS: [&str; 2] = ["White", "Black"];
+
 impl fmt::Debug for Color {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Display::fmt(self, f)
@@ -58,8 +60,8 @@ impl FromStr for Color {
             let bytes = s.as_bytes();
             // Compare against ASCII lowercase
             let (color, exp) = match bytes[0] | LOW {
-                b'w' => (Color::White, b"hite"),
-                b'b' => (Color::Black, b"lack"),
+                b'w' => (Color::White, &COLORS[0].as_bytes()[1..]),
+                b'b' => (Color::Black, &COLORS[1].as_bytes()[1..]),
                 _ => return ERR,
             };
             let rem = &bytes[1..];
@@ -98,7 +100,6 @@ impl Color {
     /// Converts `self` into a static string.
     #[inline]
     pub fn into_str(self) -> &'static str {
-        static COLORS: [&str; 2] = ["White", "Black"];
         COLORS[self as usize]
     }
 }
