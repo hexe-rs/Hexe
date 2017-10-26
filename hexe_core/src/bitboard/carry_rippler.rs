@@ -19,8 +19,11 @@ use super::*;
 /// [impl]: https://chessprogramming.wikispaces.com/Traversing+Subsets+of+a+Set
 /// [`Bitboard`]: struct.Bitboard.html
 pub struct CarryRippler {
-    current:  Bitboard,
-    bitboard: Bitboard,
+    /// The current subset
+    sub: u64,
+    /// The initial set
+    set: u64,
+    /// Whether or not this is the first iteration
     is_first: bool,
 }
 
@@ -28,11 +31,7 @@ impl CarryRippler {
     /// Creates an instance for `bitboard`.
     #[inline]
     pub fn new(bitboard: Bitboard) -> CarryRippler {
-        CarryRippler {
-            current:  Bitboard::EMPTY,
-            bitboard: bitboard,
-            is_first: true,
-        }
+        CarryRippler { sub: 0, set: bitboard.0, is_first: true }
     }
 }
 
@@ -41,12 +40,11 @@ impl Iterator for CarryRippler {
 
     #[inline]
     fn next(&mut self) -> Option<Bitboard> {
-        if self.is_first || !self.current.is_empty() {
+        if self.is_first || self.sub != 0 {
             self.is_first = false;
-            let current  = self.current;
-            self.current = self.bitboard
-                         & self.current.0.wrapping_sub(self.bitboard.0);
-            Some(current)
+            let sub = self.sub;
+            self.sub = self.set & self.sub.wrapping_sub(self.set);
+            Some(sub.into())
         } else {
             None
         }
