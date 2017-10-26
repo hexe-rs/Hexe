@@ -119,24 +119,43 @@ impl From<Promotion> for PieceKind {
     }
 }
 
-impl str::FromStr for PieceKind {
-    type Err = ();
+/// The error returned when `PieceKind::from_str` fails.
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub struct FromStrError(());
 
-    fn from_str(s: &str) -> Result<PieceKind, ()> {
+static FROM_STR_ERROR: &str = "failed to parse a string as a piece";
+
+impl fmt::Display for FromStrError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(FROM_STR_ERROR, f)
+    }
+}
+
+#[cfg(feature = "std")]
+impl ::std::error::Error for FromStrError {
+    fn description(&self) -> &str {
+        FROM_STR_ERROR
+    }
+}
+
+impl str::FromStr for PieceKind {
+    type Err = FromStrError;
+
+    fn from_str(s: &str) -> Result<PieceKind, FromStrError> {
         use self::PieceKind::*;
-        const ERR: Result<PieceKind, ()> = Err(());
+        const ERR: FromStrError = FromStrError(());
         const LOW: u8 = 32;
         let bytes = s.as_bytes();
 
         let (kind, exp, rem): (_, &[_], _) = match bytes.len() {
-            1 => return PieceKind::from_char(bytes[0] as char).ok_or(()),
+            1 => return PieceKind::from_char(bytes[0] as char).ok_or(ERR),
             4 => {
                 let rem = &bytes[1..];
                 match bytes[0] | LOW {
                     b'p' => (Pawn, b"awn", rem),
                     b'r' => (Rook, b"ook", rem),
                     b'k' => (King, b"ing", rem),
-                    _ => return ERR,
+                    _ => return Err(ERR),
                 }
             },
             5 => (Queen, b"queen", bytes),
@@ -145,15 +164,15 @@ impl str::FromStr for PieceKind {
                 match bytes[0] | LOW {
                     b'k' => (Knight, b"night", rem),
                     b'b' => (Bishop, b"ishop", rem),
-                    _ => return ERR,
+                    _ => return Err(ERR),
                 }
             },
-            _ => return ERR,
+            _ => return Err(ERR),
         };
 
         for (&a, &b) in rem.iter().zip(exp.iter()) {
             if a | LOW != b {
-                return ERR;
+                return Err(ERR);
             }
         }
         Ok(kind)
