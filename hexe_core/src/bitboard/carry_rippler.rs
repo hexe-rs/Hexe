@@ -67,8 +67,6 @@ mod tests {
 
     #[test]
     fn iter() {
-        const SUPERSET: u64 = 0b10110;
-
         static SUBSETS: &[u64] = &[
             0b00000,
             0b00010,
@@ -80,7 +78,8 @@ mod tests {
             0b10110,
         ];
 
-        let mut iter = Bitboard(SUPERSET).carry_rippler();
+        let superset = *SUBSETS.last().unwrap();
+        let mut iter = Bitboard(superset).carry_rippler();
 
         for (a, b) in iter.by_ref().zip(SUBSETS.iter()) {
             assert_eq!(a, b.into());
