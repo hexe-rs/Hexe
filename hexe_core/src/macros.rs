@@ -63,7 +63,7 @@ macro_rules! impl_bit_set {
         impl<A: Into<$t>> ::core::iter::FromIterator<A> for $t {
             #[inline]
             fn from_iter<T: IntoIterator<Item=A>>(iter: T) -> Self {
-                iter.into_iter().fold($t(0), ::core::ops::BitOr::bitor)
+                iter.into_iter().fold(Self::EMPTY, ::core::ops::BitOr::bitor)
             }
         }
 
@@ -76,6 +76,12 @@ macro_rules! impl_bit_set {
 
         /// Bit set operations.
         impl $t {
+            /// An instance with all bits set to 1.
+            pub const FULL: $t = $t(!0);
+
+            /// An instance with all bits set to 0.
+            pub const EMPTY: $t = $t(0);
+
             /// Returns whether `self` contains `other`.
             #[inline]
             pub fn contains<T: Into<Self>>(&self, other: T) -> bool {

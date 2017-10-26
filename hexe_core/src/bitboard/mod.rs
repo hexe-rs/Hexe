@@ -42,12 +42,6 @@ const NOT_FILE_AB: u64 = !(masks::FILE_A.0 | masks::FILE_B.0);
 const NOT_FILE_GH: u64 = !(masks::FILE_G.0 | masks::FILE_H.0);
 
 impl Bitboard {
-    /// A bitboard with all bits set to 1.
-    pub const FULL: Bitboard = Bitboard(!0);
-
-    /// A bitboard with all bits set to 0.
-    pub const EMPTY: Bitboard = Bitboard(0);
-
     /// White board squares.
     pub const WHITE: Bitboard = Bitboard(!Self::BLACK.0);
 
