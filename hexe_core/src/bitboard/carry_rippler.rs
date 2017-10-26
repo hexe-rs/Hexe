@@ -18,7 +18,7 @@ use super::*;
 ///
 /// [impl]: https://chessprogramming.wikispaces.com/Traversing+Subsets+of+a+Set
 /// [`Bitboard`]: struct.Bitboard.html
-#[derive(Clone)]
+#[derive(Copy, Clone)]
 pub struct CarryRippler {
     /// The current subset
     sub: u64,
