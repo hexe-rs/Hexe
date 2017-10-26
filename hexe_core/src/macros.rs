@@ -39,6 +39,13 @@ macro_rules! impl_bit_set {
             fn sub_assign(&mut self, other: T) { self.0 &= !other.into().0 }
         }
 
+        impl ::core::ops::Not for $t {
+            type Output = Self;
+
+            #[inline]
+            fn not(self) -> Self { $t(!self.0) }
+        }
+
         /// Bit set operations.
         impl $t {
             /// Returns whether `self` contains `other`.

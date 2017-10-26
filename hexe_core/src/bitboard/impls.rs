@@ -67,13 +67,6 @@ impl_bit_set! { Bitboard => Square }
 
 impl_composition_ops! { Bitboard => Square File Rank }
 
-impl ops::Not for Bitboard {
-    type Output = Self;
-
-    #[inline]
-    fn not(self) -> Self { Bitboard(!self.0) }
-}
-
 impl From<u64> for Bitboard {
     #[inline(always)]
     fn from(bits: u64) -> Self { Bitboard(bits) }
