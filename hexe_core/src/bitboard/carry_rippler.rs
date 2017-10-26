@@ -33,6 +33,25 @@ impl CarryRippler {
     pub fn new(bitboard: Bitboard) -> CarryRippler {
         CarryRippler { sub: 0, set: bitboard.0, is_first: true }
     }
+
+    /// The initial superset from which `self` was constructed.
+    #[inline]
+    pub fn superset(&self) -> Bitboard {
+        self.set.into()
+    }
+
+    /// The current subset. This value will be returned next if `self` is not
+    /// yet finished.
+    #[inline]
+    pub fn subset(&self) -> Bitboard {
+        self.sub.into()
+    }
+
+    /// Returns whether `self` is finished iterating.
+    #[inline]
+    pub fn is_finished(&self) -> bool {
+        !self.is_first && self.sub == 0
+    }
 }
 
 impl Iterator for CarryRippler {
@@ -40,13 +59,11 @@ impl Iterator for CarryRippler {
 
     #[inline]
     fn next(&mut self) -> Option<Bitboard> {
-        if self.is_first || self.sub != 0 {
+        if self.is_finished() { None } else {
             self.is_first = false;
             let sub = self.sub;
             self.sub = self.set & self.sub.wrapping_sub(self.set);
             Some(sub.into())
-        } else {
-            None
         }
     }
 
@@ -75,11 +92,9 @@ impl Iterator for CarryRippler {
 
     #[inline]
     fn last(self) -> Option<Bitboard> {
-        if self.is_first || self.sub != 0 {
+        if self.is_finished() { None } else {
             // The last result is always the initial set
             Some(self.set.into())
-        } else {
-            None
         }
     }
 }
