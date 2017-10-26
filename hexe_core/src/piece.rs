@@ -150,22 +150,22 @@ impl str::FromStr for PieceKind {
         let (kind, exp, rem): (_, &[_], _) = match bytes.len() {
             1 => return PieceKind::from_char(bytes[0] as char).ok_or(ERR),
             4 => {
-                let rem = &bytes[1..];
-                match bytes[0] | LOW {
-                    b'p' => (Pawn, b"awn", rem),
-                    b'r' => (Rook, b"ook", rem),
-                    b'k' => (King, b"ing", rem),
+                let kind = match bytes[0] | LOW {
+                    b'p' => Pawn,
+                    b'r' => Rook,
+                    b'k' => King,
                     _ => return Err(ERR),
-                }
+                };
+                (kind, &kind.into_str().as_bytes()[1..], &bytes[1..])
             },
             5 => (Queen, b"queen", bytes),
             6 => {
-                let rem = &bytes[1..];
-                match bytes[0] | LOW {
-                    b'k' => (Knight, b"night", rem),
-                    b'b' => (Bishop, b"ishop", rem),
+                let kind = match bytes[0] | LOW {
+                    b'k' => Knight,
+                    b'b' => Bishop,
                     _ => return Err(ERR),
-                }
+                };
+                (kind, &kind.into_str().as_bytes()[1..], &bytes[1..])
             },
             _ => return Err(ERR),
         };
