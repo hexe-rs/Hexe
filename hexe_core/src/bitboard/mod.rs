@@ -200,7 +200,7 @@ impl Bitboard {
 }
 
 /// A cardinal direction that can be used to shift or fill the bits of a
-/// `Bitboard`.
+/// [`Bitboard`](struct.Bitboard.html).
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
 pub enum Direction {
     North,
