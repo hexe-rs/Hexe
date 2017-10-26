@@ -74,6 +74,35 @@ macro_rules! impl_bit_set {
             }
         }
 
+        impl Iterator for $t {
+            type Item = $x;
+
+            #[inline]
+            fn next(&mut self) -> Option<Self::Item> { self.pop_lsb() }
+
+            #[inline]
+            fn size_hint(&self) -> (usize, Option<usize>) {
+                let len = self.len();
+                (len, Some(len))
+            }
+
+            #[inline]
+            fn count(self) -> usize { self.len() }
+
+            #[inline]
+            fn last(self) -> Option<Self::Item> { self.msb() }
+        }
+
+        impl DoubleEndedIterator for $t {
+            #[inline]
+            fn next_back(&mut self) -> Option<Self::Item> { self.pop_msb() }
+        }
+
+        impl ExactSizeIterator for $t {
+            #[inline]
+            fn len(&self) -> usize { $t::len(self) }
+        }
+
         /// Bit set operations.
         impl $t {
             /// An instance with all bits set to 1.
