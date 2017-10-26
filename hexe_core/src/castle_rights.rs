@@ -49,7 +49,7 @@ impl CastleRights {
     pub const BLACK_QUEENSIDE: CastleRights = CastleRights(0b1000);
 }
 
-impl_bit_set! { CastleRights => CastleRight }
+impl_bit_set! { CastleRights 0b1111 => CastleRight }
 
 impl_composition_ops! { CastleRights => CastleRight }
 

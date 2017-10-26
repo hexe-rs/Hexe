@@ -19,7 +19,7 @@ macro_rules! forward_bit_ops_impl {
 }
 
 macro_rules! impl_bit_set {
-    ($($t:ident => $x:ident);+ $(;)*) => {
+    ($($t:ident $full:expr => $x:ident);+ $(;)*) => {
         $(forward_bit_ops_impl! {
             $t =>
             BitAnd bitand BitAndAssign bitand_assign
@@ -43,7 +43,7 @@ macro_rules! impl_bit_set {
             type Output = Self;
 
             #[inline]
-            fn not(self) -> Self { $t(!self.0) }
+            fn not(self) -> Self { $t(!self.0 & $full) }
         }
 
         impl<'a, T: Into<$t> + Clone> From<&'a T> for $t {
@@ -106,7 +106,7 @@ macro_rules! impl_bit_set {
         /// Bit set operations.
         impl $t {
             /// An instance with all bits set to 1.
-            pub const FULL: $t = $t(!0);
+            pub const FULL: $t = $t($full);
 
             /// An instance with all bits set to 0.
             pub const EMPTY: $t = $t(0);
