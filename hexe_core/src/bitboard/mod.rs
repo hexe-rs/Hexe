@@ -10,6 +10,19 @@ use prelude::*;
 ///
 /// # Examples
 ///
+/// ## Iteration
+///
+/// Because `Bitboard` implements [`Iterator`], its bits can be traversed over
+/// with a `for` loop. This also works in reverse with `.rev()`.
+///
+/// ```
+/// for square in Bitboard::FULL {
+///     /* ... */
+/// }
+/// ```
+///
+/// ## Bit Operation Composition
+///
 /// Board components ([`Square`], [`File`], and [`Rank`]) can be used first in
 /// an operation chain to construct a bitboard.
 ///
@@ -29,6 +42,7 @@ use prelude::*;
 /// assert_eq!(s & (f ^ r), Bitboard::EMPTY);
 /// ```
 ///
+/// [`Iterator`]: https://doc.rust-lang.org/std/iter/trait.Iterator.html
 /// [`Square`]: ../square/enum.Square.html
 /// [`File`]:   ../square/enum.File.html
 /// [`Rank`]:   ../square/enum.Rank.html
