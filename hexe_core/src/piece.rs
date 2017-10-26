@@ -142,7 +142,6 @@ impl str::FromStr for PieceKind {
     type Err = FromStrError;
 
     fn from_str(s: &str) -> Result<PieceKind, FromStrError> {
-        use self::PieceKind::*;
         const ERR: FromStrError = FromStrError(());
         const LOW: u8 = 32;
         let bytes = s.as_bytes();
@@ -151,18 +150,18 @@ impl str::FromStr for PieceKind {
             1 => return PieceKind::from_char(bytes[0] as char).ok_or(ERR),
             4 => {
                 let kind = match bytes[0] | LOW {
-                    b'p' => Pawn,
-                    b'r' => Rook,
-                    b'k' => King,
+                    b'p' => PieceKind::Pawn,
+                    b'r' => PieceKind::Rook,
+                    b'k' => PieceKind::King,
                     _ => return Err(ERR),
                 };
                 (kind, &kind.into_str().as_bytes()[1..], &bytes[1..])
             },
-            5 => (Queen, b"queen", bytes),
+            5 => (PieceKind::Queen, b"queen", bytes),
             6 => {
                 let kind = match bytes[0] | LOW {
-                    b'k' => Knight,
-                    b'b' => Bishop,
+                    b'k' => PieceKind::Knight,
+                    b'b' => PieceKind::Bishop,
                     _ => return Err(ERR),
                 };
                 (kind, &kind.into_str().as_bytes()[1..], &bytes[1..])
