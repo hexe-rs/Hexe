@@ -2,7 +2,7 @@
 name = "hexe_core"
 version = "0.0.0"
 authors = ["Nikolai Vazquez"]
-license = "Apache-2.0"
+license = "MIT/Apache-2.0"
 repository = "https://github.com/hexe-rs/Hexe"
 categories = ["no-std"]
 description = "The core components of the hexe chess engine crate."

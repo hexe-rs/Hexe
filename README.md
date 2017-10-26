@@ -31,9 +31,16 @@ Also, if she weighs the same as a duck... she's made of wood. And therefore...
 
 ## License
 
-Hexe is licensed under the [Apache License, Version 2.0][license-apache].
+Hexe is licensed under either of
 
-[license-apache]: https://www.apache.org/licenses/LICENSE-2.0
+- [Apache License (Version 2.0)][license-apache]
+
+- [MIT License][license-mit]
+
+at your choosing.
+
+[license-apache]: https://github.com/hexe-rs/Hexe/blob/master/LICENSE-APACHE
+[license-mit]: https://github.com/hexe-rs/Hexe/blob/master/LICENSE-MIT
 
 > **Note:** This project initially began on 2017-01-04 in a separate repository.
 > This repo is a rewrite and expansion of that one.
