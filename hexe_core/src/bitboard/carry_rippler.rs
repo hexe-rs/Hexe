@@ -60,3 +60,32 @@ impl Iterator for CarryRippler {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn iter() {
+        const SUPERSET: u64 = 0b10110;
+
+        static SUBSETS: &[u64] = &[
+            0b00000,
+            0b00010,
+            0b00100,
+            0b00110,
+            0b10000,
+            0b10010,
+            0b10100,
+            0b10110,
+        ];
+
+        let mut iter = Bitboard(SUPERSET).carry_rippler();
+
+        for (a, b) in iter.by_ref().zip(SUBSETS.iter()) {
+            assert_eq!(a, b.into());
+        }
+
+        assert_eq!(iter.next(), None);
+    }
+}
