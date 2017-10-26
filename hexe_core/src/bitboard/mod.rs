@@ -38,9 +38,7 @@ pub use self::carry_rippler::*;
 /// let r = Rank::Seven;
 /// let s = Square::new(f, r);
 ///
-/// assert_eq!(f & r, // Note: slower than `Square::new(f, r).into()`
-///            Bitboard::from(s));
-///
+/// assert_eq!(f & r, Bitboard::from(s));
 /// assert_eq!(f | r, r | f);
 /// assert_eq!(s & (f ^ r), Bitboard::EMPTY);
 /// ```
