@@ -95,6 +95,28 @@ impl PieceMap {
         map
     }
 
+    /// Reverses the square mapping.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::piece::map::*;
+    /// # use hexe_core::prelude::*;
+    /// let mut map = PieceMap::new();
+    /// let piece = Piece::WhitePawn;
+    ///
+    /// map.insert(Square::A1, piece);
+    /// map.reverse();
+    ///
+    /// assert_eq!(map[Square::H8], piece);
+    /// ```
+    #[inline]
+    pub fn reverse(&mut self) {
+        self.0.reverse()
+    }
+
     /// Returns the first square and piece pair in the map.
     #[inline]
     pub fn first(&self) -> Option<(Square, &Piece)> {
