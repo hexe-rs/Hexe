@@ -105,8 +105,8 @@ impl PieceMap {
     ///
     /// # Safety
     ///
-    /// Calling this method when there's no piece the given square will produce
-    /// [undefined behavior][ub]. Use with caution.
+    /// Calling this method when there's no piece at the given square will
+    /// produce [undefined behavior][ub]. Use with caution.
     ///
     /// [ub]: https://en.wikipedia.org/wiki/Undefined_behavior
     #[inline]
@@ -118,8 +118,8 @@ impl PieceMap {
     ///
     /// # Safety
     ///
-    /// Calling this method when there's no piece the given square will produce
-    /// [undefined behavior][ub]. Use with caution.
+    /// Calling this method when there's no piece at the given square will
+    /// produce [undefined behavior][ub]. Use with caution.
     ///
     /// [ub]: https://en.wikipedia.org/wiki/Undefined_behavior
     #[inline]
