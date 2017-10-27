@@ -7,8 +7,14 @@ const NONE: u8 = 1 + Piece::BlackKing as u8;
 /// A mapping of sixty-four squares to pieces.
 ///
 /// This allows for faster lookups than possible with bitboards.
-#[derive(Copy, Clone)]
 pub struct PieceMap([u8; 64]);
+
+impl Clone for PieceMap {
+    #[inline]
+    fn clone(&self) -> PieceMap { PieceMap(self.0) }
+}
+
+impl Copy for PieceMap {}
 
 impl PartialEq for PieceMap {
     #[inline]
