@@ -23,9 +23,7 @@ pub struct CastleRights(u8);
 
 impl Default for CastleRights {
     #[inline]
-    fn default() -> CastleRights {
-        CastleRights(0b1111)
-    }
+    fn default() -> CastleRights { CastleRights::FULL }
 }
 
 impl fmt::Debug for CastleRights {
