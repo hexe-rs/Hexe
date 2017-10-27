@@ -1,5 +1,6 @@
 use super::*;
 use core::mem;
+use core::ops;
 use prelude::*;
 
 const NONE: u8 = 1 + Piece::BlackKing as u8;
@@ -29,6 +30,22 @@ impl Default for PieceMap {
     #[inline]
     fn default() -> PieceMap {
         PieceMap::EMPTY
+    }
+}
+
+impl ops::Index<Square> for PieceMap {
+    type Output = Piece;
+
+    #[inline]
+    fn index(&self, sq: Square) -> &Piece {
+        self.get(sq).expect("no piece found for square")
+    }
+}
+
+impl ops::IndexMut<Square> for PieceMap {
+    #[inline]
+    fn index_mut(&mut self, sq: Square) -> &mut Piece {
+        self.get_mut(sq).expect("no piece found for square")
     }
 }
 
