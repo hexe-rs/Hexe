@@ -1,7 +1,5 @@
 //! A chess board square and its components.
 
-#[cfg(feature = "try-from")]
-use core::convert::TryFrom;
 use core::fmt;
 use core::ops::Range;
 use core::str;
@@ -408,26 +406,18 @@ impl Rank {
     }
 }
 
-/// The error returned when `try_from` fails for `File` or `Rank`.
-#[cfg(feature = "try-from")]
-pub struct TryFromCharError(());
-
 macro_rules! impl_components {
     ($($t:ty, $c:expr, $m:expr;)+) => {
+        impl_try_from_char! {
+            /// The error returned when `try_from` fails for `File` or `Rank`.
+            message = "failed to parse a character as a board component";
+            impl for { $($t)+ }
+        }
+
         $(impl From<$t> for char {
             #[inline]
             fn from(val: $t) -> char {
                 ($c + val as u8) as char
-            }
-        }
-
-        #[cfg(feature = "try-from")]
-        impl TryFrom<char> for $t {
-            type Error = TryFromCharError;
-
-            #[inline]
-            fn try_from(ch: char) -> Result<Self, TryFromCharError> {
-                Self::from_char(ch).ok_or(TryFromCharError(()))
             }
         }
 

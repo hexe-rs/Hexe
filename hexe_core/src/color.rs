@@ -96,36 +96,10 @@ impl<'de> Deserialize<'de> for Color {
     }
 }
 
-/// The error returned when `try_from` fails for `Color`.
-#[cfg(feature = "try-from")]
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub struct TryFromCharError(());
-
-#[cfg(feature = "try-from")]
-static TRY_FROM_CHAR_ERROR: &str = "";
-
-#[cfg(all(feature = "try-from", feature = "std"))]
-impl ::std::error::Error for TryFromCharError {
-    fn description(&self) -> &str {
-        TRY_FROM_CHAR_ERROR
-    }
-}
-
-#[cfg(feature = "try-from")]
-impl fmt::Display for TryFromCharError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(TRY_FROM_CHAR_ERROR, f)
-    }
-}
-
-#[cfg(feature = "try-from")]
-impl ::core::convert::TryFrom<char> for Color {
-    type Error = TryFromCharError;
-
-    #[inline]
-    fn try_from(ch: char) -> Result<Self, TryFromCharError> {
-        Self::from_char(ch).ok_or(TryFromCharError(()))
-    }
+impl_try_from_char! {
+    /// The error returned when `try_from` fails for `Color`.
+    message = "failed to parse a character as a color";
+    impl for { Color }
 }
 
 impl Color {
