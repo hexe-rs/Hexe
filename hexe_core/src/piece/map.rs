@@ -1,3 +1,5 @@
+//! A square to piece mapping for fast square lookups.
+
 use super::*;
 use core::mem;
 use core::ops;
@@ -67,7 +69,7 @@ impl PieceMap {
     /// Basic usage:
     ///
     /// ```
-    /// # use hexe_core::piece::*;
+    /// # use hexe_core::piece::map::*;
     /// let piece_map = PieceMap::from_init(|sq| {
     ///     # None
     ///     /* ... */

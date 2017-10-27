@@ -6,8 +6,7 @@ use core::str;
 use color::Color;
 use uncon::*;
 
-mod map;
-pub use self::map::*;
+pub mod map;
 
 impl_try_from_char! {
     /// The error returned when `try_from` fails for `Piece` or `PieceKind`.
