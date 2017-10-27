@@ -1,8 +1,10 @@
 //! A square to piece mapping for fast square lookups.
 
 use super::*;
+use core::marker::PhantomData;
 use core::mem;
 use core::ops;
+use square::Squares;
 use prelude::*;
 
 const NONE: u8 = 1 + Piece::BlackKing as u8;
@@ -162,5 +164,85 @@ impl PieceMap {
     #[inline]
     pub unsafe fn get_unchecked_mut(&mut self, sq: Square) -> &mut Piece {
         (&mut self.0[sq as usize]).into_unchecked()
+    }
+
+    /// Returns an iterator visiting all square-piece pairs in order.
+    #[inline]
+    pub fn iter(&self) -> Iter {
+        Iter { map: self, iter: Squares::default() }
+    }
+
+    /// Returns an iterator visiting all square-piece pairs mutably in order.
+    #[inline]
+    pub fn iter_mut(&mut self) -> IterMut {
+        IterMut { map: self, iter: Squares::default(), _marker: PhantomData }
+    }
+}
+
+impl<'a> IntoIterator for &'a PieceMap {
+    type Item = (Square, &'a Piece);
+    type IntoIter = Iter<'a>;
+
+    #[inline]
+    fn into_iter(self) -> Iter<'a> { self.iter() }
+}
+
+impl<'a> IntoIterator for &'a mut PieceMap {
+    type Item = (Square, &'a mut Piece);
+    type IntoIter = IterMut<'a>;
+
+    #[inline]
+    fn into_iter(self) -> IterMut<'a> { self.iter_mut() }
+}
+
+/// A [`PeiceMap`](struct.PieceMap.html) iterator.
+pub struct Iter<'a> {
+    map: &'a PieceMap,
+    iter: Squares,
+}
+
+#[cfg(test)]
+assert_impl!(iter; Iter<'static>, Send, Sync);
+
+impl<'a> Iterator for Iter<'a> {
+    type Item = (Square, &'a Piece);
+
+    #[inline]
+    fn next(&mut self) -> Option<Self::Item> {
+        while let Some(sq) = self.iter.next() {
+            if let Some(pc) = self.map.get(sq) {
+                return Some((sq, pc));
+            }
+        }
+        None
+    }
+}
+
+/// A mutable [`PeiceMap`](struct.PieceMap.html) iterator.
+pub struct IterMut<'a> {
+    map: *mut PieceMap,
+    iter: Squares,
+    // Rust doesn't like mutable borrows here
+    _marker: PhantomData<&'a mut PieceMap>,
+}
+
+#[cfg(test)]
+assert_impl!(iter_mut; IterMut<'static>, Send, Sync);
+
+unsafe impl<'a> Send for IterMut<'a> {}
+unsafe impl<'a> Sync for IterMut<'a> {}
+
+impl<'a> Iterator for IterMut<'a> {
+    type Item = (Square, &'a mut Piece);
+
+    #[inline]
+    fn next(&mut self) -> Option<Self::Item> {
+        while let Some(sq) = self.iter.next() {
+            let map = unsafe { &mut *self.map };
+            if let Some(pc) = map.get_mut(sq) {
+                return Some((sq, pc));
+            }
+        }
+        None
     }
 }

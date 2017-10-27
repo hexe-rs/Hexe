@@ -13,6 +13,9 @@ extern crate core;
 
 #[cfg(test)]
 extern crate rand;
+#[cfg(test)]
+#[macro_use]
+extern crate static_assertions;
 
 #[cfg(feature = "serde")]
 extern crate serde;
