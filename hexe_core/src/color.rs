@@ -1,7 +1,7 @@
 //! A color to represent pieces or board squares.
 
 use core::fmt;
-use core::str::FromStr;
+use core::str;
 
 #[cfg(feature = "serde")]
 use serde::*;
@@ -17,7 +17,7 @@ pub enum Color {
     Black,
 }
 
-static COLORS: [&str; 2] = ["White", "Black"];
+static COLORS: [[u8; 5]; 2] = [*b"White", *b"Black"];
 
 impl fmt::Debug for Color {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -50,7 +50,7 @@ impl ::std::error::Error for FromStrError {
     }
 }
 
-impl FromStr for Color {
+impl str::FromStr for Color {
     type Err = FromStrError;
 
     fn from_str(s: &str) -> Result<Color, FromStrError> {
@@ -60,8 +60,8 @@ impl FromStr for Color {
             let bytes = s.as_bytes();
             // Compare against ASCII lowercase
             let (color, exp) = match bytes[0] | LOW {
-                b'w' => (Color::White, &COLORS[0].as_bytes()[1..]),
-                b'b' => (Color::Black, &COLORS[1].as_bytes()[1..]),
+                b'w' => (Color::White, &COLORS[0][1..]),
+                b'b' => (Color::Black, &COLORS[1][1..]),
                 _ => return ERR,
             };
             let rem = &bytes[1..];
@@ -100,7 +100,7 @@ impl Color {
     /// Converts `self` into a static string.
     #[inline]
     pub fn into_str(self) -> &'static str {
-        COLORS[self as usize]
+        unsafe { str::from_utf8_unchecked(&COLORS[self as usize]) }
     }
 }
 
@@ -131,7 +131,7 @@ mod tests {
         }
 
         for &f in FAILS {
-            assert_eq!(Color::from_str(f).ok(), None);
+            assert_eq!(f.parse::<Color>().ok(), None);
         }
     }
 }
