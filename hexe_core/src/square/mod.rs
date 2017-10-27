@@ -99,7 +99,7 @@ impl Square {
     /// ```
     #[inline]
     pub fn all() -> Squares {
-        Squares { iter: 0..64 }
+        Squares::default()
     }
 
     /// Initializes a `Square` from a `File` and `Rank`.
@@ -306,6 +306,13 @@ impl ExactSizeIterator for Squares {
     #[inline]
     fn len(&self) -> usize {
         self.iter.len()
+    }
+}
+
+impl Default for Squares {
+    #[inline]
+    fn default() -> Self {
+        Squares { iter: 0..64 }
     }
 }
 
