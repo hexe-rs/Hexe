@@ -106,6 +106,12 @@ impl PieceMap {
         }
     }
 
+    /// Returns whether the map contains a piece at the given square.
+    #[inline]
+    pub fn contains(&self, sq: Square) -> bool {
+        self.0[sq as usize] != NONE
+    }
+
     /// Returns a reference to the piece at a square, if any.
     #[inline]
     pub fn get(&self, sq: Square) -> Option<&Piece> {
