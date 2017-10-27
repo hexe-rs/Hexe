@@ -197,6 +197,18 @@ impl PieceMap {
         (&mut self.0[sq as usize]).into_unchecked()
     }
 
+    /// Returns the color of the piece at the given square, if any.
+    #[inline]
+    pub fn color_at(&self, sq: Square) -> Option<Color> {
+        self.get(sq).map(Piece::color)
+    }
+
+    /// Returns the kind of the piece at the given square, if any.
+    #[inline]
+    pub fn kind_at(&self, sq: Square) -> Option<PieceKind> {
+        self.get(sq).map(Piece::kind)
+    }
+
     /// Returns an iterator visiting all square-piece pairs in order.
     #[inline]
     pub fn iter(&self) -> Iter {
