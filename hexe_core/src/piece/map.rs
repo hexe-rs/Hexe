@@ -220,6 +220,7 @@ impl<'a> IntoIterator for &'a mut PieceMap {
 }
 
 /// A [`PeiceMap`](struct.PieceMap.html) iterator.
+#[derive(Clone)]
 pub struct Iter<'a> {
     map: &'a PieceMap,
     iter: Squares,
@@ -255,6 +256,7 @@ impl<'a> DoubleEndedIterator for Iter<'a> {
 }
 
 /// A mutable [`PeiceMap`](struct.PieceMap.html) iterator.
+#[derive(Clone)]
 pub struct IterMut<'a> {
     map: *mut PieceMap,
     iter: Squares,
