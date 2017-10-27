@@ -162,6 +162,18 @@ impl PieceMap {
         unsafe { self.__insert(sq, NONE) }
     }
 
+    /// Retains only the elements specified by the predicate.
+    #[inline]
+    pub fn retain<F>(&mut self, mut f: F)
+        where F: FnMut(Square, &mut Piece) -> bool
+    {
+        for (i, slot) in self.0.iter_mut().enumerate() {
+            if *slot != NONE && !f(i.into(), unsafe { slot.into_unchecked() }) {
+                *slot = NONE;
+            }
+        }
+    }
+
     /// Clears the map, removing all pieces.
     #[inline]
     pub fn clear(&mut self) {
