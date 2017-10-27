@@ -88,6 +88,30 @@ impl PieceMap {
         map
     }
 
+    /// Returns the first square and piece pair in the map.
+    #[inline]
+    pub fn first(&self) -> Option<(Square, &Piece)> {
+        self.iter().next()
+    }
+
+    /// Returns the first square and mutable piece pair in the map.
+    #[inline]
+    pub fn first_mut(&mut self) -> Option<(Square, &mut Piece)> {
+        self.iter_mut().next()
+    }
+
+    /// Returns the last square and piece pair in the map.
+    #[inline]
+    pub fn last(&self) -> Option<(Square, &Piece)> {
+        self.iter().next_back()
+    }
+
+    /// Returns the last square and mutable piece pair in the map.
+    #[inline]
+    pub fn last_mut(&mut self) -> Option<(Square, &mut Piece)> {
+        self.iter_mut().next_back()
+    }
+
     /// Inserts the piece at a square.
     #[inline]
     pub fn insert(&mut self, sq: Square, pc: Piece) {
