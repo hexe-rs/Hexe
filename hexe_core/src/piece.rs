@@ -6,6 +6,12 @@ use core::str;
 use color::Color;
 use uncon::*;
 
+impl_try_from_char! {
+    /// The error returned when `try_from` fails for `Piece` or `PieceKind`.
+    message = "failed to parse a character as piece or piece kind";
+    impl for { Piece PieceKind }
+}
+
 /// A chess piece with a kind and color.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
