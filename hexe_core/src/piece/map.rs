@@ -180,10 +180,10 @@ impl PieceMap {
         self.0 = [NONE; 64];
     }
 
-    /// Returns whether the map contains a piece at the given square.
+    /// Returns whether the map contains the value.
     #[inline]
-    pub fn contains(&self, sq: Square) -> bool {
-        self.0[sq as usize] != NONE
+    pub fn contains<T: Contained>(&self, value: T) -> bool {
+        value.contained_in(self)
     }
 
     /// Returns a reference to the piece at a square, if any.
@@ -359,5 +359,18 @@ impl<'a> DoubleEndedIterator for IterMut<'a> {
 impl<'a> fmt::Debug for IterMut<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_list().entries(self.clone()).finish()
+    }
+}
+
+/// A type whose instance may be contained in a [`PieceMap`](struct.PieceMap.html).
+pub trait Contained {
+    /// Returns whether `self` is contained in `map`.
+    fn contained_in(self, map: &PieceMap) -> bool;
+}
+
+impl Contained for Square {
+    #[inline]
+    fn contained_in(self, map: &PieceMap) -> bool {
+        map.0[self as usize] != NONE
     }
 }
