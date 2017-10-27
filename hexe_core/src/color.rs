@@ -150,4 +150,18 @@ mod tests {
             assert_eq!(f.parse::<Color>().ok(), None);
         }
     }
+
+    #[test]
+    fn from_char() {
+        use self::Color::*;
+
+        static CHARS: [(char, Color); 4] = [
+            ('w', White), ('W', White),
+            ('b', Black), ('B', Black),
+        ];
+
+        for &(ch, color) in &CHARS {
+            assert_eq!(Color::from_char(ch), Some(color));
+        }
+    }
 }
