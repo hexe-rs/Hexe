@@ -97,6 +97,16 @@ impl<'de> Deserialize<'de> for Color {
 }
 
 impl Color {
+    /// Returns a color from the parsed character.
+    #[inline]
+    pub fn from_char(ch: char) -> Option<Color> {
+        match 32 | ch as u8 {
+            b'w' => Some(Color::White),
+            b'b' => Some(Color::Black),
+            _ => None,
+        }
+    }
+
     /// Converts `self` into a static string.
     #[inline]
     pub fn into_str(self) -> &'static str {
