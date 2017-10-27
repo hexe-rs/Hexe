@@ -51,4 +51,26 @@ impl PieceMap {
             p => unsafe { Some(p.into_unchecked()) }
         }
     }
+
+    /// Returns the piece at a square, if any.
+    #[inline]
+    pub fn get(&self, sq: Square) -> Option<Piece> {
+        match self.0[sq as usize] {
+            NONE => None,
+            p => unsafe { Some(p.into_unchecked()) }
+        }
+    }
+
+    /// Returns the piece at a square without checking.
+    ///
+    /// # Safety
+    ///
+    /// Calling this method when there's no piece the given square will produce
+    /// [undefined behavior][ub]. Use with caution.
+    ///
+    /// [ub]: https://en.wikipedia.org/wiki/Undefined_behavior
+    #[inline]
+    pub unsafe fn get_unchecked(&self, sq: Square) -> Piece {
+        self.0[sq as usize].into_unchecked()
+    }
 }
