@@ -36,6 +36,31 @@ impl PieceMap {
     /// An empty piece map.
     pub const EMPTY: PieceMap = PieceMap([NONE; 64]);
 
+    /// Creates a new piece map by instantiating each slot with the provided
+    /// initializer.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::piece::*;
+    /// let piece_map = PieceMap::from_init(|sq| {
+    ///     # None
+    ///     /* ... */
+    /// });
+    /// ```
+    #[inline]
+    pub fn from_init<F>(mut init: F) -> PieceMap
+        where F: FnMut(Square) -> Option<Piece>
+    {
+        let mut map: PieceMap = unsafe { mem::uninitialized() };
+        for (i, slot) in map.0.iter_mut().enumerate() {
+            *slot = init(i.into()).map(|p| p as u8).unwrap_or(NONE);
+        }
+        map
+    }
+
     /// Inserts the piece at a square.
     #[inline]
     pub fn insert(&mut self, sq: Square, pc: Piece) {
