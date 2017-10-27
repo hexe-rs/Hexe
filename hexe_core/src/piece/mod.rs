@@ -6,6 +6,9 @@ use core::str;
 use color::Color;
 use uncon::*;
 
+mod map;
+pub use self::map::*;
+
 impl_try_from_char! {
     /// The error returned when `try_from` fails for `Piece` or `PieceKind`.
     message = "failed to parse a character as piece or piece kind";
