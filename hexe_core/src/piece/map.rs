@@ -8,6 +8,13 @@ const NONE: u8 = 1 + Piece::BlackKing as u8;
 #[derive(Copy, Clone)]
 pub struct PieceMap([u8; 64]);
 
+impl Default for PieceMap {
+    #[inline]
+    fn default() -> PieceMap {
+        PieceMap::EMPTY
+    }
+}
+
 impl PieceMap {
     /// An empty piece map.
     pub const EMPTY: PieceMap = PieceMap([NONE; 64]);
