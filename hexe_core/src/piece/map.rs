@@ -1,6 +1,7 @@
 //! A square to piece mapping for fast square lookups.
 
 use super::*;
+use core::fmt;
 use core::marker::PhantomData;
 use core::mem;
 use core::ops;
@@ -255,6 +256,12 @@ impl<'a> DoubleEndedIterator for Iter<'a> {
     }
 }
 
+impl<'a> fmt::Debug for Iter<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_list().entries(self.clone()).finish()
+    }
+}
+
 /// A mutable [`PeiceMap`](struct.PieceMap.html) iterator.
 #[derive(Clone)]
 pub struct IterMut<'a> {
@@ -295,5 +302,11 @@ impl<'a> DoubleEndedIterator for IterMut<'a> {
             }
         }
         None
+    }
+}
+
+impl<'a> fmt::Debug for IterMut<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_list().entries(self.clone()).finish()
     }
 }
