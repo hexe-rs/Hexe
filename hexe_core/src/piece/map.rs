@@ -90,6 +90,12 @@ impl PieceMap {
         self.0[sq as usize] = NONE;
     }
 
+    /// Clears the map, removing all pieces.
+    #[inline]
+    pub fn clear(&mut self) {
+        self.0 = [NONE; 64];
+    }
+
     /// Replaces the piece at a square with a new one and returns the previous
     /// piece, if any.
     #[inline]
