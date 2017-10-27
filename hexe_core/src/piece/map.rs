@@ -52,16 +52,25 @@ impl PieceMap {
         }
     }
 
-    /// Returns the piece at a square, if any.
+    /// Returns a reference to the piece at a square, if any.
     #[inline]
-    pub fn get(&self, sq: Square) -> Option<Piece> {
+    pub fn get(&self, sq: Square) -> Option<&Piece> {
         match self.0[sq as usize] {
             NONE => None,
-            p => unsafe { Some(p.into_unchecked()) }
+            ref p => unsafe { Some(p.into_unchecked()) }
         }
     }
 
-    /// Returns the piece at a square without checking.
+    /// Returns a mutable reference to the piece at a square, if any.
+    #[inline]
+    pub fn get_mut(&mut self, sq: Square) -> Option<&mut Piece> {
+        match self.0[sq as usize] {
+            NONE => None,
+            ref mut p => unsafe { Some(p.into_unchecked()) }
+        }
+    }
+
+    /// Returns a reference to the piece at a square without checking.
     ///
     /// # Safety
     ///
@@ -70,7 +79,20 @@ impl PieceMap {
     ///
     /// [ub]: https://en.wikipedia.org/wiki/Undefined_behavior
     #[inline]
-    pub unsafe fn get_unchecked(&self, sq: Square) -> Piece {
-        self.0[sq as usize].into_unchecked()
+    pub unsafe fn get_unchecked(&self, sq: Square) -> &Piece {
+        (&self.0[sq as usize]).into_unchecked()
+    }
+
+    /// Returns a mutable reference to the piece at a square without checking.
+    ///
+    /// # Safety
+    ///
+    /// Calling this method when there's no piece the given square will produce
+    /// [undefined behavior][ub]. Use with caution.
+    ///
+    /// [ub]: https://en.wikipedia.org/wiki/Undefined_behavior
+    #[inline]
+    pub unsafe fn get_unchecked_mut(&mut self, sq: Square) -> &mut Piece {
+        (&mut self.0[sq as usize]).into_unchecked()
     }
 }
