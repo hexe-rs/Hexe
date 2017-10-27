@@ -226,7 +226,7 @@ impl<'a> IntoIterator for &'a mut PieceMap {
     fn into_iter(self) -> IterMut<'a> { self.iter_mut() }
 }
 
-/// A [`PeiceMap`](struct.PieceMap.html) iterator.
+/// A [`PieceMap`](struct.PieceMap.html) iterator.
 #[derive(Clone)]
 pub struct Iter<'a> {
     map: &'a PieceMap,
@@ -268,7 +268,7 @@ impl<'a> fmt::Debug for Iter<'a> {
     }
 }
 
-/// A mutable [`PeiceMap`](struct.PieceMap.html) iterator.
+/// A mutable [`PieceMap`](struct.PieceMap.html) iterator.
 #[derive(Clone)]
 pub struct IterMut<'a> {
     map: *mut PieceMap,
