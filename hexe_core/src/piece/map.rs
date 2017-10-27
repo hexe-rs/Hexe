@@ -53,6 +53,12 @@ impl PieceMap {
     /// An empty piece map.
     pub const EMPTY: PieceMap = PieceMap([NONE; 64]);
 
+    /// Creates an empty piece map.
+    #[inline]
+    pub fn new() -> PieceMap {
+        PieceMap::default()
+    }
+
     /// Creates a new piece map by instantiating each slot with the provided
     /// initializer.
     ///
