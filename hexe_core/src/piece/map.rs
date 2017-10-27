@@ -141,6 +141,15 @@ impl PieceMap {
         self.iter_mut().next_back()
     }
 
+    /// Performs a raw replacement.
+    #[inline]
+    unsafe fn __replace(&mut self, sq: Square, pc: u8) -> Option<Piece> {
+        match mem::replace(&mut self.0[sq as usize], pc) {
+            NONE => None,
+            p => Some(p.into_unchecked())
+        }
+    }
+
     /// Inserts the piece at a square.
     #[inline]
     pub fn insert(&mut self, sq: Square, pc: Piece) {
@@ -149,8 +158,8 @@ impl PieceMap {
 
     /// Removes the piece at a square.
     #[inline]
-    pub fn remove(&mut self, sq: Square) {
-        self.0[sq as usize] = NONE;
+    pub fn remove(&mut self, sq: Square) -> Option<Piece> {
+        unsafe { self.__replace(sq, NONE) }
     }
 
     /// Clears the map, removing all pieces.
@@ -163,10 +172,7 @@ impl PieceMap {
     /// piece, if any.
     #[inline]
     pub fn replace(&mut self, sq: Square, pc: Piece) -> Option<Piece> {
-        match mem::replace(&mut self.0[sq as usize], pc as u8) {
-            NONE => None,
-            p => unsafe { Some(p.into_unchecked()) }
-        }
+        unsafe { self.__replace(sq, pc as u8) }
     }
 
     /// Returns whether the map contains a piece at the given square.
