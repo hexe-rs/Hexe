@@ -136,6 +136,12 @@ macro_rules! impl_bit_set {
                 self.0 & self.0.wrapping_sub(1) != 0
             }
 
+            /// Converts `self` into its single bit.
+            #[inline]
+            pub fn into_bit(self) -> Option<$x> {
+                if self.has_multiple() { None } else { self.lsb() }
+            }
+
             /// Returns the least significant bit of `self`.
             #[inline]
             pub fn lsb(&self) -> Option<$x> {
