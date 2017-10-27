@@ -218,6 +218,18 @@ impl<'a> Iterator for Iter<'a> {
     }
 }
 
+impl<'a> DoubleEndedIterator for Iter<'a> {
+    #[inline]
+    fn next_back(&mut self) -> Option<Self::Item> {
+        while let Some(sq) = self.iter.next_back() {
+            if let Some(pc) = self.map.get(sq) {
+                return Some((sq, pc));
+            }
+        }
+        None
+    }
+}
+
 /// A mutable [`PeiceMap`](struct.PieceMap.html) iterator.
 pub struct IterMut<'a> {
     map: *mut PieceMap,
@@ -238,6 +250,19 @@ impl<'a> Iterator for IterMut<'a> {
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         while let Some(sq) = self.iter.next() {
+            let map = unsafe { &mut *self.map };
+            if let Some(pc) = map.get_mut(sq) {
+                return Some((sq, pc));
+            }
+        }
+        None
+    }
+}
+
+impl<'a> DoubleEndedIterator for IterMut<'a> {
+    #[inline]
+    fn next_back(&mut self) -> Option<Self::Item> {
+        while let Some(sq) = self.iter.next_back() {
             let map = unsafe { &mut *self.map };
             if let Some(pc) = map.get_mut(sq) {
                 return Some((sq, pc));
