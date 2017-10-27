@@ -130,6 +130,12 @@ macro_rules! impl_bit_set {
                 self.0 == 0
             }
 
+            /// Returns whether `self` has multiple bits set.
+            #[inline]
+            pub fn has_multiple(&self) -> bool {
+                self.0 & self.0.wrapping_sub(1) != 0
+            }
+
             /// Returns the least significant bit of `self`.
             #[inline]
             pub fn lsb(&self) -> Option<$x> {
