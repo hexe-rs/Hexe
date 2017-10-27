@@ -138,8 +138,9 @@ macro_rules! impl_bit_set {
 
             /// Converts `self` into its single bit.
             #[inline]
-            pub fn into_bit(self) -> Option<$x> {
-                if self.has_multiple() { None } else { self.lsb() }
+            pub fn into_bit(mut self) -> Option<$x> {
+                let bit = self.pop_lsb();
+                if self.is_empty() { bit } else { None }
             }
 
             /// Returns the least significant bit of `self`.
