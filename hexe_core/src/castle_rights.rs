@@ -18,8 +18,15 @@ use core::fmt;
 /// ```
 ///
 /// [`Bitboard`]: ../bitboard/struct.Bitboard.html
-#[derive(PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(PartialEq, Eq, Clone, Copy, Hash, FromUnchecked)]
 pub struct CastleRights(u8);
+
+impl From<u8> for CastleRights {
+    #[inline]
+    fn from(inner: u8) -> CastleRights {
+        Self::FULL & CastleRights(inner)
+    }
+}
 
 impl Default for CastleRights {
     #[inline]
