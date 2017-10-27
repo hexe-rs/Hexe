@@ -8,6 +8,15 @@ const NONE: u8 = 1 + Piece::BlackKing as u8;
 #[derive(Copy, Clone)]
 pub struct PieceMap([u8; 64]);
 
+impl PartialEq for PieceMap {
+    #[inline]
+    fn eq(&self, other: &PieceMap) -> bool {
+        self.0[..] == other.0[..]
+    }
+}
+
+impl Eq for PieceMap {}
+
 impl Default for PieceMap {
     #[inline]
     fn default() -> PieceMap {
