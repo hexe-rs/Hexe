@@ -54,6 +54,12 @@ impl ops::IndexMut<Square> for PieceMap {
     }
 }
 
+impl fmt::Debug for PieceMap {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_map().entries(self.iter()).finish()
+    }
+}
+
 impl PieceMap {
     /// An empty piece map.
     pub const EMPTY: PieceMap = PieceMap([NONE; 64]);
