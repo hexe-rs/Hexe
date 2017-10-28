@@ -182,6 +182,14 @@ impl PieceMap {
         unsafe { self.__insert(sq, NONE) }
     }
 
+    /// Inserts all pieces for which the function returns `Some`.
+    #[inline]
+    pub fn extend_from<F>(&mut self, mut f: F)
+        where F: FnMut(Square) -> Option<Piece>
+    {
+        self.extend(Square::all().filter_map(|s| f(s).map(|p| (s, p))));
+    }
+
     /// Retains only the elements specified by the predicate.
     #[inline]
     pub fn retain<F>(&mut self, mut f: F)
