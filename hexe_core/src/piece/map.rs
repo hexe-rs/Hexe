@@ -225,12 +225,18 @@ impl PieceMap {
     }
 
     /// Returns whether `self` is empty.
+    ///
+    /// For much better performance and readability, is recommended to use this
+    /// method over checking whether `self.len() == 0`.
     #[inline]
     pub fn is_empty(&self) -> bool {
         self.0[..] == _EMPTY[..]
     }
 
     /// Returns the number of pieces in `self`.
+    ///
+    /// This operation is performed in O(n) time. It is recommended to store
+    /// the result if it is used repeatedly.
     #[inline]
     pub fn len(&self) -> usize {
         let mut len = self.0.len();
