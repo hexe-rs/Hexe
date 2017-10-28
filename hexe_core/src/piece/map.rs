@@ -359,6 +359,19 @@ impl<'a> DoubleEndedIterator for Iter<'a> {
     }
 }
 
+impl<'a> ExactSizeIterator for Iter<'a> {
+    #[inline]
+    fn len(&self) -> usize {
+        let mut len = 0;
+        for square in self.iter.clone() {
+            if self.map.0[square as usize] == NONE {
+                len += 1;
+            }
+        }
+        len
+    }
+}
+
 impl<'a> fmt::Debug for Iter<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_list().entries(self.clone()).finish()
@@ -416,6 +429,20 @@ impl<'a> DoubleEndedIterator for IterMut<'a> {
             }
         }
         None
+    }
+}
+
+impl<'a> ExactSizeIterator for IterMut<'a> {
+    #[inline]
+    fn len(&self) -> usize {
+        let mut len = 0;
+        for square in self.iter.clone() {
+            let map = unsafe { &*self.map };
+            if map.0[square as usize] == NONE {
+                len += 1;
+            }
+        }
+        len
     }
 }
 
