@@ -62,6 +62,24 @@ impl fmt::Debug for PieceMap {
     }
 }
 
+impl ::core::iter::FromIterator<(Square, Piece)> for PieceMap {
+    #[inline]
+    fn from_iter<T: IntoIterator<Item=(Square, Piece)>>(iter: T) -> PieceMap {
+        let mut map = PieceMap::new();
+        map.extend(iter);
+        map
+    }
+}
+
+impl Extend<(Square, Piece)> for PieceMap {
+    #[inline]
+    fn extend<T: IntoIterator<Item=(Square, Piece)>>(&mut self, iter: T) {
+        iter.into_iter().for_each(|(s, p)| {
+            self.insert(s, p);
+        });
+    }
+}
+
 impl PieceMap {
     /// An empty piece map.
     pub const EMPTY: PieceMap = PieceMap([NONE; 64]);
