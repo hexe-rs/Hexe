@@ -189,7 +189,7 @@ impl PieceMap {
     /// Returns the square for the piece.
     #[inline]
     pub fn find(&self, pc: Piece) -> Option<Square> {
-        if let Some(index) = memchr(pc as u8, &self.0) {
+        if let Some(index) = memchr(&self.0, pc as u8) {
             unsafe { Some(index.into_unchecked()) }
         } else {
             None
@@ -393,7 +393,7 @@ impl Contained for Piece {
 }
 
 #[inline]
-fn memchr(byte: u8, buffer: &[u8]) -> Option<usize> {
+fn memchr(buffer: &[u8], byte: u8) -> Option<usize> {
     let start = buffer.as_ptr();
     let found = unsafe {
         ::libc::memchr(start as _, byte as _, buffer.len() as _)
