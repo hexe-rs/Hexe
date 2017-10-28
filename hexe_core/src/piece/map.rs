@@ -233,6 +233,16 @@ impl PieceMap {
         }
     }
 
+    /// Returns the last square for the piece.
+    #[inline]
+    pub fn rfind(&self, pc: Piece) -> Option<Square> {
+        if let Some(index) = ::memchr::memrchr(pc as u8, &self.0) {
+            unsafe { Some(index.into_unchecked()) }
+        } else {
+            None
+        }
+    }
+
     /// Returns a reference to the piece at a square, if any.
     #[inline]
     pub fn get(&self, sq: Square) -> Option<&Piece> {
