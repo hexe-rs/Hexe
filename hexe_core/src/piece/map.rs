@@ -341,7 +341,7 @@ impl<'a> Iterator for Iter<'a> {
         None
     }
 
-    #{inline}
+    #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         let len = self.len();
         (len, Some(len))
@@ -425,7 +425,7 @@ impl<'a> Iterator for IterMut<'a> {
         None
     }
 
-    #{inline}
+    #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         let len = self.len();
         (len, Some(len))
