@@ -352,6 +352,35 @@ impl PieceMap {
     pub fn iter_mut(&mut self) -> IterMut {
         IterMut { map: self, iter: Squares::default(), _marker: PhantomData }
     }
+
+    /// Returns a view into the bytes of the map.
+    ///
+    /// # Values
+    ///
+    /// - Bytes will values less than 12 refer to a valid piece instance.
+    /// - An empty slot has a value of 12.
+    ///
+    /// You may safely assume that that no values greater than 12 exist.
+    #[inline]
+    pub fn as_bytes(&self) -> &[u8; 64] {
+        &self.0
+    }
+
+    /// Returns a mutable view into the bytes of the map.
+    ///
+    /// For more information, see [`as_bytes`](#method.as_bytes).
+    ///
+    /// # Safety
+    ///
+    /// Internal operations rely on certain assumptions about the contents of
+    /// this buffer. Mutating these bytes such that piece values become invalid
+    /// will cause [undefined behavior][ub].
+    ///
+    /// [ub]: https://en.wikipedia.org/wiki/Undefined_behavior
+    #[inline]
+    pub unsafe fn as_bytes_mut(&mut self) -> &mut [u8; 64] {
+        &mut self.0
+    }
 }
 
 impl<'a> IntoIterator for &'a PieceMap {
