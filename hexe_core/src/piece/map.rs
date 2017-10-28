@@ -22,8 +22,6 @@ impl Clone for PieceMap {
     fn clone(&self) -> PieceMap { PieceMap(self.0) }
 }
 
-impl Copy for PieceMap {}
-
 impl PartialEq for PieceMap {
     #[inline]
     fn eq(&self, other: &PieceMap) -> bool {
