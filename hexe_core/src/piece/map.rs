@@ -186,7 +186,7 @@ impl PieceMap {
         value.contained_in(self)
     }
 
-    /// Returns the square for the piece.
+    /// Returns the first square for the piece.
     #[inline]
     pub fn find(&self, pc: Piece) -> Option<Square> {
         if let Some(index) = memchr(&self.0, pc as u8) {
