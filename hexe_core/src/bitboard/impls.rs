@@ -35,10 +35,18 @@ macro_rules! forward_fmt_impl {
 forward_fmt_impl! { Binary Octal LowerHex UpperHex }
 
 impl fmt::Debug for Bitboard {
-    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        // 2 for "0x" + 16 for number
-        write!(f, "Bitboard({:#018X})", self)
+        struct Hex(u64);
+
+        impl fmt::Debug for Hex {
+            #[inline]
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                // 2 for "0x" + 16 for number
+                write!(f, "{:#018X}", self.0)
+            }
+        }
+
+        f.debug_tuple("Bitboard").field(&Hex(self.0)).finish()
     }
 }
 
