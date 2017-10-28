@@ -188,6 +188,16 @@ impl PieceMap {
         self.0.swap(s1 as usize, s2 as usize);
     }
 
+    /// Performs a capture of the piece at `to` via the piece at `from`.
+    ///
+    /// If the squares are the same, then this will simply perform a removal.
+    #[inline]
+    pub fn capture(&mut self, from: Square, to: Square) -> Option<Piece> {
+        let pc = self.remove(to);
+        self.swap(from, to);
+        pc
+    }
+
     /// Inserts all pieces for which the function returns `Some`.
     #[inline]
     pub fn extend_from<F>(&mut self, mut f: F)
