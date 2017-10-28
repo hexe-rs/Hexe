@@ -186,6 +186,16 @@ impl PieceMap {
         value.contained_in(self)
     }
 
+    /// Returns the square for the piece.
+    #[inline]
+    pub fn find(&self, pc: Piece) -> Option<Square> {
+        if let Some(index) = memchr(pc as u8, &self.0) {
+            unsafe { Some(index.into_unchecked()) }
+        } else {
+            None
+        }
+    }
+
     /// Returns a reference to the piece at a square, if any.
     #[inline]
     pub fn get(&self, sq: Square) -> Option<&Piece> {
@@ -378,7 +388,7 @@ impl Contained for Square {
 impl Contained for Piece {
     #[inline]
     fn contained_in(self, map: &PieceMap) -> bool {
-        memchr(self as u8, &map.0).is_some()
+        map.find(self).is_some()
     }
 }
 
