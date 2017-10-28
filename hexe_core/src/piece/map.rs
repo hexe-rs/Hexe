@@ -435,7 +435,7 @@ unsafe impl<'a> Sync for IterMut<'a> {}
 impl<'a> From<IterMut<'a>> for Iter<'a> {
     #[inline]
     fn from(iter: IterMut) -> Iter {
-        Iter { map: unsafe { &*iter.map }, iter: iter.iter }
+        Iter { map: iter._map(), iter: iter.iter }
     }
 }
 
@@ -445,8 +445,7 @@ impl<'a> Iterator for IterMut<'a> {
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         while let Some(sq) = self.iter.next() {
-            let map = unsafe { &mut *self.map };
-            if let Some(pc) = map.get_mut(sq) {
+            if let Some(pc) = self._map_mut().get_mut(sq) {
                 return Some((sq, pc));
             }
         }
@@ -474,8 +473,7 @@ impl<'a> DoubleEndedIterator for IterMut<'a> {
     #[inline]
     fn next_back(&mut self) -> Option<Self::Item> {
         while let Some(sq) = self.iter.next_back() {
-            let map = unsafe { &mut *self.map };
-            if let Some(pc) = map.get_mut(sq) {
+            if let Some(pc) = self._map_mut().get_mut(sq) {
                 return Some((sq, pc));
             }
         }
@@ -488,8 +486,7 @@ impl<'a> ExactSizeIterator for IterMut<'a> {
     fn len(&self) -> usize {
         let mut len = 0;
         for square in self.iter.clone() {
-            let map = unsafe { &*self.map };
-            if map.0[square as usize] != NONE {
+            if self._map().0[square as usize] != NONE {
                 len += 1;
             }
         }
@@ -500,6 +497,18 @@ impl<'a> ExactSizeIterator for IterMut<'a> {
 impl<'a> fmt::Debug for IterMut<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_list().entries(self.clone()).finish()
+    }
+}
+
+impl<'a> IterMut<'a> {
+    #[inline]
+    fn _map(&self) -> &'a PieceMap {
+        unsafe { &*self.map }
+    }
+
+    #[inline]
+    fn _map_mut(&mut self) -> &'a mut PieceMap {
+        unsafe { &mut *self.map }
     }
 }
 
