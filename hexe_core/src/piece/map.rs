@@ -385,7 +385,7 @@ impl<'a> ExactSizeIterator for Iter<'a> {
     fn len(&self) -> usize {
         let mut len = 0;
         for square in self.iter.clone() {
-            if self.map.0[square as usize] == NONE {
+            if self.map.0[square as usize] != NONE {
                 len += 1;
             }
         }
@@ -471,7 +471,7 @@ impl<'a> ExactSizeIterator for IterMut<'a> {
         let mut len = 0;
         for square in self.iter.clone() {
             let map = unsafe { &*self.map };
-            if map.0[square as usize] == NONE {
+            if map.0[square as usize] != NONE {
                 len += 1;
             }
         }
@@ -502,5 +502,31 @@ impl Contained for Piece {
     #[inline]
     fn contained_in(self, map: &PieceMap) -> bool {
         map.find(self).is_some()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn len() {
+        let mut map = PieceMap::new();
+
+        macro_rules! assert_len {
+            ($l:expr) => {
+                assert_eq!(map.len(), $l);
+                assert_eq!(map.iter().len(), $l);
+                assert_eq!(map.iter_mut().len(), $l);
+            }
+        }
+
+        assert_len!(0);
+
+        map.insert(Square::A1, Piece::WhitePawn);
+        assert_len!(1);
+
+        map = PieceMap::from_init(|_| Some(Piece::BlackBishop));
+        assert_len!(64);
     }
 }
