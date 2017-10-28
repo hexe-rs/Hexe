@@ -394,6 +394,7 @@ unsafe impl<'a> Send for IterMut<'a> {}
 unsafe impl<'a> Sync for IterMut<'a> {}
 
 impl<'a> From<IterMut<'a>> for Iter<'a> {
+    #[inline]
     fn from(iter: IterMut) -> Iter {
         Iter { map: unsafe { &*iter.map }, iter: iter.iter }
     }
