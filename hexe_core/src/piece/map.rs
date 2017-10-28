@@ -8,7 +8,7 @@ use core::ops;
 use square::Squares;
 use prelude::*;
 
-const NONE: u8 = 1 + Piece::BlackKing as u8;
+const NONE: u8 = 12;
 
 static _EMPTY: [u8; 64] = [NONE; 64];
 
@@ -617,6 +617,22 @@ impl Contained for Piece {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    /// Asserts at compile-time that the piece is less than NONE.
+    macro_rules! assert_valid_none {
+        ($($p:ident)+) => {
+            $(const_assert!($p; (Piece::$p as u8) < NONE);)+
+        }
+    }
+
+    assert_valid_none! {
+        WhitePawn   BlackPawn
+        WhiteKnight BlackKnight
+        WhiteBishop BlackBishop
+        WhiteRook   BlackRook
+        WhiteQueen  BlackQueen
+        WhiteKing   BlackKing
+    }
 
     #[test]
     fn len() {
