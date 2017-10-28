@@ -23,3 +23,11 @@ fn map_len(b: &mut Bencher) {
         black_box(black_box(map).len());
     });
 }
+
+#[bench]
+fn map_is_empty(b: &mut Bencher) {
+    let map = map::PieceMap::new();
+    b.iter(|| {
+        black_box(black_box(map).is_empty());
+    });
+}
