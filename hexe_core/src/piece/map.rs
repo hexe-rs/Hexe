@@ -10,6 +10,8 @@ use prelude::*;
 
 const NONE: u8 = 1 + Piece::BlackKing as u8;
 
+static _EMPTY: [u8; 64] = [NONE; 64];
+
 /// A mapping of sixty-four squares to pieces.
 ///
 /// This allows for faster lookups than possible with bitboards.
@@ -178,6 +180,12 @@ impl PieceMap {
     #[inline]
     pub fn clear(&mut self) {
         self.0 = [NONE; 64];
+    }
+
+    /// Returns whether `self` is empty.
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        self.0[..] == _EMPTY[..]
     }
 
     /// Returns whether the map contains the value.
