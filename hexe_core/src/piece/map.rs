@@ -182,6 +182,12 @@ impl PieceMap {
         unsafe { self.__insert(sq, NONE) }
     }
 
+    /// Swaps two piece locations in the map.
+    #[inline]
+    pub fn swap(&mut self, s1: Square, s2: Square) {
+        self.0.swap(s1 as usize, s2 as usize);
+    }
+
     /// Inserts all pieces for which the function returns `Some`.
     #[inline]
     pub fn extend_from<F>(&mut self, mut f: F)
