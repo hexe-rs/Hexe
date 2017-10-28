@@ -1,6 +1,7 @@
 //! Castling rights for two players of a chess game.
 
 use core::fmt;
+use prelude::*;
 
 /// Castle rights for a chess game.
 ///
@@ -74,4 +75,37 @@ pub enum CastleRight {
     BlackKingside,
     WhiteQueenside,
     BlackQueenside,
+}
+
+impl CastleRight {
+    /// Returns the path between the rook and king for this right.
+    #[inline]
+    pub fn path(self) -> Bitboard {
+        path::ALL[self as usize]
+    }
+}
+
+pub mod path {
+    //! The paths between the rook and king for each castling right.
+    use super::*;
+
+    /// White kingside path.
+    pub const WHITE_KINGSIDE: Bitboard = Bitboard(0x60);
+
+    /// Black kingside path.
+    pub const BLACK_KINGSIDE: Bitboard = Bitboard(WHITE_KINGSIDE.0 << 56);
+
+    /// White queenside path.
+    pub const WHITE_QUEENSIDE: Bitboard = Bitboard(0x0E);
+
+    /// Black queenside path.
+    pub const BLACK_QUEENSIDE: Bitboard = Bitboard(WHITE_QUEENSIDE.0 << 56);
+
+    /// All paths.
+    pub static ALL: [Bitboard; 4] = [
+        WHITE_KINGSIDE,
+        BLACK_KINGSIDE,
+        WHITE_QUEENSIDE,
+        BLACK_QUEENSIDE,
+    ];
 }
