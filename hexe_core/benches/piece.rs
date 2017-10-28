@@ -6,6 +6,17 @@ use test::{Bencher, black_box};
 use hexe_core::piece::*;
 use hexe_core::square::Square;
 
+macro_rules! piece_map {
+    ($($s:expr => $p:expr),* $(,)*) => {
+        {
+            #[allow(unused_mut)]
+            let mut map = map::PieceMap::new();
+            $(map.insert($s, $p);)*
+            map
+        }
+    }
+}
+
 fn find(piece: Piece, map: &map::PieceMap) -> Option<Square> {
     for (i, &slot) in map.as_bytes().iter().enumerate() {
         if slot == piece as u8 {
@@ -22,8 +33,8 @@ fn contains(piece: Piece, map: &map::PieceMap) -> bool {
 #[bench]
 fn map_contains_piece(b: &mut Bencher) {
     let piece = Piece::BlackKing;
-    let mut map = map::PieceMap::new();
-    map.insert(Square::H8, piece);
+    let map = piece_map! { Square::H8 => piece };
+
     b.iter(|| {
         black_box(black_box(&map).contains(black_box(piece)));
     });
@@ -32,8 +43,8 @@ fn map_contains_piece(b: &mut Bencher) {
 #[bench]
 fn map_contains_piece_naive(b: &mut Bencher) {
     let piece = Piece::BlackKing;
-    let mut map = map::PieceMap::new();
-    map.insert(Square::H8, piece);
+    let map = piece_map! { Square::H8 => piece };
+
     b.iter(|| {
         black_box(contains(black_box(piece), black_box(&map)));
     });
@@ -42,8 +53,8 @@ fn map_contains_piece_naive(b: &mut Bencher) {
 #[bench]
 fn map_find(b: &mut Bencher) {
     let piece = Piece::WhiteRook;
-    let mut map = map::PieceMap::new();
-    map.insert(Square::H8, piece);
+    let map = piece_map! { Square::H8 => piece };
+
     b.iter(|| {
         black_box(black_box(&map).find(black_box(piece)));
     });
@@ -52,8 +63,8 @@ fn map_find(b: &mut Bencher) {
 #[bench]
 fn map_find_naive(b: &mut Bencher) {
     let piece = Piece::WhiteRook;
-    let mut map = map::PieceMap::new();
-    map.insert(Square::H8, piece);
+    let map = piece_map! { Square::H8 => piece };
+
     b.iter(|| {
         black_box(find(black_box(piece), black_box(&map)));
     });
@@ -62,8 +73,8 @@ fn map_find_naive(b: &mut Bencher) {
 #[bench]
 fn map_rfind(b: &mut Bencher) {
     let piece = Piece::WhiteRook;
-    let mut map = map::PieceMap::new();
-    map.insert(Square::A1, piece);
+    let map = piece_map! { Square::A1 => piece };
+
     b.iter(|| {
         black_box(black_box(&map).rfind(black_box(piece)));
     });
@@ -71,7 +82,7 @@ fn map_rfind(b: &mut Bencher) {
 
 #[bench]
 fn map_len(b: &mut Bencher) {
-    let map = map::PieceMap::new();
+    let map = piece_map!();
     b.iter(|| {
         black_box(black_box(&map).len());
     });
@@ -79,7 +90,7 @@ fn map_len(b: &mut Bencher) {
 
 #[bench]
 fn map_is_empty(b: &mut Bencher) {
-    let map = map::PieceMap::new();
+    let map = piece_map!();
     b.iter(|| {
         black_box(black_box(&map).is_empty());
     });
