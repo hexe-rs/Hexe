@@ -226,7 +226,7 @@ impl PieceMap {
     /// Returns the first square for the piece.
     #[inline]
     pub fn find(&self, pc: Piece) -> Option<Square> {
-        if let Some(index) = memchr(&self.0, pc as u8) {
+        if let Some(index) = ::memchr::memchr(pc as u8, &self.0) {
             unsafe { Some(index.into_unchecked()) }
         } else {
             None
@@ -492,18 +492,5 @@ impl Contained for Piece {
     #[inline]
     fn contained_in(self, map: &PieceMap) -> bool {
         map.find(self).is_some()
-    }
-}
-
-#[inline]
-fn memchr(buffer: &[u8], byte: u8) -> Option<usize> {
-    let start = buffer.as_ptr();
-    let found = unsafe {
-        ::libc::memchr(start as _, byte as _, buffer.len() as _)
-    };
-    if found.is_null() {
-        None
-    } else {
-        Some(found as usize - (buffer.as_ptr() as usize))
     }
 }
