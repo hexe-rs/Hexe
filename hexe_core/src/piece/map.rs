@@ -340,6 +340,11 @@ impl<'a> Iterator for Iter<'a> {
         }
         None
     }
+
+    #[inline]
+    fn last(mut self) -> Option<Self::Item> {
+        self.next_back()
+    }
 }
 
 impl<'a> DoubleEndedIterator for Iter<'a> {
@@ -387,6 +392,11 @@ impl<'a> Iterator for IterMut<'a> {
             }
         }
         None
+    }
+
+    #[inline]
+    fn last(mut self) -> Option<Self::Item> {
+        self.next_back()
     }
 }
 
