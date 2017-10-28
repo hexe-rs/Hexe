@@ -374,3 +374,10 @@ impl Contained for Square {
         map.0[self as usize] != NONE
     }
 }
+
+impl Contained for Piece {
+    #[inline]
+    fn contained_in(self, map: &PieceMap) -> bool {
+        ::memchr::memchr(self as u8, &map.0).is_some()
+    }
+}
