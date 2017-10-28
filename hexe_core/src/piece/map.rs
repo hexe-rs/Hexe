@@ -341,6 +341,17 @@ impl<'a> Iterator for Iter<'a> {
         None
     }
 
+    #{inline}
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = self.len();
+        (len, Some(len))
+    }
+
+    #[inline]
+    fn count(self) -> usize {
+        self.len()
+    }
+
     #[inline]
     fn last(mut self) -> Option<Self::Item> {
         self.next_back()
@@ -412,6 +423,17 @@ impl<'a> Iterator for IterMut<'a> {
             }
         }
         None
+    }
+
+    #{inline}
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let len = self.len();
+        (len, Some(len))
+    }
+
+    #[inline]
+    fn count(self) -> usize {
+        self.len()
     }
 
     #[inline]
