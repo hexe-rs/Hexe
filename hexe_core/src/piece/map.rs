@@ -181,6 +181,23 @@ impl PieceMap {
     }
 
     /// Returns whether the map contains the value.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::piece::map::*;
+    /// # use hexe_core::prelude::*;
+    /// let sq = Square::B7;
+    /// let pc = Piece::WhiteRook;
+    ///
+    /// let mut map = PieceMap::new();
+    /// map.insert(sq, pc);
+    ///
+    /// assert!(map.contains(sq));
+    /// assert!(map.contains(pc));
+    /// ```
     #[inline]
     pub fn contains<T: Contained>(&self, value: T) -> bool {
         value.contained_in(self)
