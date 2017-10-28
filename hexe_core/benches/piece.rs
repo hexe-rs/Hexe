@@ -12,7 +12,7 @@ fn map_contains_piece(b: &mut Bencher) {
     let mut map = map::PieceMap::new();
     map.insert(Square::H8, piece);
     b.iter(|| {
-        black_box(black_box(map).contains(black_box(piece)));
+        black_box(black_box(&map).contains(black_box(piece)));
     });
 }
 
@@ -22,7 +22,7 @@ fn map_find(b: &mut Bencher) {
     let mut map = map::PieceMap::new();
     map.insert(Square::H8, piece);
     b.iter(|| {
-        black_box(black_box(map).find(black_box(piece)));
+        black_box(black_box(&map).find(black_box(piece)));
     });
 }
 
@@ -32,7 +32,7 @@ fn map_rfind(b: &mut Bencher) {
     let mut map = map::PieceMap::new();
     map.insert(Square::A1, piece);
     b.iter(|| {
-        black_box(black_box(map).rfind(black_box(piece)));
+        black_box(black_box(&map).rfind(black_box(piece)));
     });
 }
 
@@ -40,7 +40,7 @@ fn map_rfind(b: &mut Bencher) {
 fn map_len(b: &mut Bencher) {
     let map = map::PieceMap::new();
     b.iter(|| {
-        black_box(black_box(map).len());
+        black_box(black_box(&map).len());
     });
 }
 
@@ -48,6 +48,6 @@ fn map_len(b: &mut Bencher) {
 fn map_is_empty(b: &mut Bencher) {
     let map = map::PieceMap::new();
     b.iter(|| {
-        black_box(black_box(map).is_empty());
+        black_box(black_box(&map).is_empty());
     });
 }
