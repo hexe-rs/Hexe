@@ -386,7 +386,7 @@ impl PieceMap {
     ///
     /// # Values
     ///
-    /// - Bytes will values less than 12 refer to a valid piece instance.
+    /// - Bytes with values less than 12 refer to a valid piece instance.
     /// - An empty slot has a value of 12.
     ///
     /// You may safely assume that that no values greater than 12 exist.
