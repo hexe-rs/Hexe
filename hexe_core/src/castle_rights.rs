@@ -29,6 +29,16 @@ impl From<u8> for CastleRights {
     }
 }
 
+impl From<Color> for CastleRights {
+    #[inline]
+    fn from(color: Color) -> CastleRights {
+        match color {
+            Color::White => Self::WHITE_KINGSIDE | Self::WHITE_QUEENSIDE,
+            Color::Black => Self::BLACK_KINGSIDE | Self::BLACK_QUEENSIDE,
+        }
+    }
+}
+
 impl Default for CastleRights {
     #[inline]
     fn default() -> CastleRights { CastleRights::FULL }
