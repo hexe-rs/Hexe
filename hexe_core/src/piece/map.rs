@@ -378,6 +378,19 @@ impl Contained for Square {
 impl Contained for Piece {
     #[inline]
     fn contained_in(self, map: &PieceMap) -> bool {
-        ::memchr::memchr(self as u8, &map.0).is_some()
+        memchr(self as u8, &map.0).is_some()
+    }
+}
+
+#[inline]
+fn memchr(byte: u8, buffer: &[u8]) -> Option<usize> {
+    let start = buffer.as_ptr();
+    let found = unsafe {
+        ::libc::memchr(start as _, byte as _, buffer.len() as _)
+    };
+    if found.is_null() {
+        None
+    } else {
+        Some(found as usize - (buffer.as_ptr() as usize))
     }
 }

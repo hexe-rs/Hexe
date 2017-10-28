@@ -17,7 +17,7 @@ extern crate rand;
 #[macro_use]
 extern crate static_assertions;
 
-extern crate memchr;
+extern crate libc;
 
 #[cfg(feature = "serde")]
 extern crate serde;
