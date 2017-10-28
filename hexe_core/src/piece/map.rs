@@ -204,6 +204,23 @@ impl PieceMap {
         pc
     }
 
+    /// Performs a **blind** castle of the pieces for the castling right.
+    #[inline]
+    pub fn castle(&mut self, castling: CastleRight) {
+        static SQUARES: [[(Square, Square); 2]; 4] = [
+            // King, Rook
+            [(Square::E1, Square::G1), (Square::H1, Square::F1)],
+            [(Square::E8, Square::G8), (Square::H8, Square::F8)],
+            [(Square::E1, Square::C1), (Square::A1, Square::D1)],
+            [(Square::E8, Square::C8), (Square::A8, Square::D8)],
+        ];
+        let squares = SQUARES[castling as usize];
+        let (k1, k2) = squares[0];
+        let (r1, r2) = squares[1];
+        self.place(k1, k2);
+        self.place(r1, r2);
+    }
+
     /// Inserts all pieces for which the function returns `Some`.
     #[inline]
     pub fn extend_from<F>(&mut self, mut f: F)
