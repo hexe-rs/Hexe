@@ -188,6 +188,18 @@ impl PieceMap {
         self.0[..] == _EMPTY[..]
     }
 
+    /// Returns the number of pieces in `self`.
+    #[inline]
+    pub fn len(&self) -> usize {
+        let mut len = self.0.len();
+        for &slot in self.0.iter() {
+            if slot == NONE {
+                len -= 1;
+            }
+        }
+        len
+    }
+
     /// Returns whether the map contains the value.
     ///
     /// # Examples

@@ -7,11 +7,19 @@ use hexe_core::piece::*;
 use hexe_core::square::Square;
 
 #[bench]
-fn contains_piece(b: &mut Bencher) {
+fn map_contains_piece(b: &mut Bencher) {
     let piece = Piece::BlackKing;
     let mut map = map::PieceMap::new();
     map.insert(Square::H8, piece);
     b.iter(|| {
         black_box(black_box(map).contains(black_box(piece)))
+    });
+}
+
+#[bench]
+fn map_len(b: &mut Bencher) {
+    let map = map::PieceMap::new();
+    b.iter(|| {
+        black_box(black_box(map).len());
     });
 }
