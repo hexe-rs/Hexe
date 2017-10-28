@@ -74,9 +74,9 @@ impl ::core::iter::FromIterator<(Square, Piece)> for PieceMap {
 impl Extend<(Square, Piece)> for PieceMap {
     #[inline]
     fn extend<T: IntoIterator<Item=(Square, Piece)>>(&mut self, iter: T) {
-        iter.into_iter().for_each(|(s, p)| {
+        for (s, p) in iter.into_iter() {
             self.insert(s, p);
-        });
+        }
     }
 }
 
