@@ -212,7 +212,7 @@ impl PieceMap {
             [(Square::E1, Square::C1), (Square::A1, Square::D1)],
             [(Square::E8, Square::C8), (Square::A8, Square::D8)],
         ];
-        let squares = SQUARES[castling as usize];
+        let squares = &SQUARES[castling as usize];
         let (k1, k2) = squares[0];
         let (r1, r2) = squares[1];
         self.place(k1, k2);
