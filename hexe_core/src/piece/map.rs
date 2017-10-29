@@ -417,6 +417,53 @@ impl PieceMap {
         self.get(sq).map(Piece::kind)
     }
 
+    /// Returns the result of applying a function to a mutable string
+    /// representation of `self`.
+    ///
+    /// This method has the same benefits as [`Square::map_str`]
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use hexe_core::piece::map::*;
+    /// let map = PieceMap::STANDARD;
+    ///
+    /// map.map_str(|s| {
+    ///     println!("{}", s);
+    ///     // r n b q k b n r
+    ///     // p p p p p p p p
+    ///     // . . . . . . . .
+    ///     // . . . . . . . .
+    ///     // . . . . . . . .
+    ///     // . . . . . . . .
+    ///     // P P P P P P P P
+    ///     // R N B Q K B N R
+    /// });
+    /// ```
+    ///
+    /// [`Square::map_str`]: ../../square/enum.Square.html#method.map_str
+    #[inline]
+    pub fn map_str<T, F>(&self, f: F) -> T
+        where F: for<'a> FnOnce(&'a mut str) -> T
+    {
+        let mut buf = *b". . . . . . . .\n\
+                         . . . . . . . .\n\
+                         . . . . . . . .\n\
+                         . . . . . . . .\n\
+                         . . . . . . . .\n\
+                         . . . . . . . .\n\
+                         . . . . . . . .\n\
+                         . . . . . . . .";
+        for square in Square::all() {
+            if let Some(&piece) = self.get(square) {
+                let ch = char::from(piece) as u8;
+                let idx = (0b111000 ^ square as usize) << 1;
+                unsafe { *buf.get_unchecked_mut(idx) = ch };
+            }
+        }
+        unsafe { f(str::from_utf8_unchecked_mut(&mut buf)) }
+    }
+
     /// Returns an iterator visiting all square-piece pairs in order.
     #[inline]
     pub fn iter(&self) -> Iter {
