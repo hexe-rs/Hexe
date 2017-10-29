@@ -230,10 +230,10 @@ impl PieceMap {
         unsafe { self.__insert(sq, NONE) }
     }
 
-    /// Swaps two piece locations in the map.
+    /// Swaps two values in the map.
     #[inline]
-    pub fn swap(&mut self, s1: Square, s2: Square) {
-        self.0.swap(s1 as usize, s2 as usize);
+    pub fn swap<T: Swap>(&mut self, i: T, j: T) {
+        T::swap(i, j, self);
     }
 
     /// Takes the piece at `from` and places it at `to`.
@@ -712,6 +712,20 @@ impl Contained for Piece {
     #[inline]
     fn contained_in(self, map: &PieceMap) -> bool {
         map.find(self).is_some()
+    }
+}
+
+/// A type whose instances may be used to swap values in a
+/// [`PieceMap`](struct.PieceMap.html).
+pub trait Swap {
+    /// Swaps the values at `i` and `j` in `map`.
+    fn swap(i: Self, j: Self, map: &mut PieceMap);
+}
+
+impl Swap for Square {
+    #[inline]
+    fn swap(i: Square, j: Square, map: &mut PieceMap) {
+        map.0.swap(i as usize, j as usize);
     }
 }
 
