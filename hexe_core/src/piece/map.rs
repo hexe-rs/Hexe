@@ -130,7 +130,7 @@ impl PieceMap {
 
     /// Creates a map with _all_ squares populated by `piece`.
     #[inline]
-    pub fn all(piece: Piece) -> PieceMap {
+    pub fn filled(piece: Piece) -> PieceMap {
         PieceMap([piece as u8; 64])
     }
 
