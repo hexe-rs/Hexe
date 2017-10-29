@@ -130,7 +130,7 @@ mod tests {
 
         assert_eq!(iter.size_hint().0, SUBSETS.len());
 
-        for (a, b) in iter.by_ref().zip(SUBSETS.iter()) {
+        for (a, &b) in iter.by_ref().zip(SUBSETS.iter()) {
             sum += 1;
             assert_eq!(a, b.into());
         }

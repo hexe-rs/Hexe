@@ -46,20 +46,6 @@ macro_rules! impl_bit_set {
             fn not(self) -> Self { $t(!self.0 & $full) }
         }
 
-        impl<'a, T: Into<$t> + Clone> From<&'a T> for $t {
-            #[inline]
-            fn from(value: &T) -> Self {
-                T::clone(value).into()
-            }
-        }
-
-        impl<'a, T: Into<$t> + Clone> From<&'a mut T> for $t {
-            #[inline]
-            fn from(value: &mut T) -> Self {
-                T::clone(value).into()
-            }
-        }
-
         impl<A: Into<$t>> ::core::iter::FromIterator<A> for $t {
             #[inline]
             fn from_iter<T: IntoIterator<Item=A>>(iter: T) -> Self {
