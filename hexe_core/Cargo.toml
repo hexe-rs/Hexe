@@ -25,5 +25,5 @@ static_assertions = "0.2"
 [features]
 default = ["std"]
 nightly = ["try-from"]
-std = ["uncon/std", "uncon_derive/std"]
+std = ["memchr/use_std", "uncon/std", "uncon_derive/std"]
 try-from = []
