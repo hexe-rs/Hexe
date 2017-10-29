@@ -224,6 +224,12 @@ impl PieceMap {
         self.iter_mut().next_back()
     }
 
+    /// Efficiently fills the rank entirely with the given piece.
+    #[inline]
+    pub fn fill_rank(&mut self, r: Rank, pc: Piece) {
+        self.inner_2d_mut()[r as usize] = [pc as u8; 8];
+    }
+
     /// Performs a raw replacement.
     #[inline]
     unsafe fn __insert(&mut self, sq: Square, pc: u8) -> Option<Piece> {
