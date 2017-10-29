@@ -316,6 +316,12 @@ impl PieceMap {
         self.0 = [NONE; 64];
     }
 
+    /// Efficiently removes all pieces from the given rank.
+    #[inline]
+    pub fn clear_rank(&mut self, rank: Rank) {
+        self.__inner_2d_mut()[rank as usize] = [NONE; 8];
+    }
+
     /// Returns whether `self` is empty.
     ///
     /// For much better performance and readability, is recommended to use this
