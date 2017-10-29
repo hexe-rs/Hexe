@@ -76,6 +76,12 @@ impl Bitboard {
         self::tables::LINE[start as usize][end as usize].into()
     }
 
+    /// Returns whether the path for `right` is empty within `self`.
+    #[inline]
+    pub fn path_is_empty(self, right: CastleRight) -> bool {
+        (self & right.path()).is_empty()
+    }
+
     /// Returns an iterator over the subsets of `self`.
     #[inline]
     pub fn carry_rippler(self) -> CarryRippler {
