@@ -169,6 +169,21 @@ impl PieceMap {
         self.0.reverse()
     }
 
+    /// Mirrors the map across the horizontal axis of a chess board.
+    pub fn mirror_horizontal(&mut self) {
+        type RankBuf = [u8; 8];
+        for i in (0..4).map(|i| i * 8) {
+            let j = 56 - i;
+            unsafe {
+                // Erases origin lifetime in cast which appeases borrowck
+                mem::swap(
+                    &mut *(&mut self.0[i] as *mut u8 as *mut RankBuf),
+                    &mut *(&mut self.0[j] as *mut u8 as *mut RankBuf)
+                );
+            }
+        }
+    }
+
     /// Returns the first square and piece pair in the map.
     #[inline]
     pub fn first(&self) -> Option<(Square, &Piece)> {
