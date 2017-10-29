@@ -10,7 +10,38 @@ use prelude::*;
 
 const NONE: u8 = 12;
 
-static _EMPTY: [u8; 64] = [NONE; 64];
+mod tables {
+    use super::*;
+
+    pub static _EMPTY: [u8; 64] = [NONE; 64];
+
+    macro_rules! def_pieces {
+        ($($n:ident => $p:ident),+ $(,)*) => {
+            $(const $n: u8 = Piece::$p as u8;)+
+        }
+    }
+
+    def_pieces! {
+        WP => WhitePawn,   BP => BlackPawn,
+        WN => WhiteKnight, BN => BlackKnight,
+        WB => WhiteBishop, BB => BlackBishop,
+        WR => WhiteRook,   BR => BlackRook,
+        WK => WhiteKing,   BK => BlackKing,
+        WQ => WhiteQueen,  BQ => BlackQueen,
+    }
+
+    /// The piece map for standard chess.
+    pub const STANDARD: [u8; 64] = [
+        WR,   WN,   WB,   WQ,   WK,   WB,   WN,   WR,
+        WP,   WP,   WP,   WP,   WP,   WP,   WP,   WP,
+        NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE,
+        NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE,
+        NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE,
+        NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE,
+        BP,   BP,   BP,   BP,   BP,   BP,   BP,   BP,
+        BR,   BN,   BB,   BQ,   BK,   BB,   BN,   BR,
+    ];
+}
 
 /// A mapping of sixty-four squares to pieces.
 ///
@@ -81,6 +112,9 @@ impl Extend<(Square, Piece)> for PieceMap {
 impl PieceMap {
     /// An empty piece map.
     pub const EMPTY: PieceMap = PieceMap([NONE; 64]);
+
+    /// The piece map for standard chess.
+    pub const STANDARD: PieceMap = PieceMap(tables::STANDARD);
 
     /// Creates an empty piece map.
     #[inline]
@@ -251,7 +285,7 @@ impl PieceMap {
     /// method over checking whether `self.len() == 0`.
     #[inline]
     pub fn is_empty(&self) -> bool {
-        self.0[..] == _EMPTY[..]
+        self.0[..] == tables::_EMPTY[..]
     }
 
     /// Returns the number of pieces in `self`.
