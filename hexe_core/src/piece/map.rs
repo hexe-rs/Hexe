@@ -91,6 +91,12 @@ impl fmt::Debug for PieceMap {
     }
 }
 
+impl fmt::Display for PieceMap {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.map_str(|s| fmt::Display::fmt(s, f))
+    }
+}
+
 impl ::core::iter::FromIterator<(Square, Piece)> for PieceMap {
     #[inline]
     fn from_iter<T: IntoIterator<Item=(Square, Piece)>>(iter: T) -> PieceMap {
