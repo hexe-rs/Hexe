@@ -760,4 +760,19 @@ mod tests {
         map = PieceMap::from_init(|_| Some(Piece::BlackBishop));
         assert_len!(64);
     }
+
+    #[test]
+    fn map_str() {
+        let map = PieceMap::STANDARD;
+        let exp = "r n b q k b n r\n\
+                   p p p p p p p p\n\
+                   . . . . . . . .\n\
+                   . . . . . . . .\n\
+                   . . . . . . . .\n\
+                   . . . . . . . .\n\
+                   P P P P P P P P\n\
+                   R N B Q K B N R";
+
+        map.map_str(|s| assert_eq!(s, exp));
+    }
 }
