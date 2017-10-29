@@ -128,6 +128,12 @@ impl PieceMap {
         PieceMap::default()
     }
 
+    /// Creates a map with _all_ squares populated by `piece`.
+    #[inline]
+    pub fn all(piece: Piece) -> PieceMap {
+        PieceMap([piece as u8; 64])
+    }
+
     /// Creates a new piece map by instantiating each slot with the provided
     /// initializer.
     ///
