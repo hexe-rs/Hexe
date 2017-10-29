@@ -13,7 +13,7 @@ const NONE: u8 = 12;
 mod tables {
     use super::*;
 
-    pub static _EMPTY: [u8; 64] = [NONE; 64];
+    pub static _EMPTY: [u8; 64] = PieceMap::EMPTY.0;
 
     macro_rules! def_pieces {
         ($($n:ident => $p:ident),+ $(,)*) => {
