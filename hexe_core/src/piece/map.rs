@@ -175,11 +175,14 @@ impl PieceMap {
         self.0.reverse()
     }
 
+    #[inline]
+    fn inner_2d_mut(&mut self) -> &mut [[u8; 8]; 8] {
+        unsafe { (&mut self.0).into_unchecked() }
+    }
+
     /// Mirrors the map across the horizontal axis of a chess board.
     pub fn mirror_horizontal(&mut self) {
-        let inner: &mut [[u8; 8]; 8] = unsafe {
-            (&mut self.0).into_unchecked()
-        };
+        let inner = self.inner_2d_mut();
         for i in 0..4 {
             inner.swap(i, 7 - i);
         }
@@ -738,10 +741,7 @@ impl Swap for Square {
 impl Swap for Rank {
     #[inline]
     fn swap(i: Rank, j: Rank, map: &mut PieceMap) {
-        let inner: &mut [[u8; 8]; 8] = unsafe {
-            (&mut map.0).into_unchecked()
-        };
-        inner.swap(i as usize, j as usize);
+        map.inner_2d_mut().swap(i as usize, j as usize);
     }
 }
 
