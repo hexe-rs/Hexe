@@ -430,6 +430,9 @@ impl PieceMap {
     ///
     /// # Examples
     ///
+    /// **Note:** `PieceMap` implements [`Display`], thus it can be printed
+    /// directly without using this method.
+    ///
     /// ```
     /// # use hexe_core::piece::map::*;
     /// let map = PieceMap::STANDARD;
@@ -447,6 +450,7 @@ impl PieceMap {
     /// });
     /// ```
     ///
+    /// [`Display`]: https://doc.rust-lang.org/std/fmt/trait.Display.html
     /// [`Square::map_str`]: ../../square/enum.Square.html#method.map_str
     #[inline]
     pub fn map_str<T, F>(&self, f: F) -> T
