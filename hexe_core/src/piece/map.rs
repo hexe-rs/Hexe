@@ -245,9 +245,9 @@ impl PieceMap {
         T::swap(i, j, self);
     }
 
-    /// Takes the piece at `from` and places it at `to`.
+    /// Takes the piece at the square and moves it.
     #[inline]
-    pub fn place(&mut self, from: Square, to: Square) {
+    pub fn relocate(&mut self, from: Square, to: Square) {
         self.0[to as usize] = mem::replace(&mut self.0[from as usize], NONE);
     }
 
@@ -274,8 +274,8 @@ impl PieceMap {
         let squares = &SQUARES[castling as usize];
         let (k1, k2) = squares[0];
         let (r1, r2) = squares[1];
-        self.place(k1, k2);
-        self.place(r1, r2);
+        self.relocate(k1, k2);
+        self.relocate(r1, r2);
     }
 
     /// Inserts all pieces for which the function returns `Some`.
