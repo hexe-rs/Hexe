@@ -185,6 +185,12 @@ impl PieceMap {
         }
     }
 
+    /// Mirrors the map across the vertical axis of a chess board.
+    pub fn mirror_vertical(&mut self) {
+        self.reverse();
+        self.mirror_horizontal();
+    }
+
     /// Returns the first square and piece pair in the map.
     #[inline]
     pub fn first(&self) -> Option<(Square, &Piece)> {
