@@ -177,16 +177,11 @@ impl PieceMap {
 
     /// Mirrors the map across the horizontal axis of a chess board.
     pub fn mirror_horizontal(&mut self) {
-        type RankBuf = [u8; 8];
-        for i in (0..4).map(|i| i * 8) {
-            let j = 56 - i;
-            unsafe {
-                // Erases origin lifetime in cast which appeases borrowck
-                mem::swap(
-                    &mut *(&mut self.0[i] as *mut u8 as *mut RankBuf),
-                    &mut *(&mut self.0[j] as *mut u8 as *mut RankBuf)
-                );
-            }
+        let inner: &mut [[u8; 8]; 8] = unsafe {
+            (&mut self.0).into_unchecked()
+        };
+        for i in 0..4 {
+            inner.swap(i, 7 - i);
         }
     }
 
