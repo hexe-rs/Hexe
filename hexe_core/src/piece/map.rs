@@ -729,6 +729,16 @@ impl Swap for Square {
     }
 }
 
+impl Swap for Rank {
+    #[inline]
+    fn swap(i: Rank, j: Rank, map: &mut PieceMap) {
+        let inner: &mut [[u8; 8]; 8] = unsafe {
+            (&mut map.0).into_unchecked()
+        };
+        inner.swap(i as usize, j as usize);
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
