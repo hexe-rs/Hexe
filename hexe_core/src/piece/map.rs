@@ -854,6 +854,9 @@ mod tests {
 
         map.insert(Square::H8, Piece::WhitePawn);
         assert!(!map.is_empty());
+
+        map = PieceMap::from_init(|_| Some(Piece::BlackBishop));
+        assert!(!map.is_empty());
     }
 
     #[test]
