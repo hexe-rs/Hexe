@@ -843,7 +843,7 @@ mod tests {
         map = PieceMap::STANDARD;
         assert_len!(32);
 
-        map = PieceMap::from_init(|_| Some(Piece::BlackBishop));
+        map = PieceMap::filled(Piece::BlackBishop);
         assert_len!(64);
     }
 
@@ -855,7 +855,7 @@ mod tests {
         map.insert(Square::H8, Piece::WhitePawn);
         assert!(!map.is_empty());
 
-        map = PieceMap::from_init(|_| Some(Piece::BlackBishop));
+        map = PieceMap::filled(Piece::BlackBishop);
         assert!(!map.is_empty());
     }
 
