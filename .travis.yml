@@ -13,6 +13,8 @@ matrix:
     - rust: stable
       env: FEATURES="--features serde"
     - rust: nightly
+      env: FEATURES="--features simd"
+    - rust: nightly
       env: FEATURES="--features nightly"
 
 script: ./travis.sh

@@ -22,6 +22,9 @@ extern crate memchr;
 #[cfg(feature = "serde")]
 extern crate serde;
 
+#[cfg(feature = "simd")]
+extern crate simd;
+
 #[macro_use]
 extern crate uncon_derive;
 extern crate uncon;
