@@ -628,7 +628,6 @@ impl<'a> fmt::Debug for Iter<'a> {
 }
 
 /// A mutable [`PieceMap`](struct.PieceMap.html) iterator.
-#[derive(Clone)]
 pub struct IterMut<'a> {
     map: *mut PieceMap,
     iter: Squares,
@@ -706,7 +705,8 @@ impl<'a> ExactSizeIterator for IterMut<'a> {
 
 impl<'a> fmt::Debug for IterMut<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.debug_list().entries(self.clone()).finish()
+        let iter = Iter { map: self._map(), iter: self.iter.clone() };
+        f.debug_list().entries(iter).finish()
     }
 }
 
