@@ -831,6 +831,15 @@ mod tests {
     }
 
     #[test]
+    fn is_empty() {
+        let mut map = PieceMap::new();
+        assert!(map.is_empty());
+
+        map.insert(Square::H8, Piece::WhitePawn);
+        assert!(!map.is_empty());
+    }
+
+    #[test]
     fn map_str() {
         let map = PieceMap::STANDARD;
         let exp = "r n b q k b n r\n\
