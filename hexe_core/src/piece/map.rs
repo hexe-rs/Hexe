@@ -338,11 +338,34 @@ impl PieceMap {
     #[inline]
     pub fn len(&self) -> usize {
         let mut len = self.0.len();
-        for &slot in self.0.iter() {
-            if slot == NONE {
-                len -= 1;
+
+        #[cfg(feature = "simd")]
+        {
+            use simd::u8x16;
+            let empty = u8x16::splat(NONE);
+
+            for i in (0..4).map(|i| i * 16) {
+                let vec = u8x16::load(&self.0, i);
+                if vec.eq(empty).all() {
+                    len -= 16;
+                } else {
+                    for &slot in &self.0[i..(i + 16)] {
+                        if slot == NONE {
+                            len -= 1;
+                        }
+                    }
+                }
             }
         }
+        #[cfg(not(feature = "simd"))]
+        {
+            for &slot in self.0.iter() {
+                if slot == NONE {
+                    len -= 1;
+                }
+            }
+        }
+
         len
     }
 
@@ -799,6 +822,9 @@ mod tests {
 
         map.insert(Square::A1, Piece::WhitePawn);
         assert_len!(1);
+
+        map = PieceMap::STANDARD;
+        assert_len!(32);
 
         map = PieceMap::from_init(|_| Some(Piece::BlackBishop));
         assert_len!(64);
