@@ -333,8 +333,8 @@ impl PieceMap {
             use simd::u8x16;
             let empty = u8x16::splat(NONE);
 
-            for i in (0..4).map(|i| i * 16) {
-                let vec = u8x16::load(&self.0, i);
+            for i in 0..4 {
+                let vec = u8x16::load(&self.0, i * 16);
                 if !vec.eq(empty).all() {
                     return false;
                 }
