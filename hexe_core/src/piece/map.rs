@@ -2,7 +2,6 @@
 
 use super::*;
 use core::fmt;
-use core::marker::PhantomData;
 use core::mem;
 use core::ops;
 use square::Squares;
@@ -556,7 +555,7 @@ impl PieceMap {
     /// Returns an iterator visiting all square-piece pairs mutably in order.
     #[inline]
     pub fn iter_mut(&mut self) -> IterMut {
-        IterMut { map: self, iter: Squares::default(), _marker: PhantomData }
+        IterMut { map: self, iter: Squares::default() }
     }
 
     /// Returns a view into the bytes of the map.
@@ -674,10 +673,8 @@ impl<'a> fmt::Debug for Iter<'a> {
 
 /// A mutable [`PieceMap`](struct.PieceMap.html) iterator.
 pub struct IterMut<'a> {
-    map: *mut PieceMap,
+    map: &'a mut PieceMap,
     iter: Squares,
-    // Rust doesn't like mutable borrows here
-    _marker: PhantomData<&'a mut PieceMap>,
 }
 
 #[cfg(test)]
@@ -689,7 +686,7 @@ unsafe impl<'a> Sync for IterMut<'a> {}
 impl<'a> From<IterMut<'a>> for Iter<'a> {
     #[inline]
     fn from(iter: IterMut) -> Iter {
-        Iter { map: iter._map(), iter: iter.iter }
+        Iter { map: iter.map, iter: iter.iter }
     }
 }
 
@@ -699,7 +696,7 @@ impl<'a> Iterator for IterMut<'a> {
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         while let Some(sq) = self.iter.next() {
-            if let Some(pc) = self._map_mut().get_mut(sq) {
+            if let Some(pc) = self.map.get_mut(sq) {
                 return Some((sq, pc));
             }
         }
@@ -727,7 +724,7 @@ impl<'a> DoubleEndedIterator for IterMut<'a> {
     #[inline]
     fn next_back(&mut self) -> Option<Self::Item> {
         while let Some(sq) = self.iter.next_back() {
-            if let Some(pc) = self._map_mut().get_mut(sq) {
+            if let Some(pc) = self.map.get_mut(sq) {
                 return Some((sq, pc));
             }
         }
@@ -738,26 +735,14 @@ impl<'a> DoubleEndedIterator for IterMut<'a> {
 impl<'a> ExactSizeIterator for IterMut<'a> {
     #[inline]
     fn len(&self) -> usize {
-        self._map().find_len(self.iter.clone())
+        self.map.find_len(self.iter.clone())
     }
 }
 
 impl<'a> fmt::Debug for IterMut<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let iter = Iter { map: self._map(), iter: self.iter.clone() };
+        let iter = Iter { map: self.map, iter: self.iter.clone() };
         f.debug_list().entries(iter).finish()
-    }
-}
-
-impl<'a> IterMut<'a> {
-    #[inline]
-    fn _map(&self) -> &'a PieceMap {
-        unsafe { &*self.map }
-    }
-
-    #[inline]
-    fn _map_mut(&mut self) -> &'a mut PieceMap {
-        unsafe { &mut *self.map }
     }
 }
 
