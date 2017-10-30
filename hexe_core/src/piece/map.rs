@@ -16,8 +16,6 @@ const NONE: u8 = 12;
 mod tables {
     use super::*;
 
-    pub static _EMPTY: [u8; 64] = PieceMap::EMPTY.0;
-
     macro_rules! def_pieces {
         ($($n:ident => $p:ident),+ $(,)*) => {
             $(const $n: u8 = Piece::$p as u8;)+
@@ -202,6 +200,11 @@ impl PieceMap {
     }
 
     #[inline]
+    fn __inner_2d(&self) -> &[[u8; 8]; 8] {
+        unsafe { (&self.0).into_unchecked() }
+    }
+
+    #[inline]
     fn __inner_2d_mut(&mut self) -> &mut [[u8; 8]; 8] {
         unsafe { (&mut self.0).into_unchecked() }
     }
@@ -351,20 +354,23 @@ impl PieceMap {
         #[cfg(feature = "simd")]
         {
             let empty = u8x16::splat(NONE);
-
             for i in 0..4 {
                 let vec = u8x16::load(&self.0, i * 16);
                 if !vec.eq(empty).all() {
                     return false;
                 }
             }
-
-            true
         }
         #[cfg(not(feature = "simd"))]
         {
-            self.0[..] == tables::_EMPTY[..]
+            let empty = [NONE; 8];
+            for &slot in self.__inner_2d() {
+                if slot != empty {
+                    return false;
+                }
+            }
         }
+        true
     }
 
     #[inline]
