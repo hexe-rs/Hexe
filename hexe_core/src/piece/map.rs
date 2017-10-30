@@ -411,9 +411,17 @@ impl PieceMap {
         }
         #[cfg(not(feature = "simd"))]
         {
-            for &slot in self.0.iter() {
-                if slot == NONE {
-                    len -= 1;
+            let empty = [NONE; 8];
+
+            for &slot in self.__inner_2d() {
+                if slot == empty {
+                    len -= 8;
+                } else {
+                    for &val in &slot {
+                        if val == NONE {
+                            len -= 1;
+                        }
+                    }
                 }
             }
         }
