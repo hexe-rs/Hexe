@@ -323,6 +323,25 @@ impl Squares {
         let value = square as u8;
         (self.iter.start <= value) && (value < self.iter.end)
     }
+
+    #[inline]
+    fn _range(&self) -> Range<usize> {
+        Range { start: self.iter.start as usize, end: self.iter.end as usize }
+    }
+
+    /// Extracts a slice from the buffer over which `self` iterates.
+    #[inline]
+    pub fn extract<'a, T: 'a>(&self, buf: &'a [T; 64]) -> &'a [T] {
+        let range = self._range();
+        unsafe { buf.get_unchecked(range) }
+    }
+
+    /// Extracts a mutable slice from the buffer over which `self` iterates.
+    #[inline]
+    pub fn extract_mut<'a, T: 'a>(&self, buf: &'a mut [T; 64]) -> &'a mut [T] {
+        let range = self._range();
+        unsafe { buf.get_unchecked_mut(range) }
+    }
 }
 
 /// A file (or column) for a chess board.
