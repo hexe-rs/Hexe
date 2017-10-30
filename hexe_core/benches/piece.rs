@@ -81,6 +81,19 @@ fn map_rfind(b: &mut Bencher) {
 }
 
 #[bench]
+fn map_iter_len(b: &mut Bencher) {
+    let map = map::PieceMap::STANDARD;
+    let mut iter = map.iter();
+
+    iter.next();
+    iter.next_back();
+
+    b.iter(|| {
+        black_box(black_box(&iter).len());
+    });
+}
+
+#[bench]
 fn map_len(b: &mut Bencher) {
     let map = piece_map!();
     b.iter(|| {

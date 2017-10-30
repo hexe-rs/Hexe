@@ -349,10 +349,10 @@ impl PieceMap {
     }
 
     #[inline]
-    fn find_len(&self, iter: Squares) -> usize {
+    fn find_len(&self, iter: &Squares) -> usize {
         let mut len = 0;
-        for square in iter {
-            if self.0[square as usize] != NONE {
+        for &slot in iter.extract(&self.0) {
+            if slot != NONE {
                 len += 1;
             }
         }
@@ -662,7 +662,7 @@ impl<'a> DoubleEndedIterator for Iter<'a> {
 impl<'a> ExactSizeIterator for Iter<'a> {
     #[inline]
     fn len(&self) -> usize {
-        self.map.find_len(self.iter.clone())
+        self.map.find_len(&self.iter)
     }
 }
 
@@ -738,7 +738,7 @@ impl<'a> DoubleEndedIterator for IterMut<'a> {
 impl<'a> ExactSizeIterator for IterMut<'a> {
     #[inline]
     fn len(&self) -> usize {
-        self._map().find_len(self.iter.clone())
+        self._map().find_len(&self.iter)
     }
 }
 
