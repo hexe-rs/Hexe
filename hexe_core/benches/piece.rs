@@ -108,3 +108,12 @@ fn map_is_empty(b: &mut Bencher) {
         black_box(black_box(&map).is_empty());
     });
 }
+
+#[bench]
+fn map_eq(b: &mut Bencher) {
+    let x = piece_map!();
+    let y = piece_map!();
+    b.iter(|| {
+        black_box(black_box(&x) == black_box(&y));
+    });
+}

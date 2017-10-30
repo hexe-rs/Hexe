@@ -59,7 +59,24 @@ impl Clone for PieceMap {
 impl PartialEq for PieceMap {
     #[inline]
     fn eq(&self, other: &PieceMap) -> bool {
-        self.0[..] == other.0[..]
+        #[cfg(feature = "simd")]
+        {
+            if self as *const _ == other as *const _ {
+                return true;
+            }
+            for i in (0..4).map(|i| i * 16) {
+                let this = u8x16::load(&self.0, i);
+                let that = u8x16::load(&other.0, i);
+                if !this.eq(that).all() {
+                    return false;
+                }
+            }
+            true
+        }
+        #[cfg(not(feature = "simd"))]
+        {
+            self.0[..] == other.0[..]
+        }
     }
 }
 
