@@ -50,6 +50,12 @@ impl fmt::Debug for Bitboard {
     }
 }
 
+impl fmt::Display for Bitboard {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.map_str(|s| fmt::Display::fmt(s, f))
+    }
+}
+
 macro_rules! forward_sh_impl {
     ($($t1:ident $f1:ident $t2:ident $f2:ident)+) => {
         $(impl<T> ops::$t1<T> for Bitboard where u64: ops::$t1<T, Output=u64> {
