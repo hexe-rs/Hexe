@@ -328,7 +328,24 @@ impl PieceMap {
     /// method over checking whether `self.len() == 0`.
     #[inline]
     pub fn is_empty(&self) -> bool {
-        self.0[..] == tables::_EMPTY[..]
+        #[cfg(feature = "simd")]
+        {
+            use simd::u8x16;
+            let empty = u8x16::splat(NONE);
+
+            for i in (0..4).map(|i| i * 16) {
+                let vec = u8x16::load(&self.0, i);
+                if !vec.eq(empty).all() {
+                    return false;
+                }
+            }
+
+            true
+        }
+        #[cfg(not(feature = "simd"))]
+        {
+            self.0[..] == tables::_EMPTY[..]
+        }
     }
 
     /// Returns the number of pieces in `self`.
