@@ -8,6 +8,9 @@ use core::ops;
 use square::Squares;
 use prelude::*;
 
+#[cfg(feature = "simd")]
+use simd::u8x16;
+
 const NONE: u8 = 12;
 
 mod tables {
@@ -330,7 +333,6 @@ impl PieceMap {
     pub fn is_empty(&self) -> bool {
         #[cfg(feature = "simd")]
         {
-            use simd::u8x16;
             let empty = u8x16::splat(NONE);
 
             for i in 0..4 {
@@ -369,7 +371,6 @@ impl PieceMap {
 
         #[cfg(feature = "simd")]
         {
-            use simd::u8x16;
             let empty = u8x16::splat(NONE);
 
             for i in (0..4).map(|i| i * 16) {
@@ -779,7 +780,6 @@ impl Contained for Piece {
     fn contained_in(self, map: &PieceMap) -> bool {
         #[cfg(feature = "simd")]
         {
-            use simd::u8x16;
             let pieces = u8x16::splat(self as u8);
 
             for i in 0..4 {
