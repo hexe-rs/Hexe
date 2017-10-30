@@ -777,7 +777,24 @@ impl Contained for Square {
 impl Contained for Piece {
     #[inline]
     fn contained_in(self, map: &PieceMap) -> bool {
-        map.find(self).is_some()
+        #[cfg(feature = "simd")]
+        {
+            use simd::u8x16;
+            let pieces = u8x16::splat(self as u8);
+
+            for i in 0..4 {
+                let vec = u8x16::load(&map.0, i * 16);
+                if vec.eq(pieces).any() {
+                    return true;
+                }
+            }
+
+            false
+        }
+        #[cfg(not(feature = "simd"))]
+        {
+            map.find(self).is_some()
+        }
     }
 }
 
