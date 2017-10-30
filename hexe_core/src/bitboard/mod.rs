@@ -5,6 +5,7 @@ mod carry_rippler;
 mod impls;
 mod tables;
 
+use core::str;
 use prelude::*;
 pub use self::carry_rippler::*;
 
@@ -202,6 +203,26 @@ impl Bitboard {
 
     fn fill_shift(self, direction: Direction, empty: Bitboard) -> Bitboard {
         self.fill(direction, empty).shift(direction)
+    }
+
+    /// Returns the result of applying a function to a mutable string
+    /// representation of `self`.
+    #[inline]
+    pub fn map_str<F, T>(&self, f: F) -> T
+        where F: for<'a> FnOnce(&'a mut str) -> T
+    {
+        let mut buf = *b". . . . . . . .\n\
+                         . . . . . . . .\n\
+                         . . . . . . . .\n\
+                         . . . . . . . .\n\
+                         . . . . . . . .\n\
+                         . . . . . . . .\n\
+                         . . . . . . . .\n\
+                         . . . . . . . .";
+        for idx in self.map(|s| (0b111000 ^ s as usize) << 1) {
+            unsafe { *buf.get_unchecked_mut(idx) = b'1' };
+        }
+        unsafe { f(str::from_utf8_unchecked_mut(&mut buf)) }
     }
 }
 
