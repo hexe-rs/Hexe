@@ -479,7 +479,7 @@ mod tests {
             $(#[test]
             fn $fn() {
                 let mut rng = thread_rng();
-                for occupied in (0..10_000).map(|_| Bitboard(rng.gen())) {
+                for occupied in (0..20_000).map(|_| Bitboard(rng.gen())) {
                     for square in Square::all() {
                         let exp = Bitboard::from(square).$fn(!occupied);
                         let res = square.$fn(occupied);
