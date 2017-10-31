@@ -1,0 +1,14 @@
+# Changelog [![Crates.io][crate-badge]][crate]
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+**Note:** `hexe_core` has [its own changelog][hc-log] separate from this one.
+
+## [Unreleased]
+
+[crate]:       https://crates.io/crates/hexe
+[crate-badge]: https://img.shields.io/crates/v/hexe.svg
+
+[hc-log]: https://github.com/hexe/Hexe/blob/master/hexe_core/CHANGELOG.md
