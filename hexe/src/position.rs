@@ -31,6 +31,12 @@ impl Default for Position {
 }
 
 impl Position {
+    /// Returns the piece at the square, if any.
+    #[inline]
+    pub fn piece_at(&self, sq: Square) -> Option<&Piece> {
+        self.piece_map.get(sq)
+    }
+
     /// Returns the corresponding bitboard for the retriever.
     ///
     /// # Examples
