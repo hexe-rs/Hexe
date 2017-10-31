@@ -22,8 +22,10 @@ extern crate memchr;
 #[cfg(feature = "serde")]
 extern crate serde;
 
+// Re-exported to use within hexe
 #[cfg(feature = "simd")]
-extern crate simd;
+#[doc(hidden)]
+pub extern crate simd as _simd;
 
 #[macro_use]
 extern crate uncon_derive;

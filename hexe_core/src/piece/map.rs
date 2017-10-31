@@ -9,7 +9,7 @@ use square::Squares;
 use prelude::*;
 
 #[cfg(feature = "simd")]
-use simd::u8x16;
+use _simd::u8x16;
 
 const NONE: u8 = 12;
 

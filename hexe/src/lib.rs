@@ -8,6 +8,9 @@
 extern crate hexe_core;
 extern crate uncon;
 
+#[cfg(feature = "simd")]
+use hexe_core::_simd as simd;
+
 #[cfg(test)]
 #[macro_use]
 extern crate static_assertions;
