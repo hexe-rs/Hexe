@@ -9,4 +9,5 @@ extern crate hexe_core;
 
 pub use hexe_core::{bitboard, castle_rights, color, piece, square};
 
+pub mod position;
 pub mod prelude;
