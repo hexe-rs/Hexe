@@ -9,6 +9,7 @@ pub struct Position {
     piece_map: PieceMap,
     pieces: [u64; 6],
     colors: [u64; 2],
+    player: Color,
 }
 
 impl Default for Position {
@@ -26,6 +27,7 @@ impl Default for Position {
             piece_map: PieceMap::STANDARD,
             pieces: [PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING],
             colors: [WHITE, BLACK],
+            player: Color::White,
         }
     }
 }
@@ -35,6 +37,18 @@ impl Position {
     #[inline]
     pub fn piece_at(&self, sq: Square) -> Option<&Piece> {
         self.piece_map.get(sq)
+    }
+
+    /// Returns the current player's color.
+    #[inline]
+    pub fn player(&self) -> Color {
+        self.player
+    }
+
+    /// Returns the opponent player's color.
+    #[inline]
+    pub fn opponent(&self) -> Color {
+        !self.player()
     }
 
     /// Returns the corresponding bitboard for the retriever.
