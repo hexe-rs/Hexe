@@ -1,6 +1,7 @@
 //! A color to represent pieces or board squares.
 
 use core::fmt;
+use core::ops;
 use core::str;
 
 #[cfg(feature = "serde")]
@@ -100,6 +101,15 @@ impl_try_from_char! {
     /// The error returned when `try_from` fails for `Color`.
     message = "failed to parse a character as a color";
     impl for { Color }
+}
+
+impl ops::Not for Color {
+    type Output = Color;
+
+    #[inline]
+    fn not(self) -> Color {
+        (1 - self as u8).into()
+    }
 }
 
 impl Color {
