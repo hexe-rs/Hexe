@@ -53,10 +53,22 @@ impl Position {
         self.player
     }
 
+    /// Returns the bitboard corresponding to the current player.
+    #[inline]
+    pub fn player_bitboard(&self) -> Bitboard {
+        self.bitboard(self.player())
+    }
+
     /// Returns the opponent player's color.
     #[inline]
     pub fn opponent(&self) -> Color {
         !self.player()
+    }
+
+    /// Returns the bitboard corresponding to the opponent player.
+    #[inline]
+    pub fn opponent_bitboard(&self) -> Bitboard {
+        self.bitboard(self.opponent())
     }
 
     /// Returns the en passant square.
