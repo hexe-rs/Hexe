@@ -2,6 +2,9 @@
 
 use hexe_core::piece::map::PieceMap;
 use prelude::*;
+use uncon::*;
+
+const NO_SQUARE: u8 = 1 + Square::H8 as u8;
 
 /// A representation of the current game state.
 #[derive(PartialEq, Eq)]
@@ -10,6 +13,7 @@ pub struct Position {
     pieces: [u64; 6],
     colors: [u64; 2],
     player: Color,
+    en_passant: u8,
 }
 
 impl Default for Position {
@@ -28,6 +32,7 @@ impl Default for Position {
             pieces: [PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING],
             colors: [WHITE, BLACK],
             player: Color::White,
+            en_passant: NO_SQUARE,
         }
     }
 }
@@ -49,6 +54,15 @@ impl Position {
     #[inline]
     pub fn opponent(&self) -> Color {
         !self.player()
+    }
+
+    /// Returns the en passant square.
+    #[inline]
+    pub fn en_passant(&self) -> Option<&Square> {
+        match self.en_passant {
+            NO_SQUARE => None,
+            ref ep => unsafe { Some(ep.into_unchecked()) }
+        }
     }
 
     /// Returns the corresponding bitboard for the retriever.
