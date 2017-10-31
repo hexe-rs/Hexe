@@ -1,7 +1,7 @@
 //! A chess board square and its components.
 
 use core::fmt;
-use core::ops::Range;
+use core::ops::{self, Range};
 use core::str;
 
 #[cfg(feature = "serde")]
@@ -443,6 +443,15 @@ macro_rules! impl_components {
             #[inline]
             fn from(val: $t) -> char {
                 ($c + val as u8) as char
+            }
+        }
+
+        impl ops::Not for $t {
+            type Output = Self;
+
+            #[inline]
+            fn not(self) -> Self {
+                (7 - self as u8).into()
             }
         }
 
