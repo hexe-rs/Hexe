@@ -4,7 +4,7 @@ set -e
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-for d in hexe hexe_core; do
+for d in hexe_core hexe; do
     cd "$DIR/$d"
     cargo test $FEATURES
     cargo test $FEATURES --no-default-features
