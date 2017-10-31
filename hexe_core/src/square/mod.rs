@@ -481,10 +481,20 @@ mod tests {
                 let mut rng = thread_rng();
                 for occupied in (0..10_000).map(|_| Bitboard(rng.gen())) {
                     for square in Square::all() {
-                        assert_eq!(
-                            square.$fn(occupied),
-                            Bitboard::from(square).$fn(!occupied)
-                        );
+                        let exp = Bitboard::from(square).$fn(!occupied);
+                        let res = square.$fn(occupied);
+                        if exp != res {
+                            panic!(
+                                "Square: {}\n\
+                                 Occupied: {1:?}\n{1}\n\
+                                 Expected: {2:?}\n{2}\n\
+                                 Generated: {3:?}\n{3}",
+                                square,
+                                occupied,
+                                exp,
+                                res,
+                            );
+                        }
                     }
                 }
             })*
