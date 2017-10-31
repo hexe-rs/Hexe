@@ -4,6 +4,7 @@ use hexe_core::piece::map::PieceMap;
 use prelude::*;
 use uncon::*;
 
+/// The raw value used to represent no square for a space-optimized square.
 const NO_SQUARE: u8 = 1 + Square::H8 as u8;
 
 #[cfg(test)]
@@ -12,10 +13,22 @@ const_assert_eq!(no_sq; NO_SQUARE, 64);
 /// A representation of the current game state.
 #[derive(PartialEq, Eq)]
 pub struct Position {
+    /// A piece map board representation for fast lookups.
     piece_map: PieceMap,
+
+    /// Bitboards for each piece kind.
     pieces: [u64; 6],
+
+    /// Bitboards for each color.
     colors: [u64; 2],
+
+    /// The color for the player whose turn it is.
     player: Color,
+
+    /// The square used in an en passant capture, if any.
+    ///
+    /// Uses a value of `NO_SQUARE` when empty. This is because `Option<Square>`
+    /// currently uses two bytes instead of one.
     en_passant: u8,
 }
 
