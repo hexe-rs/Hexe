@@ -8,6 +8,10 @@
 extern crate hexe_core;
 extern crate uncon;
 
+#[cfg(test)]
+#[macro_use]
+extern crate static_assertions;
+
 pub use hexe_core::{bitboard, castle_rights, color, piece, square};
 
 pub mod position;

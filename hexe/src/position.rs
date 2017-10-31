@@ -6,6 +6,9 @@ use uncon::*;
 
 const NO_SQUARE: u8 = 1 + Square::H8 as u8;
 
+#[cfg(test)]
+const_assert_eq!(no_sq; NO_SQUARE, 64);
+
 /// A representation of the current game state.
 #[derive(PartialEq, Eq)]
 pub struct Position {

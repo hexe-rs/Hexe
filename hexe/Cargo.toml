@@ -15,6 +15,9 @@ travis-ci = { repository = "hexe-rs/Hexe" }
 hexe_core = { path = "../hexe_core", version = "0.0.0" }
 uncon     = { version = "1.1.0" }
 
+[dev-dependencies]
+static_assertions = "0.2"
+
 [features]
 nightly = ["hexe_core/nightly", "try-from"]
 try-from = ["hexe_core/try-from"]
