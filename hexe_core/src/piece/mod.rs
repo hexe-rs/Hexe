@@ -234,6 +234,13 @@ impl FromUnchecked<PieceKind> for Promotion {
     }
 }
 
+impl From<Promotion> for char {
+    #[inline]
+    fn from(prom: Promotion) -> char {
+        PieceKind::from(prom).into()
+    }
+}
+
 impl Promotion {
     /// Returns a promotion for the piece kind, if possible.
     #[inline]
