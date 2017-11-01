@@ -39,6 +39,7 @@ pub mod prelude;
 pub mod bitboard;
 pub mod castle_rights;
 pub mod color;
+pub mod misc;
 pub mod piece;
 pub mod square;
 

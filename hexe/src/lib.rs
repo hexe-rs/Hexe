@@ -15,7 +15,7 @@ use hexe_core::_simd as simd;
 #[macro_use]
 extern crate static_assertions;
 
-pub use hexe_core::{bitboard, castle_rights, color, piece, square};
+pub use hexe_core::{bitboard, castle_rights, color, misc, piece, square};
 
 pub mod position;
 pub mod prelude;

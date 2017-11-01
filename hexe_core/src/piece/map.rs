@@ -5,6 +5,7 @@ use core::fmt;
 use core::marker::PhantomData;
 use core::mem;
 use core::ops;
+use misc::Contained;
 use square::Squares;
 use prelude::*;
 
@@ -448,7 +449,7 @@ impl PieceMap {
     /// assert!(map.contains(pc));
     /// ```
     #[inline]
-    pub fn contains<T: Contained>(&self, value: T) -> bool {
+    pub fn contains<T: Contained<Self>>(&self, value: T) -> bool {
         value.contained_in(self)
     }
 
@@ -793,20 +794,14 @@ impl<'a> IterMut<'a> {
     }
 }
 
-/// A type whose instance may be contained in a [`PieceMap`](struct.PieceMap.html).
-pub trait Contained {
-    /// Returns whether `self` is contained in `map`.
-    fn contained_in(self, map: &PieceMap) -> bool;
-}
-
-impl Contained for Square {
+impl Contained<PieceMap> for Square {
     #[inline]
     fn contained_in(self, map: &PieceMap) -> bool {
         map.0[self as usize] != NONE
     }
 }
 
-impl Contained for Piece {
+impl Contained<PieceMap> for Piece {
     #[inline]
     fn contained_in(self, map: &PieceMap) -> bool {
         #[cfg(feature = "simd")]
