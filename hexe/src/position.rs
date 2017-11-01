@@ -60,6 +60,12 @@ impl Position {
         self.piece_map.get(sq)
     }
 
+    /// Returns a bitboard containing squares for where all pieces reside.
+    #[inline]
+    pub fn all_pieces(&self) -> Bitboard {
+        self.bitboard(Color::White) | self.bitboard(Color::Black)
+    }
+
     /// Returns the current player's color.
     #[inline]
     pub fn player(&self) -> Color {
