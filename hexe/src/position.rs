@@ -54,6 +54,12 @@ impl Default for Position {
 }
 
 impl Position {
+    /// Returns the inner piece map.
+    #[inline]
+    pub fn piece_map(&self) -> &PieceMap {
+        &self.piece_map
+    }
+
     /// Returns the piece at the square, if any.
     #[inline]
     pub fn piece_at(&self, sq: Square) -> Option<&Piece> {
