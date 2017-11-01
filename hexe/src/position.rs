@@ -228,7 +228,12 @@ mod tests {
                 assert!(pos.bitboard(piece.kind()).contains(square));
                 assert!(pos.bitboard(piece.color()).contains(square));
             } else {
-                assert!(!all.contains(square));
+                for &bitboard in &pos.pieces {
+                    assert!(!Bitboard(bitboard).contains(square));
+                }
+                for &bitboard in &pos.colors {
+                    assert!(!Bitboard(bitboard).contains(square));
+                }
             }
         }
     }
