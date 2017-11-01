@@ -1,6 +1,7 @@
 //! A chess game state position.
 
 use hexe_core::piece::map::PieceMap;
+use misc::Contained;
 use prelude::*;
 use uncon::*;
 
@@ -70,6 +71,12 @@ impl Position {
     #[inline]
     pub fn all_pieces(&self) -> Bitboard {
         self.bitboard(Color::White) | self.bitboard(Color::Black)
+    }
+
+    /// Returns whether `self` contains the value.
+    #[inline]
+    pub fn contains<T: Contained<Self>>(&self, value: T) -> bool {
+        value.contained_in(self)
     }
 
     /// Returns the number of pieces on the board.
@@ -144,6 +151,20 @@ impl Position {
     #[inline]
     pub fn bitboard<T: BitboardRetriever>(&self, retr: T) -> Bitboard {
         retr.bitboard(self)
+    }
+}
+
+impl Contained<Position> for Square {
+    #[inline]
+    fn contained_in(self, pos: &Position) -> bool {
+        pos.piece_map.contains(self)
+    }
+}
+
+impl Contained<Position> for Piece {
+    #[inline]
+    fn contained_in(self, pos: &Position) -> bool {
+        !pos.bitboard(self).is_empty()
     }
 }
 
