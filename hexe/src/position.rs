@@ -168,6 +168,20 @@ impl Contained<Position> for Piece {
     }
 }
 
+impl Contained<Position> for PieceKind {
+    #[inline]
+    fn contained_in(self, pos: &Position) -> bool {
+        !pos.bitboard(self).is_empty()
+    }
+}
+
+impl Contained<Position> for Color {
+    #[inline]
+    fn contained_in(self, pos: &Position) -> bool {
+        !pos.bitboard(self).is_empty()
+    }
+}
+
 /// A type whose instances serve to retrieve a [`Bitboard`] from a [`Position`].
 ///
 /// [`Bitboard`]: ../bitboard/struct.Bitboard.html
