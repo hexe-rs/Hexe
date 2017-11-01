@@ -152,3 +152,31 @@ impl BitboardRetriever for Piece {
         self.kind().bitboard(pos) & self.color().bitboard(pos)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn initial_pieces() {
+        let pos = Position::default();
+
+        for kind in (0..6u8).map(PieceKind::from) {
+            for &color in &[Color::White, Color::Black] {
+                let piece = Piece::new(kind, color);
+
+                for square in pos.bitboard(kind) {
+                    assert_eq!(pos.piece_map.kind_at(square), Some(kind));
+                }
+
+                for square in pos.bitboard(color) {
+                    assert_eq!(pos.piece_map.color_at(square), Some(color));
+                }
+
+                for square in pos.bitboard(piece) {
+                    assert_eq!(pos.piece_at(square), Some(&piece));
+                }
+            }
+        }
+    }
+}
