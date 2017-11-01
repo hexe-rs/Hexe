@@ -72,6 +72,18 @@ impl Position {
         self.bitboard(Color::White) | self.bitboard(Color::Black)
     }
 
+    /// Returns the number of pieces on the board.
+    #[inline]
+    pub fn count(&self) -> usize {
+        self.all_pieces().len()
+    }
+
+    /// Returns the number of pieces for the retriever.
+    #[inline]
+    pub fn count_of<T: BitboardRetriever>(&self, retr: T) -> usize {
+        self.bitboard(retr).len()
+    }
+
     /// Returns the current player's color.
     #[inline]
     pub fn player(&self) -> Color {
