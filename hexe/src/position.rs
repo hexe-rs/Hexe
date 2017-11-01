@@ -184,22 +184,15 @@ mod tests {
     #[test]
     fn initial_pieces() {
         let pos = Position::default();
+        let all = pos.all_pieces();
 
-        for kind in (0..6u8).map(PieceKind::from) {
-            for &color in &[Color::White, Color::Black] {
-                let piece = Piece::new(kind, color);
-
-                for square in pos.bitboard(kind) {
-                    assert_eq!(pos.piece_map.kind_at(square), Some(kind));
-                }
-
-                for square in pos.bitboard(color) {
-                    assert_eq!(pos.piece_map.color_at(square), Some(color));
-                }
-
-                for square in pos.bitboard(piece) {
-                    assert_eq!(pos.piece_at(square), Some(&piece));
-                }
+        for square in Square::all() {
+            if let Some(&piece) = pos.piece_at(square) {
+                assert!(pos.bitboard(piece).contains(square));
+                assert!(pos.bitboard(piece.kind()).contains(square));
+                assert!(pos.bitboard(piece.color()).contains(square));
+            } else {
+                assert!(!all.contains(square));
             }
         }
     }
