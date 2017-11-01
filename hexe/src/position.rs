@@ -188,6 +188,7 @@ mod tests {
 
         for square in Square::all() {
             if let Some(&piece) = pos.piece_at(square) {
+                assert!(all.contains(square));
                 assert!(pos.bitboard(piece).contains(square));
                 assert!(pos.bitboard(piece.kind()).contains(square));
                 assert!(pos.bitboard(piece.color()).contains(square));
