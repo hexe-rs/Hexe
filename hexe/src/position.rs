@@ -161,26 +161,18 @@ impl Contained<Position> for Square {
     }
 }
 
-impl Contained<Position> for Piece {
-    #[inline]
-    fn contained_in(self, pos: &Position) -> bool {
-        !pos.bitboard(self).is_empty()
+macro_rules! impl_contained {
+    ($($t:ty),+) => {
+        $(impl Contained<Position> for $t {
+            #[inline]
+            fn contained_in(self, pos: &Position) -> bool {
+                !pos.bitboard(self).is_empty()
+            }
+        })+
     }
 }
 
-impl Contained<Position> for PieceKind {
-    #[inline]
-    fn contained_in(self, pos: &Position) -> bool {
-        !pos.bitboard(self).is_empty()
-    }
-}
-
-impl Contained<Position> for Color {
-    #[inline]
-    fn contained_in(self, pos: &Position) -> bool {
-        !pos.bitboard(self).is_empty()
-    }
-}
+impl_contained! { Piece, PieceKind, Color }
 
 /// A type whose instances serve to retrieve a [`Bitboard`] from a [`Position`].
 ///
