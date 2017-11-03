@@ -623,6 +623,12 @@ impl PieceMap {
         }
     }
 
+    /// Returns an owned FEN string representation of `self`.
+    #[cfg(feature = "std")]
+    pub fn to_fen(&self) -> String {
+        self.map_fen(|s| String::from(s as &str))
+    }
+
     /// Returns an iterator visiting all square-piece pairs in order.
     #[inline]
     pub fn iter(&self) -> Iter {
