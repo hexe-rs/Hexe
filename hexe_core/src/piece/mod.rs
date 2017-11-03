@@ -33,7 +33,7 @@ pub enum Piece {
     BlackKing,
 }
 
-static PIECE_CHARS_ASCII: &[u8; 12] = b"PpNnBbRrQqKk";
+static PIECE_CHARS_ASCII: [u8; 12] = *b"PpNnBbRrQqKk";
 
 impl From<Piece> for char {
     #[inline]
