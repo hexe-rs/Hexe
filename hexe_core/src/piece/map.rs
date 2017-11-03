@@ -980,7 +980,7 @@ mod tests {
             (map, "rnbqkb1r/pppKpppp/8/8/8/8/PPPPPPPP/R2QpBNR")
         };
 
-        let maps: [(PieceMap, &str); 3] = [
+        let maps = [
             (PieceMap::STANDARD, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"),
             (PieceMap::EMPTY,    "8/8/8/8/8/8/8/8"),
             odd,
