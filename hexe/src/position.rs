@@ -12,7 +12,6 @@ const NO_SQUARE: u8 = 1 + Square::H8 as u8;
 const_assert_eq!(no_sq; NO_SQUARE, 64);
 
 /// A representation of the current game state.
-#[derive(PartialEq, Eq)]
 pub struct Position {
     /// A piece map board representation for fast lookups.
     piece_map: PieceMap,
@@ -32,6 +31,19 @@ pub struct Position {
     /// currently uses two bytes instead of one.
     en_passant: u8,
 }
+
+impl PartialEq for Position {
+    #[inline]
+    fn eq(&self, other: &Position) -> bool {
+        // We can skip checking `pieces` and `colors` because they represent the
+        // same data as `piece_map`.
+        self.piece_map  == other.piece_map &&
+        self.player     == other.player    &&
+        self.en_passant == other.en_passant
+    }
+}
+
+impl Eq for Position {}
 
 impl Default for Position {
     fn default() -> Position {
