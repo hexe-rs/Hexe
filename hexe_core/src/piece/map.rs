@@ -580,8 +580,10 @@ impl PieceMap {
         unsafe { f(str::from_utf8_unchecked_mut(&mut buf)) }
     }
 
-    /// Returns the result of applying a function to a FEN string
+    /// Returns the result of applying a function to a [FEN] string
     /// representation of `self`.
+    ///
+    /// [FEN]: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
     #[inline]
     pub fn map_fen<T, F>(&self, f: F) -> T
         where F: for<'a> FnOnce(&'a mut str) -> T
@@ -623,7 +625,9 @@ impl PieceMap {
         }
     }
 
-    /// Returns an owned FEN string representation of `self`.
+    /// Returns an owned [FEN] string representation of `self`.
+    ///
+    /// [FEN]: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
     #[cfg(feature = "std")]
     pub fn to_fen(&self) -> String {
         self.map_fen(|s| String::from(s as &str))
