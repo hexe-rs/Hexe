@@ -16,10 +16,10 @@ pub struct Position {
     /// A piece map board representation for fast lookups.
     piece_map: PieceMap,
 
-    /// Bitboards for each piece kind.
+    /// Bitboards for each piece kind. Uses `u64` for convenience.
     pieces: [u64; 6],
 
-    /// Bitboards for each color.
+    /// Bitboards for each color. Uses `u64` for convenience.
     colors: [u64; 2],
 
     /// The color for the player whose turn it is.
