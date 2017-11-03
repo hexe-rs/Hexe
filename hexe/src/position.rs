@@ -1,7 +1,7 @@
 //! A chess game state position.
 
-use hexe_core::piece::map::PieceMap;
-use misc::Contained;
+use core::piece::map::PieceMap;
+use core::misc::Contained;
 use prelude::*;
 use uncon::*;
 

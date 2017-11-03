@@ -4,4 +4,4 @@
 //! The core prelude is also imported, removing the need to import both
 //! separately.
 
-pub use hexe_core::prelude::*;
+pub use core::prelude::*;
