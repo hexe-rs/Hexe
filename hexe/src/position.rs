@@ -204,10 +204,7 @@ macro_rules! impl_contained {
 
 impl_contained! { Piece, PieceKind, Color }
 
-/// A type whose instances serve to retrieve a [`Bitboard`] from a [`Position`].
-///
-/// [`Bitboard`]: ../bitboard/struct.Bitboard.html
-/// [`Position`]: struct.Position.html
+/// A type whose instances serve to retrieve a `Bitboard` from a `Position`.
 pub trait BitboardRetriever {
     /// Retrieves the corresponding `Bitboard` for `self` from a `Position`.
     fn bitboard(self, pos: &Position) -> Bitboard;
