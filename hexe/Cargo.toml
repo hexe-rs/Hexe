@@ -12,8 +12,9 @@ include = ["Cargo.toml", "src/**/*.rs", "README*", "CHANGELOG*", "LICENSE*"]
 travis-ci = { repository = "hexe-rs/Hexe" }
 
 [dependencies]
-hexe_core = { path = "../hexe_core", version = "0.0.0" }
-uncon     = { version = "1.1.0" }
+hexe_core    = { path = "../hexe_core", version = "0.0.0" }
+uncon        = { version = "1.1.0" }
+uncon_derive = { version = "1.1.1" }
 
 [dev-dependencies]
 static_assertions = "0.2"

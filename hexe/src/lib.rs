@@ -6,6 +6,9 @@
 #![doc(html_logo_url = "https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png")]
 
 pub extern crate hexe_core as core;
+
+#[macro_use]
+extern crate uncon_derive;
 extern crate uncon;
 
 #[cfg(feature = "simd")]
