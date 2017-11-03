@@ -98,6 +98,24 @@ impl Position {
     }
 
     /// Returns the number of pieces for the retriever.
+    ///
+    /// # Examples
+    ///
+    /// This method can be used for [`Piece`], [`PieceKind`], and [`Color`]:
+    ///
+    /// ```
+    /// # use hexe::position::Position;
+    /// # use hexe::prelude::*;
+    /// let pos = Position::default();
+    ///
+    /// assert_eq!(pos.count_of(PieceKind::Knight), 4);
+    /// assert_eq!(pos.count_of(Color::White), 16);
+    /// assert_eq!(pos.count_of(Piece::BlackPawn), 8);
+    /// ```
+    ///
+    /// [`Piece`]:     ../piece/enum.Piece.html
+    /// [`PieceKind`]: ../piece/enum.PieceKind.html
+    /// [`Color`]:     ../color/enum.Color.html
     #[inline]
     pub fn count_of<T: BitboardRetriever>(&self, retr: T) -> usize {
         self.bitboard(retr).len()
