@@ -117,3 +117,13 @@ fn map_eq(b: &mut Bencher) {
         black_box(black_box(&x) == black_box(&y));
     });
 }
+
+#[bench]
+fn map_fen(b: &mut Bencher) {
+    let map = map::PieceMap::STANDARD;
+    b.iter(|| {
+        black_box(&map).map_str(|s| {
+            black_box(s);
+        });
+    });
+}
