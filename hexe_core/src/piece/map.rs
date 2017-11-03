@@ -588,37 +588,39 @@ impl PieceMap {
     {
         const NUM: usize = 8;
         const MAX: usize = NUM * NUM + 7;
-
-        let mut buf: [u8; MAX] = unsafe { mem::uninitialized() };
         let mut len: usize = 0;
 
-        for rank in (0..NUM).rev().map(Rank::from) {
-            let mut n: u8 = 0;
-            for file in (0..NUM).map(File::from) {
-                let square = Square::new(file, rank);
-                if let Some(&pc) = self.get(square) {
-                    if n != 0 {
-                        buf[len] = b'0' + n;
+        unsafe {
+            let mut buf: [u8; MAX] = mem::uninitialized();
+
+            for rank in (0..NUM).rev().map(Rank::from) {
+                let mut n: u8 = 0;
+                for file in (0..NUM).map(File::from) {
+                    let square = Square::new(file, rank);
+                    if let Some(&pc) = self.get(square) {
+                        if n != 0 {
+                            *buf.get_unchecked_mut(len) = b'0' + n;
+                            len += 1;
+                            n = 0;
+                        }
+                        *buf.get_unchecked_mut(len) = char::from(pc) as u8;
                         len += 1;
-                        n = 0;
+                    } else {
+                        n += 1;
                     }
-                    buf[len] = char::from(pc) as u8;
+                }
+                if n != 0 {
+                    *buf.get_unchecked_mut(len) = b'0' + n;
                     len += 1;
-                } else {
-                    n += 1;
+                }
+                if rank != Rank::One {
+                    *buf.get_unchecked_mut(len) = b'/';
+                    len += 1;
                 }
             }
-            if n != 0 {
-                buf[len] = b'0' + n;
-                len += 1;
-            }
-            if rank != Rank::One {
-                buf[len] = b'/';
-                len += 1;
-            }
-        }
 
-        unsafe { f(str::from_utf8_unchecked_mut(&mut buf[..len])) }
+            f(str::from_utf8_unchecked_mut(buf.get_unchecked_mut(..len)))
+        }
     }
 
     /// Returns an iterator visiting all square-piece pairs in order.
