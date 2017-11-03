@@ -580,6 +580,47 @@ impl PieceMap {
         unsafe { f(str::from_utf8_unchecked_mut(&mut buf)) }
     }
 
+    /// Returns the result of applying a function to a FEN string
+    /// representation of `self`.
+    #[inline]
+    pub fn map_fen<T, F>(&self, f: F) -> T
+        where F: for<'a> FnOnce(&'a mut str) -> T
+    {
+        const NUM: usize = 8;
+        const MAX: usize = NUM * NUM + 7;
+
+        let mut buf: [u8; MAX] = unsafe { mem::uninitialized() };
+        let mut len: usize = 0;
+
+        for rank in (0..NUM).rev().map(Rank::from) {
+            let mut n: u8 = 0;
+            for file in (0..NUM).map(File::from) {
+                let square = Square::new(file, rank);
+                if let Some(&pc) = self.get(square) {
+                    if n != 0 {
+                        buf[len] = b'0' + n;
+                        len += 1;
+                        n = 0;
+                    }
+                    buf[len] = char::from(pc) as u8;
+                    len += 1;
+                } else {
+                    n += 1;
+                }
+            }
+            if n != 0 {
+                buf[len] = b'0' + n;
+                len += 1;
+            }
+            if rank != Rank::One {
+                buf[len] = b'/';
+                len += 1;
+            }
+        }
+
+        unsafe { f(str::from_utf8_unchecked_mut(&mut buf[..len])) }
+    }
+
     /// Returns an iterator visiting all square-piece pairs in order.
     #[inline]
     pub fn iter(&self) -> Iter {
@@ -914,5 +955,27 @@ mod tests {
                    R N B Q K B N R";
 
         map.map_str(|s| assert_eq!(s, exp));
+    }
+
+    #[test]
+    fn fen() {
+        let odd = {
+            let mut map = PieceMap::STANDARD;
+            map.swap(Square::D7, Square::E1);
+            map.remove(Square::B1);
+            map.remove(Square::C1);
+            map.remove(Square::G8);
+            (map, "rnbqkb1r/pppKpppp/8/8/8/8/PPPPPPPP/R2QpBNR")
+        };
+
+        let maps: [(PieceMap, &str); 3] = [
+            (PieceMap::STANDARD, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR"),
+            (PieceMap::EMPTY,    "8/8/8/8/8/8/8/8"),
+            odd,
+        ];
+
+        for &(ref map, exp) in &maps {
+            map.map_fen(|s| assert_eq!(s, exp));
+        }
     }
 }
