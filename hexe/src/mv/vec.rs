@@ -129,4 +129,10 @@ impl MoveVec {
         }
         vec
     }
+
+    /// Removes all values from the vector.
+    #[inline]
+    pub fn clear(&mut self) {
+        self.len = 0
+    }
 }
