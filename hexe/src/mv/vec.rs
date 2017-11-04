@@ -23,6 +23,9 @@ pub struct MoveVec {
 impl PartialEq for MoveVec {
     #[inline]
     fn eq(&self, other: &MoveVec) -> bool {
+        if self as *const _ == other as *const _ {
+            return true;
+        }
         self.len     == other.len &&
         self.buf[..] == other.buf[..]
     }
