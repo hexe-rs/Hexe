@@ -83,7 +83,7 @@ impl MoveVec {
 
     /// Creates a new vector with a move repeated `num` times.
     ///
-    /// This is analogous to `vec![mv; n]` but for `MoveVec`.
+    /// This is analogous to `vec![mv; num]` but for `MoveVec`.
     #[inline]
     pub fn from_elem(mv: Move, num: u8) -> MoveVec {
         MoveVec::from_init(num, |_| mv)
