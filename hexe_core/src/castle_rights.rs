@@ -1,6 +1,6 @@
 //! Castling rights for two players of a chess game.
 
-use core::fmt;
+use core::{fmt, ops};
 use prelude::*;
 
 /// Castle rights for a chess game.
@@ -89,6 +89,15 @@ pub enum CastleRight {
     WhiteQueenside,
     /// Black queenside: E8 to C8.
     BlackQueenside,
+}
+
+impl ops::Not for CastleSide {
+    type Output = CastleSide;
+
+    #[inline]
+    fn not(self) -> CastleSide {
+        (1 - self as u8).into()
+    }
 }
 
 impl CastleRight {
