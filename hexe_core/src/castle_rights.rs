@@ -92,6 +92,12 @@ pub enum CastleRight {
 }
 
 impl CastleRight {
+    /// Creates a new castle right for `color` and `side`.
+    #[inline]
+    pub fn new(color: Color, side: CastleSide) -> CastleRight {
+        (((side as u8) << 1) | color as u8).into()
+    }
+
     /// Returns the path between the rook and king for this right.
     #[inline]
     pub fn path(self) -> Bitboard {
