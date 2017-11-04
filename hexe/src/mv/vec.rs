@@ -157,6 +157,14 @@ impl MoveVec {
         })
     }
 
+    /// Pushes a new move onto the end of the vector without checking whether
+    /// it is full.
+    #[inline]
+    pub unsafe fn push_unchecked(&mut self, mv: Move) {
+        *self.buf.get_unchecked_mut(self.len as usize) = mv.0;
+        self.len = self.len.wrapping_add(1);
+    }
+
     /// Extends `self` with as many moves as it can fit.
     ///
     /// Moves that don't fit are returned as a slice of the original.
