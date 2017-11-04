@@ -4,15 +4,18 @@
 
 #![doc(html_logo_url = "https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png")]
 
-#![cfg_attr(not(feature = "std"), no_std)]
-
+// Unstable Features ///////////////////////////////////////////////////////////
 #![cfg_attr(feature = "try-from", feature(try_from))]
 
+/// Lints //////////////////////////////////////////////////////////////////////
 #![deny(missing_docs)]
 
+// no_std //////////////////////////////////////////////////////////////////////
+#![cfg_attr(not(feature = "std"), no_std)]
 #[cfg(feature = "std")]
 extern crate core;
 
+// External Crates /////////////////////////////////////////////////////////////
 #[cfg(test)]
 extern crate rand;
 #[cfg(test)]
@@ -33,6 +36,7 @@ pub extern crate simd as _simd;
 extern crate uncon_derive;
 extern crate uncon;
 
+// Modules /////////////////////////////////////////////////////////////////////
 #[macro_use]
 mod macros;
 
