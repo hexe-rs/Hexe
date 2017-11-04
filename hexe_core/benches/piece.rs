@@ -1,3 +1,6 @@
+#![allow(unknown_lints)]
+#![allow(let_and_return)]
+
 #![feature(test)]
 extern crate test;
 extern crate hexe_core;
