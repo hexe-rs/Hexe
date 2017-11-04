@@ -1,5 +1,7 @@
 //! Bitboard masks for each file and rank.
 
+#![allow(missing_docs)]
+
 use super::*;
 
 macro_rules! impl_consts {

@@ -81,9 +81,13 @@ impl From<CastleRight> for CastleRights {
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 pub enum CastleRight {
+    /// White kingside: E1 to G1.
     WhiteKingside,
+    /// Black kingside: E8 to G8.
     BlackKingside,
+    /// White queenside: E1 to C1.
     WhiteQueenside,
+    /// Black queenside: E8 to C8.
     BlackQueenside,
 }
 

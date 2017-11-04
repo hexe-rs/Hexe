@@ -18,6 +18,7 @@ impl_try_from_char! {
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
+#[allow(missing_docs)]
 pub enum Piece {
     WhitePawn,
     BlackPawn,
@@ -88,6 +89,7 @@ impl Piece {
 #[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
+#[allow(missing_docs)]
 pub enum PieceKind {
     Pawn,
     Knight,
@@ -225,6 +227,7 @@ impl PieceKind {
 #[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
+#[allow(missing_docs)]
 pub enum Promotion { Knight, Bishop, Rook, Queen }
 
 impl FromUnchecked<PieceKind> for Promotion {

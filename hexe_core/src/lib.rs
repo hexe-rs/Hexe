@@ -8,6 +8,8 @@
 
 #![cfg_attr(feature = "try-from", feature(try_from))]
 
+#![deny(missing_docs)]
+
 #[cfg(feature = "std")]
 extern crate core;
 

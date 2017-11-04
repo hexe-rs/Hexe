@@ -15,6 +15,7 @@ mod tables;
 #[derive(Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
+#[allow(missing_docs)]
 pub enum Square {
     A1, B1, C1, D1, E1, F1, G1, H1,
     A2, B2, C2, D2, E2, F2, G2, H2,
@@ -347,6 +348,7 @@ impl Squares {
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
+#[allow(missing_docs)]
 pub enum File { A, B, C, D, E, F, G, H }
 
 impl File {
@@ -391,6 +393,7 @@ impl File {
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
+#[allow(missing_docs)]
 pub enum Rank { One, Two, Three, Four, Five, Six, Seven, Eight }
 
 impl Rank {
