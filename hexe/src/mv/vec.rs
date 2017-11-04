@@ -3,6 +3,7 @@
 use super::*;
 use uncon::*;
 use std::borrow::{Borrow, BorrowMut};
+use std::cmp;
 use std::mem;
 use std::ops;
 use std::u8;
@@ -191,5 +192,21 @@ impl MoveVec {
             self.len -= 1;
             Some(Move(self.buf[self.len as usize]))
         }
+    }
+
+    /// Sets the length of the vector.
+    ///
+    /// If `len` is greater than the max possible length, the max length will be
+    /// used.
+    ///
+    /// # Safety
+    ///
+    /// It is perfectly safe to shrink the vector this way.
+    ///
+    /// If used to grow the vector, moves past the previous length need to be
+    /// initialized.
+    #[inline]
+    pub unsafe fn set_len(&mut self, len: usize) {
+        self.len = cmp::min(len, VEC_CAP) as u8;
     }
 }
