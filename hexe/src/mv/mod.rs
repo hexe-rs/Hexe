@@ -1,4 +1,4 @@
-/// A chess move.
+//! A chess move.
 
 use prelude::*;
 use core::piece::Promotion;
