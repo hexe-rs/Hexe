@@ -111,9 +111,9 @@ impl MoveVec {
     pub fn from_init<F: FnMut(usize) -> Move>(len: u8, mut init: F) -> MoveVec {
         let mut vec = MoveVec::new();
         vec.len = len;
-        vec.iter_mut().enumerate().for_each(|(i, m)| {
+        for (i, m) in vec.iter_mut().enumerate() {
             *m = init(i);
-        });
+        }
         vec
     }
 }
