@@ -18,5 +18,6 @@ use core::_simd as simd;
 #[macro_use]
 extern crate static_assertions;
 
+pub mod mv;
 pub mod position;
 pub mod prelude;
