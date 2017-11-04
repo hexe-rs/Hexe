@@ -136,6 +136,27 @@ impl MoveVec {
         self.len = 0
     }
 
+    /// Pushes a new move onto the end of the vector, or returns it if full.
+    #[inline]
+    pub fn push(&mut self, mv: Move) -> Option<Move> {
+        if self.len == u8::MAX {
+            Some(mv)
+        } else {
+            self.buf[self.len as usize] = mv.0;
+            self.len += 1;
+            None
+        }
+    }
+
+    /// Pushes a new move onto the end of the vector. Swaps out the last move
+    /// and returns it if full.
+    #[inline]
+    pub fn push_swap(&mut self, mv: Move) -> Option<Move> {
+        self.push(mv).map(|mv| {
+            Move(mem::replace(&mut self.buf[VEC_CAP - 1], mv.0))
+        })
+    }
+
     /// Extends `self` with as many moves as it can fit.
     ///
     /// Moves that don't fit are returned as a slice of the original.
