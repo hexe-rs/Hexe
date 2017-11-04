@@ -16,6 +16,15 @@ pub struct MoveVec {
     len: u8,
 }
 
+impl PartialEq for MoveVec {
+    fn eq(&self, other: &MoveVec) -> bool {
+        self.len     == other.len &&
+        self.buf[..] == other.buf[..]
+    }
+}
+
+impl Eq for MoveVec {}
+
 impl Clone for MoveVec {
     #[inline]
     fn clone(&self) -> MoveVec {
