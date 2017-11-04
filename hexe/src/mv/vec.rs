@@ -1,5 +1,6 @@
 //! An inline vector of moves.
 
+use std::mem;
 use std::u8;
 
 const VEC_CAP: usize = u8::MAX as usize;
@@ -29,5 +30,23 @@ impl Clone for MoveVec {
     #[inline]
     fn clone(&self) -> MoveVec {
         MoveVec { buf: self.buf, len: self.len }
+    }
+}
+
+impl Default for MoveVec {
+    #[inline]
+    fn default() -> Self {
+        MoveVec {
+            buf: unsafe { mem::uninitialized() },
+            len: 0,
+        }
+    }
+}
+
+impl MoveVec {
+    /// Creates a new empty vector.
+    #[inline]
+    pub fn new() -> MoveVec {
+        MoveVec::default()
     }
 }
