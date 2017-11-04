@@ -80,4 +80,32 @@ impl MoveVec {
     pub fn new() -> MoveVec {
         MoveVec::default()
     }
+
+    /// Creates a new `MoveVec` by instantiating each slot with the provided
+    /// initializer.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use hexe::mv::*;
+    /// # use hexe::mv::vec::MoveVec;
+    /// # use hexe::prelude::*;
+    /// # use hexe::core::piece::*;
+    /// fn random() -> Move {
+    ///     # Move::new(Square::A1, Square::A2, Promotion::Queen, MoveKind::Normal)
+    ///     /* ... */
+    /// }
+    ///
+    /// // Generate 50 random moves
+    /// let vec = MoveVec::from_init(50, |_| random());
+    /// ```
+    #[inline]
+    pub fn from_init<F: FnMut(usize) -> Move>(len: u8, mut init: F) -> MoveVec {
+        let mut vec = MoveVec::new();
+        vec.len = len;
+        vec.iter_mut().enumerate().for_each(|(i, m)| {
+            *m = init(i);
+        });
+        vec
+    }
 }
