@@ -5,6 +5,9 @@
 
 #![doc(html_logo_url = "https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png")]
 
+// Lints ///////////////////////////////////////////////////////////////////////
+#![deny(missing_docs)]
+
 // External Crates /////////////////////////////////////////////////////////////
 
 pub extern crate hexe_core as core;
