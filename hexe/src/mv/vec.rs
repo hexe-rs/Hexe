@@ -81,6 +81,14 @@ impl MoveVec {
         MoveVec::default()
     }
 
+    /// Creates a new vector with a move repeated `num` times.
+    ///
+    /// This is analogous to `vec![mv; n]` but for `MoveVec`.
+    #[inline]
+    pub fn from_elem(mv: Move, num: u8) -> MoveVec {
+        MoveVec::from_init(num, |_| mv)
+    }
+
     /// Creates a new `MoveVec` by instantiating each slot with the provided
     /// initializer.
     ///
