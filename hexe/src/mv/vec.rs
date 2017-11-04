@@ -136,6 +136,25 @@ impl MoveVec {
         self.len = 0
     }
 
+    /// Extends `self` with as many moves as it can fit.
+    ///
+    /// Moves that don't fit are returned as a slice of the original.
+    pub fn extend_from_slice<'a>(&mut self, moves: &'a [Move]) -> &'a [Move] {
+        let rem: &mut [Move] = unsafe {
+            (&mut self.buf[(self.len as usize)..]).into_unchecked()
+        };
+        if moves.len() > rem.len() {
+            self.len = VEC_CAP as _;
+            let (chunk, rest) = moves.split_at(rem.len());
+            rem.copy_from_slice(chunk);
+            rest
+        } else {
+            self.len += moves.len() as u8;
+            rem[..moves.len()].copy_from_slice(moves);
+            Default::default()
+        }
+    }
+
     /// Pops the last move from the end of the vector and returns it.
     #[inline]
     pub fn pop(&mut self) -> Option<Move> {
