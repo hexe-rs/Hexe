@@ -6,47 +6,47 @@ pub use self::vec::*;
 use prelude::*;
 use core::piece::Promotion;
 
-const START_SHIFT: usize =  0;
-const END_SHIFT:   usize =  6;
-const PROM_SHIFT:  usize = 12;
-const KIND_SHIFT:  usize = 14;
+const FROM_SHIFT: usize =  0;
+const TO_SHIFT:   usize =  6;
+const PROM_SHIFT: usize = 12;
+const KIND_SHIFT: usize = 14;
 
 macro_rules! base_bits {
     ($s1:expr, $s2:expr) => {
-        (($s1 as u16) << START_SHIFT) | (($s2 as u16) << END_SHIFT)
+        (($s1 as u16) << FROM_SHIFT) | (($s2 as u16) << TO_SHIFT)
     }
 }
 
 /// A chess piece move from a start `Square` to an end `Square` that carries
 /// metadata for promotion and move kind.
 ///
-/// - 6 bits for start square
-/// - 6 bits for end square
+/// - 6 bits for "from" (start) square
+/// - 6 bits for "to" (end) square
 /// - 2 bits for promotion piece kind
 /// - 2 bits for move kind
 #[derive(PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Move(u16);
 
 impl Move {
-    /// Creates a new `Move` from `start` to `end` squares with a promotion and
+    /// Creates a new `Move` from one square to another with a promotion and
     /// move kind.
     #[inline]
-    pub fn new(start: Square, end: Square, prom: Promotion, kind: MoveKind) -> Move {
-        Move(base_bits!(start, end)
+    pub fn new(from: Square, to: Square, prom: Promotion, kind: MoveKind) -> Move {
+        Move(base_bits!(from, to)
             | ((prom as u16) << PROM_SHIFT)
             | ((kind as u16) << KIND_SHIFT))
     }
 
     /// Returns the start square for `self`.
     #[inline]
-    pub fn start(&self) -> Square {
-        ((self.0 >> START_SHIFT) & 0x3F).into()
+    pub fn from(&self) -> Square {
+        ((self.0 >> FROM_SHIFT) & 0x3F).into()
     }
 
     /// Returns the start square for `self`.
     #[inline]
-    pub fn end(&self) -> Square {
-        ((self.0 >> END_SHIFT) & 0x3F).into()
+    pub fn to(&self) -> Square {
+        ((self.0 >> TO_SHIFT) & 0x3F).into()
     }
 
     /// Returns the promotion for `self`.
