@@ -1,6 +1,9 @@
 //! An inline vector of moves.
 
+use super::*;
+use uncon::*;
 use std::mem;
+use std::ops;
 use std::u8;
 
 const VEC_CAP: usize = u8::MAX as usize;
@@ -40,6 +43,24 @@ impl Default for MoveVec {
             buf: unsafe { mem::uninitialized() },
             len: 0,
         }
+    }
+}
+
+impl ops::Deref for MoveVec {
+    type Target = [Move];
+
+    #[inline]
+    fn deref(&self) -> &[Move] {
+        let slice = &self.buf[..(self.len as usize)];
+        unsafe { slice.into_unchecked() }
+    }
+}
+
+impl ops::DerefMut for MoveVec {
+    #[inline]
+    fn deref_mut(&mut self) -> &mut [Move] {
+        let slice = &mut self.buf[..(self.len as usize)];
+        unsafe { slice.into_unchecked() }
     }
 }
 
