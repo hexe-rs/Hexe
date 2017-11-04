@@ -135,4 +135,13 @@ impl MoveVec {
     pub fn clear(&mut self) {
         self.len = 0
     }
+
+    /// Pops the last move from the end of the vector and returns it.
+    #[inline]
+    pub fn pop(&mut self) -> Option<Move> {
+        if self.len == 0 { None } else {
+            self.len -= 1;
+            Some(Move(self.buf[self.len as usize]))
+        }
+    }
 }
