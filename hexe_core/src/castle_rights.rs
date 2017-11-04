@@ -97,6 +97,18 @@ impl CastleRight {
     pub fn path(self) -> Bitboard {
         path::ALL[self as usize]
     }
+
+    /// Returns the color for `self`.
+    #[inline]
+    pub fn color(&self) -> Color {
+        (1 & *self as u8).into()
+    }
+
+    /// Returns the castle side for `self`.
+    #[inline]
+    pub fn side(&self) -> CastleSide {
+        ((*self as u8) >> 1).into()
+    }
 }
 
 pub mod path {
