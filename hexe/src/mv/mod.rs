@@ -67,8 +67,18 @@ impl Move {
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 pub enum MoveKind {
+    /// Normal move.
     Normal,
+    /// [Castling][wiki] move.
+    ///
+    /// [wiki]: https://en.wikipedia.org/wiki/Castling
     Castle,
+    /// [Promotion][wiki] move.
+    ///
+    /// [wiki]: https://en.wikipedia.org/wiki/Promotion_(chess)
     Promotion,
+    /// [En passant][wiki] move.
+    ///
+    /// [wiki]: https://en.wikipedia.org/wiki/En_passant
     EnPassant,
 }
