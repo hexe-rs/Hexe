@@ -1,5 +1,7 @@
 //! A chess move.
 
+pub mod vec;
+
 use prelude::*;
 use core::piece::Promotion;
 
