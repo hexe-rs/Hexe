@@ -96,7 +96,6 @@ impl MoveVec {
     ///
     /// ```
     /// # use hexe::mv::*;
-    /// # use hexe::mv::vec::MoveVec;
     /// # use hexe::prelude::*;
     /// # use hexe::core::piece::*;
     /// fn random() -> Move {
