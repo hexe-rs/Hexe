@@ -2,6 +2,7 @@
 
 use super::*;
 use uncon::*;
+use std::borrow::{Borrow, BorrowMut};
 use std::mem;
 use std::ops;
 use std::u8;
@@ -57,6 +58,16 @@ impl AsRef<[Move]> for MoveVec {
 impl AsMut<[Move]> for MoveVec {
     #[inline]
     fn as_mut(&mut self) -> &mut [Move] { self }
+}
+
+impl Borrow<[Move]> for MoveVec {
+    #[inline]
+    fn borrow(&self) -> &[Move] { self }
+}
+
+impl BorrowMut<[Move]> for MoveVec {
+    #[inline]
+    fn borrow_mut(&mut self) -> &mut [Move] { self }
 }
 
 impl ops::Deref for MoveVec {
