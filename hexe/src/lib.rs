@@ -6,7 +6,13 @@
 #![doc(html_logo_url = "https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png")]
 
 // Lints ///////////////////////////////////////////////////////////////////////
+
+// Built-in
+#![allow(unknown_lints)]
 #![deny(missing_docs)]
+
+// Clippy
+#![allow(unreadable_literal)]
 
 // External Crates /////////////////////////////////////////////////////////////
 

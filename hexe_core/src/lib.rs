@@ -8,7 +8,13 @@
 #![cfg_attr(feature = "try-from", feature(try_from))]
 
 // Lints ///////////////////////////////////////////////////////////////////////
+
+// Built-in
+#![allow(unknown_lints)]
 #![deny(missing_docs)]
+
+// Clippy
+#![allow(unreadable_literal)]
 
 // no_std //////////////////////////////////////////////////////////////////////
 #![cfg_attr(not(feature = "std"), no_std)]
