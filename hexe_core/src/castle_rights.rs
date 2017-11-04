@@ -123,3 +123,14 @@ pub mod path {
         BLACK_QUEENSIDE,
     ];
 }
+
+/// A side used to castle.
+#[derive(PartialEq, Eq, Clone, Copy, Debug, Hash, FromUnchecked)]
+#[uncon(impl_from, other(u16, u32, u64, usize))]
+#[repr(u8)]
+pub enum CastleSide {
+    /// King castling side (O-O).
+    King,
+    /// Queen castling side (O-O-O).
+    Queen,
+}
