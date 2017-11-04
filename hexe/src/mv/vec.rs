@@ -46,6 +46,16 @@ impl Default for MoveVec {
     }
 }
 
+impl AsRef<[Move]> for MoveVec {
+    #[inline]
+    fn as_ref(&self) -> &[Move] { self }
+}
+
+impl AsMut<[Move]> for MoveVec {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [Move] { self }
+}
+
 impl ops::Deref for MoveVec {
     type Target = [Move];
 
