@@ -98,14 +98,20 @@ impl MoveVec {
 
     /// Creates a new vector with a move repeated `num` times.
     ///
+    /// If `num` is greater than the max possible length, the max length will be
+    /// used.
+    ///
     /// This is analogous to `vec![mv; num]` but for `MoveVec`.
     #[inline]
-    pub fn from_elem(mv: Move, num: u8) -> MoveVec {
+    pub fn from_elem(mv: Move, num: usize) -> MoveVec {
         MoveVec::from_init(num, |_| mv)
     }
 
     /// Creates a new `MoveVec` by instantiating each slot with the provided
     /// initializer.
+    ///
+    /// If `len` is greater than the max possible length, the max length will be
+    /// used.
     ///
     /// # Examples
     ///
@@ -122,9 +128,9 @@ impl MoveVec {
     /// let vec = MoveVec::from_init(50, |_| random());
     /// ```
     #[inline]
-    pub fn from_init<F: FnMut(usize) -> Move>(len: u8, mut init: F) -> MoveVec {
+    pub fn from_init<F: FnMut(usize) -> Move>(len: usize, mut init: F) -> MoveVec {
         let mut vec = MoveVec::new();
-        vec.len = len;
+        vec.len = cmp::min(len, VEC_CAP) as u8;
         for (i, m) in vec.iter_mut().enumerate() {
             *m = init(i);
         }
