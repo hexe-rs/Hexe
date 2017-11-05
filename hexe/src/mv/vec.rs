@@ -194,6 +194,16 @@ impl MoveVec {
         }
     }
 
+    /// Shortens the vector, keeping the first `len` moves.
+    ///
+    /// If `len` is greater than the current length, this has no effect.
+    #[inline]
+    pub fn truncate(&mut self, len: usize) {
+        if len < (self.len as usize) {
+            self.len = len as u8;
+        }
+    }
+
     /// Sets the length of the vector.
     ///
     /// If `len` is greater than the max possible length, the max length will be
@@ -201,7 +211,8 @@ impl MoveVec {
     ///
     /// # Safety
     ///
-    /// It is perfectly safe to shrink the vector this way.
+    /// Although it is perfectly safe to shrink the vector this way, one should
+    /// use [`truncate`](#method.truncate) instead.
     ///
     /// If used to grow the vector, moves past the previous length need to be
     /// initialized.
