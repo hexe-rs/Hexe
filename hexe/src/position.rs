@@ -28,7 +28,8 @@ pub struct Position {
     /// The square used in an en passant capture, if any.
     ///
     /// Uses a value of `NO_SQUARE` when empty. This is because `Option<Square>`
-    /// currently uses two bytes instead of one.
+    /// currently uses two bytes instead of one. Should be made `Option<Square>`
+    /// once this PR is in stable: https://github.com/rust-lang/rust/pull/45225.
     en_passant: u8,
 }
 
