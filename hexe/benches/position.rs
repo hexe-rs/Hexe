@@ -6,7 +6,7 @@ use test::{Bencher, black_box};
 use hexe::position::Position;
 
 #[bench]
-fn bench_eq(b: &mut Bencher) {
+fn position_eq(b: &mut Bencher) {
     let x = Position::default();
     let y = Position::default();
     b.iter(|| {
