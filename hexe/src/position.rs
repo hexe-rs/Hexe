@@ -6,6 +6,9 @@ use prelude::*;
 use uncon::*;
 
 /// The raw value used to represent no square for a space-optimized square.
+///
+/// This should be unnecessary once `Option<Square>` is optimized to be a single
+/// byte as per https://github.com/rust-lang/rust/pull/45225.
 const NO_SQUARE: u8 = 1 + Square::H8 as u8;
 
 #[cfg(test)]
