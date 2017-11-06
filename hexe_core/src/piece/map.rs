@@ -5,6 +5,7 @@ use core::fmt;
 use core::marker::PhantomData;
 use core::mem;
 use core::ops;
+use ext::Twiddling;
 use misc::Contained;
 use square::Squares;
 use prelude::*;
@@ -451,6 +452,16 @@ impl PieceMap {
     #[inline]
     pub fn contains<T: Contained<Self>>(&self, value: T) -> bool {
         value.contained_in(self)
+    }
+
+    /// Returns whether the rank contains the piece.
+    #[inline]
+    pub fn rank_contains(&self, rank: Rank, pc: Piece) -> bool {
+        let (this, that): (u64, u64) = unsafe { (
+            mem::transmute(self.__inner_2d()[rank as usize]),
+            mem::transmute([pc as u8; 8])
+        ) };
+        (this ^ that).contains_zero_byte()
     }
 
     /// Returns the first square for the piece.
