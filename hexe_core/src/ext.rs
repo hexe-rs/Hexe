@@ -17,7 +17,7 @@ macro_rules! impl_signed {
     }
 }
 
-impl_signed! { i8, u8, i16, u16, i32, u32, i64, u64 }
+impl_signed! { i8, u8, i16, u16, i32, u32, i64, u64, isize, usize }
 
 impl Twiddling for u8 {
     #[inline]
