@@ -190,7 +190,7 @@ impl Square {
     /// Returns the knight attacks for `self`.
     #[inline]
     pub fn knight_attacks(&self) -> Bitboard {
-        Bitboard(self::tables::KNIGHT_ATTACKS[*self as usize])
+        Bitboard(self::tables::KNIGHT_KING_ATTACKS[0][*self as usize])
     }
 
     /// Returns the rook attacks for `self` and `occupied`.
@@ -240,7 +240,7 @@ impl Square {
     /// Returns the king attacks for `self`.
     #[inline]
     pub fn king_attacks(&self) -> Bitboard {
-        Bitboard(self::tables::KING_ATTACKS[*self as usize])
+        Bitboard(self::tables::KNIGHT_KING_ATTACKS[1][*self as usize])
     }
 
     /// Returns the queen attacks for `self` and `occupied`.
