@@ -89,6 +89,12 @@ impl Position {
         self.piece_at(sq).map(Piece::color)
     }
 
+    /// Returns the kind of the piece at the square, if any.
+    #[inline]
+    pub fn kind_at(&self, sq: Square) -> Option<PieceKind> {
+        self.piece_at(sq).map(Piece::kind)
+    }
+
     /// Returns a bitboard containing squares for where all pieces reside.
     #[inline]
     pub fn all_pieces(&self) -> Bitboard {
