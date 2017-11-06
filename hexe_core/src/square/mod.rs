@@ -513,7 +513,22 @@ mod tests {
         }
     }
 
+    macro_rules! jump_attacks {
+        ($($fn:ident)*) => {
+            $(#[test]
+            fn $fn() {
+                for square in Square::all() {
+                    let exp = Bitboard::from(square).$fn();
+                    let res = square.$fn();
+                    assert_eq!(exp, res);
+                }
+            })*
+        }
+    }
+
     sliding_attacks! { rook_attacks bishop_attacks queen_attacks }
+
+    jump_attacks! { knight_attacks king_attacks }
 
     #[test]
     fn file_from_char() {
