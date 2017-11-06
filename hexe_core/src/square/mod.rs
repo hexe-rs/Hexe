@@ -184,13 +184,13 @@ impl Square {
     /// Returns the pawn attacks for `self` and `color`.
     #[inline]
     pub fn pawn_attacks(&self, color: Color) -> Bitboard {
-        Bitboard(self::tables::PAWN_ATTACKS[color as usize][*self as usize])
+        Bitboard(self::tables::LOOKUP_ATTACKS[color as usize][*self as usize])
     }
 
     /// Returns the knight attacks for `self`.
     #[inline]
     pub fn knight_attacks(&self) -> Bitboard {
-        Bitboard(self::tables::KNIGHT_KING_ATTACKS[0][*self as usize])
+        Bitboard(self::tables::LOOKUP_ATTACKS[2][*self as usize])
     }
 
     /// Returns the rook attacks for `self` and `occupied`.
@@ -240,7 +240,7 @@ impl Square {
     /// Returns the king attacks for `self`.
     #[inline]
     pub fn king_attacks(&self) -> Bitboard {
-        Bitboard(self::tables::KNIGHT_KING_ATTACKS[1][*self as usize])
+        Bitboard(self::tables::LOOKUP_ATTACKS[3][*self as usize])
     }
 
     /// Returns the queen attacks for `self` and `occupied`.
