@@ -6,6 +6,19 @@ pub trait Twiddling {
     fn contains_zero_byte(self) -> bool;
 }
 
+macro_rules! impl_signed {
+    ($($s:ty, $u:ty),+) => {
+        $(impl Twiddling for $s {
+            #[inline]
+            fn contains_zero_byte(self) -> bool {
+                (self as $u).contains_zero_byte()
+            }
+        })+
+    }
+}
+
+impl_signed! { i8, u8, i16, u16, i32, u32, i64, u64 }
+
 impl Twiddling for u8 {
     #[inline]
     fn contains_zero_byte(self) -> bool { self == 0 }
