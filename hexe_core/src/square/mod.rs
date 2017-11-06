@@ -531,6 +531,17 @@ mod tests {
     jump_attacks! { knight_attacks king_attacks }
 
     #[test]
+    fn pawn_attacks() {
+        for &color in &[Color::White, Color::Black] {
+            for square in Square::all() {
+                let exp = Bitboard::from(square).pawn_attacks(color);
+                let res = square.pawn_attacks(color);
+                assert_eq!(exp, res);
+            }
+        }
+    }
+
+    #[test]
     fn file_from_char() {
         for ch in b'A'..(b'F' + 1) {
             for &ch in &[ch, ch | 32] {
