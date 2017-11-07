@@ -149,6 +149,16 @@ impl Bitboard {
         self.bishop_attacks(empty) | self.rook_attacks(empty)
     }
 
+    /// Advances `self` by one rank for `color`.
+    #[inline]
+    pub fn advance(self, color: Color) -> Bitboard {
+        let dir = match color {
+            Color::White => Direction::North,
+            Color::Black => Direction::South,
+        };
+        self.shift(dir)
+    }
+
     /// Returns `self` shifted in a direction.
     #[inline]
     pub fn shift(self, direction: Direction) -> Bitboard {
