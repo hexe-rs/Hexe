@@ -123,14 +123,14 @@ impl Square {
 
     /// Returns the `File` for `self`.
     #[inline]
-    pub fn file(&self) -> File {
-        ((*self as u8) & 7).into()
+    pub fn file(self) -> File {
+        ((self as u8) & 7).into()
     }
 
     /// Returns the `Rank` for `self`.
     #[inline]
-    pub fn rank(&self) -> Rank {
-        ((*self as u8) >> 3).into()
+    pub fn rank(self) -> Rank {
+        ((self as u8) >> 3).into()
     }
 
     /// Returns the `Color` for `self`.
@@ -148,8 +148,8 @@ impl Square {
     /// assert_eq!(b.color(), Color::White);
     /// ```
     #[inline]
-    pub fn color(&self) -> Color {
-        (Bitboard::BLACK >> *self as u64).0.into()
+    pub fn color(self) -> Color {
+        (Bitboard::BLACK >> self as u64).0.into()
     }
 
     /// Returns the result of applying a function to a mutable string
@@ -172,7 +172,7 @@ impl Square {
     /// });
     /// ```
     #[inline]
-    pub fn map_str<T, F>(&self, f: F) -> T
+    pub fn map_str<T, F>(self, f: F) -> T
         where F: for<'a> FnOnce(&'a mut str) -> T
     {
         let mut buf = [0; 2];
@@ -183,14 +183,14 @@ impl Square {
 
     /// Returns the pawn attacks for `self` and `color`.
     #[inline]
-    pub fn pawn_attacks(&self, color: Color) -> Bitboard {
-        Bitboard(self::tables::LOOKUP_ATTACKS[color as usize][*self as usize])
+    pub fn pawn_attacks(self, color: Color) -> Bitboard {
+        Bitboard(self::tables::LOOKUP_ATTACKS[color as usize][self as usize])
     }
 
     /// Returns the knight attacks for `self`.
     #[inline]
-    pub fn knight_attacks(&self) -> Bitboard {
-        Bitboard(self::tables::LOOKUP_ATTACKS[2][*self as usize])
+    pub fn knight_attacks(self) -> Bitboard {
+        Bitboard(self::tables::LOOKUP_ATTACKS[2][self as usize])
     }
 
     /// Returns the rook attacks for `self` and `occupied`.
@@ -211,8 +211,8 @@ impl Square {
     /// assert_eq!(start.rook_attacks(occ), exp);
     /// ```
     #[inline]
-    pub fn rook_attacks(&self, occupied: Bitboard) -> Bitboard {
-        ::magic::rook_attacks(*self, occupied)
+    pub fn rook_attacks(self, occupied: Bitboard) -> Bitboard {
+        ::magic::rook_attacks(self, occupied)
     }
 
     /// Returns the bishop attacks for `self` and `occupied`.
@@ -233,14 +233,14 @@ impl Square {
     /// assert_eq!(start.bishop_attacks(occ.into()), exp);
     /// ```
     #[inline]
-    pub fn bishop_attacks(&self, occupied: Bitboard) -> Bitboard {
-        ::magic::bishop_attacks(*self, occupied)
+    pub fn bishop_attacks(self, occupied: Bitboard) -> Bitboard {
+        ::magic::bishop_attacks(self, occupied)
     }
 
     /// Returns the king attacks for `self`.
     #[inline]
-    pub fn king_attacks(&self) -> Bitboard {
-        Bitboard(self::tables::LOOKUP_ATTACKS[3][*self as usize])
+    pub fn king_attacks(self) -> Bitboard {
+        Bitboard(self::tables::LOOKUP_ATTACKS[3][self as usize])
     }
 
     /// Returns the queen attacks for `self` and `occupied`.
@@ -248,7 +248,7 @@ impl Square {
     /// This works the same as combining the results of `rook_attacks` and
     /// `bishop_attacks`.
     #[inline]
-    pub fn queen_attacks(&self, occupied: Bitboard) -> Bitboard {
+    pub fn queen_attacks(self, occupied: Bitboard) -> Bitboard {
         self.rook_attacks(occupied) | self.bishop_attacks(occupied)
     }
 }
