@@ -149,7 +149,7 @@ impl Bitboard {
         self.bishop_attacks(empty) | self.rook_attacks(empty)
     }
 
-    /// Advances `self` by one rank for `color`.
+    /// Returns `self` advanced by one rank for `color`.
     #[inline]
     pub fn advance(self, color: Color) -> Bitboard {
         self.shift(match color {
