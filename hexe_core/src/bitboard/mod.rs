@@ -152,11 +152,10 @@ impl Bitboard {
     /// Advances `self` by one rank for `color`.
     #[inline]
     pub fn advance(self, color: Color) -> Bitboard {
-        let dir = match color {
+        self.shift(match color {
             Color::White => Direction::North,
             Color::Black => Direction::South,
-        };
-        self.shift(dir)
+        })
     }
 
     /// Returns `self` shifted in a direction.
