@@ -3,7 +3,7 @@ use core::{fmt, ops};
 use prelude::*;
 
 #[cfg(feature = "serde")]
-use serde::*;
+use _serde::*;
 
 #[cfg(feature = "serde")]
 impl Serialize for Bitboard {

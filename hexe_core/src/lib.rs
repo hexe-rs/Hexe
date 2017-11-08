@@ -32,8 +32,10 @@ extern crate static_assertions;
 
 extern crate memchr;
 
+// Re-exported to use within hexe
 #[cfg(feature = "serde")]
-extern crate serde;
+#[doc(hidden)]
+pub extern crate serde as _serde;
 
 // Re-exported to use within hexe
 #[cfg(feature = "simd")]

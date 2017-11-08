@@ -21,6 +21,9 @@ pub extern crate hexe_core as core;
 #[cfg(feature = "simd")]
 use core::_simd as simd;
 
+#[cfg(feature = "serde")]
+use core::_serde as serde;
+
 #[macro_use]
 extern crate uncon_derive;
 extern crate uncon;
