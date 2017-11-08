@@ -92,11 +92,10 @@ impl Bitboard {
     /// Generates pawn pushes for each of the bits of `self`.
     #[inline]
     pub fn pawn_pushes(self, color: Color) -> Bitboard {
-        let direction = match color {
+        self.shift(match color {
             Color::White => Direction::North,
             Color::Black => Direction::South,
-        };
-        self.shift(direction)
+        })
     }
 
     /// Generates pawn attacks for each of the bits of `self`.
