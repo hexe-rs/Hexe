@@ -93,9 +93,10 @@ impl Square {
     ///
     /// ```
     /// # use hexe_core::square::Square;
-    /// // Print from A1 through H8
+    /// // Perform operation on A1 through H8
     /// for square in Square::all() {
-    ///     println!("{:?}", square);
+    ///     # break;
+    ///     /* ... */
     /// }
     /// ```
     #[inline]
