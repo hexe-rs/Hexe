@@ -41,6 +41,13 @@ impl fmt::Display for Square {
     }
 }
 
+impl From<(File, Rank)> for Square {
+    #[inline]
+    fn from((file, rank): (File, Rank)) -> Square {
+        Square::new(file, rank)
+    }
+}
+
 /// The error returned when `Square::from_str` fails.
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct FromStrError(());
