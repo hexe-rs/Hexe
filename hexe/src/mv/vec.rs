@@ -22,13 +22,12 @@ pub struct MoveVec {
     len: u8,
 }
 
-impl PartialEq for MoveVec {
+impl<T: AsRef<[Move]>> PartialEq<T> for MoveVec {
     #[inline]
-    fn eq(&self, other: &MoveVec) -> bool {
-        if self as *const _ == other as *const _ {
-            return true;
-        }
-        self.buf[..self.len as usize] == other.buf[..other.len as usize]
+    fn eq(&self, other: &T) -> bool {
+        let this: &[u16] = &self.buf[..self.len as usize];
+        let that: &[u16] = unsafe { other.as_ref().into_unchecked() };
+        this == that
     }
 }
 
