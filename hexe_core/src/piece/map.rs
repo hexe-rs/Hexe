@@ -93,19 +93,19 @@ impl Default for PieceMap {
     }
 }
 
-impl ops::Index<Square> for PieceMap {
+impl<T: Into<Square>> ops::Index<T> for PieceMap {
     type Output = Piece;
 
     #[inline]
-    fn index(&self, sq: Square) -> &Piece {
-        self.get(sq).expect("no piece found for square")
+    fn index(&self, sq: T) -> &Piece {
+        self.get(sq.into()).expect("no piece found for square")
     }
 }
 
-impl ops::IndexMut<Square> for PieceMap {
+impl<T: Into<Square>> ops::IndexMut<T> for PieceMap {
     #[inline]
-    fn index_mut(&mut self, sq: Square) -> &mut Piece {
-        self.get_mut(sq).expect("no piece found for square")
+    fn index_mut(&mut self, sq: T) -> &mut Piece {
+        self.get_mut(sq.into()).expect("no piece found for square")
     }
 }
 
