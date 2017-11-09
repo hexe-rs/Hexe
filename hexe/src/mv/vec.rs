@@ -22,7 +22,7 @@ pub struct MoveVec {
     len: u8,
 }
 
-impl<T: AsRef<[Move]>> PartialEq<T> for MoveVec {
+impl<T: ?Sized + AsRef<[Move]>> PartialEq<T> for MoveVec {
     #[inline]
     fn eq(&self, other: &T) -> bool {
         let this: &[u16] = &self.buf[..self.len as usize];
