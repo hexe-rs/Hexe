@@ -98,14 +98,14 @@ impl<T: Into<Square>> ops::Index<T> for PieceMap {
 
     #[inline]
     fn index(&self, sq: T) -> &Piece {
-        self.get(sq.into()).expect("no piece found for square")
+        self.get(sq).expect("no piece found for square")
     }
 }
 
 impl<T: Into<Square>> ops::IndexMut<T> for PieceMap {
     #[inline]
     fn index_mut(&mut self, sq: T) -> &mut Piece {
-        self.get_mut(sq.into()).expect("no piece found for square")
+        self.get_mut(sq).expect("no piece found for square")
     }
 }
 
@@ -490,8 +490,8 @@ impl PieceMap {
 
     /// Returns a reference to the piece at a square, if any.
     #[inline]
-    pub fn get(&self, sq: Square) -> Option<&Piece> {
-        match self.0[sq as usize] {
+    pub fn get<T: Into<Square>>(&self, sq: T) -> Option<&Piece> {
+        match self.0[sq.into() as usize] {
             NONE => None,
             ref p => unsafe { Some(p.into_unchecked()) }
         }
@@ -499,8 +499,8 @@ impl PieceMap {
 
     /// Returns a mutable reference to the piece at a square, if any.
     #[inline]
-    pub fn get_mut(&mut self, sq: Square) -> Option<&mut Piece> {
-        match self.0[sq as usize] {
+    pub fn get_mut<T: Into<Square>>(&mut self, sq: T) -> Option<&mut Piece> {
+        match self.0[sq.into() as usize] {
             NONE => None,
             ref mut p => unsafe { Some(p.into_unchecked()) }
         }
@@ -515,8 +515,8 @@ impl PieceMap {
     ///
     /// [ub]: https://en.wikipedia.org/wiki/Undefined_behavior
     #[inline]
-    pub unsafe fn get_unchecked(&self, sq: Square) -> &Piece {
-        (&self.0[sq as usize]).into_unchecked()
+    pub unsafe fn get_unchecked<T: Into<Square>>(&self, sq: T) -> &Piece {
+        (&self.0[sq.into() as usize]).into_unchecked()
     }
 
     /// Returns a mutable reference to the piece at a square without checking.
