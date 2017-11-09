@@ -28,7 +28,7 @@ impl PartialEq for MoveVec {
         if self as *const _ == other as *const _ {
             return true;
         }
-        self.len == other.len && self.buf[..] == other.buf[..]
+        self.buf[..self.len as usize] == other.buf[..other.len as usize]
     }
 }
 
