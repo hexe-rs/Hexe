@@ -43,10 +43,7 @@ impl Clone for MoveVec {
 impl Default for MoveVec {
     #[inline]
     fn default() -> Self {
-        MoveVec {
-            buf: unsafe { mem::uninitialized() },
-            len: 0,
-        }
+        MoveVec { buf: [0; VEC_CAP], len: 0 }
     }
 }
 
