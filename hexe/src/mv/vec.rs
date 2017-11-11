@@ -15,6 +15,12 @@ const VEC_CAP: usize = u8::MAX as usize;
 /// There is no known case where there have been more than 255 moves for a legal
 /// position. Because of this, performing an allocation for a list of generated
 /// moves is an avoidable waste of time.
+///
+/// # Notes
+///
+/// - When comparing equality of a `MoveVec` to some `[Move]`, place the vector
+///   before the slice. This should emit a `memcmp` call which is _much_ faster
+///   than `[Move] == [Move]`, which will check each move individually.
 pub struct MoveVec {
     /// The internal inline buffer. Uses u16 for convenience.
     buf: [u16; VEC_CAP],
