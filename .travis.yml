@@ -18,7 +18,4 @@ matrix:
       env: FEATURES="--features nightly"
     - env: TEST_32_BIT="true"
 
-env:
-  - TEST_32_BIT="false"
-
 script: ./travis.sh
