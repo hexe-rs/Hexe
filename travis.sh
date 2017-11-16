@@ -4,12 +4,15 @@ set -e
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-if [[ $TEST_32_BIT == "true" ]]; then
-    curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain="stable-i686-unknown-linux-gnu" -y
+if [[ -z "$TARGET" ]]; then
+    TARGET_ARGS=""
+else
+    rustup target add "$TARGET"
+    TARGET_ARGS="--target $TARGET"
 fi
 
 for d in hexe_core hexe; do
     cd "$DIR/$d"
-    cargo test $FEATURES
-    cargo test $FEATURES --no-default-features
+    cargo test $TARGET_ARGS $FEATURES
+    cargo test $TARGET_ARGS $FEATURES --no-default-features
 done

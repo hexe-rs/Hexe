@@ -9,6 +9,8 @@ rust:
 matrix:
   include:
     - rust: stable
+      env: TARGET="i686-unknown-linux-gnu"
+    - rust: stable
       os: osx
     - rust: stable
       env: FEATURES="--features serde"
@@ -16,6 +18,5 @@ matrix:
       env: FEATURES="--features simd"
     - rust: nightly
       env: FEATURES="--features nightly"
-    - env: TEST_32_BIT="true"
 
 script: ./travis.sh
