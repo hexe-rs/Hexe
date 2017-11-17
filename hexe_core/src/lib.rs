@@ -17,6 +17,7 @@
 #![allow(explicit_into_iter_loop)]
 #![allow(inline_always)]
 #![allow(unreadable_literal)]
+#![allow(verbose_bit_mask)]
 
 // no_std //////////////////////////////////////////////////////////////////////
 #![cfg_attr(not(feature = "std"), no_std)]
