@@ -145,3 +145,22 @@ impl From<Color> for Bitboard {
         }
     }
 }
+
+impl ops::Not for Direction {
+    type Output = Direction;
+
+    #[inline]
+    fn not(self) -> Direction {
+        use self::Direction::*;
+        match self {
+            North     => South,
+            South     => North,
+            East      => West,
+            West      => East,
+            Northeast => Southwest,
+            Southeast => Northwest,
+            Northwest => Southeast,
+            Southwest => Northeast,
+        }
+    }
+}
