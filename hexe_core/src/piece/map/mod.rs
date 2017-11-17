@@ -46,6 +46,9 @@ mod tables {
     ];
 }
 
+mod entry;
+pub use self::entry::*;
+
 /// A mapping of sixty-four squares to pieces.
 ///
 /// This allows for faster lookups than possible with bitboards.
@@ -486,6 +489,13 @@ impl PieceMap {
         } else {
             None
         }
+    }
+
+    /// Gets the given square's corresponding entry in the map for in-place
+    /// manipulation.
+    #[inline]
+    pub fn entry(&mut self, sq: Square) -> Entry {
+        Entry::from_map(self, sq)
     }
 
     /// Returns a reference to the piece at a square, if any.
