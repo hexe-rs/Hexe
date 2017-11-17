@@ -9,6 +9,15 @@ pub struct OccupiedEntry<'a> {
     key: Square,
 }
 
+impl<'a> fmt::Debug for OccupiedEntry<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("OccupiedEntry")
+            .field("key", self.key())
+            .field("value", self.get())
+            .finish()
+    }
+}
+
 impl<'a> OccupiedEntry<'a> {
     /// Gets a reference to the square in the entry.
     #[inline]
@@ -64,6 +73,14 @@ pub struct VacantEntry<'a> {
     key: Square,
 }
 
+impl<'a> fmt::Debug for VacantEntry<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_tuple("VacantEntry")
+            .field(self.key())
+            .finish()
+    }
+}
+
 impl<'a> VacantEntry<'a> {
     /// Gets a reference to the square that would be used when inserting a value
     /// through the vacant entry.
@@ -94,6 +111,16 @@ pub enum Entry<'a> {
     Occupied(OccupiedEntry<'a>),
     /// A vacant entry.
     Vacant(VacantEntry<'a>),
+}
+
+impl<'a> fmt::Debug for Entry<'a> {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        let field: &fmt::Debug = match *self {
+            Entry::Vacant(ref v) => v,
+            Entry::Occupied(ref o) => o,
+        };
+        f.debug_tuple("Entry").field(field).finish()
+    }
 }
 
 impl<'a> Entry<'a> {
