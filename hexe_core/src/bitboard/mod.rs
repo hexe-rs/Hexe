@@ -67,14 +67,16 @@ impl Bitboard {
     /// Returns a `Bitboard` containing squares between `start` and `end`.
     #[inline]
     pub fn between(start: Square, end: Square) -> Bitboard {
-        self::tables::BETWEEN[start as usize][end as usize].into()
+        let table = &self::tables::BETWEEN_LINE[0];
+        table[start as usize][end as usize].into()
     }
 
     /// Returns a `Bitboard` line spanning the entire board from edge to edge,
     /// intersecting `start` and `end`.
     #[inline]
     pub fn line(start: Square, end: Square) -> Bitboard {
-        self::tables::LINE[start as usize][end as usize].into()
+        let table = &self::tables::BETWEEN_LINE[1];
+        table[start as usize][end as usize].into()
     }
 
     /// Returns whether the path for `right` is empty within `self`.
