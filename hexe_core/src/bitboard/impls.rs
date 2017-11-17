@@ -152,15 +152,9 @@ impl ops::Not for Direction {
     #[inline]
     fn not(self) -> Direction {
         use self::Direction::*;
-        match self {
-            North     => South,
-            South     => North,
-            East      => West,
-            West      => East,
-            Northeast => Southwest,
-            Southeast => Northwest,
-            Northwest => Southeast,
-            Southwest => Northeast,
-        }
+        static NOT: [Direction; 8] = [
+            South, North, West, East, Southwest, Northwest, Southeast, Northeast
+        ];
+        NOT[self as usize]
     }
 }
