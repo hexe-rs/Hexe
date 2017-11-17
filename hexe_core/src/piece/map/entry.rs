@@ -102,7 +102,7 @@ impl<'a> Entry<'a> {
         if map.contains(sq) {
             Entry::Occupied(OccupiedEntry { map: map, key: sq })
         } else {
-            Entry::Vacant(VacantEntry { map: map, key: sq, })
+            Entry::Vacant(VacantEntry { map: map, key: sq })
         }
     }
 
