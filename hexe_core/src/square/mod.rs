@@ -462,37 +462,39 @@ macro_rules! impl_components {
             impl for { $($t)+ }
         }
 
-        $(impl From<$t> for char {
-            #[inline]
-            fn from(val: $t) -> char {
-                ($c + val as u8) as char
+        $(
+            impl From<$t> for char {
+                #[inline]
+                fn from(val: $t) -> char {
+                    ($c + val as u8) as char
+                }
             }
-        }
 
-        impl ops::Not for $t {
-            type Output = Self;
+            impl ops::Not for $t {
+                type Output = Self;
 
-            #[inline]
-            fn not(self) -> Self {
-                (7 - self as u8).into()
+                #[inline]
+                fn not(self) -> Self {
+                    (7 - self as u8).into()
+                }
             }
-        }
 
-        #[cfg(feature = "serde")]
-        impl Serialize for $t {
-            fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
-                ser.serialize_char((*self).into())
+            #[cfg(feature = "serde")]
+            impl Serialize for $t {
+                fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
+                    ser.serialize_char((*self).into())
+                }
             }
-        }
 
-        #[cfg(feature = "serde")]
-        impl<'de> Deserialize<'de> for $t {
-            fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
-                Self::from_char(char::deserialize(de)?).ok_or_else(|| {
-                    de::Error::custom($m)
-                })
+            #[cfg(feature = "serde")]
+            impl<'de> Deserialize<'de> for $t {
+                fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
+                    Self::from_char(char::deserialize(de)?).ok_or_else(|| {
+                        de::Error::custom($m)
+                    })
+                }
             }
-        })+
+        )+
     }
 }
 

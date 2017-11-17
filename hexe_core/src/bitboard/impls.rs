@@ -57,8 +57,8 @@ impl fmt::Display for Bitboard {
 }
 
 macro_rules! forward_sh_impl {
-    ($($t1:ident $f1:ident $t2:ident $f2:ident)+) => {
-        $(impl<T> ops::$t1<T> for Bitboard where u64: ops::$t1<T, Output=u64> {
+    ($($t1:ident $f1:ident $t2:ident $f2:ident)+) => { $(
+        impl<T> ops::$t1<T> for Bitboard where u64: ops::$t1<T, Output=u64> {
             type Output = Self;
 
             #[inline]
@@ -68,8 +68,8 @@ macro_rules! forward_sh_impl {
         impl<T> ops::$t2<T> for Bitboard where u64: ops::$t2<T> {
             #[inline]
             fn $f2(&mut self, shift: T) { (self.0).$f2(shift) }
-        })+
-    }
+        }
+    )+ }
 }
 
 forward_sh_impl! {

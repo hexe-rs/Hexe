@@ -1,6 +1,6 @@
 macro_rules! forward_bit_ops_impl {
-    ($t:ident => $($t1:ident $f1:ident $t2:ident $f2:ident)+) => {
-        $(impl<T: Into<$t>> ::core::ops::$t1<T> for $t {
+    ($t:ident => $($t1:ident $f1:ident $t2:ident $f2:ident)+) => { $(
+        impl<T: Into<$t>> ::core::ops::$t1<T> for $t {
             type Output = Self;
 
             #[inline]
@@ -14,13 +14,13 @@ macro_rules! forward_bit_ops_impl {
             fn $f2(&mut self, other: T) {
                 (self.0).$f2(other.into().0)
             }
-        })+
-    }
+        }
+    )+ }
 }
 
 macro_rules! impl_bit_set {
-    ($($t:ident $full:expr => $x:ident);+ $(;)*) => {
-        $(forward_bit_ops_impl! {
+    ($($t:ident $full:expr => $x:ident);+ $(;)*) => { $(
+        forward_bit_ops_impl! {
             $t =>
             BitAnd bitand BitAndAssign bitand_assign
             BitXor bitxor BitXorAssign bitxor_assign
@@ -192,14 +192,14 @@ macro_rules! impl_bit_set {
                     x
                 })
             }
-        })+
-    }
+        }
+    )+ }
 }
 
 // Allows for chaining `|`, `&`, and `^` without calling `T::from`
 macro_rules! impl_composition_ops {
-    ($u:ty => $($t:ty)+) => {
-        $(impl<T: Into<$u>> ::core::ops::BitOr<T> for $t {
+    ($u:ty => $($t:ty)+) => { $(
+        impl<T: Into<$u>> ::core::ops::BitOr<T> for $t {
             type Output = $u;
 
             #[inline]
@@ -224,8 +224,8 @@ macro_rules! impl_composition_ops {
             fn bitxor(self, other: T) -> $u {
                 other.into().bitxor(self)
             }
-        })*
-    }
+        }
+    )* }
 }
 
 macro_rules! impl_try_from_char {
