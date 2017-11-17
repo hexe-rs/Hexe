@@ -19,7 +19,7 @@ use core::fmt;
 ///
 /// [impl]: https://chessprogramming.wikispaces.com/Traversing+Subsets+of+a+Set
 /// [`Bitboard`]: struct.Bitboard.html
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq, Eq)]
 pub struct CarryRippler {
     /// The current subset
     sub: u64,
