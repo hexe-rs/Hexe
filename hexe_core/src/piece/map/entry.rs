@@ -105,4 +105,36 @@ impl<'a> Entry<'a> {
             Entry::Vacant(VacantEntry { map: map, key: sq, })
         }
     }
+
+    /// Ensures a value is in the entry by inserting the default if empty, and
+    /// returns a mutable reference to the value in the entry.
+    #[inline]
+    pub fn or_insert(self, default: Piece) -> &'a mut Piece {
+        match self {
+            Entry::Occupied(entry) => entry.into_mut(),
+            Entry::Vacant(entry) => entry.insert(default),
+        }
+    }
+
+    /// Ensures a value is in the entry by inserting the result of the default
+    /// function if empty, and returns a mutable reference to the value in the
+    /// entry.
+    #[inline]
+    pub fn or_insert_with<F>(self, default: F) -> &'a mut Piece
+        where F: FnOnce() -> Piece
+    {
+        match self {
+            Entry::Occupied(entry) => entry.into_mut(),
+            Entry::Vacant(entry) => entry.insert(default()),
+        }
+    }
+
+    /// Returns a reference to this entry's square.
+    #[inline]
+    pub fn key(&self) -> &Square {
+        match *self {
+            Entry::Occupied(ref entry) => entry.key(),
+            Entry::Vacant(ref entry) => entry.key(),
+        }
+    }
 }
