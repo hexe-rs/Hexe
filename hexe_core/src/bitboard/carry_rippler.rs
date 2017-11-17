@@ -1,4 +1,5 @@
 use super::*;
+use core::fmt;
 
 /// An iterator over all subsets of a [`Bitboard`].
 ///
@@ -26,6 +27,15 @@ pub struct CarryRippler {
     set: u64,
     /// Whether or not this is the first iteration
     is_first: bool,
+}
+
+impl fmt::Debug for CarryRippler {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("CarryRippler")
+            .field("superset", &self.superset())
+            .field("subset",   &self.subset())
+            .finish()
+    }
 }
 
 impl Default for CarryRippler {
