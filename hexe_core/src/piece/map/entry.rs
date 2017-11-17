@@ -9,6 +9,52 @@ pub struct OccupiedEntry<'a> {
     key: Square,
 }
 
+impl<'a> OccupiedEntry<'a> {
+    /// Gets a reference to the square in the entry.
+    #[inline]
+    pub fn key(&self) -> &Square { &self.key }
+
+    /// Take ownership of the piece and square from the map.
+    #[inline]
+    pub fn remove_entry(self) -> (Square, Piece) {
+        let key = self.key;
+        let val = mem::replace(&mut self.map.0[key as usize], NONE);
+        unsafe { (key, val.into_unchecked()) }
+    }
+
+    /// Gets a reference to the piece in the entry.
+    #[inline]
+    pub fn get(&self) -> &Piece {
+        unsafe { self.map.get_unchecked(self.key) }
+    }
+
+    /// Gets a mutable reference to the piece in the entry.
+    #[inline]
+    pub fn get_mut(&mut self) -> &mut Piece {
+        unsafe { self.map.get_unchecked_mut(self.key) }
+    }
+
+    /// Converts the entry into a mutable reference to its value.
+    #[inline]
+    pub fn into_mut(self) -> &'a mut Piece {
+        unsafe { self.map.get_unchecked_mut(self.key) }
+    }
+
+    /// Sets the piece of the entry with the `OccupiedEntry`'s square, and
+    /// returns the entry's old value.
+    #[inline]
+    pub fn insert(&mut self, piece: Piece) -> Piece {
+        let pc = mem::replace(&mut self.map.0[self.key as usize], piece as u8);
+        unsafe { pc.into_unchecked() }
+    }
+
+    /// Takes the piece of the entry out of the map, and returns it.
+    #[inline]
+    pub fn remove(self) -> Piece {
+        self.remove_entry().1
+    }
+}
+
 /// A view into a vacant entry in a [`PieceMap`]. It is part of the [`Entry`] enum.
 ///
 /// [`PieceMap`]: struct.PieceMap.html
