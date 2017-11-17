@@ -225,7 +225,7 @@ macro_rules! impl_composition_ops {
                 other.into().bitxor(self)
             }
         }
-    )* }
+    )+ }
 }
 
 macro_rules! impl_try_from_char {
