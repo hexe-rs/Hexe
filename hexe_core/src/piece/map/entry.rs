@@ -18,6 +18,25 @@ pub struct VacantEntry<'a> {
     key: Square,
 }
 
+impl<'a> VacantEntry<'a> {
+    /// Gets a reference to the square that would be used when inserting a value
+    /// through the vacant entry.
+    #[inline]
+    pub fn key(&self) -> &Square { &self.key }
+
+    /// Take ownership of the square.
+    #[inline]
+    pub fn into_key(self) -> Square { self.key }
+
+    /// Sets the piece of the entry and returns a mutable reference to it.
+    #[inline]
+    pub fn insert(self, piece: Piece) -> &'a mut Piece {
+        let slot = &mut self.map.0[self.key as usize];
+        *slot = piece as u8;
+        unsafe { slot.into_unchecked() }
+    }
+}
+
 /// A view into a single entry in a map, which may either be vacant or occupied.
 ///
 /// This enum is constructed from the [`entry`] method on [`PieceMap`].
