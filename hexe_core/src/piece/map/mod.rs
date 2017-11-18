@@ -374,8 +374,15 @@ impl PieceMap {
         }
         #[cfg(not(feature = "simd"))]
         {
-            let empty = [NONE; 8];
-            for &slot in self.inner_2d() {
+            const INNER: usize = ::consts::PTR_SIZE;
+            const OUTER: usize = SQUARE_NUM / INNER;
+
+            let empty = [NONE; INNER];
+            let inner: &[[u8; INNER]; OUTER] = unsafe {
+                (&self.0).into_unchecked()
+            };
+
+            for &slot in inner {
                 if slot != empty {
                     return false;
                 }
