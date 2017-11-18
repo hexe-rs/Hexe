@@ -407,6 +407,20 @@ impl PieceMap {
     /// the result if it is used repeatedly.
     #[inline]
     pub fn len(&self) -> usize {
+        #[cfg(feature = "simd")]
+        {
+            let mut len = SQUARE_NUM;
+            let empty = u8x16::splat(NONE);
+            for i in 0..4 {
+                let vec = u8x16::load(&self.0, i * 16);
+                let val = vec.eq(empty);
+                for idx in 0..16 {
+                    len -= val.extract(idx) as usize;
+                }
+            }
+            len
+        }
+        #[cfg(not(feature = "simd"))]
         self.0.iter().fold(SQUARE_NUM, |len, &val| len - (val == NONE) as usize)
     }
 
