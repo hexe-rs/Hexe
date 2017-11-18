@@ -401,13 +401,22 @@ impl PieceMap {
         })
     }
 
-    /// Returns the number of pieces in `self`.
+    /// Returns the total number of pieces in `self`.
     ///
     /// This operation is performed in O(n) time. It is recommended to store
     /// the result if it is used repeatedly.
     #[inline]
     pub fn len(&self) -> usize {
         SQUARE_NUM - self.0.count_of(NONE)
+    }
+
+    /// Returns the number of occurrences of `piece` in `self`.
+    ///
+    /// This operation is performed in O(n) time. It is recommended to store
+    /// the result if it is used repeatedly.
+    #[inline]
+    pub fn count_of(&self, piece: Piece) -> usize {
+        self.0.count_of(piece as u8)
     }
 
     /// Returns whether the map contains the value.
