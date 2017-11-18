@@ -326,7 +326,7 @@ impl DoubleEndedIterator for Squares {
 impl ExactSizeIterator for Squares {
     #[inline]
     fn len(&self) -> usize {
-        self.iter.len()
+        self.iter.end as usize - self.iter.start as usize
     }
 }
 
