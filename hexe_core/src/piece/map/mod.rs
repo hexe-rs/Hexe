@@ -182,10 +182,8 @@ impl PieceMap {
                     }
                 },
                 _ => if let Some(pc) = Piece::from_char(byte as char) {
-                    let sq = Square::new(
-                        File::from(file),
-                        Rank::from(rank)
-                    );
+                    let sq = Square::new(File::from(file),
+                                         Rank::from(rank));
                     map.insert(sq, pc);
                     file += 1;
                 } else {
