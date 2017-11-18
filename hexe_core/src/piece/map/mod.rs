@@ -9,8 +9,7 @@ use consts::PTR_SIZE;
 use misc::Contained;
 use square::Squares;
 use prelude::*;
-use util::count::*;
-use util::twiddling::*;
+use util::*;
 
 #[cfg(feature = "simd")]
 use simd::u8x16;

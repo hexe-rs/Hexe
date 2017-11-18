@@ -1,5 +1,9 @@
-//! Utility traits and other non-public functionality.
+//! Non-public utility traits.
 
-pub mod bytes;
-pub mod count;
-pub mod twiddling;
+mod bytes;
+mod count;
+mod twiddling;
+
+pub use self::bytes::*;
+pub use self::count::*;
+pub use self::twiddling::*;
