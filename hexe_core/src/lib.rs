@@ -61,4 +61,5 @@ pub mod piece;
 pub mod square;
 
 mod ext;
+mod consts;
 mod magic;
