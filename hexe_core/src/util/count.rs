@@ -1,6 +1,8 @@
 use core::usize;
 use consts::*;
-use uncon::*;
+
+#[cfg(feature = "simd")]
+use _simd::u8x16;
 
 /// A type that represents multiple bytes.
 ///
@@ -53,6 +55,30 @@ impl Bytes for usize {
     }
 }
 
+#[cfg(feature = "simd")]
+impl Bytes for u8x16 {
+    #[inline]
+    fn splat(byte: u8) -> Self {
+        Self::splat(byte)
+    }
+
+    #[inline]
+    fn bytes_equal(self, other: Self) -> Self {
+        self.eq(other).to_repr().to_u8()
+    }
+
+    #[inline]
+    fn increment(self, incr: Self) -> Self {
+        // incr on -1
+        self - incr
+    }
+
+    #[inline]
+    fn sum(self) -> usize {
+        (0..16).fold(0, |s, i| s + self.extract(i) as usize)
+    }
+}
+
 /// A type that can efficiently return the count of a given value within itself.
 pub trait Count<T> {
     /// The number of occurrences of `value` within `self`.
@@ -64,13 +90,24 @@ const SIXTY_FOUR: usize = 64;
 impl<'a> Count<u8> for &'a [u8; SIXTY_FOUR] {
     #[inline]
     fn count_of(self, needle: u8) -> usize {
-        let splat = usize::splat(needle);
+        #[cfg(feature = "simd")]
+        type B = u8x16;
 
+        #[cfg(feature = "simd")]
+        let chunks = (0..4).map(|i| u8x16::load(self, i * (SIXTY_FOUR / 4)));
+
+        #[cfg(not(feature = "simd"))]
+        type B = usize;
+
+        #[cfg(not(feature = "simd"))]
         let chunks: &[usize; SIXTY_FOUR / PTR_SIZE] = unsafe {
+            use uncon::*;
             self.into_unchecked()
         };
 
-        chunks.iter().fold(0, |sums, &chunk| {
+        let splat = B::splat(needle);
+
+        chunks.into_iter().fold(B::splat(0), |sums, chunk| {
             sums.increment(chunk.bytes_equal(splat))
         }).sum()
     }

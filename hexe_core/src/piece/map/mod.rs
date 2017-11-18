@@ -408,23 +408,7 @@ impl PieceMap {
     /// the result if it is used repeatedly.
     #[inline]
     pub fn len(&self) -> usize {
-        #[cfg(feature = "simd")]
-        {
-            let mut len = SQUARE_NUM;
-            let empty = u8x16::splat(NONE);
-            for i in 0..4 {
-                let vec = u8x16::load(&self.0, i * 16);
-                let val = vec.eq(empty);
-                for idx in 0..16 {
-                    len -= val.extract(idx) as usize;
-                }
-            }
-            len
-        }
-        #[cfg(not(feature = "simd"))]
-        {
-            SQUARE_NUM - self.0.count_of(NONE)
-        }
+        SQUARE_NUM - self.0.count_of(NONE)
     }
 
     /// Returns whether the map contains the value.
