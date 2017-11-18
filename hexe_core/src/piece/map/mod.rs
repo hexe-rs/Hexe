@@ -15,6 +15,8 @@ use _simd::u8x16;
 
 const NONE: u8 = 12;
 
+const SQUARE_NUM: usize = 64;
+
 mod tables {
     use super::*;
 
@@ -34,7 +36,7 @@ mod tables {
     }
 
     /// The piece map for standard chess.
-    pub const STANDARD: [u8; 64] = [
+    pub const STANDARD: [u8; SQUARE_NUM] = [
         WR,   WN,   WB,   WQ,   WK,   WB,   WN,   WR,
         WP,   WP,   WP,   WP,   WP,   WP,   WP,   WP,
         NONE, NONE, NONE, NONE, NONE, NONE, NONE, NONE,
@@ -56,7 +58,7 @@ pub use self::entry::*;
 /// **Note:** `PieceMap::default()` returns an empty piece map. Use
 /// [`PieceMap::STANDARD`](#associatedconstant.STANDARD) to get a mapping for
 /// standard chess.
-pub struct PieceMap([u8; 64]);
+pub struct PieceMap([u8; SQUARE_NUM]);
 
 impl Clone for PieceMap {
     #[inline]
@@ -144,7 +146,7 @@ impl Extend<(Square, Piece)> for PieceMap {
 
 impl PieceMap {
     /// An empty piece map.
-    pub const EMPTY: PieceMap = PieceMap([NONE; 64]);
+    pub const EMPTY: PieceMap = PieceMap([NONE; SQUARE_NUM]);
 
     /// The piece map for standard chess.
     pub const STANDARD: PieceMap = PieceMap(tables::STANDARD);
@@ -158,7 +160,7 @@ impl PieceMap {
     /// Creates a map with _all_ squares populated by `piece`.
     #[inline]
     pub fn filled(piece: Piece) -> PieceMap {
-        PieceMap([piece as u8; 64])
+        PieceMap([piece as u8; SQUARE_NUM])
     }
 
     /// Creates a new piece map by instantiating each slot with the provided
@@ -345,7 +347,7 @@ impl PieceMap {
     /// Clears the map, removing all pieces.
     #[inline]
     pub fn clear(&mut self) {
-        self.0 = [NONE; 64];
+        self.0 = [NONE; SQUARE_NUM];
     }
 
     /// Efficiently removes all pieces from the given rank.
