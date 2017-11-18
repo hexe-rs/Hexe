@@ -428,19 +428,31 @@ impl PieceMap {
         }
         #[cfg(not(feature = "simd"))]
         {
-            let empty = [NONE; PTR_SIZE];
+            #[cfg(target_pointer_width = "64")]
+            {
+                let empty = [NONE; 8];
 
-            for &slot in self.inner_ptr_sized() {
-                if slot == empty {
-                    len -= PTR_SIZE;
-                } else {
-                    for &val in &slot {
-                        if val == NONE {
-                            len -= 1;
+                for &slot in self.inner_2d() {
+                    if slot == empty {
+                        len -= empty.len();
+                    } else {
+                        for &val in &slot {
+                            if val == NONE {
+                                len -= 1;
+                            }
                         }
                     }
                 }
             }
+            #[cfg(not(target_pointer_width = "64"))]
+            {
+                for &val in &self.0[..] {
+                    if val == NONE {
+                        len -= 1;
+                    }
+                }
+            }
+
         }
 
         len
