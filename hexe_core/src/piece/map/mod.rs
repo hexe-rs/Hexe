@@ -408,52 +408,11 @@ impl PieceMap {
     #[inline]
     pub fn len(&self) -> usize {
         let mut len = self.0.len();
-
-        #[cfg(feature = "simd")]
-        {
-            let empty = u8x16::splat(NONE);
-
-            for i in (0..4).map(|i| i * 16) {
-                let vec = u8x16::load(&self.0, i);
-                if vec.eq(empty).all() {
-                    len -= 16;
-                } else {
-                    for &slot in &self.0[i..(i + 16)] {
-                        if slot == NONE {
-                            len -= 1;
-                        }
-                    }
-                }
+        for &val in &self.0[..] {
+            if val == NONE {
+                len -= 1;
             }
         }
-        #[cfg(not(feature = "simd"))]
-        {
-            #[cfg(target_pointer_width = "64")]
-            {
-                let empty = [NONE; 8];
-
-                for &slot in self.inner_2d() {
-                    if slot == empty {
-                        len -= empty.len();
-                    } else {
-                        for &val in &slot {
-                            if val == NONE {
-                                len -= 1;
-                            }
-                        }
-                    }
-                }
-            }
-            #[cfg(not(target_pointer_width = "64"))]
-            {
-                for &val in &self.0[..] {
-                    if val == NONE {
-                        len -= 1;
-                    }
-                }
-            }
-        }
-
         len
     }
 

@@ -3,9 +3,11 @@
 
 #![feature(test)]
 extern crate test;
+extern crate rand;
 extern crate hexe_core;
 
 use test::{Bencher, black_box};
+use rand::Rng;
 use hexe_core::piece::*;
 use hexe_core::square::Square;
 
@@ -98,7 +100,11 @@ fn map_iter_len(b: &mut Bencher) {
 
 #[bench]
 fn map_len(b: &mut Bencher) {
-    let map = piece_map!();
+    let mut map = map::PieceMap::STANDARD;
+    let mut rng = rand::thread_rng();
+    unsafe {
+        rng.shuffle(map.as_bytes_mut());
+    }
     b.iter(|| {
         black_box(black_box(&map).len());
     });
