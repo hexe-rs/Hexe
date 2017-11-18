@@ -158,6 +158,49 @@ impl PieceMap {
         PieceMap::default()
     }
 
+    /// Attempts to create a piece map from the fen string.
+    pub fn from_fen(fen: &str) -> Option<PieceMap> {
+        let mut map = PieceMap::EMPTY;
+        let bytes = fen.as_bytes();
+
+        let mut rank: usize = 7;
+        let mut file: usize = 0;
+
+        for &byte in bytes {
+            match byte {
+                b'/' => {
+                    if file != 8 || rank == 0 {
+                        return None;
+                    }
+                    file = 0;
+                    rank -= 1;
+                },
+                b'1'...b'8' => {
+                    file += (byte - b'0') as usize;
+                    if file > 8 {
+                        return None;
+                    }
+                },
+                _ => if let Some(pc) = Piece::from_char(byte as char) {
+                    let sq = Square::new(
+                        File::from(file),
+                        Rank::from(rank)
+                    );
+                    map.insert(sq, pc);
+                    file += 1;
+                } else {
+                    return None;
+                },
+            }
+        }
+
+        if rank == 0 && file == 8 {
+            Some(map)
+        } else {
+            None
+        }
+    }
+
     /// Creates a map with _all_ squares populated by `piece`.
     #[inline]
     pub fn filled(piece: Piece) -> PieceMap {
@@ -997,7 +1040,29 @@ mod tests {
         ];
 
         for &(ref map, exp) in &maps {
+            assert_eq!(
+                Some(map),
+                PieceMap::from_fen(exp).as_ref()
+            );
+
             map.map_fen(|s| assert_eq!(s, exp));
+        }
+
+        let fails = [
+            "",
+            "8/8/8/8/8/8/8",
+            "/8/8/8/8/8/8/8",
+            "8/8/8/8//8/8/8",
+            "8/8/8/8/8/8/8/",
+            "8/8/8/8/8/8/8/7",
+            "8/8/8/8/8/8/8/9",
+            "//////",
+            "///////",
+            "////////",
+        ];
+
+        for &fail in &fails {
+            assert_eq!(None, PieceMap::from_fen(fail));
         }
     }
 }
