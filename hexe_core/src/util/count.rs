@@ -85,30 +85,34 @@ pub trait Count<T> {
     fn count_of(self, value: T) -> usize;
 }
 
-const SIXTY_FOUR: usize = 64;
+macro_rules! impl_count {
+    ($($N:expr)+) => { $(
+        impl<'a> Count<u8> for &'a [u8; $N] {
+            #[inline]
+            fn count_of(self, needle: u8) -> usize {
+                #[cfg(feature = "simd")]
+                type B = u8x16;
 
-impl<'a> Count<u8> for &'a [u8; SIXTY_FOUR] {
-    #[inline]
-    fn count_of(self, needle: u8) -> usize {
-        #[cfg(feature = "simd")]
-        type B = u8x16;
+                #[cfg(feature = "simd")]
+                let chunks = (0..($N / 16)).map(|i| u8x16::load(self, i * 16));
 
-        #[cfg(feature = "simd")]
-        let chunks = (0..4).map(|i| u8x16::load(self, i * (SIXTY_FOUR / 4)));
+                #[cfg(not(feature = "simd"))]
+                type B = usize;
 
-        #[cfg(not(feature = "simd"))]
-        type B = usize;
+                #[cfg(not(feature = "simd"))]
+                let chunks: &[usize; $N / PTR_SIZE] = unsafe {
+                    use uncon::*;
+                    self.into_unchecked()
+                };
 
-        #[cfg(not(feature = "simd"))]
-        let chunks: &[usize; SIXTY_FOUR / PTR_SIZE] = unsafe {
-            use uncon::*;
-            self.into_unchecked()
-        };
+                let splat = B::splat(needle);
 
-        let splat = B::splat(needle);
-
-        chunks.into_iter().fold(B::splat(0), |sums, chunk| {
-            sums.increment(chunk.bytes_equal(splat))
-        }).sum()
-    }
+                chunks.into_iter().fold(B::splat(0), |sums, chunk| {
+                    sums.increment(chunk.bytes_equal(splat))
+                }).sum()
+            }
+        }
+    )+ }
 }
+
+impl_count! { 64 }
