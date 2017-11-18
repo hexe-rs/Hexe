@@ -428,11 +428,11 @@ impl PieceMap {
         }
         #[cfg(not(feature = "simd"))]
         {
-            let empty = [NONE; 8];
+            let empty = [NONE; PTR_SIZE];
 
-            for &slot in self.inner_2d() {
+            for &slot in self.inner_ptr_sized() {
                 if slot == empty {
-                    len -= 8;
+                    len -= PTR_SIZE;
                 } else {
                     for &val in &slot {
                         if val == NONE {
