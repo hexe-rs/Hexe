@@ -369,17 +369,13 @@ impl PieceMap {
                     return false;
                 }
             }
+            true
         }
         #[cfg(not(feature = "simd"))]
         {
-            let empty = [NONE; 8];
-            for &slot in self.inner_2d() {
-                if slot != empty {
-                    return false;
-                }
-            }
+            // LLVM optimizes this into an unrolled loop of 8 comparisons
+            self.inner_2d() == &[[NONE; 8]; 8]
         }
-        true
     }
 
     #[inline]
