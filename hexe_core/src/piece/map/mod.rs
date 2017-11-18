@@ -452,7 +452,6 @@ impl PieceMap {
                     }
                 }
             }
-
         }
 
         len
