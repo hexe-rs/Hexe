@@ -49,6 +49,9 @@ mod tables {
     ];
 }
 
+mod count;
+pub use self::count::*;
+
 mod entry;
 pub use self::entry::*;
 
@@ -421,7 +424,9 @@ impl PieceMap {
             len
         }
         #[cfg(not(feature = "simd"))]
-        self.0.iter().fold(SQUARE_NUM, |len, &val| len - (val == NONE) as usize)
+        {
+            SQUARE_NUM - self.0.count_of(NONE)
+        }
     }
 
     /// Returns whether the map contains the value.
