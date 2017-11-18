@@ -1,5 +1,6 @@
-use super::*;
 use core::usize;
+use consts::*;
+use uncon::*;
 
 /// A type that represents multiple bytes.
 ///

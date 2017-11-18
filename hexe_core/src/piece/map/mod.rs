@@ -10,6 +10,7 @@ use ext::Twiddling;
 use misc::Contained;
 use square::Squares;
 use prelude::*;
+use util::count::*;
 
 #[cfg(feature = "simd")]
 use _simd::u8x16;
@@ -48,9 +49,6 @@ mod tables {
         BR,   BN,   BB,   BQ,   BK,   BB,   BN,   BR,
     ];
 }
-
-mod count;
-pub use self::count::*;
 
 mod entry;
 pub use self::entry::*;
