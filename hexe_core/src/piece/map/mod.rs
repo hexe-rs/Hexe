@@ -213,6 +213,7 @@ impl PieceMap {
     }
 
     #[inline]
+    #[cfg_attr(feature = "simd", allow(dead_code))]
     fn inner_ptr_sized(&self) -> &[[u8; PTR_SIZE]; SQUARE_NUM / PTR_SIZE] {
         unsafe { (&self.0).into_unchecked() }
     }
