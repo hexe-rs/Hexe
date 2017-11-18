@@ -111,6 +111,27 @@ fn map_len(b: &mut Bencher) {
 }
 
 #[bench]
+fn map_len_naive(b: &mut Bencher) {
+    fn len(map: &map::PieceMap) -> usize {
+        map.as_bytes().iter().fold(64, |len, &pc| {
+            len - (pc == 12) as usize
+        })
+    }
+
+    let mut map = map::PieceMap::STANDARD;
+    let mut rng = rand::thread_rng();
+    unsafe {
+        rng.shuffle(map.as_bytes_mut());
+    }
+
+    assert_eq!(map.len(), len(&map));
+
+    b.iter(|| {
+        black_box(len(black_box(&map)));
+    });
+}
+
+#[bench]
 fn map_is_empty(b: &mut Bencher) {
     let map = piece_map!();
     b.iter(|| {
