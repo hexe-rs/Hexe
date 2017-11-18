@@ -209,18 +209,18 @@ impl PieceMap {
     }
 
     #[inline]
-    fn __inner_2d(&self) -> &[[u8; 8]; 8] {
+    fn inner_2d(&self) -> &[[u8; 8]; 8] {
         unsafe { (&self.0).into_unchecked() }
     }
 
     #[inline]
-    fn __inner_2d_mut(&mut self) -> &mut [[u8; 8]; 8] {
+    fn inner_2d_mut(&mut self) -> &mut [[u8; 8]; 8] {
         unsafe { (&mut self.0).into_unchecked() }
     }
 
     /// Mirrors the map across the horizontal axis of a chess board.
     pub fn mirror_horizontal(&mut self) {
-        let inner = self.__inner_2d_mut();
+        let inner = self.inner_2d_mut();
         for i in 0..4 {
             inner.swap(i, 7 - i);
         }
@@ -259,12 +259,12 @@ impl PieceMap {
     /// Efficiently fills the rank entirely with the given piece.
     #[inline]
     pub fn fill_rank(&mut self, r: Rank, pc: Piece) {
-        self.__inner_2d_mut()[r as usize] = [pc as u8; 8];
+        self.inner_2d_mut()[r as usize] = [pc as u8; 8];
     }
 
     /// Performs a raw replacement.
     #[inline]
-    unsafe fn __insert(&mut self, sq: Square, pc: u8) -> Option<Piece> {
+    unsafe fn replace(&mut self, sq: Square, pc: u8) -> Option<Piece> {
         match mem::replace(&mut self.0[sq as usize], pc) {
             NONE => None,
             p => Some(p.into_unchecked())
@@ -274,13 +274,13 @@ impl PieceMap {
     /// Inserts the piece at a square, returning the previous one if any.
     #[inline]
     pub fn insert(&mut self, sq: Square, pc: Piece) -> Option<Piece> {
-        unsafe { self.__insert(sq, pc as u8) }
+        unsafe { self.replace(sq, pc as u8) }
     }
 
     /// Removes the piece at a square.
     #[inline]
     pub fn remove(&mut self, sq: Square) -> Option<Piece> {
-        unsafe { self.__insert(sq, NONE) }
+        unsafe { self.replace(sq, NONE) }
     }
 
     /// Swaps two values in the map.
@@ -351,7 +351,7 @@ impl PieceMap {
     /// Efficiently removes all pieces from the given rank.
     #[inline]
     pub fn clear_rank(&mut self, rank: Rank) {
-        self.__inner_2d_mut()[rank as usize] = [NONE; 8];
+        self.inner_2d_mut()[rank as usize] = [NONE; 8];
     }
 
     /// Returns whether `self` is empty.
@@ -373,7 +373,7 @@ impl PieceMap {
         #[cfg(not(feature = "simd"))]
         {
             let empty = [NONE; 8];
-            for &slot in self.__inner_2d() {
+            for &slot in self.inner_2d() {
                 if slot != empty {
                     return false;
                 }
@@ -422,7 +422,7 @@ impl PieceMap {
         {
             let empty = [NONE; 8];
 
-            for &slot in self.__inner_2d() {
+            for &slot in self.inner_2d() {
                 if slot == empty {
                     len -= 8;
                 } else {
@@ -465,7 +465,7 @@ impl PieceMap {
     #[inline]
     pub fn rank_contains(&self, rank: Rank, pc: Piece) -> bool {
         let (this, that): (u64, u64) = unsafe { (
-            mem::transmute(self.__inner_2d()[rank as usize]),
+            mem::transmute(self.inner_2d()[rank as usize]),
             mem::transmute([pc as u8; 8])
         ) };
         (this ^ that).contains_zero_byte()
@@ -800,7 +800,7 @@ unsafe impl<'a> Sync for IterMut<'a> {}
 impl<'a> From<IterMut<'a>> for Iter<'a> {
     #[inline]
     fn from(iter: IterMut) -> Iter {
-        Iter { map: iter._map(), iter: iter.iter }
+        Iter { map: iter.piece_map(), iter: iter.iter }
     }
 }
 
@@ -810,7 +810,7 @@ impl<'a> Iterator for IterMut<'a> {
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         while let Some(sq) = self.iter.next() {
-            if let Some(pc) = self._map_mut().get_mut(sq) {
+            if let Some(pc) = self.piece_map_mut().get_mut(sq) {
                 return Some((sq, pc));
             }
         }
@@ -838,7 +838,7 @@ impl<'a> DoubleEndedIterator for IterMut<'a> {
     #[inline]
     fn next_back(&mut self) -> Option<Self::Item> {
         while let Some(sq) = self.iter.next_back() {
-            if let Some(pc) = self._map_mut().get_mut(sq) {
+            if let Some(pc) = self.piece_map_mut().get_mut(sq) {
                 return Some((sq, pc));
             }
         }
@@ -849,25 +849,25 @@ impl<'a> DoubleEndedIterator for IterMut<'a> {
 impl<'a> ExactSizeIterator for IterMut<'a> {
     #[inline]
     fn len(&self) -> usize {
-        self._map().find_len(&self.iter)
+        self.piece_map().find_len(&self.iter)
     }
 }
 
 impl<'a> fmt::Debug for IterMut<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let iter = Iter { map: self._map(), iter: self.iter.clone() };
+        let iter = Iter { map: self.piece_map(), iter: self.iter.clone() };
         f.debug_list().entries(iter).finish()
     }
 }
 
 impl<'a> IterMut<'a> {
     #[inline]
-    fn _map(&self) -> &'a PieceMap {
+    fn piece_map(&self) -> &'a PieceMap {
         unsafe { &*self.map }
     }
 
     #[inline]
-    fn _map_mut(&mut self) -> &'a mut PieceMap {
+    fn piece_map_mut(&mut self) -> &'a mut PieceMap {
         unsafe { &mut *self.map }
     }
 }
@@ -919,7 +919,7 @@ impl Swap for Square {
 impl Swap for Rank {
     #[inline]
     fn swap(i: Rank, j: Rank, map: &mut PieceMap) {
-        map.__inner_2d_mut().swap(i as usize, j as usize);
+        map.inner_2d_mut().swap(i as usize, j as usize);
     }
 }
 
