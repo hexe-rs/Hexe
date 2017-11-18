@@ -5,6 +5,7 @@ use core::fmt;
 use core::marker::PhantomData;
 use core::mem;
 use core::ops;
+use consts::PTR_SIZE;
 use ext::Twiddling;
 use misc::Contained;
 use square::Squares;
@@ -211,6 +212,11 @@ impl PieceMap {
     }
 
     #[inline]
+    fn inner_ptr_sized(&self) -> &[[u8; PTR_SIZE]; SQUARE_NUM / PTR_SIZE] {
+        unsafe { (&self.0).into_unchecked() }
+    }
+
+    #[inline]
     fn inner_2d(&self) -> &[[u8; 8]; 8] {
         unsafe { (&self.0).into_unchecked() }
     }
@@ -374,15 +380,8 @@ impl PieceMap {
         }
         #[cfg(not(feature = "simd"))]
         {
-            const INNER: usize = ::consts::PTR_SIZE;
-            const OUTER: usize = SQUARE_NUM / INNER;
-
-            let empty = [NONE; INNER];
-            let inner: &[[u8; INNER]; OUTER] = unsafe {
-                (&self.0).into_unchecked()
-            };
-
-            for &slot in inner {
+            let empty = [NONE; PTR_SIZE];
+            for &slot in self.inner_ptr_sized() {
                 if slot != empty {
                     return false;
                 }
