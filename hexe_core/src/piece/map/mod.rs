@@ -214,7 +214,7 @@ impl PieceMap {
 
     #[inline]
     #[cfg_attr(feature = "simd", allow(dead_code))]
-    fn inner_ptr_sized(&self) -> &[[u8; PTR_SIZE]; SQUARE_NUM / PTR_SIZE] {
+    fn inner_ptr_sized(&self) -> &[usize; SQUARE_NUM / PTR_SIZE] {
         unsafe { (&self.0).into_unchecked() }
     }
 
@@ -382,9 +382,11 @@ impl PieceMap {
         }
         #[cfg(not(feature = "simd"))]
         {
-            let empty = [NONE; PTR_SIZE];
+            const LO: usize = ::core::usize::MAX / 0xFF;
+            const EMPTY: usize = LO * NONE as usize;
+
             for &slot in self.inner_ptr_sized() {
-                if slot != empty {
+                if slot != EMPTY {
                     return false;
                 }
             }
