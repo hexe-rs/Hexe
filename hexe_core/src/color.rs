@@ -5,7 +5,7 @@ use core::ops;
 use core::str;
 
 #[cfg(feature = "serde")]
-use _serde::*;
+use serde::*;
 
 /// A black or white color.
 #[derive(Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]

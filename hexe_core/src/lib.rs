@@ -33,16 +33,6 @@ extern crate static_assertions;
 
 extern crate memchr;
 
-// Re-exported to use within hexe
-#[cfg(feature = "serde")]
-#[doc(hidden)]
-pub extern crate serde as _serde;
-
-// Re-exported to use within hexe
-#[cfg(feature = "simd")]
-#[doc(hidden)]
-pub extern crate simd as _simd;
-
 #[macro_use]
 extern crate uncon_derive;
 extern crate uncon;
@@ -59,6 +49,19 @@ pub mod color;
 pub mod misc;
 pub mod piece;
 pub mod square;
+
+// Modules shared with hexe that aren't meant for public use
+#[doc(hidden)]
+pub mod _shared {
+    #[cfg(feature = "serde")]
+    pub extern crate serde;
+
+    #[cfg(feature = "simd")]
+    pub extern crate simd;
+}
+
+#[allow(unused_imports)]
+use _shared::*;
 
 mod consts;
 mod util;

@@ -5,7 +5,7 @@ use core::ops::{self, Range};
 use core::str;
 
 #[cfg(feature = "serde")]
-use _serde::*;
+use serde::*;
 
 use prelude::*;
 

@@ -13,7 +13,7 @@ use prelude::*;
 use util::count::*;
 
 #[cfg(feature = "simd")]
-use _simd::u8x16;
+use simd::u8x16;
 
 const NONE: u8 = 12;
 

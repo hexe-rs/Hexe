@@ -2,7 +2,7 @@ use core::usize;
 use consts::*;
 
 #[cfg(feature = "simd")]
-use _simd::u8x16;
+use simd::u8x16;
 
 /// A type that represents multiple bytes.
 ///
