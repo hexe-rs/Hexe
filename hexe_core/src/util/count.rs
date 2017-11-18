@@ -64,15 +64,14 @@ const SIXTY_FOUR: usize = 64;
 impl<'a> Count<u8> for &'a [u8; SIXTY_FOUR] {
     #[inline]
     fn count_of(self, needle: u8) -> usize {
-        let mut sums = 0usize;
         let splat = usize::splat(needle);
 
         let chunks: &[usize; SIXTY_FOUR / PTR_SIZE] = unsafe {
             self.into_unchecked()
         };
-        for &chunk in chunks {
-            sums = sums.increment(chunk.bytes_equal(splat))
-        }
-        sums.sum()
+
+        chunks.iter().fold(0, |sums, &chunk| {
+            sums.increment(chunk.bytes_equal(splat))
+        }).sum()
     }
 }
