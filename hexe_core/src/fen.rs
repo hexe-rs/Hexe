@@ -23,3 +23,19 @@ pub struct Fen {
     /// The fullmove number.
     pub fullmoves: u32,
 }
+
+impl Fen {
+    /// FEN for the starting position. It is equivalent to:
+    ///
+    /// ```txt
+    /// rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+    /// ```
+    pub const STARTING: Fen = Fen {
+        pieces: PieceMap::STANDARD,
+        color: Color::White,
+        castling: CastleRights::FULL,
+        en_passant: None,
+        halfmoves: 0,
+        fullmoves: 1,
+    };
+}
