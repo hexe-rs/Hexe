@@ -395,7 +395,7 @@ impl PieceMap {
 
     #[inline]
     fn find_len(&self, iter: &Squares) -> usize {
-        iter.extract(&self.0).iter().fold(64, |len, &pc| {
+        iter.extract(&self.0).iter().fold(iter.len(), |len, &pc| {
             len - (pc == NONE) as usize
         })
     }
@@ -945,6 +945,11 @@ mod tests {
 
         map = PieceMap::filled(Piece::BlackBishop);
         assert_len!(64);
+
+        let mut iter = map.iter();
+        for _ in iter.by_ref().take(16) {}
+
+        assert_eq!(iter.len(), 48);
     }
 
     #[test]
