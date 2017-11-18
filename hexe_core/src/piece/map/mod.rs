@@ -396,13 +396,9 @@ impl PieceMap {
 
     #[inline]
     fn find_len(&self, iter: &Squares) -> usize {
-        let mut len = 0;
-        for &slot in iter.extract(&self.0) {
-            if slot != NONE {
-                len += 1;
-            }
-        }
-        len
+        iter.extract(&self.0).iter().fold(64, |len, &pc| {
+            len - (pc == NONE) as usize
+        })
     }
 
     /// Returns the number of pieces in `self`.
