@@ -65,5 +65,4 @@ use _shared::*;
 
 mod consts;
 mod util;
-mod ext;
 mod magic;

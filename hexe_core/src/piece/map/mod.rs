@@ -6,11 +6,11 @@ use core::marker::PhantomData;
 use core::mem;
 use core::ops;
 use consts::PTR_SIZE;
-use ext::Twiddling;
 use misc::Contained;
 use square::Squares;
 use prelude::*;
 use util::count::*;
+use util::twiddling::*;
 
 #[cfg(feature = "simd")]
 use simd::u8x16;
