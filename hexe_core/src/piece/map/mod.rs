@@ -407,13 +407,7 @@ impl PieceMap {
     /// the result if it is used repeatedly.
     #[inline]
     pub fn len(&self) -> usize {
-        let mut len = self.0.len();
-        for &val in &self.0[..] {
-            if val == NONE {
-                len -= 1;
-            }
-        }
-        len
+        self.0.iter().fold(SQUARE_NUM, |len, &val| len - (val == NONE) as usize)
     }
 
     /// Returns whether the map contains the value.
