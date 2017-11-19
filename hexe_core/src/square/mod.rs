@@ -1,4 +1,43 @@
 //! A chess board square and its components.
+//!
+//! A chess board is comprised of sixty-four squares ranging from A1 through H8.
+//! Each square has two components:
+//!
+//! - File: a column represented by a letter from A through F
+//! - Rank: a row represented by a number from 1 through 8
+//!
+//! # Examples
+//!
+//! Basic usage:
+//!
+//! ```
+//! use hexe_core::square::{Square, File, Rank};
+//!
+//! let f = File::B;
+//! let r = Rank::Seven;
+//! let sq = Square::B7;
+//!
+//! assert_eq!(sq, Square::new(f, r));
+//! ```
+//!
+//! [`Square`] is an `enum` so that we can safely and conveniently index into
+//! tables of sixty-four elements. Because the optimizer knows that the index
+//! will **never** be greater than 64, the bounds check gets removed, thus
+//! making lookups fast.
+//!
+//! ```
+//! # use hexe_core::prelude::*;
+//! # type T = ();
+//! static TABLE: [T; 64] = [
+//!     /* ... */
+//! #   (); 64
+//! ];
+//!
+//! // Will never panic
+//! let value = TABLE[Square::C5 as usize];
+//! ```
+//!
+//! [`Square`]: enum.Square.html
 
 use core::fmt;
 use core::ops::{self, Range};
