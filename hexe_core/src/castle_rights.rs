@@ -51,6 +51,12 @@ impl fmt::Debug for CastleRights {
     }
 }
 
+impl fmt::Display for CastleRights {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        self.map_str(|s| s.fmt(f))
+    }
+}
+
 /// An error returned when parsing `CastleRights` using `from_str` fails.
 #[derive(Copy, Clone, Debug)]
 pub struct ParseError;
