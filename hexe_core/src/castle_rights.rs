@@ -3,6 +3,9 @@
 use core::{fmt, ops, str};
 use prelude::*;
 
+#[cfg(feature = "serde")]
+use serde::*;
+
 /// Castle rights for a chess game.
 ///
 /// # Examples
@@ -54,6 +57,22 @@ impl fmt::Debug for CastleRights {
 impl fmt::Display for CastleRights {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.map_str(|s| s.fmt(f))
+    }
+}
+
+#[cfg(feature = "serde")]
+impl Serialize for CastleRights {
+    fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
+        self.map_str(|s| ser.serialize_str(s))
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<'de> Deserialize<'de> for CastleRights {
+    fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
+        <&str>::deserialize(de)?.parse().map_err(|_| {
+            de::Error::custom("failed to parse a string as castling rights")
+        })
     }
 }
 
