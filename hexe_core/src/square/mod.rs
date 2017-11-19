@@ -172,6 +172,20 @@ impl Square {
         (Bitboard::BLACK >> self as u64).0.into()
     }
 
+    /// Returns whether `self` is aligned with two other squares along a file,
+    /// rank, or diagonal.
+    #[inline]
+    pub fn is_aligned(self, a: Square, b: Square) -> bool {
+        a.line(b).contains(self)
+    }
+
+    /// Returns whether `self` is between two other squares along a file, rank,
+    /// or diagonal.
+    #[inline]
+    pub fn is_between(self, a: Square, b: Square) -> bool {
+        a.between(b).contains(self)
+    }
+
     /// Returns the result of applying a function to a mutable string
     /// representation of `self`.
     ///
