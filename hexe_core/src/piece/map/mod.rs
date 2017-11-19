@@ -123,7 +123,7 @@ impl fmt::Debug for PieceMap {
 
 impl fmt::Display for PieceMap {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.map_str(|s| fmt::Display::fmt(s, f))
+        self.map_str(|s| s.fmt(f))
     }
 }
 

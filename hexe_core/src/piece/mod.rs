@@ -111,7 +111,7 @@ impl fmt::Debug for PieceKind {
 impl fmt::Display for PieceKind {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(self.into_str(), f)
+        self.into_str().fmt(f)
     }
 }
 
@@ -137,7 +137,7 @@ static FROM_STR_ERROR: &str = "failed to parse a string as a piece";
 
 impl fmt::Display for FromStrError {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        fmt::Display::fmt(FROM_STR_ERROR, f)
+        FROM_STR_ERROR.fmt(f)
     }
 }
 

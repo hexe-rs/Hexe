@@ -52,7 +52,7 @@ impl fmt::Debug for Bitboard {
 
 impl fmt::Display for Bitboard {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        self.map_str(|s| fmt::Display::fmt(s, f))
+        self.map_str(|s| s.fmt(f))
     }
 }
 

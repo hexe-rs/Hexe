@@ -238,7 +238,7 @@ macro_rules! impl_try_from_char {
         #[cfg(feature = "try-from")]
         impl ::core::fmt::Display for TryFromCharError {
             fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-                ::core::fmt::Display::fmt($msg, f)
+                $msg.fmt(f)
             }
         }
 
