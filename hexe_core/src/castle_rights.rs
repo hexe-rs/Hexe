@@ -52,7 +52,6 @@ impl fmt::Debug for CastleRights {
         struct Hex(u8);
 
         impl fmt::Debug for Hex {
-            #[inline]
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 // 2 for "0b" + 4 for number
                 write!(f, "{:#06b}", self.0)

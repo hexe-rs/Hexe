@@ -39,7 +39,6 @@ impl fmt::Debug for Bitboard {
         struct Hex(u64);
 
         impl fmt::Debug for Hex {
-            #[inline]
             fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
                 // 2 for "0x" + 16 for number
                 write!(f, "{:#018X}", self.0)
