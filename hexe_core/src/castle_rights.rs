@@ -128,6 +128,13 @@ impl ops::Not for CastleSide {
     }
 }
 
+impl From<CastleRight> for char {
+    #[inline]
+    fn from(right: CastleRight) -> char {
+        b"KkQq"[right as usize] as char
+    }
+}
+
 impl CastleRight {
     /// Creates a new castle right for `color` and `side`.
     #[inline]
