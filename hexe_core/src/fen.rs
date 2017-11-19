@@ -38,4 +38,18 @@ impl Fen {
         halfmoves: 0,
         fullmoves: 1,
     };
+
+    /// FEN for the empty position. It is equivalent to:
+    ///
+    /// ```txt
+    /// 8/8/8/8/8/8/8/8 w - - 0 1
+    /// ```
+    pub const EMPTY: Fen = Fen {
+        pieces: PieceMap::EMPTY,
+        color: Color::White,
+        castling: CastleRights::EMPTY,
+        en_passant: None,
+        halfmoves: 0,
+        fullmoves: 1,
+    };
 }
