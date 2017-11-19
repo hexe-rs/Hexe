@@ -65,9 +65,9 @@ impl CarryRippler {
         self.sub.into()
     }
 
-    /// Returns whether `self` is finished iterating.
+    /// Returns whether `self` is empty.
     #[inline]
-    pub fn is_finished(&self) -> bool {
+    pub fn is_empty(&self) -> bool {
         !self.is_first && self.sub == 0
     }
 }
@@ -77,7 +77,7 @@ impl Iterator for CarryRippler {
 
     #[inline]
     fn next(&mut self) -> Option<Bitboard> {
-        if self.is_finished() { None } else {
+        if self.is_empty() { None } else {
             self.is_first = false;
             let sub = self.sub;
             self.sub = self.set & self.sub.wrapping_sub(self.set);
@@ -110,7 +110,7 @@ impl Iterator for CarryRippler {
 
     #[inline]
     fn last(self) -> Option<Bitboard> {
-        if self.is_finished() { None } else {
+        if self.is_empty() { None } else {
             // The last result is always the initial set
             Some(self.set.into())
         }
