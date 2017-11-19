@@ -1,6 +1,6 @@
 //! Castling rights for two players of a chess game.
 
-use core::{fmt, ops};
+use core::{fmt, ops, str};
 use prelude::*;
 
 /// Castle rights for a chess game.
@@ -160,4 +160,32 @@ pub enum CastleSide {
     King,
     /// Queen castling side (O-O-O).
     Queen,
+}
+
+/// An error returned when parsing `CastleRights` using `from_str` fails.
+#[derive(Copy, Clone, Debug)]
+pub struct ParseError;
+
+impl str::FromStr for CastleRights {
+    type Err = ParseError;
+
+    fn from_str(s: &str) -> Result<CastleRights, ParseError> {
+        let bytes = s.as_bytes();
+        let mut result = CastleRights::EMPTY;
+
+        if bytes.len() == 1 && bytes[0] == b'-' {
+            Ok(result)
+        } else {
+            for &byte in bytes {
+                result |= match byte {
+                    b'K' => CastleRights::WHITE_KINGSIDE,
+                    b'k' => CastleRights::BLACK_KINGSIDE,
+                    b'Q' => CastleRights::WHITE_QUEENSIDE,
+                    b'q' => CastleRights::BLACK_QUEENSIDE,
+                    _ => return Err(ParseError),
+                };
+            }
+            Ok(result)
+        }
+    }
 }
