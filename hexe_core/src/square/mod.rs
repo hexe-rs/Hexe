@@ -174,6 +174,17 @@ impl Square {
 
     /// Returns whether `self` is aligned with two other squares along a file,
     /// rank, or diagonal.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::prelude::*;
+    /// let sq = Square::A3;
+    ///
+    /// assert!(sq.is_aligned(Square::C5, Square::F8));
+    /// ```
     #[inline]
     pub fn is_aligned(self, a: Square, b: Square) -> bool {
         a.line(b).contains(self)
@@ -181,6 +192,17 @@ impl Square {
 
     /// Returns whether `self` is between two other squares along a file, rank,
     /// or diagonal.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::prelude::*;
+    /// let sq = Square::D4;
+    ///
+    /// assert!(sq.is_between(Square::B2, Square::G7));
+    /// ```
     #[inline]
     pub fn is_between(self, a: Square, b: Square) -> bool {
         a.between(b).contains(self)
