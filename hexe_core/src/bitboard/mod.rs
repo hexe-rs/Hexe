@@ -13,6 +13,7 @@ use prelude::*;
 
 #[cfg(feature = "serde")]
 use serde::*;
+use uncon::*;
 
 /// A mapping of sixty-four bits to squares of a chess board.
 ///
@@ -160,14 +161,14 @@ impl From<Bitboard> for u64 {
 impl AsRef<Bitboard> for u64 {
     #[inline(always)]
     fn as_ref(&self) -> &Bitboard {
-        unsafe { &*(self as *const _ as *const _) }
+        unsafe { self.into_unchecked() }
     }
 }
 
 impl AsMut<Bitboard> for u64 {
     #[inline(always)]
     fn as_mut(&mut self) -> &mut Bitboard {
-        unsafe { &mut *(self as *mut _ as *mut _) }
+        unsafe { self.into_unchecked() }
     }
 }
 
