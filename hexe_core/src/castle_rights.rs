@@ -91,6 +91,33 @@ impl CastleRights {
 
     /// Black queenside.
     pub const BLACK_QUEENSIDE: CastleRights = CastleRights(0b1000);
+
+    /// Returns the result of applying a function to a mutable string
+    /// representation of `self`.
+    #[inline]
+    pub fn map_str<F, T>(&self, f: F) -> T
+        where F: for<'a> FnOnce(&'a mut str) -> T
+    {
+        use self::CastleRight::*;
+
+        let mut buf = [0u8; 4];
+        let slice: &mut [u8] = if self.is_empty() {
+            buf[0] = b'-';
+            &mut buf[..1]
+        } else {
+            let mut idx = 0;
+            for &right in &[WhiteKingside, WhiteQueenside, BlackKingside, BlackQueenside] {
+                if self.contains(right) {
+                    unsafe {
+                        *buf.get_unchecked_mut(idx) = char::from(right) as u8;
+                    }
+                    idx += 1;
+                }
+            }
+            unsafe { buf.get_unchecked_mut(..idx) }
+        };
+        unsafe { f(str::from_utf8_unchecked_mut(slice)) }
+    }
 }
 
 impl_bit_set! { CastleRights 0b1111 => CastleRight }
