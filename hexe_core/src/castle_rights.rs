@@ -142,6 +142,18 @@ impl CastleRight {
         (((side as u8) << 1) | color as u8).into()
     }
 
+    /// Returns a castle right from the parsed character.
+    #[inline]
+    pub fn from_char(ch: char) -> Option<CastleRight> {
+        match ch {
+            'K' => Some(CastleRight::WhiteKingside),
+            'k' => Some(CastleRight::BlackKingside),
+            'Q' => Some(CastleRight::WhiteQueenside),
+            'q' => Some(CastleRight::BlackQueenside),
+            _ => None,
+        }
+    }
+
     /// Returns the path between the rook and king for this right.
     #[inline]
     pub fn path(self) -> Bitboard {
