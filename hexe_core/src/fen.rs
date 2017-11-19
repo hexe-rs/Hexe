@@ -5,7 +5,7 @@
 use prelude::*;
 use piece::map::PieceMap;
 
-/// A type that can used to parse [Forsyth–Edwards Notation (FEN)][fen].
+/// A type that can be used to parse [Forsyth–Edwards Notation (FEN)][fen].
 ///
 /// [fen]: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
 #[derive(Clone, PartialEq, Eq)]
