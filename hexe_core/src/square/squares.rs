@@ -78,6 +78,12 @@ impl Squares {
         Range { start: self.iter.start as usize, end: self.iter.end as usize }
     }
 
+    /// Returns whether `self` is empty.
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
     /// Extracts a slice from the buffer over which `self` iterates.
     #[inline]
     pub fn extract<'a, T: 'a>(&self, buf: &'a [T; 64]) -> &'a [T] {
