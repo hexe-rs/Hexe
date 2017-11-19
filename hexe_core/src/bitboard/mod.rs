@@ -1,12 +1,16 @@
 //! A bitmap chess board representation.
 
 pub mod masks;
-mod carry_rippler;
 mod impls;
+
+mod carry_rippler;
+pub use self::carry_rippler::*;
+
+mod dir;
+pub use self::dir::*;
 
 use core::str;
 use prelude::*;
-pub use self::carry_rippler::*;
 
 /// A mapping of sixty-four bits to squares of a chess board.
 ///
@@ -231,26 +235,4 @@ impl Bitboard {
         }
         unsafe { f(str::from_utf8_unchecked_mut(&mut buf)) }
     }
-}
-
-/// A cardinal direction that can be used to shift or fill the bits of a
-/// [`Bitboard`](struct.Bitboard.html).
-#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
-pub enum Direction {
-    /// North (up).
-    North,
-    /// South (down).
-    South,
-    /// East (right).
-    East,
-    /// West (left).
-    West,
-    /// Northeast (up + right).
-    Northeast,
-    /// Southeast (down + right).
-    Southeast,
-    /// Northwest (up + left).
-    Northwest,
-    /// Southwest (down + left).
-    Southwest
 }
