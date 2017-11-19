@@ -235,3 +235,35 @@ pub enum CastleSide {
     /// Queen castling side (O-O-O).
     Queen,
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn castle_right_char() {
+        for right in CastleRights::FULL {
+            let ch = char::from(right);
+            assert_eq!(Some(right), CastleRight::from_char(ch));
+        }
+    }
+
+    #[test]
+    fn castle_rights_string() {
+        use self::CastleRight::*;
+
+        let pairs = [
+            (CastleRights::FULL, "KQkq"),
+            (CastleRights::EMPTY, "-"),
+            (BlackKingside.into(), "k"),
+            (BlackKingside | WhiteQueenside, "Qk"),
+        ];
+
+        for &(rights, exp) in &pairs {
+            rights.map_str(|s| {
+                assert_eq!(s, exp);
+                assert_eq!(rights, s.parse().unwrap());
+            });
+        }
+    }
+}
