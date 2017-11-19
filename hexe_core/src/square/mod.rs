@@ -33,8 +33,10 @@
 //! #   (); 64
 //! ];
 //!
-//! // Will never panic
-//! let value = TABLE[Square::C5 as usize];
+//! pub fn get_value(sq: Square) -> T {
+//!     // Will never panic
+//!     TABLE[sq as usize]
+//! }
 //! ```
 //!
 //! [`Square`]: enum.Square.html
