@@ -1,4 +1,6 @@
 use super::bytes::Bytes;
+
+#[cfg(not(feature = "simd"))]
 use consts::*;
 
 #[cfg(feature = "simd")]
