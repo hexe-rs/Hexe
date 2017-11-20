@@ -18,6 +18,7 @@
 #![allow(inline_always)]
 #![allow(unreadable_literal)]
 #![allow(verbose_bit_mask)]
+#![deny(bool_comparison)]
 
 // no_std //////////////////////////////////////////////////////////////////////
 #![cfg_attr(not(feature = "std"), no_std)]
