@@ -274,6 +274,17 @@ mod tests {
     use super::*;
 
     #[test]
+    fn castle_right_new() {
+        for &side in &[CastleSide::King, CastleSide::Queen] {
+            for &color in &[Color::White, Color::Black] {
+                let right = CastleRight::new(color, side);
+                assert_eq!(right.side(),  side);
+                assert_eq!(right.color(), color);
+            }
+        }
+    }
+
+    #[test]
     fn castle_right_char() {
         for right in CastleRights::FULL {
             let ch = char::from(right);
