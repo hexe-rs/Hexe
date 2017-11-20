@@ -131,21 +131,17 @@ impl CastleRights {
     pub fn map_str<F, T>(&self, f: F) -> T
         where F: for<'a> FnOnce(&'a mut str) -> T
     {
-        use self::CastleRight::*;
-
         let mut buf = [0u8; 4];
         let slice: &mut [u8] = if self.is_empty() {
             buf[0] = b'-';
             &mut buf[..1]
         } else {
             let mut idx = 0;
-            for &right in &[WhiteKingside, WhiteQueenside, BlackKingside, BlackQueenside] {
-                if self.contains(right) {
-                    unsafe {
-                        *buf.get_unchecked_mut(idx) = char::from(right) as u8;
-                    }
-                    idx += 1;
+            for right in *self {
+                unsafe {
+                    *buf.get_unchecked_mut(idx) = char::from(right) as u8;
                 }
+                idx += 1;
             }
             unsafe { buf.get_unchecked_mut(..idx) }
         };
