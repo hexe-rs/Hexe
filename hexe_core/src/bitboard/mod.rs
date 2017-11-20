@@ -279,6 +279,12 @@ impl Bitboard {
         self.0.contains_zero_byte()
     }
 
+    /// Returns whether the rank in `self` is empty.
+    #[inline]
+    pub fn rank_is_empty(self, rank: Rank) -> bool {
+        (self.0 >> rank as usize) & 0xFF == 0
+    }
+
     /// Returns whether the path for `right` is empty within `self`.
     #[inline]
     pub fn path_is_empty(self, right: CastleRight) -> bool {
