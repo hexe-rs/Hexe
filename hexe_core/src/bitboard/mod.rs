@@ -1,4 +1,51 @@
 //! A bitmap chess board representation.
+//!
+//! Bitboards conveniently represent chess boards as 64-bit integers. Each bit
+//! represents an individual square. Occupancy is represented by the value of
+//! each bit.
+//!
+//! For example, given a bitboard for all pawns and a bitboard for all whites,
+//! we can get all white pawns via a bitwise 'and' operation on the two sets:
+//!
+//! ```txt
+//! Pawns:            White:
+//! . . . . . . . .   . . . . . . . .
+//! 1 1 1 1 1 1 1 1   . . . . . . . .
+//! . . . . . . . .   . . . . . . . .
+//! . . . . . . . . & . . . . . . . .
+//! . . . . . . . .   . . . . . . . .
+//! . . . . . . . .   . . . . . . . .
+//! 1 1 1 1 1 1 1 1   1 1 1 1 1 1 1 1
+//! . . . . . . . .   1 1 1 1 1 1 1 1
+//!
+//! White Pawns:
+//! . . . . . . . .
+//! . . . . . . . .
+//! . . . . . . . .
+//! . . . . . . . .
+//! . . . . . . . .
+//! . . . . . . . .
+//! 1 1 1 1 1 1 1 1
+//! . . . . . . . .
+//! ```
+//!
+//! Bitboards can also be used to represent multiple piece move destinations
+//! simultaneously:
+//!
+//! ```txt
+//! Knight attacks at D4:
+//! . . . . . . . .
+//! . . . . . . . .
+//! . . 1 . 1 . . .
+//! . 1 . . . 1 . .
+//! . . . . . . . .
+//! . 1 . . . 1 . .
+//! . . 1 . 1 . . .
+//! . . . . . . . .
+//! ```
+//!
+//! This is actually how `Square::D4.knight_attacks()` works internally: via a
+//! lookup table.
 
 pub mod masks;
 
