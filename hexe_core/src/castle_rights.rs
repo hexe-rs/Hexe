@@ -116,11 +116,11 @@ impl CastleRights {
     /// White kingside.
     pub const WHITE_KINGSIDE: CastleRights = CastleRights(0b0001);
 
-    /// Black kingside.
-    pub const BLACK_KINGSIDE: CastleRights = CastleRights(0b0010);
-
     /// White queenside.
-    pub const WHITE_QUEENSIDE: CastleRights = CastleRights(0b0100);
+    pub const WHITE_QUEENSIDE: CastleRights = CastleRights(0b0010);
+
+    /// Black kingside.
+    pub const BLACK_KINGSIDE: CastleRights = CastleRights(0b0100);
 
     /// Black queenside.
     pub const BLACK_QUEENSIDE: CastleRights = CastleRights(0b1000);
@@ -171,10 +171,10 @@ impl From<CastleRight> for CastleRights {
 pub enum CastleRight {
     /// White kingside: E1 to G1.
     WhiteKingside,
-    /// Black kingside: E8 to G8.
-    BlackKingside,
     /// White queenside: E1 to C1.
     WhiteQueenside,
+    /// Black kingside: E8 to G8.
+    BlackKingside,
     /// Black queenside: E8 to C8.
     BlackQueenside,
 }
@@ -191,7 +191,7 @@ impl ops::Not for CastleSide {
 impl From<CastleRight> for char {
     #[inline]
     fn from(right: CastleRight) -> char {
-        b"KkQq"[right as usize] as char
+        b"KQkq"[right as usize] as char
     }
 }
 
@@ -199,7 +199,7 @@ impl CastleRight {
     /// Creates a new castle right for `color` and `side`.
     #[inline]
     pub fn new(color: Color, side: CastleSide) -> CastleRight {
-        (((side as u8) << 1) | color as u8).into()
+        (((color as u8) << 1) | side as u8).into()
     }
 
     /// Returns a castle right from the parsed character.
@@ -207,8 +207,8 @@ impl CastleRight {
     pub fn from_char(ch: char) -> Option<CastleRight> {
         match ch {
             'K' => Some(CastleRight::WhiteKingside),
-            'k' => Some(CastleRight::BlackKingside),
             'Q' => Some(CastleRight::WhiteQueenside),
+            'k' => Some(CastleRight::BlackKingside),
             'q' => Some(CastleRight::BlackQueenside),
             _ => None,
         }
@@ -223,13 +223,13 @@ impl CastleRight {
     /// Returns the color for `self`.
     #[inline]
     pub fn color(self) -> Color {
-        (1 & self as u8).into()
+        ((self as u8) >> 1).into()
     }
 
     /// Returns the castle side for `self`.
     #[inline]
     pub fn side(self) -> CastleSide {
-        ((self as u8) >> 1).into()
+        (1 & self as u8).into()
     }
 }
 
