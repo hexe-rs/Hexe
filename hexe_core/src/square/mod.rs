@@ -215,6 +215,13 @@ impl Square {
         (Bitboard::BLACK >> self as u64).0.into()
     }
 
+    /// Returns whether `self` and `other` are equal in color.
+    #[inline]
+    pub fn color_eq(self, other: Square) -> bool {
+        ((self.file() as usize ^ other.file() as usize) & 1) ==
+        ((self.rank() as usize ^ other.rank() as usize) & 1)
+    }
+
     /// Returns whether `self` is aligned with two other squares along a file,
     /// rank, or diagonal.
     ///
@@ -564,6 +571,15 @@ mod tests {
     fn rank_from_char() {
         for ch in b'1'..(b'8' + 1) {
             assert!(Rank::from_char(ch as _).is_some());
+        }
+    }
+
+    #[test]
+    fn square_color() {
+        for s1 in Square::all() {
+            for s2 in Square::all() {
+                assert_eq!(s1.color() == s2.color(), s1.color_eq(s2));
+            }
         }
     }
 }
