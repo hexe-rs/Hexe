@@ -44,8 +44,10 @@
 //! . . . . . . . .
 //! ```
 //!
-//! This is actually how `Square::D4.knight_attacks()` works internally: via a
-//! lookup table.
+//! This is actually how [`Square::D4.knight_attacks()`][ka] works internally:
+//! via a lookup table.
+//!
+//! [ka]: ../square/enum.Square.html#method.knight_attacks
 
 pub mod masks;
 
