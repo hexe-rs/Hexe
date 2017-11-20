@@ -218,8 +218,8 @@ impl Square {
     /// Returns whether `self` and `other` are equal in color.
     #[inline]
     pub fn color_eq(self, other: Square) -> bool {
-        ((self.file() as usize ^ other.file() as usize) & 1) ==
-        ((self.rank() as usize ^ other.rank() as usize) & 1)
+        (self.file() as usize ^ other.file() as usize) & 1 ==
+        (self.rank() as usize ^ other.rank() as usize) & 1
     }
 
     /// Returns whether `self` is aligned with two other squares along a file,
