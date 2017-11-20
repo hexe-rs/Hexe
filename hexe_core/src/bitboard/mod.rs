@@ -59,6 +59,7 @@ pub use self::dir::*;
 
 use core::{fmt, ops, str};
 use prelude::*;
+use util::Twiddling;
 
 #[cfg(feature = "serde")]
 use serde::*;
@@ -270,6 +271,12 @@ impl Bitboard {
     #[inline]
     pub fn line(start: Square, end: Square) -> Bitboard {
         start.line(end)
+    }
+
+    /// Returns whether `self` has an empty rank.
+    #[inline]
+    pub fn contains_empty_rank(self) -> bool {
+        self.0.contains_zero_byte()
     }
 
     /// Returns whether the path for `right` is empty within `self`.
