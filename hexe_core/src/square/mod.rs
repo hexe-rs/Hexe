@@ -41,7 +41,7 @@
 //!
 //! [`Square`]: enum.Square.html
 
-use core::{fmt, ops, str};
+use core::{cmp, fmt, ops, str};
 use prelude::*;
 
 #[cfg(feature = "serde")]
@@ -303,6 +303,32 @@ impl Square {
     #[inline]
     pub fn is_between(self, a: Square, b: Square) -> bool {
         a.between(b).contains(self)
+    }
+
+    /// Calculates the [Chebyshev distance][wiki] between `self` and `other`.
+    ///
+    /// The result is the number of steps required to move a king from one
+    /// square to the other.
+    ///
+    /// # Examples
+    ///
+    /// It takes a king two moves to travel the same distance as a knight:
+    ///
+    /// ```
+    /// # use hexe_core::prelude::*;
+    /// for s1 in Square::all() {
+    ///     for s2 in s1.knight_attacks() {
+    ///         assert_eq!(s1.distance(s2), 2);
+    ///     }
+    /// }
+    /// ```
+    ///
+    /// [wiki]: https://en.wikipedia.org/wiki/Chebyshev_distance
+    #[inline]
+    pub fn distance(self, other: Square) -> usize {
+        let a = (self.file() as isize - other.file() as isize).abs() as usize;
+        let b = (self.rank() as isize - other.rank() as isize).abs() as usize;
+        cmp::max(a, b)
     }
 
     /// Returns the result of applying a function to a mutable string
