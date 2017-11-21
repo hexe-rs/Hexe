@@ -1,6 +1,4 @@
-use core::mem;
-use core::ops;
-use core::u64;
+use core::{mem, ops, u64};
 
 #[cfg(feature = "simd")]
 use simd::u8x16;

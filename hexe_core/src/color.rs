@@ -1,8 +1,6 @@
 //! A color to represent pieces or board squares.
 
-use core::fmt;
-use core::ops;
-use core::str;
+use core::{fmt, ops, str};
 
 #[cfg(feature = "serde")]
 use serde::*;

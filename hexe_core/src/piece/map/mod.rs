@@ -1,10 +1,8 @@
 //! A square to piece mapping for fast square lookups.
 
 use super::*;
-use core::fmt;
+use core::{fmt, mem, ops};
 use core::marker::PhantomData;
-use core::mem;
-use core::ops;
 use consts::PTR_SIZE;
 use misc::Contained;
 use square::Squares;

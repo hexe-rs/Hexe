@@ -1,4 +1,5 @@
 use super::*;
+use core::ops::Range;
 
 /// An iterator over all squares.
 #[derive(Clone, PartialEq, Eq)]

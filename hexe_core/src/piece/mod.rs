@@ -1,8 +1,6 @@
 //! A piece used to play chess.
 
-use core::fmt;
-use core::str;
-
+use core::{fmt, str};
 use color::Color;
 use uncon::*;
 

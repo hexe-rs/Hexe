@@ -41,9 +41,7 @@
 //!
 //! [`Square`]: enum.Square.html
 
-use core::fmt;
-use core::ops::{self, Range};
-use core::str;
+use core::{fmt, ops, str};
 use prelude::*;
 
 #[cfg(feature = "serde")]
