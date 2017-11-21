@@ -297,15 +297,6 @@ impl Bitboard {
         CarryRippler::new(self)
     }
 
-    /// Generates pawn pushes for each of the bits of `self`.
-    #[inline]
-    pub fn pawn_pushes(self, color: Color) -> Bitboard {
-        self.shift(match color {
-            Color::White => Direction::North,
-            Color::Black => Direction::South,
-        })
-    }
-
     /// Generates pawn attacks for each of the bits of `self`.
     #[inline]
     pub fn pawn_attacks(self, color: Color) -> Bitboard {
