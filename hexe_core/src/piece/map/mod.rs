@@ -1013,6 +1013,9 @@ mod tests {
                 "Rank::{:?} does not contain {:?} in\n{}",
                 rank, piece, map
             );
+            for rank in (0..8u8).map(Rank::from).filter(|&r| r != rank) {
+                assert!(!map.rank_contains(rank, piece));
+            }
         }
 
         for piece in (0..12u8).map(Piece::from) {
