@@ -608,14 +608,7 @@ impl PieceMap {
     pub fn map_str<T, F>(&self, f: F) -> T
         where F: for<'a> FnOnce(&'a mut str) -> T
     {
-        let mut buf = *b". . . . . . . .\n\
-                         . . . . . . . .\n\
-                         . . . . . . . .\n\
-                         . . . . . . . .\n\
-                         . . . . . . . .\n\
-                         . . . . . . . .\n\
-                         . . . . . . . .\n\
-                         . . . . . . . .";
+        let mut buf = *::consts::BOARD_DOTS;
         for square in Square::all() {
             if let Some(&piece) = self.get(square) {
                 let ch = char::from(piece) as u8;

@@ -6,3 +6,12 @@ pub const PTR_SIZE: usize = 4;
 
 #[cfg(target_pointer_width = "16")] // Just in case
 pub const PTR_SIZE: usize = 2;
+
+pub const BOARD_DOTS: &[u8; 127] = b". . . . . . . .\n\
+                                     . . . . . . . .\n\
+                                     . . . . . . . .\n\
+                                     . . . . . . . .\n\
+                                     . . . . . . . .\n\
+                                     . . . . . . . .\n\
+                                     . . . . . . . .\n\
+                                     . . . . . . . .";

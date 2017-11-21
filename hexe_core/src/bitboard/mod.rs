@@ -421,14 +421,7 @@ impl Bitboard {
     pub fn map_str<F, T>(&self, f: F) -> T
         where F: for<'a> FnOnce(&'a mut str) -> T
     {
-        let mut buf = *b". . . . . . . .\n\
-                         . . . . . . . .\n\
-                         . . . . . . . .\n\
-                         . . . . . . . .\n\
-                         . . . . . . . .\n\
-                         . . . . . . . .\n\
-                         . . . . . . . .\n\
-                         . . . . . . . .";
+        let mut buf = *::consts::BOARD_DOTS;
         for idx in self.map(|s| (0b111000 ^ s as usize) << 1) {
             unsafe { *buf.get_unchecked_mut(idx) = b'1' };
         }
