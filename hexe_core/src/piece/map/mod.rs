@@ -268,10 +268,7 @@ impl PieceMap {
 
     /// Mirrors the map across the horizontal axis of a chess board.
     pub fn mirror_horizontal(&mut self) {
-        let inner = self.inner_2d_mut();
-        for i in 0..4 {
-            inner.swap(i, 7 - i);
-        }
+        self.inner_2d_mut().reverse();
     }
 
     /// Mirrors the map across the vertical axis of a chess board.
