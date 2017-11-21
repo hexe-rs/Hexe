@@ -488,8 +488,7 @@ impl PieceMap {
         let this: u64 = unsafe {
             mem::transmute(self.inner_2d()[rank as usize])
         };
-        let that = u64::splat(pc as u8);
-        (this ^ that).contains_zero_byte()
+        this.contains_byte(pc as u8)
     }
 
     /// Returns the first square for the piece.

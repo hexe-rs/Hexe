@@ -1,4 +1,5 @@
 use core::mem;
+use core::ops;
 use core::u64;
 
 #[cfg(feature = "simd")]
@@ -7,7 +8,7 @@ use simd::u8x16;
 /// A type that represents a sequence of multiple bytes.
 ///
 /// Method implementations are taken from the `bytecount` crate.
-pub trait Bytes {
+pub trait Bytes: Sized {
     /// Duplicates the byte across all bytes.
     fn splat(byte: u8) -> Self;
 
@@ -23,6 +24,12 @@ pub trait Bytes {
 
     /// Returns whether `self` contains a byte that equals zero.
     fn contains_zero_byte(self) -> bool;
+
+    /// Returns whether `self` contains the byte.
+    #[inline]
+    fn contains_byte(self, byte: u8) -> bool where Self: ops::BitXor<Output=Self> {
+        (self ^ Self::splat(byte)).contains_zero_byte()
+    }
 }
 
 const LO: u64 = u64::MAX / 0xFF;
