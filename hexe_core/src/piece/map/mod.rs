@@ -987,6 +987,42 @@ mod tests {
     }
 
     #[test]
+    fn rank_contains() {
+        let map = PieceMap::STANDARD;
+
+        let pairs = [
+            // White
+            (Rank::Two, Piece::WhitePawn),
+            (Rank::One, Piece::WhiteKnight),
+            (Rank::One, Piece::WhiteBishop),
+            (Rank::One, Piece::WhiteRook),
+            (Rank::One, Piece::WhiteQueen),
+            (Rank::One, Piece::WhiteKing),
+            // Black
+            (Rank::Seven, Piece::BlackPawn),
+            (Rank::Eight, Piece::BlackKnight),
+            (Rank::Eight, Piece::BlackBishop),
+            (Rank::Eight, Piece::BlackRook),
+            (Rank::Eight, Piece::BlackQueen),
+            (Rank::Eight, Piece::BlackKing),
+        ];
+
+        for &(rank, piece) in &pairs {
+            assert!(
+                map.rank_contains(rank, piece),
+                "Rank::{:?} does not contain {:?} in\n{}",
+                rank, piece, map
+            );
+        }
+
+        for piece in (0..12u8).map(Piece::from) {
+            for rank in (2..6u8).map(Rank::from) {
+                assert!(!map.rank_contains(rank, piece));
+            }
+        }
+    }
+
+    #[test]
     fn is_empty() {
         let mut map = PieceMap::new();
         assert!(map.is_empty());
