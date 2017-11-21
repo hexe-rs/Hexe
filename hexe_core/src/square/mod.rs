@@ -132,6 +132,9 @@ impl<'de> Deserialize<'de> for Square {
     }
 }
 
+const FILE_BITS: u8 = 7;
+const RANK_BITS: u8 = FILE_BITS << 3;
+
 impl Square {
     /// An efficient iterator over all squares.
     ///
@@ -185,13 +188,32 @@ impl Square {
     /// Returns the `File` for `self`.
     #[inline]
     pub fn file(self) -> File {
-        ((self as u8) & 7).into()
+        ((self as u8) & FILE_BITS).into()
     }
 
     /// Returns the `Rank` for `self`.
     #[inline]
     pub fn rank(self) -> Rank {
         ((self as u8) >> 3).into()
+    }
+
+    /// Combines the file of `self` with the rank of `other`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::prelude::*;
+    /// let s1 = Square::B5;
+    /// let s2 = Square::C7;
+    ///
+    /// assert_eq!(s1.combine(s2), Square::B7);
+    /// assert_eq!(s2.combine(s1), Square::C5);
+    /// ```
+    #[inline]
+    pub fn combine(self, other: Square) -> Square {
+        ((FILE_BITS & self as u8) | (RANK_BITS & other as u8)).into()
     }
 
     /// Returns the `Color` for `self`.
