@@ -59,7 +59,7 @@ pub use self::dir::*;
 
 use core::{fmt, ops, str};
 use prelude::*;
-use util::Twiddling;
+use util::Bytes;
 
 #[cfg(feature = "serde")]
 use serde::*;

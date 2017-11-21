@@ -485,10 +485,10 @@ impl PieceMap {
     /// Returns whether the rank contains the piece.
     #[inline]
     pub fn rank_contains(&self, rank: Rank, pc: Piece) -> bool {
-        let (this, that): (u64, u64) = unsafe { (
-            mem::transmute(self.inner_2d()[rank as usize]),
-            mem::transmute([pc as u8; 8])
-        ) };
+        let this: u64 = unsafe {
+            mem::transmute(self.inner_2d()[rank as usize])
+        };
+        let that = u64::splat(pc as u8);
         (this ^ that).contains_zero_byte()
     }
 
