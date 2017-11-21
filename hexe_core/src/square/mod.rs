@@ -136,6 +136,8 @@ const FILE_BITS: u8 = 7;
 const RANK_BITS: u8 = FILE_BITS << RANK_SHIFT;
 const RANK_SHIFT: usize = 3;
 
+const TRIANGLE_LEN: usize = 64 * 65 / 2;
+
 impl Square {
     /// An efficient iterator over all squares.
     ///
@@ -329,6 +331,39 @@ impl Square {
         let a = (self.file() as isize - other.file() as isize).abs() as usize;
         let b = (self.rank() as isize - other.rank() as isize).abs() as usize;
         cmp::max(a, b)
+    }
+
+    /// Returns the [triangular index][wiki] for `self` and `other`.
+    ///
+    /// This allows indexing into tables of sizes slightly greater than half of
+    /// 64 by 64.
+    ///
+    /// [wiki]: https://chessprogramming.wikispaces.com/Square+Attacked+By#Legality%20Test-In%20Between-Triangular%20Lookup
+    #[inline]
+    pub fn tri_index(self, other: Square) -> usize {
+        let mut a = self  as isize;
+        let mut b = other as isize;
+        let mut d = a - b;
+        d &= d >> 31;
+        b += d;
+        a -= d;
+        b *= b ^ 127;
+        ((b >> 1) + a) as usize
+    }
+
+    /// Returns a shared reference to an element from the table via triangular
+    /// index.
+    #[inline]
+    pub fn tri<T>(self, other: Square, table: &[T; TRIANGLE_LEN]) -> &T {
+        // tri index < TRIANGLE_LEN
+        unsafe { table.get_unchecked(self.tri_index(other)) }
+    }
+
+    /// Returns a mutable reference to an element from the table via triangular
+    /// index.
+    #[inline]
+    pub fn tri_mut<T>(self, other: Square, table: &mut [T; TRIANGLE_LEN]) -> &mut T {
+        unsafe { table.get_unchecked_mut(self.tri_index(other)) }
     }
 
     /// Returns the result of applying a function to a mutable string
@@ -619,6 +654,17 @@ mod tests {
     sliding_attacks! { rook_attacks bishop_attacks queen_attacks }
 
     jump_attacks! { knight_attacks king_attacks }
+
+    #[test]
+    fn tri_index() {
+        for s1 in Square::all() {
+            for s2 in Square::all() {
+                let idx = s1.tri_index(s2);
+                assert_eq!(idx, s2.tri_index(s1));
+                assert!(idx < TRIANGLE_LEN);
+            }
+        }
+    }
 
     #[test]
     fn pawn_attacks() {
