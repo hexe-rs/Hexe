@@ -353,6 +353,12 @@ impl Bitboard {
         self.shift(Direction::forward(color))
     }
 
+    /// Returns `self` retreated by one rank for `color`.
+    #[inline]
+    pub fn retreat(self, color: Color) -> Bitboard {
+        self.shift(Direction::backward(color))
+    }
+
     /// Returns `self` shifted in a direction.
     #[inline]
     pub fn shift(self, direction: Direction) -> Bitboard {
