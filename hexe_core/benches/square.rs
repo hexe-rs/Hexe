@@ -22,7 +22,7 @@ macro_rules! impl_sliding_benches {
 impl_sliding_benches! { rook_attacks bishop_attacks queen_attacks }
 
 #[bench]
-fn squares_iter(b: &mut test::Bencher) {
+fn squares_iter(b: &mut Bencher) {
     b.iter(|| {
         for sq in black_box(Square::all()) {
             black_box(sq);
@@ -31,7 +31,7 @@ fn squares_iter(b: &mut test::Bencher) {
 }
 
 #[bench]
-fn squares_iter_rev(b: &mut test::Bencher) {
+fn squares_iter_rev(b: &mut Bencher) {
     b.iter(|| {
         for sq in black_box(Square::all()).rev() {
             black_box(sq);
