@@ -133,7 +133,8 @@ impl<'de> Deserialize<'de> for Square {
 }
 
 const FILE_BITS: u8 = 7;
-const RANK_BITS: u8 = FILE_BITS << 3;
+const RANK_BITS: u8 = FILE_BITS << RANK_SHIFT;
+const RANK_SHIFT: usize = 3;
 
 impl Square {
     /// An efficient iterator over all squares.
@@ -170,7 +171,7 @@ impl Square {
     /// ```
     #[inline]
     pub fn new(file: File, rank: Rank) -> Square {
-        (((rank as u8) << 3) | (file as u8)).into()
+        (((rank as u8) << RANK_SHIFT) | (file as u8)).into()
     }
 
     #[inline]
@@ -194,7 +195,7 @@ impl Square {
     /// Returns the `Rank` for `self`.
     #[inline]
     pub fn rank(self) -> Rank {
-        ((self as u8) >> 3).into()
+        ((self as u8) >> RANK_SHIFT).into()
     }
 
     /// Combines the file of `self` with the rank of `other`.
