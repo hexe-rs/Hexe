@@ -1017,12 +1017,6 @@ mod tests {
                 assert!(!map.rank_contains(rank, piece));
             }
         }
-
-        for piece in (0..12u8).map(Piece::from) {
-            for rank in (2..6u8).map(Rank::from) {
-                assert!(!map.rank_contains(rank, piece));
-            }
-        }
     }
 
     #[test]
