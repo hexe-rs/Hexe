@@ -27,7 +27,9 @@ pub trait Bytes: Sized {
 
     /// Returns whether `self` contains the byte.
     #[inline]
-    fn contains_byte(self, byte: u8) -> bool where Self: ops::BitXor<Output=Self> {
+    fn contains_byte(self, byte: u8) -> bool
+        where Self: ops::BitXor, Self::Output: Bytes
+    {
         (self ^ Self::splat(byte)).contains_zero_byte()
     }
 }
