@@ -198,6 +198,32 @@ impl Square {
         ((self as u8) >> RANK_SHIFT).into()
     }
 
+    /// Reverses the file of `self`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use hexe_core::prelude::*;
+    /// assert_eq!(Square::B2.rev_file(), Square::G2);
+    /// ```
+    #[inline]
+    pub fn rev_file(self) -> Square {
+        (FILE_BITS ^ self as u8).into()
+    }
+
+    /// Reverses the rank of `self`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use hexe_core::prelude::*;
+    /// assert_eq!(Square::B2.rev_rank(), Square::B7);
+    /// ```
+    #[inline]
+    pub fn rev_rank(self) -> Square {
+        (RANK_BITS ^ self as u8).into()
+    }
+
     /// Combines the file of `self` with the rank of `other`.
     ///
     /// # Examples
