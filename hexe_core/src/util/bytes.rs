@@ -1,5 +1,5 @@
-use consts::*;
-use core::usize;
+use core::mem;
+use core::u64;
 
 #[cfg(feature = "simd")]
 use simd::u8x16;
@@ -22,38 +22,49 @@ pub trait Bytes {
     fn sum(self) -> usize;
 }
 
-const LO: usize = usize::MAX / 0xFF;
-const HI: usize = LO << 7;
+const LO: u64 = u64::MAX / 0xFF;
+const HI: u64 = LO << 7;
 
-impl Bytes for usize {
-    #[inline]
-    fn splat(byte: u8) -> usize {
-        LO * byte as usize
-    }
+macro_rules! impl_bytes {
+    ($($t:ty),+) => { $(
+        #[allow(cast_lossless)] // clippy
+        impl Bytes for $t {
+            #[inline]
+            fn splat(byte: u8) -> Self {
+                LO as Self * byte as Self
+            }
 
-    #[inline]
-    fn bytes_equal(self, other: usize) -> usize {
-        let x = self ^ other;
-        !((((x & !HI) + !HI) | x) >> 7) & LO
-    }
+            #[inline]
+            fn bytes_equal(self, other: Self) -> Self {
+                const H: $t = HI as $t;
+                const L: $t = LO as $t;
 
-    #[inline]
-    fn increment(self, incr: usize) -> usize {
-        self + incr
-    }
+                let x = self ^ other;
+                !((((x & !H) + !H) | x) >> 7) & L
+            }
 
-    #[inline]
-    fn sum(self) -> usize {
-        const EVERY_OTHER_LO: usize = usize::MAX / 0xFFFF;
-        const EVERY_OTHER: usize = EVERY_OTHER_LO * 0xFF;
+            #[inline]
+            fn increment(self, incr: Self) -> Self {
+                self + incr
+            }
 
-        // Pairwise reduction to avoid overflow on next step
-        let pair_sum = (self & EVERY_OTHER) + ((self >> 8) & EVERY_OTHER);
+            #[inline]
+            fn sum(self) -> usize {
+                const EVERY_OTHER_LO: $t = u64::MAX as $t / 0xFFFF;
+                const EVERY_OTHER: $t = EVERY_OTHER_LO * 0xFF;
 
-        // Multiplication results in top two bytes holding sum
-        pair_sum.wrapping_mul(EVERY_OTHER_LO) >> ((PTR_SIZE - 2) * 8)
-    }
+                // Pairwise reduction to avoid overflow on next step
+                let pair = (self & EVERY_OTHER) + ((self >> 8) & EVERY_OTHER);
+
+                // Multiplication results in top two bytes holding sum
+                let size = mem::size_of::<$t>();
+                (pair.wrapping_mul(EVERY_OTHER_LO) >> ((size - 2) * 8)) as usize
+            }
+        }
+    )+ }
 }
+
+impl_bytes! { usize, u64, u32 }
 
 #[cfg(feature = "simd")]
 impl Bytes for u8x16 {
