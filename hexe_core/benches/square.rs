@@ -11,10 +11,9 @@ macro_rules! impl_sliding_benches {
         #[bench]
         fn $f(b: &mut Bencher) {
             let occ = Bitboard(rand::random());
+            let sq  = Square::from(rand::random::<u8>());
             b.iter(|| {
-                for s in Square::all() {
-                    black_box(black_box(s).$f(black_box(occ)));
-                }
+                black_box(black_box(sq).$f(black_box(occ)));
             });
         }
     )+ }
