@@ -357,10 +357,16 @@ impl Square {
 
     /// Returns the [triangular index][wiki] for `self` and `other`.
     ///
-    /// This allows indexing into tables of sizes slightly greater than half of
-    /// 64 by 64.
+    /// This allows indexing into tables of size 2080, which is slightly greater
+    /// than half of 64 by 64.
+    ///
+    /// # Safety
+    /// The result index has been thoroughly tested to **always** return a value
+    /// less than 2080. Because of this, it is safe to call [`get_unchecked`] on
+    /// arrays/slices of that size or greater.
     ///
     /// [wiki]: https://chessprogramming.wikispaces.com/Square+Attacked+By#Legality%20Test-In%20Between-Triangular%20Lookup
+    /// [`get_unchecked`]: https://doc.rust-lang.org/std/primitive.slice.html#method.get_unchecked
     #[inline]
     pub fn tri_index(self, other: Square) -> usize {
         let mut a = self  as isize;
