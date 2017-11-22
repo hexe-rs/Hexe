@@ -682,6 +682,20 @@ mod tests {
     jump_attacks! { knight_attacks king_attacks }
 
     #[test]
+    fn distance() {
+        fn square(a: Square, b: Square) -> usize {
+            use core::cmp::max;
+            max(a.file().distance(b.file()), a.rank().distance(b.rank()))
+        }
+
+        for s1 in Square::all() {
+            for s2 in Square::all() {
+                assert_eq!(square(s1, s2), s1.distance(s2));
+            }
+        }
+    }
+
+    #[test]
     fn tri_index() {
         for s1 in Square::all() {
             for s2 in Square::all() {
