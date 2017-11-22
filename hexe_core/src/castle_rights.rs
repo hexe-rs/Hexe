@@ -79,19 +79,35 @@ impl Serialize for CastleRights {
 impl<'de> Deserialize<'de> for CastleRights {
     fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
         <&str>::deserialize(de)?.parse().map_err(|_| {
-            de::Error::custom("failed to parse a string as castling rights")
+            de::Error::custom(FROM_STR_ERROR)
         })
     }
 }
 
 /// An error returned when parsing `CastleRights` using `from_str` fails.
-#[derive(Copy, Clone, Debug)]
-pub struct ParseError;
+#[derive(Copy, Clone, Debug, PartialEq, Eq)]
+pub struct FromStrError(());
+
+static FROM_STR_ERROR: &str = "failed to parse a string as castling rights";
+
+impl fmt::Display for FromStrError {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        FROM_STR_ERROR.fmt(f)
+    }
+}
+
+#[cfg(feature = "std")]
+impl ::std::error::Error for FromStrError {
+    #[inline]
+    fn description(&self) -> &str {
+        FROM_STR_ERROR
+    }
+}
 
 impl str::FromStr for CastleRights {
-    type Err = ParseError;
+    type Err = FromStrError;
 
-    fn from_str(s: &str) -> Result<CastleRights, ParseError> {
+    fn from_str(s: &str) -> Result<CastleRights, FromStrError> {
         let bytes = s.as_bytes();
         let mut result = CastleRights::EMPTY;
 
@@ -104,7 +120,7 @@ impl str::FromStr for CastleRights {
                     b'k' => CastleRights::BLACK_KINGSIDE,
                     b'Q' => CastleRights::WHITE_QUEENSIDE,
                     b'q' => CastleRights::BLACK_QUEENSIDE,
-                    _ => return Err(ParseError),
+                    _ => return Err(FromStrError(())),
                 };
             }
             Ok(result)
