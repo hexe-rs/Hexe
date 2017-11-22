@@ -430,9 +430,9 @@ impl Square {
     /// representation of `self`.
     ///
     /// This is a _much_ preferred way of getting the string representation of
-    /// a square, especially in when using `#[no_std]`. The alternative would be
-    /// to use `format!`, which performs a heap allocation whereas this uses a
-    /// stack-allocated string.
+    /// a square, especially in when using `#![no_std]`. The alternative would
+    /// be to use `to_string` or `format!`, which perform a heap allocation
+    /// whereas this uses a stack-allocated string.
     ///
     /// # Examples
     ///
