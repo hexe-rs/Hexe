@@ -22,8 +22,6 @@ matrix:
     - rust: nightly
       env: FEATURES="--features simd"
     - rust: nightly
-      env: FEATURES="--features nightly"
-    - rust: nightly
       env: CLIPPY="true"
 
 script: ./travis.sh

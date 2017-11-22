@@ -227,36 +227,3 @@ macro_rules! impl_composition_ops {
         }
     )+ }
 }
-
-macro_rules! impl_try_from_char {
-    ($(#[$m:meta])* message = $msg:expr; impl for { $($t:ty)+ }) => {
-        $(#[$m])*
-        #[cfg(feature = "try-from")]
-        #[derive(Copy, Clone, Debug, PartialEq, Eq)]
-        pub struct TryFromCharError(());
-
-        #[cfg(feature = "try-from")]
-        impl ::core::fmt::Display for TryFromCharError {
-            fn fmt(&self, f: &mut ::core::fmt::Formatter) -> ::core::fmt::Result {
-                $msg.fmt(f)
-            }
-        }
-
-        #[cfg(all(feature = "try-from", feature = "std"))]
-        impl ::std::error::Error for TryFromCharError {
-            fn description(&self) -> &str { $msg }
-        }
-
-        $(
-            #[cfg(feature = "try-from")]
-            impl ::core::convert::TryFrom<char> for $t {
-                type Error = TryFromCharError;
-
-                #[inline]
-                fn try_from(ch: char) -> Result<Self, TryFromCharError> {
-                    Self::from_char(ch).ok_or(TryFromCharError(()))
-                }
-            }
-        )+
-    }
-}

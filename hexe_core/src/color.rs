@@ -95,12 +95,6 @@ impl<'de> Deserialize<'de> for Color {
     }
 }
 
-impl_try_from_char! {
-    /// The error returned when `try_from` fails for `Color`.
-    message = "failed to parse a character as a color";
-    impl for { Color }
-}
-
 impl ops::Not for Color {
     type Output = Color;
 

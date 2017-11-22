@@ -28,8 +28,3 @@ default = ["std"]
 
 # Enables functionality that depends on the standard library
 std = ["memchr/use_std", "uncon/std", "uncon_derive/std"]
-
-# Unstable features that currently exist behind a feature gate. Any feature here
-# may be removed once the underlying rust feature is stabilized.
-nightly = ["try-from"]
-try-from = []

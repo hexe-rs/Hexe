@@ -4,9 +4,6 @@
 
 #![doc(html_logo_url = "https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png")]
 
-// Unstable Features ///////////////////////////////////////////////////////////
-#![cfg_attr(feature = "try-from", feature(try_from))]
-
 // Lints ///////////////////////////////////////////////////////////////////////
 
 // Built-in

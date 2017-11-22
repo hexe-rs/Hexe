@@ -20,7 +20,5 @@ uncon_derive = { version = "1.1.1" }
 static_assertions = "0.2"
 
 [features]
-nightly = ["hexe_core/nightly", "try-from"]
-try-from = ["hexe_core/try-from"]
 serde = ["hexe_core/serde"]
 simd = ["hexe_core/simd"]
