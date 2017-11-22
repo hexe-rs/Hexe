@@ -331,6 +331,30 @@ impl Square {
         self::tables::DISTANCE[self as usize][other as usize] as usize
     }
 
+    /// Calculates the [Manhattan distance][wiki] between `self` and `other`.
+    ///
+    /// The result is the distance when strictly taking a horizontal/vertical
+    /// path from one square to the other.
+    ///
+    /// # Examples
+    ///
+    /// The knight's path always traverses three squares:
+    ///
+    /// ```
+    /// # use hexe_core::prelude::*;
+    /// for s1 in Square::all() {
+    ///     for s2 in s1.knight_attacks() {
+    ///         assert_eq!(s1.man_distance(s2), 3);
+    ///     }
+    /// }
+    /// ```
+    ///
+    /// [wiki]: https://en.wiktionary.org/wiki/Manhattan_distance
+    #[inline]
+    pub fn man_distance(self, other: Square) -> usize {
+        self.file().distance(other.file()) + self.rank().distance(other.rank())
+    }
+
     /// Returns the [triangular index][wiki] for `self` and `other`.
     ///
     /// This allows indexing into tables of sizes slightly greater than half of
