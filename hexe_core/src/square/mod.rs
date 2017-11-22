@@ -555,6 +555,26 @@ impl Rank {
         ];
         Bitboard(ADJACENT[*self as usize])
     }
+
+    /// Returns the remaining distance for `color` to reach the end of the board
+    /// from `self`.
+    ///
+    /// This is useful for finding the number of moves a pawn must make to be
+    /// promoted.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// # use hexe_core::prelude::*;
+    /// let rank = Rank::Three;
+    ///
+    /// assert_eq!(rank.rem_distance(Color::White), 5);
+    /// assert_eq!(rank.rem_distance(Color::Black), 2);
+    /// ```
+    #[inline]
+    pub fn rem_distance(self, color: Color) -> usize {
+        (0b111 * color as usize) ^ !self as usize
+    }
 }
 
 macro_rules! impl_components {
