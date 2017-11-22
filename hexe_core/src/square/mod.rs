@@ -41,7 +41,7 @@
 //!
 //! [`Square`]: enum.Square.html
 
-use core::{cmp, fmt, ops, str};
+use core::{fmt, ops, str};
 use prelude::*;
 
 #[cfg(feature = "serde")]
@@ -328,8 +328,7 @@ impl Square {
     /// [wiki]: https://en.wikipedia.org/wiki/Chebyshev_distance
     #[inline]
     pub fn distance(self, other: Square) -> usize {
-        cmp::max(self.file().distance(other.file()),
-                 self.rank().distance(other.rank()))
+        self::tables::DISTANCE[self as usize][other as usize] as usize
     }
 
     /// Returns the [triangular index][wiki] for `self` and `other`.
