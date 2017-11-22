@@ -328,9 +328,8 @@ impl Square {
     /// [wiki]: https://en.wikipedia.org/wiki/Chebyshev_distance
     #[inline]
     pub fn distance(self, other: Square) -> usize {
-        let a = (self.file() as isize - other.file() as isize).abs() as usize;
-        let b = (self.rank() as isize - other.rank() as isize).abs() as usize;
-        cmp::max(a, b)
+        cmp::max(self.file().distance(other.file()),
+                 self.rank().distance(other.rank()))
     }
 
     /// Returns the [triangular index][wiki] for `self` and `other`.
