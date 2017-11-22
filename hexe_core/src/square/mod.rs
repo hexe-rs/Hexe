@@ -520,7 +520,7 @@ impl File {
 pub enum Rank { One, Two, Three, Four, Five, Six, Seven, Eight }
 
 impl Rank {
-    /// Returns a file from the parsed character.
+    /// Returns a rank from the parsed character.
     #[inline]
     pub fn from_char(ch: char) -> Option<Rank> {
         use uncon::IntoUnchecked;
