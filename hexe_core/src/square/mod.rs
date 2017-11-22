@@ -597,6 +597,14 @@ macro_rules! impl_components {
                     })
                 }
             }
+
+            impl $t {
+                /// Returns the distance between `self` and `other`.
+                #[inline]
+                pub fn distance(self, other: Self) -> usize {
+                    (self as isize - other as isize).abs() as usize
+                }
+            }
         )+
     }
 }
