@@ -355,6 +355,38 @@ impl Square {
         self.file().distance(other.file()) + self.rank().distance(other.rank())
     }
 
+    /// Calculates the [Chebyshev distance][wiki] between `self` and the center
+    /// of the board.
+    ///
+    /// # Examples
+    ///
+    /// It takes a king three moves to travel to the center of the board from
+    /// any edge:
+    ///
+    /// ```
+    /// # use hexe_core::prelude::*;
+    /// let edges = File::A | File::H | Rank::One | Rank::Eight;
+    ///
+    /// for sq in edges {
+    ///     assert_eq!(sq.center_distance(), 3);
+    /// }
+    /// ```
+    ///
+    /// [wiki]: https://en.wikipedia.org/wiki/Chebyshev_distance
+    #[inline]
+    pub fn center_distance(self) -> usize {
+        self::tables::CENTER_DISTANCE[self as usize] as usize
+    }
+
+    /// Calculates the [Manhattan distance][wiki] between `self` and the center
+    /// of the board.
+    ///
+    /// [wiki]: https://en.wiktionary.org/wiki/Manhattan_distance
+    #[inline]
+    pub fn center_man_distance(self) -> usize {
+        self::tables::CENTER_MAN_DISTANCE[self as usize] as usize
+    }
+
     /// Returns the [triangular index][wiki] for `self` and `other`.
     ///
     /// This allows indexing into tables of size 2080, which is slightly greater
