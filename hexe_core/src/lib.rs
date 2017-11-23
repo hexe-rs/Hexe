@@ -1,6 +1,4 @@
-//! # Hexe Core
-//!
-//! This crate defines the building blocks for the Hexe chess engine.
+//! This crate defines the **core** building blocks for the Hexe chess engine.
 
 #![doc(html_logo_url = "https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png")]
 

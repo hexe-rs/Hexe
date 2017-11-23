@@ -1,9 +1,7 @@
-//! # Hexe
-//!
 //! This crate serves as a way to use the Hexe chess engine from within any Rust
 //! project.
 //!
-//! ## Using `hexe_core`
+//! # Using `hexe_core`
 //!
 //! This crate reexports the `hexe_core` crate as `hexe::core`. Its most
 //! commonly used parts are available in the [`prelude`].
