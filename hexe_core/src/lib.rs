@@ -1,4 +1,23 @@
 //! This crate defines the **core** building blocks for the Hexe chess engine.
+//!
+//! # Usage
+//!
+//! This crate is available [on crates.io][crate] and can be used by adding the
+//! following to your project's `Cargo.toml`:
+//!
+//! ```toml
+//! [dependencies]
+//! hexe_core = "0.0.0"
+//! ```
+//!
+//! and this to your crate root:
+//!
+//! ```
+//! extern crate hexe_core;
+//! # fn main() {}
+//! ```
+//!
+//! [crate]: https://crates.io/crates/hexe_core
 
 #![doc(html_logo_url = "https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png")]
 
