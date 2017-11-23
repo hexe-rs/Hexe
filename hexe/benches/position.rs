@@ -14,13 +14,3 @@ fn position_eq(b: &mut Bencher) {
         black_box(black_box(&x) == black_box(&y));
     });
 }
-
-#[bench]
-fn position_color_64(b: &mut Bencher) {
-    let pos = Position::default();
-    b.iter(|| {
-        for sq in Square::all().map(black_box) {
-            black_box(black_box(&pos).color_at(sq));
-        }
-    });
-}
