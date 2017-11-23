@@ -34,6 +34,9 @@ pub struct Position {
     /// currently uses two bytes instead of one. Should be made `Option<Square>`
     /// once this PR is in stable: https://github.com/rust-lang/rust/pull/45225.
     en_passant: u8,
+
+    /// The castle rights for both players.
+    castle_rights: CastleRights,
 }
 
 impl PartialEq for Position {
@@ -41,9 +44,10 @@ impl PartialEq for Position {
     fn eq(&self, other: &Position) -> bool {
         // We can skip checking `pieces` and `colors` because they represent the
         // same data as `piece_map`.
-        self.piece_map  == other.piece_map &&
-        self.player     == other.player    &&
-        self.en_passant == other.en_passant
+        self.piece_map     == other.piece_map  &&
+        self.player        == other.player     &&
+        self.en_passant    == other.en_passant &&
+        self.castle_rights == other.castle_rights
     }
 }
 
@@ -66,6 +70,7 @@ impl Default for Position {
             colors: [WHITE, BLACK],
             player: Color::White,
             en_passant: NO_SQUARE,
+            castle_rights: CastleRights::FULL,
         }
     }
 }
@@ -156,6 +161,12 @@ impl Position {
             NO_SQUARE => None,
             ref ep => unsafe { Some(ep.into_unchecked()) }
         }
+    }
+
+    /// Returns the castle rights for both players.
+    #[inline]
+    pub fn castle_rights(&self) -> CastleRights {
+        self.castle_rights
     }
 
     /// Returns the corresponding bitboard for the retriever.
