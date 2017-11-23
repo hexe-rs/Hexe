@@ -21,7 +21,7 @@
 //!
 //! # Using `hexe_core`
 //!
-//! This crate reexports the `hexe_core` crate as `hexe::core`. Its most
+//! This crate reexports the [`hexe_core`] crate as `hexe::core`. Its most
 //! commonly used parts are available in the [`prelude`].
 //!
 //! If you wish to use `hexe_core` with its original name, you may do:
@@ -31,6 +31,7 @@
 //! ```
 //!
 //! [crate]: https://crates.io/crates/hexe
+//! [`hexe_core`]: https://docs.rs/hexe_core
 //! [`prelude`]: prelude/index.html
 
 #![doc(html_logo_url = "https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png")]
