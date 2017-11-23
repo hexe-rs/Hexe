@@ -30,23 +30,9 @@ impl fmt::Display for Color {
     }
 }
 
-/// The error returned when `Color::from_str` fails.
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub struct FromStrError(());
-
-static FROM_STR_ERROR: &str = "failed to parse a string as a color";
-
-impl fmt::Display for FromStrError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        FROM_STR_ERROR.fmt(f)
-    }
-}
-
-#[cfg(feature = "std")]
-impl ::std::error::Error for FromStrError {
-    fn description(&self) -> &str {
-        FROM_STR_ERROR
-    }
+define_from_str_error! { Color;
+    /// The error returned when `Color::from_str` fails.
+    "failed to parse a string as a color"
 }
 
 impl str::FromStr for Color {
@@ -83,15 +69,6 @@ impl str::FromStr for Color {
 impl Serialize for Color {
     fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
         ser.serialize_str(self.into_str())
-    }
-}
-
-#[cfg(feature = "serde")]
-impl<'de> Deserialize<'de> for Color {
-    fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
-        <&str>::deserialize(de)?.parse().map_err(|_| {
-            de::Error::custom(FROM_STR_ERROR)
-        })
     }
 }
 

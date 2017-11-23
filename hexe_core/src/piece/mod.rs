@@ -4,6 +4,9 @@ use core::{fmt, str};
 use color::Color;
 use uncon::*;
 
+#[cfg(feature = "serde")]
+use serde::*;
+
 pub mod map;
 
 /// A chess piece with a kind and color.
@@ -121,23 +124,9 @@ impl From<Promotion> for PieceKind {
     }
 }
 
-/// The error returned when `PieceKind::from_str` fails.
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub struct FromStrError(());
-
-static FROM_STR_ERROR: &str = "failed to parse a string as a piece";
-
-impl fmt::Display for FromStrError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        FROM_STR_ERROR.fmt(f)
-    }
-}
-
-#[cfg(feature = "std")]
-impl ::std::error::Error for FromStrError {
-    fn description(&self) -> &str {
-        FROM_STR_ERROR
-    }
+define_from_str_error! { PieceKind;
+    /// The error returned when `PieceKind::from_str` fails.
+    "failed to parse a string as a piece kind"
 }
 
 impl str::FromStr for PieceKind {
@@ -177,6 +166,13 @@ impl str::FromStr for PieceKind {
             }
         }
         Ok(kind)
+    }
+}
+
+#[cfg(feature = "serde")]
+impl Serialize for PieceKind {
+    fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
+        ser.serialize_str(KINDS[*self as usize])
     }
 }
 

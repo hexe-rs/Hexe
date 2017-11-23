@@ -89,24 +89,9 @@ impl From<(File, Rank)> for Square {
     }
 }
 
-/// The error returned when `Square::from_str` fails.
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub struct FromStrError(());
-
-static FROM_STR_ERROR: &str = "failed to parse a string as a square";
-
-impl fmt::Display for FromStrError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        FROM_STR_ERROR.fmt(f)
-    }
-}
-
-#[cfg(feature = "std")]
-impl ::std::error::Error for FromStrError {
-    #[inline]
-    fn description(&self) -> &str {
-        FROM_STR_ERROR
-    }
+define_from_str_error! { Square;
+    /// The error returned when `Square::from_str` fails.
+    "failed to parse a string as a square"
 }
 
 impl str::FromStr for Square {
@@ -136,15 +121,6 @@ impl str::FromStr for Square {
 impl Serialize for Square {
     fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
         self.map_str(|s| ser.serialize_str(s))
-    }
-}
-
-#[cfg(feature = "serde")]
-impl<'de> Deserialize<'de> for Square {
-    fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
-        <&str>::deserialize(de)?.parse().map_err(|_| {
-            de::Error::custom(FROM_STR_ERROR)
-        })
     }
 }
 

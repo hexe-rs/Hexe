@@ -68,39 +68,15 @@ impl fmt::Display for CastleRights {
     }
 }
 
+define_from_str_error! { CastleRights;
+    /// The error returned when `CastleRights::from_str` fails.
+    "failed to parse a string as castling rights"
+}
+
 #[cfg(feature = "serde")]
 impl Serialize for CastleRights {
     fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
         self.map_str(|s| ser.serialize_str(s))
-    }
-}
-
-#[cfg(feature = "serde")]
-impl<'de> Deserialize<'de> for CastleRights {
-    fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
-        <&str>::deserialize(de)?.parse().map_err(|_| {
-            de::Error::custom(FROM_STR_ERROR)
-        })
-    }
-}
-
-/// An error returned when parsing `CastleRights` using `from_str` fails.
-#[derive(Copy, Clone, Debug, PartialEq, Eq)]
-pub struct FromStrError(());
-
-static FROM_STR_ERROR: &str = "failed to parse a string as castling rights";
-
-impl fmt::Display for FromStrError {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        FROM_STR_ERROR.fmt(f)
-    }
-}
-
-#[cfg(feature = "std")]
-impl ::std::error::Error for FromStrError {
-    #[inline]
-    fn description(&self) -> &str {
-        FROM_STR_ERROR
     }
 }
 

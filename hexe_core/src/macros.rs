@@ -227,3 +227,32 @@ macro_rules! impl_composition_ops {
         }
     )+ }
 }
+
+macro_rules! define_from_str_error {
+    ($t:ty; #[$m:meta] $msg:expr) => {
+        #[$m] #[derive(Copy, Clone, Debug, PartialEq, Eq)]
+        pub struct FromStrError(());
+
+        impl fmt::Display for FromStrError {
+            #[inline]
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                $msg.fmt(f)
+            }
+        }
+
+        #[cfg(feature = "std")]
+        impl ::std::error::Error for FromStrError {
+            #[inline]
+            fn description(&self) -> &str { $msg }
+        }
+
+        #[cfg(feature = "serde")]
+        impl<'de> Deserialize<'de> for $t {
+            fn deserialize<D: Deserializer<'de>>(de: D) -> Result<Self, D::Error> {
+                <&str>::deserialize(de)?.parse().map_err(|_| {
+                    de::Error::custom($msg)
+                })
+            }
+        }
+    }
+}
