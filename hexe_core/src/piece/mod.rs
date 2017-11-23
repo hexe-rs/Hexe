@@ -172,7 +172,7 @@ impl str::FromStr for PieceKind {
 #[cfg(feature = "serde")]
 impl Serialize for PieceKind {
     fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
-        ser.serialize_str(KINDS[*self as usize])
+        ser.serialize_str(self.into_str())
     }
 }
 
