@@ -580,18 +580,16 @@ impl PieceMap {
     /// ```
     /// # use hexe_core::piece::map::*;
     /// let map = PieceMap::STANDARD;
+    /// let exp = "r n b q k b n r\n\
+    ///            p p p p p p p p\n\
+    ///            . . . . . . . .\n\
+    ///            . . . . . . . .\n\
+    ///            . . . . . . . .\n\
+    ///            . . . . . . . .\n\
+    ///            P P P P P P P P\n\
+    ///            R N B Q K B N R";
     ///
-    /// map.map_str(|s| {
-    ///     println!("{}", s);
-    ///     // r n b q k b n r
-    ///     // p p p p p p p p
-    ///     // . . . . . . . .
-    ///     // . . . . . . . .
-    ///     // . . . . . . . .
-    ///     // . . . . . . . .
-    ///     // P P P P P P P P
-    ///     // R N B Q K B N R
-    /// });
+    /// map.map_str(|s| assert_eq!(s, exp));
     /// ```
     ///
     /// [`Display`]: https://doc.rust-lang.org/std/fmt/trait.Display.html
@@ -1021,21 +1019,6 @@ mod tests {
 
         map = PieceMap::filled(Piece::BlackBishop);
         assert!(!map.is_empty());
-    }
-
-    #[test]
-    fn map_str() {
-        let map = PieceMap::STANDARD;
-        let exp = "r n b q k b n r\n\
-                   p p p p p p p p\n\
-                   . . . . . . . .\n\
-                   . . . . . . . .\n\
-                   . . . . . . . .\n\
-                   . . . . . . . .\n\
-                   P P P P P P P P\n\
-                   R N B Q K B N R";
-
-        map.map_str(|s| assert_eq!(s, exp));
     }
 
     #[test]
