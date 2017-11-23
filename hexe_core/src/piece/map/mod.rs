@@ -417,11 +417,9 @@ impl PieceMap {
         }
         #[cfg(not(feature = "simd"))]
         {
-            const LO: usize = ::core::usize::MAX / 0xFF;
-            const EMPTY: usize = LO * NONE as usize;
-
+            let empty = usize::splat(NONE);
             for &slot in self.inner_ptr_sized() {
-                if slot != EMPTY {
+                if slot != empty {
                     return false;
                 }
             }
