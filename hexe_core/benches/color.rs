@@ -6,7 +6,7 @@ use test::{Bencher, black_box};
 use hexe_core::color::Color;
 
 #[bench]
-fn bench_from_str(b: &mut Bencher) {
+fn color_from_str(b: &mut Bencher) {
     static STRINGS: &[&str] = &[
         "white", "whitE", "whiTE", "whITE", "wHITE", "WHITE",
         "black", "blacK", "blaCK", "blACK", "bLACK", "BLACK",
