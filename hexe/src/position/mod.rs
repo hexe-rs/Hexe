@@ -5,6 +5,9 @@ use core::misc::Contained;
 use prelude::*;
 use uncon::*;
 
+mod state;
+pub use self::state::*;
+
 // The raw value used to represent no square for a space-optimized square.
 //
 // This should be unnecessary once `Option<Square>` is optimized to be a single
@@ -16,6 +19,9 @@ const_assert_eq!(no_sq; NO_SQUARE, 64);
 
 /// A representation of the current game state.
 pub struct Position {
+    /// The current state.
+    state: State,
+
     /// A piece map board representation for fast lookups.
     piece_map: PieceMap,
 
@@ -27,27 +33,15 @@ pub struct Position {
 
     /// The color for the player whose turn it is.
     player: Color,
-
-    /// The square used in an en passant capture, if any.
-    ///
-    /// Uses a value of `NO_SQUARE` when empty. This is because `Option<Square>`
-    /// currently uses two bytes instead of one. Should be made `Option<Square>`
-    /// once this PR is in stable: https://github.com/rust-lang/rust/pull/45225.
-    en_passant: u8,
-
-    /// The castle rights for both players.
-    castle_rights: CastleRights,
 }
 
 impl PartialEq for Position {
-    #[inline]
     fn eq(&self, other: &Position) -> bool {
         // We can skip checking `pieces` and `colors` because they represent the
         // same data as `piece_map`.
-        self.piece_map     == other.piece_map  &&
-        self.player        == other.player     &&
-        self.en_passant    == other.en_passant &&
-        self.castle_rights == other.castle_rights
+        self.piece_map == other.piece_map &&
+        self.player    == other.player    &&
+        self.state     == other.state
     }
 }
 
@@ -65,12 +59,11 @@ impl Default for Position {
         const BLACK:  u64 = 0xFFFF000000000000;
 
         Position {
+            state: State::default(),
             piece_map: PieceMap::STANDARD,
             pieces: [PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING],
             colors: [WHITE, BLACK],
             player: Color::White,
-            en_passant: NO_SQUARE,
-            castle_rights: CastleRights::FULL,
         }
     }
 }
@@ -157,7 +150,7 @@ impl Position {
     /// Returns the en passant square.
     #[inline]
     pub fn en_passant(&self) -> Option<&Square> {
-        match self.en_passant {
+        match self.state.en_passant {
             NO_SQUARE => None,
             ref ep => unsafe { Some(ep.into_unchecked()) }
         }
@@ -166,7 +159,7 @@ impl Position {
     /// Returns the castle rights for both players.
     #[inline]
     pub fn castle_rights(&self) -> CastleRights {
-        self.castle_rights
+        self.state.castle_rights
     }
 
     /// Returns the corresponding bitboard for the retriever.
