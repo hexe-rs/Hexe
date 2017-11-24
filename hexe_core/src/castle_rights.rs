@@ -49,16 +49,11 @@ impl Default for CastleRights {
 
 impl fmt::Debug for CastleRights {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        struct Hex(u8);
-
-        impl fmt::Debug for Hex {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                // 2 for "0b" + 4 for number
-                write!(f, "{:#06b}", self.0)
-            }
+        if self.is_empty() {
+            fmt::Display::fmt("(empty)", f)
+        } else {
+            self.map_str(|s| fmt::Display::fmt(s, f))
         }
-
-        f.debug_tuple("CastleRights").field(&Hex(self.0)).finish()
     }
 }
 
