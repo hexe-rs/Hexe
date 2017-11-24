@@ -63,21 +63,16 @@ mod tests {
     #[test]
     fn not() {
         use self::Direction::*;
-        static NOT: [(Direction, Direction); 8] = [
-            (North, South),
-            (South, North),
-
-            (East, West),
-            (West, East),
-
+        static NOT: [(Direction, Direction); 4] = [
+            (North,     South),
+            (East,      West),
             (Northeast, Southwest),
-            (Southwest, Northeast),
             (Northwest, Southeast),
-            (Southeast, Northwest),
         ];
 
         for &(a, b) in &NOT {
             assert_eq!(a, !b);
+            assert_eq!(!a, b);
         }
     }
 }
