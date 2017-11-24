@@ -265,10 +265,10 @@ mod tests {
                 assert!(pos.bitboard(piece.color()).contains(square));
             } else {
                 for &bitboard in &pos.pieces {
-                    assert!(!Bitboard(bitboard).contains(square));
+                    assert!(!bitboard.contains(square));
                 }
                 for &bitboard in &pos.colors {
-                    assert!(!Bitboard(bitboard).contains(square));
+                    assert!(!bitboard.contains(square));
                 }
             }
         }
