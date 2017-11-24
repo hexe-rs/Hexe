@@ -34,6 +34,7 @@ impl fmt::Debug for CarryRippler {
         f.debug_struct("CarryRippler")
             .field("superset", &self.superset())
             .field("subset",   &self.subset())
+            .field("is_first", &self.is_first)
             .finish()
     }
 }
