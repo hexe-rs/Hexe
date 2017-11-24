@@ -89,6 +89,13 @@ macro_rules! impl_bit_set {
             fn len(&self) -> usize { $t::len(self) }
         }
 
+        impl<T: Into<$t>> ::misc::Contained<$t> for T {
+            fn contained_in(self, other: $t) -> bool {
+                let this = self.into().0;
+                other.0 & this == this
+            }
+        }
+
         /// Bit set operations.
         impl $t {
             /// An instance with all bits set to 1.
@@ -99,9 +106,8 @@ macro_rules! impl_bit_set {
 
             /// Returns whether `self` contains `other`.
             #[inline]
-            pub fn contains<T: Into<Self>>(&self, other: T) -> bool {
-                let other = other.into().0;
-                self.0 & other == other
+            pub fn contains<T: ::misc::Contained<Self>>(self, other: T) -> bool {
+                other.contained_in(self)
             }
 
             /// Returns the number of bits set in `self`.
