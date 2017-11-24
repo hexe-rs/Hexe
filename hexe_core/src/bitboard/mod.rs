@@ -294,7 +294,7 @@ impl Bitboard {
     /// Returns an iterator over the subsets of `self`.
     #[inline]
     pub fn carry_rippler(self) -> CarryRippler {
-        CarryRippler::new(self)
+        self.into()
     }
 
     /// Generates pawn attacks for each of the bits of `self`.
