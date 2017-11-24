@@ -150,16 +150,13 @@ impl Position {
     /// Returns the en passant square.
     #[inline]
     pub fn en_passant(&self) -> Option<&Square> {
-        match self.state.en_passant {
-            NO_SQUARE => None,
-            ref ep => unsafe { Some(ep.into_unchecked()) }
-        }
+        self.state.en_passant()
     }
 
     /// Returns the castle rights for both players.
     #[inline]
     pub fn castle_rights(&self) -> CastleRights {
-        self.state.castle_rights
+        self.state.castle_rights()
     }
 
     /// Returns the corresponding bitboard for the retriever.

@@ -61,3 +61,20 @@ impl Default for State {
         }
     }
 }
+
+impl State {
+    /// Returns the en passant square.
+    #[inline]
+    pub fn en_passant(&self) -> Option<&Square> {
+        match self.en_passant {
+            NO_SQUARE => None,
+            ref ep => unsafe { Some(ep.into_unchecked()) }
+        }
+    }
+
+    /// Returns the castle rights for both players.
+    #[inline]
+    pub fn castle_rights(&self) -> CastleRights {
+        self.castle_rights
+    }
+}
