@@ -90,7 +90,7 @@ impl Position {
 
     /// Returns whether `self` contains the value.
     #[inline]
-    pub fn contains<T: Contained<Self>>(&self, value: T) -> bool {
+    pub fn contains<'a, T: Contained<&'a Self>>(&'a self, value: T) -> bool {
         value.contained_in(self)
     }
 
@@ -201,7 +201,7 @@ impl Position {
     }
 }
 
-impl Contained<Position> for Square {
+impl<'a> Contained<&'a Position> for Square {
     #[inline]
     fn contained_in(self, pos: &Position) -> bool {
         pos.piece_map.contains(self)
@@ -210,7 +210,7 @@ impl Contained<Position> for Square {
 
 macro_rules! impl_contained {
     ($($t:ty),+) => {
-        $(impl Contained<Position> for $t {
+        $(impl<'a> Contained<&'a Position> for $t {
             #[inline]
             fn contained_in(self, pos: &Position) -> bool {
                 !pos.bitboard(self).is_empty()
