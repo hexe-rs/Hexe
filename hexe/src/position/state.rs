@@ -7,17 +7,17 @@ use std::sync::Arc;
 /// [`Position`]: struct.Position.html
 pub struct State {
     /// The previous state. Acts as a linked list of move history.
-    pub(crate) prev: Option<Arc<State>>,
+    pub(super) prev: Option<Arc<State>>,
 
     /// The square used in an en passant capture, if any.
     ///
     /// Uses a value of `NO_SQUARE` when empty. This is because `Option<Square>`
     /// currently uses two bytes instead of one. Should be made `Option<Square>`
     /// once this PR is in stable: https://github.com/rust-lang/rust/pull/45225.
-    pub(crate) en_passant: u8,
+    pub(super) en_passant: u8,
 
     /// The castle rights for both players.
-    pub(crate) castle_rights: CastleRights,
+    pub(super) castle_rights: CastleRights,
 }
 
 impl PartialEq for State {
