@@ -66,8 +66,8 @@ impl Default for State {
 impl fmt::Debug for State {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("State")
-            .field("prev", &self.prev())
-            .field("en_passant", &self.en_passant())
+            .field("prev",          &self.prev())
+            .field("en_passant",    &self.en_passant())
             .field("castle_rights", &self.castle_rights())
             .finish()
     }
