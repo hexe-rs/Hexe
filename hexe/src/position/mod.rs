@@ -26,11 +26,11 @@ pub struct Position {
     /// A piece map board representation for fast lookups.
     piece_map: PieceMap,
 
-    /// Bitboards for each piece kind. Uses `u64` for convenience.
-    pieces: [u64; 6],
+    /// Bitboards for each piece kind.
+    pieces: [Bitboard; 6],
 
-    /// Bitboards for each color. Uses `u64` for convenience.
-    colors: [u64; 2],
+    /// Bitboards for each color.
+    colors: [Bitboard; 2],
 
     /// The color for the player whose turn it is.
     player: Color,
@@ -50,14 +50,14 @@ impl Eq for Position {}
 
 impl Default for Position {
     fn default() -> Position {
-        const PAWN:   u64 = 0x00FF00000000FF00;
-        const KNIGHT: u64 = 0x4200000000000042;
-        const BISHOP: u64 = 0x2400000000000024;
-        const ROOK:   u64 = 0x8100000000000081;
-        const QUEEN:  u64 = 0x0800000000000008;
-        const KING:   u64 = 0x1000000000000010;
-        const WHITE:  u64 = 0x000000000000FFFF;
-        const BLACK:  u64 = 0xFFFF000000000000;
+        const PAWN:   Bitboard = Bitboard(0x00FF00000000FF00);
+        const KNIGHT: Bitboard = Bitboard(0x4200000000000042);
+        const BISHOP: Bitboard = Bitboard(0x2400000000000024);
+        const ROOK:   Bitboard = Bitboard(0x8100000000000081);
+        const QUEEN:  Bitboard = Bitboard(0x0800000000000008);
+        const KING:   Bitboard = Bitboard(0x1000000000000010);
+        const WHITE:  Bitboard = Bitboard(0x000000000000FFFF);
+        const BLACK:  Bitboard = Bitboard(0xFFFF000000000000);
 
         Position {
             state: State::default(),
@@ -230,14 +230,14 @@ pub trait BitboardRetriever {
 impl BitboardRetriever for PieceKind {
     #[inline]
     fn bitboard(self, pos: &Position) -> Bitboard {
-        Bitboard(pos.pieces[self as usize])
+        pos.pieces[self as usize]
     }
 }
 
 impl BitboardRetriever for Color {
     #[inline]
     fn bitboard(self, pos: &Position) -> Bitboard {
-        Bitboard(pos.colors[self as usize])
+        pos.colors[self as usize]
     }
 }
 
