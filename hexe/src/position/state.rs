@@ -6,6 +6,7 @@ use std::sync::Arc;
 /// history.
 ///
 /// [`Position`]: struct.Position.html
+#[derive(Clone)]
 pub struct State {
     /// The previous state. Acts as a linked list of move history.
     pub(super) prev: Option<Arc<State>>,
