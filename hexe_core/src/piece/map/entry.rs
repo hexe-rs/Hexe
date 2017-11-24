@@ -125,7 +125,7 @@ impl<'a> fmt::Debug for Entry<'a> {
 
 impl<'a> Entry<'a> {
     #[inline]
-    pub(crate) fn from_map(map: &'a mut PieceMap, sq: Square) -> Entry<'a> {
+    pub(super) fn from_map(map: &'a mut PieceMap, sq: Square) -> Entry<'a> {
         if map.contains(sq) {
             Entry::Occupied(OccupiedEntry { map: map, key: sq })
         } else {
