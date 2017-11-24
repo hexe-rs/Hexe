@@ -90,6 +90,7 @@ macro_rules! impl_bit_set {
         }
 
         impl<T: Into<$t>> ::misc::Contained<$t> for T {
+            #[inline]
             fn contained_in(self, other: $t) -> bool {
                 let this = self.into().0;
                 other.0 & this == this
