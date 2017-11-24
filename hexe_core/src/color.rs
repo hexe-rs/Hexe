@@ -1,4 +1,30 @@
 //! A color to represent pieces or board squares.
+//!
+//! Chess deals primarily with two colors: white and black. They're used to
+//! categorize players, pieces, and board squares.
+//!
+//! Because [`Color`] is an `enum`, it can be used to safely index into tables
+//! of size 2 or greater. The optimizer knows that a color never results in an
+//! index greater than 2, and thus it can safely remove bounds checks where
+//! applicable.
+//!
+//! # Examples
+//!
+//! We can use color to determine various aspects of a game. If two bishops lie
+//! on squares of opposing color, we know that one can **never** capture the
+//! other. For example, bishops that start on opposite sides of the board cannot
+//! capture each other:
+//!
+//! ```
+//! # use hexe_core::prelude::*;
+//! // Bishop queenside start squares
+//! let bis1 = Square::C1;
+//! let bis2 = Square::C8;
+//!
+//! assert!(!bis1.color_eq(bis2));
+//! ```
+//!
+//! [`Color`]: enum.Color.html
 
 use core::{fmt, ops, str};
 
