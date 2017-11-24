@@ -197,6 +197,17 @@ impl Position {
     pub fn bitboard<T: BitboardRetriever>(&self, retr: T) -> Bitboard {
         retr.bitboard(self)
     }
+
+    /// Returns the square where the color's king lies on.
+    #[inline]
+    pub fn king_square(&self, color: Color) -> Square {
+        // Both colors should *always* have a king
+        debug_assert!(
+            self.contains(Piece::new(PieceKind::King, color)),
+            "No king found for {}", color
+        );
+        unsafe { self.bitboard(color).lsb_unchecked() }
+    }
 }
 
 impl Contained<Position> for Square {
