@@ -63,6 +63,12 @@ impl Default for State {
 }
 
 impl State {
+    /// Returns the previous state.
+    #[inline]
+    pub fn prev(&self) -> Option<&State> {
+        self.prev.as_ref().map(AsRef::as_ref)
+    }
+
     /// Returns the en passant square.
     #[inline]
     pub fn en_passant(&self) -> Option<&Square> {
