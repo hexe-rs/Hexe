@@ -4,7 +4,6 @@ extern crate hexe;
 
 use test::{Bencher, black_box};
 use hexe::position::Position;
-use hexe::prelude::*;
 
 #[bench]
 fn position_eq(b: &mut Bencher) {
