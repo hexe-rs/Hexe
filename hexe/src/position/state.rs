@@ -1,4 +1,5 @@
 use super::*;
+use std::fmt;
 use std::sync::Arc;
 
 /// A partial game state representation. Responsible for tracking [`Position`]
@@ -59,6 +60,16 @@ impl Default for State {
             en_passant: NO_SQUARE,
             castle_rights: CastleRights::FULL,
         }
+    }
+}
+
+impl fmt::Debug for State {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.debug_struct("State")
+            .field("prev", &self.prev())
+            .field("en_passant", &self.en_passant())
+            .field("castle_rights", &self.castle_rights())
+            .finish()
     }
 }
 
