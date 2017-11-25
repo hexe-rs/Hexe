@@ -1,4 +1,39 @@
 //! Castling rights for two players of a chess game.
+//!
+//! # What is Castling?
+//!
+//! In chess, [castling] is a special move performed by a king and a rook.
+//! Castling can only be done under certain conditions.
+//!
+//! For example, a piece can't be moved in a castle if it has been moved
+//! previously. You can use the [`CastleRights`] type to keep track of this
+//! case:
+//!
+//! - If a king has moved, both castle rights for its color must be cleared
+//! - If a rook has moved, the castle right for its color and board side must be
+//! cleared
+//!
+//! ```txt
+//! Before:         | After:
+//! r . + . k . + r | . . k r . . . r
+//! . . . . . . . . | . . . . . . . .
+//! . . . . . . . . | . . . . . . . .
+//! . . . . . . . . | . . . . . . . .
+//! . . . . . . . . | . . . . . . . .
+//! . . . . . . . . | . . . . . . . .
+//! . . . . . . . . | . . . . . . . .
+//! R . + . K . + R | R . . . . R K .
+//! ```
+//!
+//! In the **before** frame, kings and rooks are in their initial positions.
+//! Kings may be moved to the indicated (+) squares. In the **after** frame,
+//! White has castled kingside and Black has castled queenside.
+//!
+//! Notice that the king can only move a maximum of two squares when castling,
+//! regardless of which board side.
+//!
+//! [`CastleRights`]: struct.CastleRights.html
+//! [castling]: https://en.wikipedia.org/wiki/Castling
 
 use core::{fmt, ops, str};
 use prelude::*;
