@@ -3,7 +3,6 @@
 use core::piece::map::PieceMap;
 use core::misc::Contained;
 use prelude::*;
-use uncon::*;
 
 mod state;
 pub use self::state::*;

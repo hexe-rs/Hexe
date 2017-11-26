@@ -1,6 +1,7 @@
 use super::*;
 use std::fmt;
 use std::sync::Arc;
+use uncon::*;
 
 /// A partial game state representation. Responsible for tracking [`Position`]
 /// history.
