@@ -37,7 +37,6 @@ const HI: u64 = LO << 7;
 
 macro_rules! impl_bytes {
     ($($t:ty),+) => { $(
-        #[allow(cast_lossless)] // clippy
         impl Bytes for $t {
             #[inline]
             fn splat(byte: u8) -> Self {

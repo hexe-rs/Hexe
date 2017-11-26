@@ -28,6 +28,7 @@
 #![deny(missing_docs)]
 
 // Clippy
+#![allow(cast_lossless)]
 #![allow(explicit_into_iter_loop)]
 #![allow(inline_always)]
 #![allow(unreadable_literal)]
