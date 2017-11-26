@@ -428,14 +428,11 @@ impl Square {
     ///
     /// # Examples
     ///
-    /// Basic usage:
+    /// The string's lifetime is for the duration of the closure's execution:
     ///
     /// ```
     /// # use hexe_core::prelude::*;
-    /// let sq = Square::A5;
-    /// sq.map_str(|s| {
-    ///     assert_eq!(s, "A5");
-    /// });
+    /// Square::A5.map_str(|s| assert_eq!(s, "A5"));
     /// ```
     #[inline]
     pub fn map_str<T, F>(self, f: F) -> T
