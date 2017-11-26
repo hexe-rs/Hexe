@@ -13,7 +13,7 @@ struct Magic {
 #[inline]
 fn attacks(magic: &Magic, occupied: Bitboard, shift: u8) -> u64 {
     let val = (occupied.0 & magic.mask).wrapping_mul(magic.num) >> (64 - shift);
-    let idx = val.wrapping_add(magic.idx as u64) as usize;
+    let idx = (val as usize).wrapping_add(magic.idx as usize);
     if cfg!(debug_assertions) {
         tables::ATTACKS[idx]
     } else {
