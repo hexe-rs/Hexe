@@ -14,11 +14,7 @@ struct Magic {
 fn attacks(magic: &Magic, occupied: Bitboard, shift: u8) -> u64 {
     let val = (occupied.0 & magic.mask).wrapping_mul(magic.num) >> (64 - shift);
     let idx = (val as usize).wrapping_add(magic.idx as usize);
-    if cfg!(debug_assertions) {
-        tables::ATTACKS[idx]
-    } else {
-        unsafe { *tables::ATTACKS.get_unchecked(idx) }
-    }
+    unsafe { *tables::ATTACKS.get_unchecked(idx) }
 }
 
 #[inline]
