@@ -441,9 +441,8 @@ impl Square {
     pub fn map_str<T, F>(self, f: F) -> T
         where F: for<'a> FnOnce(&'a mut str) -> T
     {
-        let mut buf = [0; 2];
-        buf[0] = char::from(self.file()) as u8;
-        buf[1] = char::from(self.rank()) as u8;
+        let mut buf = [char::from(self.file()) as u8,
+                       char::from(self.rank()) as u8];
         unsafe { f(str::from_utf8_unchecked_mut(&mut buf)) }
     }
 
