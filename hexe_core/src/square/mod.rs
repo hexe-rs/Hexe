@@ -253,7 +253,7 @@ impl Square {
     /// ```
     #[inline]
     pub fn color(self) -> Color {
-        (Bitboard::BLACK >> self as u64).0.into()
+        (Bitboard::BLACK >> self as usize).0.into()
     }
 
     /// Returns whether `self` and `other` are equal in color.
