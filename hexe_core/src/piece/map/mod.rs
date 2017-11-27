@@ -350,6 +350,41 @@ impl PieceMap {
         pc
     }
 
+    /// Performs an en passant capture of the piece on the same file as `to` and
+    /// the same rank as `from`, via the piece at `from`.
+    ///
+    /// There are no checks made regarding whether `from` and `to` are legal en
+    /// passant squares. The capture is performed with no assumptions. This also
+    /// does not check whether the destination square contains a piece. If it
+    /// does, it will be replaced by whichever value is at `from`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::piece::map::*;
+    /// # use hexe_core::prelude::Square::*;
+    /// # use hexe_core::prelude::Piece::*;
+    /// let mut map = PieceMap::STANDARD;
+    /// map.relocate(D2, D5);
+    /// map.relocate(C7, C5);
+    ///
+    /// assert_eq!(map[D5], WhitePawn);
+    /// assert_eq!(map[C5], BlackPawn);
+    ///
+    /// let pc = map.en_passant(D5, C6);
+    /// assert_eq!(pc, Some(BlackPawn));
+    /// assert_eq!(map.get(C5), None);
+    /// ```
+    #[inline]
+    pub fn en_passant(&mut self, from: Square, to: Square) -> Option<Piece> {
+        let ep = to.combine(from);
+        let pc = self.remove(ep);
+        self.relocate(from, to);
+        pc
+    }
+
     /// Performs a **blind** castle of the pieces for the castling right.
     #[inline]
     pub fn castle(&mut self, castling: CastleRight) {
