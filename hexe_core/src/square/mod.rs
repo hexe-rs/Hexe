@@ -43,6 +43,7 @@
 
 use core::{fmt, ops, str};
 use prelude::*;
+use uncon::*;
 
 #[cfg(feature = "serde")]
 use serde::*;
@@ -98,7 +99,6 @@ impl str::FromStr for Square {
     type Err = FromStrError;
 
     fn from_str(s: &str) -> Result<Square, FromStrError> {
-        use uncon::IntoUnchecked;
         let bytes = s.as_bytes();
         if bytes.len() != 2 { Err(FromStrError(())) } else {
             // Gets better optimized as a macro for some strange reason
@@ -525,7 +525,6 @@ impl File {
     /// Returns a file from the parsed character.
     #[inline]
     pub fn from_char(ch: char) -> Option<File> {
-        use uncon::IntoUnchecked;
         match 32 | ch as u8 {
             b @ b'a' ... b'f' => unsafe {
                 Some((b - b'a').into_unchecked())
@@ -570,7 +569,6 @@ impl Rank {
     /// Returns a rank from the parsed character.
     #[inline]
     pub fn from_char(ch: char) -> Option<Rank> {
-        use uncon::IntoUnchecked;
         match ch as u8 {
             b @ b'1' ... b'8' => unsafe {
                 Some((b - b'1').into_unchecked())
