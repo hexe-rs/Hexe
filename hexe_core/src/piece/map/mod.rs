@@ -970,7 +970,7 @@ mod tests {
     /// Asserts at compile-time that the piece is less than NONE.
     macro_rules! assert_valid_none {
         ($($p:ident)+) => {
-            $(const_assert!($p; (Piece::$p as u8) < NONE);)+
+            const_assert!(valid_none; $((Piece::$p as u8) < NONE),+);
         }
     }
 
