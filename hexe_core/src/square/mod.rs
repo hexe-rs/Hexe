@@ -104,10 +104,9 @@ impl str::FromStr for Square {
             // Gets better optimized as a macro for some strange reason
             macro_rules! convert {
                 ($b:expr, $lo:expr, $hi:expr) => {
-                    if $b >= $lo && $b <= $hi {
-                        unsafe { ($b - $lo).into_unchecked() }
-                    } else {
-                        return Err(FromStrError(()))
+                    match $b {
+                        $lo...$hi => unsafe { ($b - $lo).into_unchecked() },
+                        _ => return Err(FromStrError(())),
                     }
                 }
             }
