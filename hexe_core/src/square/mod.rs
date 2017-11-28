@@ -267,13 +267,11 @@ impl Square {
     ///
     /// # Examples
     ///
-    /// Basic usage:
+    /// Square A3 lies on the same diagonal as C5 and F8:
     ///
     /// ```
     /// # use hexe_core::prelude::*;
-    /// let sq = Square::A3;
-    ///
-    /// assert!(sq.is_aligned(Square::C5, Square::F8));
+    /// assert!(Square::A3.is_aligned(Square::C5, Square::F8));
     /// ```
     #[inline]
     pub fn is_aligned(self, a: Square, b: Square) -> bool {
@@ -285,13 +283,11 @@ impl Square {
     ///
     /// # Examples
     ///
-    /// Basic usage:
+    /// Square D4 lies between B2 and G7 along a diagonal:
     ///
     /// ```
     /// # use hexe_core::prelude::*;
-    /// let sq = Square::D4;
-    ///
-    /// assert!(sq.is_between(Square::B2, Square::G7));
+    /// assert!(Square::D4.is_between(Square::B2, Square::G7));
     /// ```
     #[inline]
     pub fn is_between(self, a: Square, b: Square) -> bool {
