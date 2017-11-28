@@ -7,13 +7,13 @@ mod tables;
 struct Magic {
     mask: u64,
     num: u64, // Factor
-    idx: u32, // Offset
+    idx: usize, // Offset
 }
 
 #[inline]
 fn attacks(magic: &Magic, occupied: Bitboard, shift: u8) -> u64 {
     let val = (occupied.0 & magic.mask).wrapping_mul(magic.num) >> (64 - shift);
-    let idx = (val as usize).wrapping_add(magic.idx as usize);
+    let idx = (val as usize).wrapping_add(magic.idx);
     unsafe { *tables::ATTACKS.get_unchecked(idx) }
 }
 
