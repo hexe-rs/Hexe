@@ -10,10 +10,13 @@ macro_rules! impl_sliding_benches {
     ($($f:ident)+) => { $(
         #[bench]
         fn $f(b: &mut Bencher) {
-            let occ = Bitboard(rand::random());
-            let sq  = rand_square();
+            let pairs: Vec<(Square, Bitboard)> = (0..1000).map(|_| {
+                (rand_square(), Bitboard(rand::random()))
+            }).collect();
             b.iter(|| {
-                black_box(black_box(sq).$f(black_box(occ)));
+                for &(sq, occ) in &pairs {
+                    black_box(black_box(sq).$f(black_box(occ)));
+                }
             });
         }
     )+ }
