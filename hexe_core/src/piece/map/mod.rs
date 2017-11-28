@@ -1,7 +1,7 @@
 //! A square to piece mapping for fast square lookups.
 
 use super::*;
-use core::{fmt, mem, ops};
+use core::{fmt, mem, ops, ptr};
 use core::marker::PhantomData;
 use consts::PTR_SIZE;
 use misc::Contained;
@@ -222,8 +222,9 @@ impl PieceMap {
         where F: FnMut(Square) -> Option<Piece>
     {
         let mut map: PieceMap = unsafe { mem::uninitialized() };
-        for (i, slot) in map.0.iter_mut().enumerate() {
-            *slot = init(i.into()).map(|p| p as u8).unwrap_or(NONE);
+        for i in 0..SQUARE_NUM {
+            let val = init(i.into()).map(|p| p as u8).unwrap_or(NONE);
+            unsafe { ptr::write(&mut map.0[i], val) };
         }
         map
     }
@@ -659,6 +660,12 @@ impl PieceMap {
 
         unsafe {
             let mut buf: [u8; MAX] = mem::uninitialized();
+            macro_rules! write_buf {
+                ($val:expr) => {
+                    ptr::write(buf.get_unchecked_mut(len), $val);
+                    len += 1;
+                }
+            }
 
             for rank in (0..NUM).rev().map(Rank::from) {
                 let mut n: u8 = 0;
@@ -666,23 +673,19 @@ impl PieceMap {
                     let square = Square::new(file, rank);
                     if let Some(&pc) = self.get(square) {
                         if n != 0 {
-                            *buf.get_unchecked_mut(len) = b'0' + n;
-                            len += 1;
+                            write_buf!(b'0' + n);
                             n = 0;
                         }
-                        *buf.get_unchecked_mut(len) = char::from(pc) as u8;
-                        len += 1;
+                        write_buf!(char::from(pc) as u8);
                     } else {
                         n += 1;
                     }
                 }
                 if n != 0 {
-                    *buf.get_unchecked_mut(len) = b'0' + n;
-                    len += 1;
+                    write_buf!(b'0' + n);
                 }
                 if rank != Rank::One {
-                    *buf.get_unchecked_mut(len) = b'/';
-                    len += 1;
+                    write_buf!(b'/');
                 }
             }
 
