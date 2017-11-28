@@ -103,15 +103,15 @@ impl str::FromStr for Square {
         if bytes.len() != 2 { Err(FromStrError(())) } else {
             // Gets better optimized as a macro for some strange reason
             macro_rules! convert {
-                ($b:expr, $lo:expr, $hi:expr) => {
+                ($lo:expr, $hi:expr, $b:expr) => {
                     match $b {
                         $lo...$hi => unsafe { ($b - $lo).into_unchecked() },
                         _ => return Err(FromStrError(())),
                     }
                 }
             }
-            Ok(Square::new(convert!(bytes[0] | 32, b'a', b'h'),
-                           convert!(bytes[1], b'1', b'8')))
+            Ok(Square::new(convert!(b'a', b'h', bytes[0] | 32),
+                           convert!(b'1', b'8', bytes[1])))
         }
     }
 }
