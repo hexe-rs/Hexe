@@ -10,7 +10,7 @@ use serde::*;
 pub mod map;
 
 /// A chess piece with a kind and color.
-#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, FromUnchecked)]
+#[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 #[allow(missing_docs)]
@@ -35,6 +35,12 @@ impl From<Piece> for char {
     #[inline]
     fn from(p: Piece) -> char {
         PIECE_CHARS_ASCII[p as usize] as char
+    }
+}
+
+impl fmt::Debug for Piece {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{}{}", self.color().into_str(), self.kind().into_str())
     }
 }
 
