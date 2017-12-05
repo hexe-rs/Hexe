@@ -362,7 +362,8 @@ impl Square {
     /// [wiki]: https://en.wikipedia.org/wiki/Chebyshev_distance
     #[inline]
     pub fn center_distance(self) -> usize {
-        self::tables::CENTER_DISTANCE[0][self as usize] as usize
+        use self::tables::*;
+        DISTANCE[CHEBYSHEV_INDEX][self as usize] as usize
     }
 
     /// Calculates the [Manhattan distance][wiki] between `self` and the center
@@ -371,7 +372,8 @@ impl Square {
     /// [wiki]: https://en.wiktionary.org/wiki/Manhattan_distance
     #[inline]
     pub fn center_man_distance(self) -> usize {
-        self::tables::CENTER_DISTANCE[1][self as usize] as usize
+        use self::tables::*;
+        DISTANCE[MANHATTAN_INDEX][self as usize] as usize
     }
 
     /// Returns the [triangular index][wiki] for `self` and `other`.
