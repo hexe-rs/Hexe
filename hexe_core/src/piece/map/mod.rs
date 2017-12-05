@@ -2,10 +2,8 @@
 
 use super::*;
 use core::{fmt, mem, ops, ptr};
-use core::marker::PhantomData;
 use consts::PTR_SIZE;
 use misc::Contained;
-use square::Squares;
 use prelude::*;
 use util::*;
 
@@ -49,6 +47,9 @@ mod tables {
 
 mod entry;
 pub use self::entry::*;
+
+mod iter;
+pub use self::iter::*;
 
 /// A mapping of sixty-four squares to pieces.
 ///
@@ -463,13 +464,6 @@ impl PieceMap {
         true
     }
 
-    #[inline]
-    fn find_len(&self, iter: &Squares) -> usize {
-        iter.extract(&self.0).iter().fold(iter.len(), |len, &pc| {
-            len - (pc == NONE) as usize
-        })
-    }
-
     /// Returns the total number of pieces in `self`.
     ///
     /// This operation is performed in O(n) time. It is recommended to store
@@ -703,15 +697,11 @@ impl PieceMap {
 
     /// Returns an iterator visiting all square-piece pairs in order.
     #[inline]
-    pub fn iter(&self) -> Iter {
-        Iter { map: self, iter: Squares::default() }
-    }
+    pub fn iter(&self) -> Iter { self.into_iter() }
 
     /// Returns an iterator visiting all square-piece pairs mutably in order.
     #[inline]
-    pub fn iter_mut(&mut self) -> IterMut {
-        IterMut { map: self, iter: Squares::default(), _marker: PhantomData }
-    }
+    pub fn iter_mut(&mut self) -> IterMut { self.into_iter() }
 
     /// Returns a view into the bytes of the map.
     ///
@@ -742,176 +732,6 @@ impl PieceMap {
     #[inline]
     pub unsafe fn as_bytes_mut(&mut self) -> &mut [u8; 64] {
         &mut self.0
-    }
-}
-
-impl<'a> IntoIterator for &'a PieceMap {
-    type Item = (Square, &'a Piece);
-    type IntoIter = Iter<'a>;
-
-    #[inline]
-    fn into_iter(self) -> Iter<'a> { self.iter() }
-}
-
-impl<'a> IntoIterator for &'a mut PieceMap {
-    type Item = (Square, &'a mut Piece);
-    type IntoIter = IterMut<'a>;
-
-    #[inline]
-    fn into_iter(self) -> IterMut<'a> { self.iter_mut() }
-}
-
-/// A [`PieceMap`](struct.PieceMap.html) iterator.
-#[derive(Clone)]
-pub struct Iter<'a> {
-    map: &'a PieceMap,
-    iter: Squares,
-}
-
-#[cfg(test)]
-assert_impl!(iter; Iter<'static>, Send, Sync);
-
-impl<'a> Iterator for Iter<'a> {
-    type Item = (Square, &'a Piece);
-
-    #[inline]
-    fn next(&mut self) -> Option<Self::Item> {
-        while let Some(sq) = self.iter.next() {
-            if let Some(pc) = self.map.get(sq) {
-                return Some((sq, pc));
-            }
-        }
-        None
-    }
-
-    #[inline]
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.len();
-        (len, Some(len))
-    }
-
-    #[inline]
-    fn count(self) -> usize {
-        self.len()
-    }
-
-    #[inline]
-    fn last(mut self) -> Option<Self::Item> {
-        self.next_back()
-    }
-}
-
-impl<'a> DoubleEndedIterator for Iter<'a> {
-    #[inline]
-    fn next_back(&mut self) -> Option<Self::Item> {
-        while let Some(sq) = self.iter.next_back() {
-            if let Some(pc) = self.map.get(sq) {
-                return Some((sq, pc));
-            }
-        }
-        None
-    }
-}
-
-impl<'a> ExactSizeIterator for Iter<'a> {
-    #[inline]
-    fn len(&self) -> usize {
-        self.map.find_len(&self.iter)
-    }
-}
-
-impl<'a> fmt::Debug for Iter<'a> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.debug_list().entries(self.clone()).finish()
-    }
-}
-
-/// A mutable [`PieceMap`](struct.PieceMap.html) iterator.
-pub struct IterMut<'a> {
-    map: *mut PieceMap,
-    iter: Squares,
-    // Rust doesn't like mutable borrows here
-    _marker: PhantomData<&'a mut PieceMap>,
-}
-
-#[cfg(test)]
-assert_impl!(iter_mut; IterMut<'static>, Send, Sync);
-
-unsafe impl<'a> Send for IterMut<'a> {}
-unsafe impl<'a> Sync for IterMut<'a> {}
-
-impl<'a> From<IterMut<'a>> for Iter<'a> {
-    #[inline]
-    fn from(iter: IterMut) -> Iter {
-        Iter { map: iter.piece_map(), iter: iter.iter }
-    }
-}
-
-impl<'a> Iterator for IterMut<'a> {
-    type Item = (Square, &'a mut Piece);
-
-    #[inline]
-    fn next(&mut self) -> Option<Self::Item> {
-        while let Some(sq) = self.iter.next() {
-            if let Some(pc) = self.piece_map_mut().get_mut(sq) {
-                return Some((sq, pc));
-            }
-        }
-        None
-    }
-
-    #[inline]
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.len();
-        (len, Some(len))
-    }
-
-    #[inline]
-    fn count(self) -> usize {
-        self.len()
-    }
-
-    #[inline]
-    fn last(mut self) -> Option<Self::Item> {
-        self.next_back()
-    }
-}
-
-impl<'a> DoubleEndedIterator for IterMut<'a> {
-    #[inline]
-    fn next_back(&mut self) -> Option<Self::Item> {
-        while let Some(sq) = self.iter.next_back() {
-            if let Some(pc) = self.piece_map_mut().get_mut(sq) {
-                return Some((sq, pc));
-            }
-        }
-        None
-    }
-}
-
-impl<'a> ExactSizeIterator for IterMut<'a> {
-    #[inline]
-    fn len(&self) -> usize {
-        self.piece_map().find_len(&self.iter)
-    }
-}
-
-impl<'a> fmt::Debug for IterMut<'a> {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let iter = Iter { map: self.piece_map(), iter: self.iter.clone() };
-        f.debug_list().entries(iter).finish()
-    }
-}
-
-impl<'a> IterMut<'a> {
-    #[inline]
-    fn piece_map(&self) -> &'a PieceMap {
-        unsafe { &*self.map }
-    }
-
-    #[inline]
-    fn piece_map_mut(&mut self) -> &'a mut PieceMap {
-        unsafe { &mut *self.map }
     }
 }
 
