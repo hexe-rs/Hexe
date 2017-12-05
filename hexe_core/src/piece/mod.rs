@@ -224,6 +224,12 @@ impl PieceKind {
 #[allow(missing_docs)]
 pub enum Promotion { Knight, Bishop, Rook, Queen }
 
+impl Default for Promotion {
+    /// Returns the default queen promotion piece.
+    #[inline]
+    fn default() -> Promotion { Promotion::Queen }
+}
+
 impl FromUnchecked<PieceKind> for Promotion {
     #[inline]
     unsafe fn from_unchecked(pk: PieceKind) -> Promotion {
