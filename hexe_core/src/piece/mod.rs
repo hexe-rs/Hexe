@@ -252,8 +252,7 @@ mod tests {
 
     #[test]
     fn piece_kind_char() {
-        for i in 0..6 {
-            let ch = CHARS[i];
+        for (i, &ch) in CHARS.iter().enumerate() {
             let pk = PieceKind::from(i);
             assert_eq!(pk.into_char(), ch);
         }
