@@ -259,7 +259,7 @@ impl Square {
     #[inline]
     pub fn color_eq(self, other: Square) -> bool {
         let bits = self as u8 ^ other as u8;
-        ((bits >> RANK_SHIFT) ^ (bits & FILE_BITS)) & 1 == 0
+        ((bits >> RANK_SHIFT) ^ bits) & 1 == 0
     }
 
     /// Returns whether `self` is aligned with two other squares along a file,
