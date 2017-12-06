@@ -65,26 +65,26 @@ impl str::FromStr for Color {
     type Err = FromStrError;
 
     fn from_str(s: &str) -> Result<Color, FromStrError> {
-        const ERR: Result<Color, FromStrError> = Err(FromStrError(()));
+        const ERR: FromStrError = FromStrError(());
         const LOW: u8 = 32;
-        if s.is_empty() { ERR } else {
+        if s.is_empty() { Err(ERR) } else {
             let bytes = s.as_bytes();
             // Compare against ASCII lowercase
             let (color, exp) = match bytes[0] | LOW {
                 b'w' => (Color::White, &COLORS[0][1..]),
                 b'b' => (Color::Black, &COLORS[1][1..]),
-                _ => return ERR,
+                _ => return Err(ERR),
             };
             let rem = &bytes[1..];
             if rem.len() == exp.len() {
                 for (&a, &b) in rem.iter().zip(exp.iter()) {
                     // Lowercase comparison
                     if a | LOW != b {
-                        return ERR;
+                        return Err(ERR);
                     }
                 }
             } else if !rem.is_empty() {
-                return ERR;
+                return Err(ERR);
             }
             Ok(color)
         }
