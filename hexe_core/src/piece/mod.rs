@@ -212,8 +212,8 @@ impl PieceKind {
     /// The kind is a promotion.
     #[inline]
     pub fn is_promotion(&self) -> bool {
-        use self::PieceKind::*;
-        *self == Knight || *self == Bishop || *self == Rook || *self == Queen
+        // Pawn wraps around to 0xFF
+        (*self as u8).wrapping_sub(1) < PieceKind::Queen as u8
     }
 }
 
