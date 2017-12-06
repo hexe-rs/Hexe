@@ -51,6 +51,15 @@ fn squares_iter_rev(b: &mut Bencher) {
 }
 
 #[bench]
+fn square_color(b: &mut Bencher) {
+    b.iter(|| {
+        for sq in Square::all() {
+            black_box(black_box(sq).color());
+        }
+    })
+}
+
+#[bench]
 fn square_distance_1000(b: &mut Bencher) {
     let squares = rand_pairs(1000);
     b.iter(|| {

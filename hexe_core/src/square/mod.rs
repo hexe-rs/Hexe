@@ -252,7 +252,11 @@ impl Square {
     /// ```
     #[inline]
     pub fn color(self) -> Color {
-        (Bitboard::BLACK >> self as usize).0.into()
+        if cfg!(target_pointer_width = "64") {
+            (Bitboard::BLACK >> self as usize).0.into()
+        } else {
+            !Color::from(((self as u8) >> RANK_SHIFT) ^ (self as u8))
+        }
     }
 
     /// Returns whether `self` and `other` are equal in color.
