@@ -1,8 +1,17 @@
+use bitboard::masks::*;
+
 pub const BETWEEN_START: usize = 4;
 pub const LINE_START: usize = BETWEEN_START + 64;
 
 pub const CHEBYSHEV_INDEX: usize = 64;
 pub const MANHATTAN_INDEX: usize = CHEBYSHEV_INDEX + 1;
+
+pub static ADJACENT: [[u64; 8]; 2] = [
+    [FILE_B.0, FILE_A.0 | FILE_C.0, FILE_B.0 | FILE_D.0, FILE_C.0 | FILE_E.0,
+     FILE_D.0 | FILE_F.0, FILE_E.0 | FILE_G.0, FILE_F.0 | FILE_H.0, FILE_G.0],
+    [RANK_2.0, RANK_1.0 | RANK_3.0, RANK_2.0 | RANK_4.0, RANK_3.0 | RANK_5.0,
+     RANK_4.0 | RANK_6.0, RANK_5.0 | RANK_7.0, RANK_6.0 | RANK_8.0, RANK_7.0],
+];
 
 pub static DISTANCE: [[u8; 64]; MANHATTAN_INDEX + 1] = [
     [0,1,2,3,4,5,6,7,1,1,2,3,4,5,6,7,2,2,2,3,4,5,6,7,3,3,3,3,4,5,6,7,4,4,4,4,4,5,6,7,5,5,5,5,5,5,6,7,6,6,6,6,6,6,6,7,7,7,7,7,7,7,7,7],
