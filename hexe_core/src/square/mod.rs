@@ -610,7 +610,7 @@ impl Rank {
     /// ```
     #[inline]
     pub fn rem_distance(self, color: Color) -> usize {
-        (0b111 * color as usize) ^ !self as usize
+        (0b111 * !color as usize) ^ self as usize
     }
 }
 
