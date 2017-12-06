@@ -777,5 +777,11 @@ mod tests {
                 assert_eq!(s1.color() == s2.color(), s1.color_eq(s2));
             }
         }
+        for &(b, c) in &[(Bitboard::WHITE, Color::White),
+                         (Bitboard::BLACK, Color::Black)] {
+            for s in b {
+                assert_eq!(s.color(), c);
+            }
+        }
     }
 }
