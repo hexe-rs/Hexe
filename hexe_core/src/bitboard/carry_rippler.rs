@@ -34,24 +34,26 @@ impl fmt::Debug for CarryRippler {
         f.debug_struct("CarryRippler")
             .field("superset", &self.superset())
             .field("subset",   &self.subset())
+            .field("is_first", &self.is_first)
             .finish()
+    }
+}
+
+impl From<Bitboard> for CarryRippler {
+    #[inline]
+    fn from(bitboard: Bitboard) -> CarryRippler {
+        CarryRippler { sub: 0, set: bitboard.0, is_first: true }
     }
 }
 
 impl Default for CarryRippler {
     #[inline]
     fn default() -> CarryRippler {
-        CarryRippler::new(Bitboard::FULL)
+        Bitboard::FULL.into()
     }
 }
 
 impl CarryRippler {
-    /// Creates an instance for `bitboard`.
-    #[inline]
-    pub fn new(bitboard: Bitboard) -> CarryRippler {
-        CarryRippler { sub: 0, set: bitboard.0, is_first: true }
-    }
-
     /// The initial superset from which `self` was constructed.
     #[inline]
     pub fn superset(&self) -> Bitboard {

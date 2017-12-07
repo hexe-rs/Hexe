@@ -1,4 +1,39 @@
 //! Castling rights for two players of a chess game.
+//!
+//! # What is Castling?
+//!
+//! In chess, [castling] is a special move performed by a king and a rook.
+//! Castling can only be done under certain conditions.
+//!
+//! For example, a piece can't be moved in a castle if it has been moved
+//! previously. You can use the [`CastleRights`] type to keep track of this
+//! case:
+//!
+//! - If a king has moved, both castle rights for its color must be cleared
+//! - If a rook has moved, the castle right for its color and board side must be
+//! cleared
+//!
+//! ```txt
+//! Before:         | After:
+//! r . + . k . + r | . . k r . . . r
+//! . . . . . . . . | . . . . . . . .
+//! . . . . . . . . | . . . . . . . .
+//! . . . . . . . . | . . . . . . . .
+//! . . . . . . . . | . . . . . . . .
+//! . . . . . . . . | . . . . . . . .
+//! . . . . . . . . | . . . . . . . .
+//! R . + . K . + R | R . . . . R K .
+//! ```
+//!
+//! In the **before** frame, kings and rooks are in their initial positions.
+//! Kings may be moved to the indicated (+) squares. In the **after** frame,
+//! White has castled kingside and Black has castled queenside.
+//!
+//! Notice that the king can only move a maximum of two squares when castling,
+//! regardless of which board side.
+//!
+//! [`CastleRights`]: struct.CastleRights.html
+//! [castling]: https://en.wikipedia.org/wiki/Castling
 
 use core::{fmt, ops, str};
 use prelude::*;
@@ -49,16 +84,11 @@ impl Default for CastleRights {
 
 impl fmt::Debug for CastleRights {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        struct Hex(u8);
-
-        impl fmt::Debug for Hex {
-            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-                // 2 for "0b" + 4 for number
-                write!(f, "{:#06b}", self.0)
-            }
+        if self.is_empty() {
+            fmt::Display::fmt("(empty)", f)
+        } else {
+            self.map_str(|s| fmt::Display::fmt(s, f))
         }
-
-        f.debug_tuple("CastleRights").field(&Hex(self.0)).finish()
     }
 }
 

@@ -1,4 +1,30 @@
 //! A color to represent pieces or board squares.
+//!
+//! Chess deals primarily with two colors: white and black. They're used to
+//! categorize players, pieces, and board squares.
+//!
+//! Because [`Color`] is an `enum`, it can be used to safely index into tables
+//! of size 2 or greater. The optimizer knows that a color never results in an
+//! index greater than 2, and thus it can safely remove bounds checks where
+//! applicable.
+//!
+//! # Examples
+//!
+//! We can use color to determine various aspects of a game. If two bishops lie
+//! on squares of opposing color, we know that one can **never** capture the
+//! other. For example, bishops that start on opposite sides of the board cannot
+//! capture each other:
+//!
+//! ```
+//! # use hexe_core::prelude::*;
+//! // Bishop queenside start squares
+//! let bis1 = Square::C1;
+//! let bis2 = Square::C8;
+//!
+//! assert!(!bis1.color_eq(bis2));
+//! ```
+//!
+//! [`Color`]: enum.Color.html
 
 use core::{fmt, ops, str};
 
@@ -39,26 +65,26 @@ impl str::FromStr for Color {
     type Err = FromStrError;
 
     fn from_str(s: &str) -> Result<Color, FromStrError> {
-        const ERR: Result<Color, FromStrError> = Err(FromStrError(()));
+        const ERR: FromStrError = FromStrError(());
         const LOW: u8 = 32;
-        if s.is_empty() { ERR } else {
+        if s.is_empty() { Err(ERR) } else {
             let bytes = s.as_bytes();
             // Compare against ASCII lowercase
             let (color, exp) = match bytes[0] | LOW {
                 b'w' => (Color::White, &COLORS[0][1..]),
                 b'b' => (Color::Black, &COLORS[1][1..]),
-                _ => return ERR,
+                _ => return Err(ERR),
             };
             let rem = &bytes[1..];
             if rem.len() == exp.len() {
                 for (&a, &b) in rem.iter().zip(exp.iter()) {
                     // Lowercase comparison
                     if a | LOW != b {
-                        return ERR;
+                        return Err(ERR);
                     }
                 }
             } else if !rem.is_empty() {
-                return ERR;
+                return Err(ERR);
             }
             Ok(color)
         }

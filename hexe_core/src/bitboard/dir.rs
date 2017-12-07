@@ -1,18 +1,15 @@
 use color::Color;
-use core::ops;
+use core::{ops, mem};
 
 /// A cardinal direction that can be used to shift or fill the bits of a
 /// [`Bitboard`](struct.Bitboard.html).
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
+#[repr(u8)]
 pub enum Direction {
     /// North (up).
     North,
-    /// South (down).
-    South,
     /// East (right).
     East,
-    /// West (left).
-    West,
     /// Northeast (up + right).
     Northeast,
     /// Southeast (down + right).
@@ -20,7 +17,11 @@ pub enum Direction {
     /// Northwest (up + left).
     Northwest,
     /// Southwest (down + left).
-    Southwest
+    Southwest,
+    /// West (left).
+    West,
+    /// South (down).
+    South,
 }
 
 impl ops::Not for Direction {
@@ -28,11 +29,7 @@ impl ops::Not for Direction {
 
     #[inline]
     fn not(self) -> Direction {
-        use self::Direction::*;
-        static NOT: [Direction; 8] = [
-            South, North, West, East, Southwest, Northwest, Southeast, Northeast
-        ];
-        NOT[self as usize]
+        unsafe { mem::transmute(7 - self as u8) }
     }
 }
 
@@ -56,5 +53,26 @@ impl Direction {
     #[inline]
     pub fn backward(color: Color) -> Direction {
         Direction::forward(!color)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn not() {
+        use self::Direction::*;
+        static NOT: [(Direction, Direction); 4] = [
+            (North,     South),
+            (East,      West),
+            (Northeast, Southwest),
+            (Northwest, Southeast),
+        ];
+
+        for &(a, b) in &NOT {
+            assert_eq!(a, !b);
+            assert_eq!(!a, b);
+        }
     }
 }

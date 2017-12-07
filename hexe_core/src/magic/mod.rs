@@ -3,34 +3,26 @@ use square::Square;
 
 mod tables;
 
-pub struct Magic { pub num: u64, pub mask: u64, pub index: u32, pub shift: u8 }
+// Fixed shift magic
+struct Magic {
+    mask: u64,
+    num: u64, // Factor
+    idx: usize, // Offset
+}
 
 #[inline]
-fn attacks(table: &[u64], m: &Magic, occ: Bitboard) -> Bitboard {
-    let value = (occ.0 & m.mask).wrapping_mul(m.num) >> m.shift;
-    let index = (m.index as usize).wrapping_add(value as usize);
-    let board = if cfg!(debug_assertions) {
-        table[index]
-    } else {
-        unsafe { *table.get_unchecked(index) }
-    };
-    board.into()
+fn attacks(magic: &Magic, occupied: Bitboard, shift: u8) -> u64 {
+    let val = (occupied.0 & magic.mask).wrapping_mul(magic.num) >> (64 - shift);
+    let idx = (val as usize).wrapping_add(magic.idx);
+    unsafe { *tables::ATTACKS.get_unchecked(idx) }
 }
 
 #[inline]
 pub fn rook_attacks(square: Square, occupied: Bitboard) -> Bitboard {
-    attacks(
-        self::tables::rook_attacks(),
-        self::tables::rook_magic(square),
-        occupied
-    )
+    attacks(&tables::MAGICS[0][square as usize], occupied, 12).into()
 }
 
 #[inline]
 pub fn bishop_attacks(square: Square, occupied: Bitboard) -> Bitboard {
-    attacks(
-        self::tables::bishop_attacks(),
-        self::tables::bishop_magic(square),
-        occupied
-    )
+    attacks(&tables::MAGICS[1][square as usize], occupied, 9).into()
 }

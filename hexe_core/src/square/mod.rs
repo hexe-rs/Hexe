@@ -43,6 +43,7 @@
 
 use core::{fmt, ops, str};
 use prelude::*;
+use uncon::*;
 
 #[cfg(feature = "serde")]
 use serde::*;
@@ -98,21 +99,19 @@ impl str::FromStr for Square {
     type Err = FromStrError;
 
     fn from_str(s: &str) -> Result<Square, FromStrError> {
-        use uncon::IntoUnchecked;
         let bytes = s.as_bytes();
         if bytes.len() != 2 { Err(FromStrError(())) } else {
             // Gets better optimized as a macro for some strange reason
             macro_rules! convert {
-                ($b:expr, $lo:expr, $hi:expr) => {
-                    if $b >= $lo && $b <= $hi {
-                        unsafe { ($b - $lo).into_unchecked() }
-                    } else {
-                        return Err(FromStrError(()))
+                ($lo:expr, $hi:expr, $b:expr) => {
+                    match $b {
+                        $lo...$hi => unsafe { ($b - $lo).into_unchecked() },
+                        _ => return Err(FromStrError(())),
                     }
                 }
             }
-            Ok(Square::new(convert!(bytes[0] | 32, b'a', b'h'),
-                           convert!(bytes[1], b'1', b'8')))
+            Ok(Square::new(convert!(b'a', b'h', bytes[0] | 32),
+                           convert!(b'1', b'8', bytes[1])))
         }
     }
 }
@@ -253,14 +252,18 @@ impl Square {
     /// ```
     #[inline]
     pub fn color(self) -> Color {
-        (Bitboard::BLACK >> self as u64).0.into()
+        if cfg!(target_pointer_width = "64") {
+            (Bitboard::BLACK >> self as usize).0.into()
+        } else {
+            !Color::from(((self as u8) >> RANK_SHIFT) ^ (self as u8))
+        }
     }
 
     /// Returns whether `self` and `other` are equal in color.
     #[inline]
     pub fn color_eq(self, other: Square) -> bool {
-        (self.file() as usize ^ other.file() as usize) & 1 ==
-        (self.rank() as usize ^ other.rank() as usize) & 1
+        let bits = self as u8 ^ other as u8;
+        ((bits >> RANK_SHIFT) ^ bits) & 1 == 0
     }
 
     /// Returns whether `self` is aligned with two other squares along a file,
@@ -268,13 +271,11 @@ impl Square {
     ///
     /// # Examples
     ///
-    /// Basic usage:
+    /// Square A3 lies on the same diagonal as C5 and F8:
     ///
     /// ```
     /// # use hexe_core::prelude::*;
-    /// let sq = Square::A3;
-    ///
-    /// assert!(sq.is_aligned(Square::C5, Square::F8));
+    /// assert!(Square::A3.is_aligned(Square::C5, Square::F8));
     /// ```
     #[inline]
     pub fn is_aligned(self, a: Square, b: Square) -> bool {
@@ -286,13 +287,11 @@ impl Square {
     ///
     /// # Examples
     ///
-    /// Basic usage:
+    /// Square D4 lies between B2 and G7 along a diagonal:
     ///
     /// ```
     /// # use hexe_core::prelude::*;
-    /// let sq = Square::D4;
-    ///
-    /// assert!(sq.is_between(Square::B2, Square::G7));
+    /// assert!(Square::D4.is_between(Square::B2, Square::G7));
     /// ```
     #[inline]
     pub fn is_between(self, a: Square, b: Square) -> bool {
@@ -367,7 +366,8 @@ impl Square {
     /// [wiki]: https://en.wikipedia.org/wiki/Chebyshev_distance
     #[inline]
     pub fn center_distance(self) -> usize {
-        self::tables::CENTER_DISTANCE[0][self as usize] as usize
+        use self::tables::*;
+        DISTANCE[CHEBYSHEV_INDEX][self as usize] as usize
     }
 
     /// Calculates the [Manhattan distance][wiki] between `self` and the center
@@ -376,7 +376,8 @@ impl Square {
     /// [wiki]: https://en.wiktionary.org/wiki/Manhattan_distance
     #[inline]
     pub fn center_man_distance(self) -> usize {
-        self::tables::CENTER_DISTANCE[1][self as usize] as usize
+        use self::tables::*;
+        DISTANCE[MANHATTAN_INDEX][self as usize] as usize
     }
 
     /// Returns the [triangular index][wiki] for `self` and `other`.
@@ -428,22 +429,18 @@ impl Square {
     ///
     /// # Examples
     ///
-    /// Basic usage:
+    /// The string's lifetime is for the duration of the closure's execution:
     ///
     /// ```
     /// # use hexe_core::prelude::*;
-    /// let sq = Square::A5;
-    /// sq.map_str(|s| {
-    ///     assert_eq!(s, "A5");
-    /// });
+    /// Square::A5.map_str(|s| assert_eq!(s, "A5"));
     /// ```
     #[inline]
     pub fn map_str<T, F>(self, f: F) -> T
         where F: for<'a> FnOnce(&'a mut str) -> T
     {
-        let mut buf = [0; 2];
-        buf[0] = char::from(self.file()) as u8;
-        buf[1] = char::from(self.rank()) as u8;
+        let mut buf = [char::from(self.file()) as u8,
+                       char::from(self.rank()) as u8];
         unsafe { f(str::from_utf8_unchecked_mut(&mut buf)) }
     }
 
@@ -530,7 +527,6 @@ impl File {
     /// Returns a file from the parsed character.
     #[inline]
     pub fn from_char(ch: char) -> Option<File> {
-        use uncon::IntoUnchecked;
         match 32 | ch as u8 {
             b @ b'a' ... b'f' => unsafe {
                 Some((b - b'a').into_unchecked())
@@ -555,12 +551,7 @@ impl File {
     /// ```
     #[inline]
     pub fn adjacent_mask(&self) -> Bitboard {
-        use bitboard::masks::*;
-        static ADJACENT: [u64; 8] = [
-            FILE_B.0, FILE_A.0 | FILE_C.0, FILE_B.0 | FILE_D.0, FILE_C.0 | FILE_E.0,
-            FILE_D.0 | FILE_F.0, FILE_E.0 | FILE_G.0, FILE_F.0 | FILE_H.0, FILE_G.0,
-        ];
-        Bitboard(ADJACENT[*self as usize])
+        Bitboard(self::tables::ADJACENT[0][*self as usize])
     }
 }
 
@@ -575,7 +566,6 @@ impl Rank {
     /// Returns a rank from the parsed character.
     #[inline]
     pub fn from_char(ch: char) -> Option<Rank> {
-        use uncon::IntoUnchecked;
         match ch as u8 {
             b @ b'1' ... b'8' => unsafe {
                 Some((b - b'1').into_unchecked())
@@ -600,12 +590,7 @@ impl Rank {
     /// ```
     #[inline]
     pub fn adjacent_mask(&self) -> Bitboard {
-        use bitboard::masks::*;
-        static ADJACENT: [u64; 8] = [
-            RANK_2.0, RANK_1.0 | RANK_3.0, RANK_2.0 | RANK_4.0, RANK_3.0 | RANK_5.0,
-            RANK_4.0 | RANK_6.0, RANK_5.0 | RANK_7.0, RANK_6.0 | RANK_8.0, RANK_7.0,
-        ];
-        Bitboard(ADJACENT[*self as usize])
+        Bitboard(self::tables::ADJACENT[1][*self as usize])
     }
 
     /// Returns the remaining distance for `color` to reach the end of the board
@@ -625,7 +610,7 @@ impl Rank {
     /// ```
     #[inline]
     pub fn rem_distance(self, color: Color) -> usize {
-        (0b111 * color as usize) ^ !self as usize
+        (0b111 * !color as usize) ^ self as usize
     }
 }
 
@@ -784,6 +769,12 @@ mod tests {
         for s1 in Square::all() {
             for s2 in Square::all() {
                 assert_eq!(s1.color() == s2.color(), s1.color_eq(s2));
+            }
+        }
+        for &(b, c) in &[(Bitboard::WHITE, Color::White),
+                         (Bitboard::BLACK, Color::Black)] {
+            for s in b {
+                assert_eq!(s.color(), c);
             }
         }
     }
