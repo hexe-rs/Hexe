@@ -1,5 +1,4 @@
 use super::*;
-use core::marker::PhantomData;
 use square::Squares;
 
 impl PieceMap {
@@ -27,7 +26,7 @@ impl<'a> IntoIterator for &'a mut PieceMap {
 
     #[inline]
     fn into_iter(self) -> IterMut<'a> {
-        IterMut { map: self, iter: Squares::default(), _marker: PhantomData }
+        IterMut { map: self, iter: Squares::default() }
     }
 }
 
@@ -98,17 +97,12 @@ impl<'a> fmt::Debug for Iter<'a> {
 
 /// A mutable [`PieceMap`](struct.PieceMap.html) iterator.
 pub struct IterMut<'a> {
-    map: *mut PieceMap,
+    map: &'a mut PieceMap,
     iter: Squares,
-    // Rust doesn't like mutable borrows here
-    _marker: PhantomData<&'a mut PieceMap>,
 }
 
 #[cfg(test)]
 assert_impl!(iter_mut; IterMut<'static>, Send, Sync);
-
-unsafe impl<'a> Send for IterMut<'a> {}
-unsafe impl<'a> Sync for IterMut<'a> {}
 
 impl<'a> From<IterMut<'a>> for Iter<'a> {
     #[inline]
@@ -173,14 +167,15 @@ impl<'a> fmt::Debug for IterMut<'a> {
     }
 }
 
+// 'a outlives 'self but that's ok within this context
 impl<'a> IterMut<'a> {
     #[inline]
     fn piece_map(&self) -> &'a PieceMap {
-        unsafe { &*self.map }
+        unsafe { &*(self.map as *const _) }
     }
 
     #[inline]
     fn piece_map_mut(&mut self) -> &'a mut PieceMap {
-        unsafe { &mut *self.map }
+        unsafe { &mut *(self.map as *mut _) }
     }
 }
