@@ -2,6 +2,36 @@ use super::*;
 use square::Squares;
 use core::mem;
 
+macro_rules! iter {
+    ($next:ident) => {
+        #[inline]
+        fn $next(&mut self) -> Option<Self::Item> {
+            while let Some(sq) = self.iter.$next() {
+                if let Some(pc) = self.map.get(sq) {
+                    return Some((sq, pc));
+                }
+            }
+            None
+        }
+    }
+}
+
+macro_rules! iter_mut {
+    ($next:ident) => {
+        #[inline]
+        fn $next(&mut self) -> Option<Self::Item> {
+            while let Some(sq) = self.iter.$next() {
+                if let Some(pc) = self.map.get_mut(sq) {
+                    // Extend the lifetime
+                    let pc = unsafe { mem::transmute(pc) };
+                    return Some((sq, pc));
+                }
+            }
+            None
+        }
+    }
+}
+
 impl PieceMap {
     #[inline]
     fn find_len(&self, iter: &Squares) -> usize {
@@ -44,15 +74,7 @@ assert_impl!(iter; Iter<'static>, Send, Sync);
 impl<'a> Iterator for Iter<'a> {
     type Item = (Square, &'a Piece);
 
-    #[inline]
-    fn next(&mut self) -> Option<Self::Item> {
-        while let Some(sq) = self.iter.next() {
-            if let Some(pc) = self.map.get(sq) {
-                return Some((sq, pc));
-            }
-        }
-        None
-    }
+    iter! { next }
 
     #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -72,15 +94,7 @@ impl<'a> Iterator for Iter<'a> {
 }
 
 impl<'a> DoubleEndedIterator for Iter<'a> {
-    #[inline]
-    fn next_back(&mut self) -> Option<Self::Item> {
-        while let Some(sq) = self.iter.next_back() {
-            if let Some(pc) = self.map.get(sq) {
-                return Some((sq, pc));
-            }
-        }
-        None
-    }
+    iter! { next_back }
 }
 
 impl<'a> ExactSizeIterator for Iter<'a> {
@@ -115,17 +129,7 @@ impl<'a> From<IterMut<'a>> for Iter<'a> {
 impl<'a> Iterator for IterMut<'a> {
     type Item = (Square, &'a mut Piece);
 
-    #[inline]
-    fn next(&mut self) -> Option<Self::Item> {
-        while let Some(sq) = self.iter.next() {
-            if let Some(pc) = self.map.get_mut(sq) {
-                // Extend the lifetime
-                let pc = unsafe { mem::transmute(pc) };
-                return Some((sq, pc));
-            }
-        }
-        None
-    }
+    iter_mut! { next }
 
     #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -145,17 +149,7 @@ impl<'a> Iterator for IterMut<'a> {
 }
 
 impl<'a> DoubleEndedIterator for IterMut<'a> {
-    #[inline]
-    fn next_back(&mut self) -> Option<Self::Item> {
-        while let Some(sq) = self.iter.next_back() {
-            if let Some(pc) = self.map.get_mut(sq) {
-                // Extend the lifetime
-                let pc = unsafe { mem::transmute(pc) };
-                return Some((sq, pc));
-            }
-        }
-        None
-    }
+    iter_mut! { next_back }
 }
 
 impl<'a> ExactSizeIterator for IterMut<'a> {
