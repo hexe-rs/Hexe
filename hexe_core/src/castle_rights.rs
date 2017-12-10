@@ -150,9 +150,7 @@ impl CastleRights {
     /// Returns the result of applying a function to a mutable string
     /// representation of `self`.
     #[inline]
-    pub fn map_str<F, T>(&self, f: F) -> T
-        where F: for<'a> FnOnce(&'a mut str) -> T
-    {
+    pub fn map_str<T, F: FnOnce(&mut str) -> T>(&self, f: F) -> T {
         let mut buf = [0u8; 4];
         let slice: &mut [u8] = if self.is_empty() {
             buf[0] = b'-';

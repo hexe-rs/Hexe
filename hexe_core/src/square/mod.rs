@@ -436,9 +436,7 @@ impl Square {
     /// Square::A5.map_str(|s| assert_eq!(s, "A5"));
     /// ```
     #[inline]
-    pub fn map_str<T, F>(self, f: F) -> T
-        where F: for<'a> FnOnce(&'a mut str) -> T
-    {
+    pub fn map_str<T, F: FnOnce(&mut str) -> T>(self, f: F) -> T {
         let mut buf = [char::from(self.file()) as u8,
                        char::from(self.rank()) as u8];
         unsafe { f(str::from_utf8_unchecked_mut(&mut buf)) }

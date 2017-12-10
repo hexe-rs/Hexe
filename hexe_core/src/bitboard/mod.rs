@@ -418,9 +418,7 @@ impl Bitboard {
     /// Returns the result of applying a function to a mutable string
     /// representation of `self`.
     #[inline]
-    pub fn map_str<F, T>(&self, f: F) -> T
-        where F: for<'a> FnOnce(&'a mut str) -> T
-    {
+    pub fn map_str<T, F: FnOnce(&mut str) -> T>(&self, f: F) -> T {
         let mut buf = *::consts::BOARD_DOTS;
         for idx in self.map(|s| (0b111000 ^ s as usize) << 1) {
             unsafe { *buf.get_unchecked_mut(idx) = b'1' };

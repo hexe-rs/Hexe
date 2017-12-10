@@ -626,9 +626,7 @@ impl PieceMap {
     /// [`Display`]: https://doc.rust-lang.org/std/fmt/trait.Display.html
     /// [`Square::map_str`]: ../../square/enum.Square.html#method.map_str
     #[inline]
-    pub fn map_str<T, F>(&self, f: F) -> T
-        where F: for<'a> FnOnce(&'a mut str) -> T
-    {
+    pub fn map_str<T, F: FnOnce(&mut str) -> T>(&self, f: F) -> T {
         let mut buf = *::consts::BOARD_DOTS;
         for square in Square::all() {
             if let Some(&piece) = self.get(square) {
@@ -645,9 +643,7 @@ impl PieceMap {
     ///
     /// [FEN]: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
     #[inline]
-    pub fn map_fen<T, F>(&self, f: F) -> T
-        where F: for<'a> FnOnce(&'a mut str) -> T
-    {
+    pub fn map_fen<T, F: FnOnce(&mut str) -> T>(&self, f: F) -> T {
         const NUM: usize = 8;
         const MAX: usize = NUM * NUM + 7;
         let mut len: usize = 0;
