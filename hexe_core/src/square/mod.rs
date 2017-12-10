@@ -383,7 +383,12 @@ impl Square {
     /// Returns the [triangular index][wiki] for `self` and `other`.
     ///
     /// This allows indexing into tables of size 2080, which is slightly greater
-    /// than half of 64 by 64.
+    /// than 2048 (64 × 64 ÷ 2).
+    ///
+    /// # Tradeoffs
+    /// While this allows for using 50.78% as much memory as a table of size
+    /// 4096 (64 × 64), computing the index takes a considerable amount of time
+    /// compared to indexing into a 64 × 64 table.
     ///
     /// # Safety
     /// The result index has been thoroughly tested to **always** return a value
