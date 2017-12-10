@@ -107,7 +107,7 @@ assert_impl!(iter_mut; IterMut<'static>, Send, Sync);
 impl<'a> From<IterMut<'a>> for Iter<'a> {
     #[inline]
     fn from(iter: IterMut) -> Iter {
-        Iter { map: iter.piece_map(), iter: iter.iter }
+        Iter { map: iter.map, iter: iter.iter }
     }
 }
 
@@ -156,24 +156,19 @@ impl<'a> DoubleEndedIterator for IterMut<'a> {
 impl<'a> ExactSizeIterator for IterMut<'a> {
     #[inline]
     fn len(&self) -> usize {
-        self.piece_map().find_len(&self.iter)
+        self.map.find_len(&self.iter)
     }
 }
 
 impl<'a> fmt::Debug for IterMut<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let iter = Iter { map: self.piece_map(), iter: self.iter.clone() };
+        let iter = Iter { map: self.map, iter: self.iter.clone() };
         f.debug_list().entries(iter).finish()
     }
 }
 
 // 'a outlives 'self but that's ok within this context
 impl<'a> IterMut<'a> {
-    #[inline]
-    fn piece_map(&self) -> &'a PieceMap {
-        unsafe { &*(self.map as *const _) }
-    }
-
     #[inline]
     fn piece_map_mut(&mut self) -> &'a mut PieceMap {
         unsafe { &mut *(self.map as *mut _) }
