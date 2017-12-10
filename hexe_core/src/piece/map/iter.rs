@@ -162,8 +162,7 @@ impl<'a> ExactSizeIterator for IterMut<'a> {
 
 impl<'a> fmt::Debug for IterMut<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let iter = Iter { map: self.map, iter: self.iter.clone() };
-        f.debug_list().entries(iter).finish()
+        Iter { map: self.map, iter: self.iter.clone() }.fmt(f)
     }
 }
 
