@@ -1,5 +1,6 @@
 use super::*;
 use square::Squares;
+use core::mem;
 
 impl PieceMap {
     #[inline]
@@ -117,7 +118,9 @@ impl<'a> Iterator for IterMut<'a> {
     #[inline]
     fn next(&mut self) -> Option<Self::Item> {
         while let Some(sq) = self.iter.next() {
-            if let Some(pc) = self.piece_map_mut().get_mut(sq) {
+            if let Some(pc) = self.map.get_mut(sq) {
+                // Extend the lifetime
+                let pc = unsafe { mem::transmute(pc) };
                 return Some((sq, pc));
             }
         }
@@ -145,7 +148,9 @@ impl<'a> DoubleEndedIterator for IterMut<'a> {
     #[inline]
     fn next_back(&mut self) -> Option<Self::Item> {
         while let Some(sq) = self.iter.next_back() {
-            if let Some(pc) = self.piece_map_mut().get_mut(sq) {
+            if let Some(pc) = self.map.get_mut(sq) {
+                // Extend the lifetime
+                let pc = unsafe { mem::transmute(pc) };
                 return Some((sq, pc));
             }
         }
@@ -163,13 +168,5 @@ impl<'a> ExactSizeIterator for IterMut<'a> {
 impl<'a> fmt::Debug for IterMut<'a> {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         Iter { map: self.map, iter: self.iter.clone() }.fmt(f)
-    }
-}
-
-// 'a outlives 'self but that's ok within this context
-impl<'a> IterMut<'a> {
-    #[inline]
-    fn piece_map_mut(&mut self) -> &'a mut PieceMap {
-        unsafe { &mut *(self.map as *mut _) }
     }
 }
