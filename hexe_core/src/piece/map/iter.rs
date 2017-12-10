@@ -32,6 +32,28 @@ macro_rules! iter_mut {
     }
 }
 
+macro_rules! impl_iter {
+    ($iter:ident) => {
+        $iter! { next }
+
+        #[inline]
+        fn size_hint(&self) -> (usize, Option<usize>) {
+            let len = self.len();
+            (len, Some(len))
+        }
+
+        #[inline]
+        fn count(self) -> usize {
+            self.len()
+        }
+
+        #[inline]
+        fn last(mut self) -> Option<Self::Item> {
+            self.next_back()
+        }
+    }
+}
+
 impl PieceMap {
     #[inline]
     fn find_len(&self, iter: &Squares) -> usize {
@@ -73,24 +95,7 @@ assert_impl!(iter; Iter<'static>, Send, Sync);
 
 impl<'a> Iterator for Iter<'a> {
     type Item = (Square, &'a Piece);
-
-    iter! { next }
-
-    #[inline]
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.len();
-        (len, Some(len))
-    }
-
-    #[inline]
-    fn count(self) -> usize {
-        self.len()
-    }
-
-    #[inline]
-    fn last(mut self) -> Option<Self::Item> {
-        self.next_back()
-    }
+    impl_iter! { iter }
 }
 
 impl<'a> DoubleEndedIterator for Iter<'a> {
@@ -128,24 +133,7 @@ impl<'a> From<IterMut<'a>> for Iter<'a> {
 
 impl<'a> Iterator for IterMut<'a> {
     type Item = (Square, &'a mut Piece);
-
-    iter_mut! { next }
-
-    #[inline]
-    fn size_hint(&self) -> (usize, Option<usize>) {
-        let len = self.len();
-        (len, Some(len))
-    }
-
-    #[inline]
-    fn count(self) -> usize {
-        self.len()
-    }
-
-    #[inline]
-    fn last(mut self) -> Option<Self::Item> {
-        self.next_back()
-    }
+    impl_iter! { iter_mut }
 }
 
 impl<'a> DoubleEndedIterator for IterMut<'a> {
