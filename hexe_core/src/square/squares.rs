@@ -14,7 +14,6 @@ impl Iterator for Squares {
 
     #[inline]
     fn next(&mut self) -> Option<Square> {
-        use uncon::IntoUnchecked;
         if let Some(n) = self.iter.next() {
             unsafe { Some(n.into_unchecked()) }
         } else {
@@ -42,7 +41,6 @@ impl Iterator for Squares {
 impl DoubleEndedIterator for Squares {
     #[inline]
     fn next_back(&mut self) -> Option<Square> {
-        use uncon::IntoUnchecked;
         if let Some(n) = self.iter.next_back() {
             unsafe { Some(n.into_unchecked()) }
         } else {
