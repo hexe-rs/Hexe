@@ -319,7 +319,7 @@ impl Square {
     /// [wiki]: https://en.wikipedia.org/wiki/Chebyshev_distance
     #[inline]
     pub fn distance(self, other: Square) -> usize {
-        self::tables::DISTANCE[self as usize][other as usize] as usize
+        tables::DISTANCE[self as usize][other as usize] as usize
     }
 
     /// Calculates the [Manhattan distance][wiki] between `self` and `other`.
@@ -450,13 +450,13 @@ impl Square {
     /// Returns the pawn attacks for `self` and `color`.
     #[inline]
     pub fn pawn_attacks(self, color: Color) -> Bitboard {
-        Bitboard(self::tables::TABLES[color as usize][self as usize])
+        Bitboard(tables::TABLES[color as usize][self as usize])
     }
 
     /// Returns the knight attacks for `self`.
     #[inline]
     pub fn knight_attacks(self) -> Bitboard {
-        Bitboard(self::tables::TABLES[2][self as usize])
+        Bitboard(tables::TABLES[2][self as usize])
     }
 
     /// Returns the rook attacks for `self` and `occupied`.
@@ -506,7 +506,7 @@ impl Square {
     /// Returns the king attacks for `self`.
     #[inline]
     pub fn king_attacks(self) -> Bitboard {
-        Bitboard(self::tables::TABLES[3][self as usize])
+        Bitboard(tables::TABLES[3][self as usize])
     }
 
     /// Returns the queen attacks for `self` and `occupied`.
@@ -554,7 +554,7 @@ impl File {
     /// ```
     #[inline]
     pub fn adjacent_mask(&self) -> Bitboard {
-        Bitboard(self::tables::ADJACENT[0][*self as usize])
+        Bitboard(tables::ADJACENT[0][*self as usize])
     }
 }
 
@@ -593,7 +593,7 @@ impl Rank {
     /// ```
     #[inline]
     pub fn adjacent_mask(&self) -> Bitboard {
-        Bitboard(self::tables::ADJACENT[1][*self as usize])
+        Bitboard(tables::ADJACENT[1][*self as usize])
     }
 
     /// Returns the remaining distance for `color` to reach the end of the board
