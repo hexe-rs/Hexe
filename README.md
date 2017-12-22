@@ -11,6 +11,7 @@
 </p>
 
 [![Build Status][travis-badge]][travis]
+![LoC](https://tokei.rs/b1/github/hexe-rs/Hexe)
 
 This project is split into two crates
 
