@@ -1,5 +1,5 @@
 use super::*;
-use core::fmt;
+use core::{fmt, u64};
 
 /// An iterator over all subsets of a [`Bitboard`].
 ///
@@ -90,11 +90,9 @@ impl Iterator for CarryRippler {
     #[inline]
     fn size_hint(&self) -> (usize, Option<usize>) {
         if self.is_first {
-            const FULL: u64 = !0;
-            let len = if self.set == FULL {
-                FULL
-            } else {
-                1 << self.set.count_ones()
+            let len = match self.set {
+                u64::MAX => self.set,
+                superset => 1 << superset.count_ones(),
             };
             let lower = len as usize;
             let upper = if lower as u64 == len {
