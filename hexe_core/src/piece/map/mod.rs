@@ -98,19 +98,21 @@ impl Default for PieceMap {
     }
 }
 
+static INDEX_ERR: &'static str = "no piece found for square";
+
 impl ops::Index<Square> for PieceMap {
     type Output = Piece;
 
     #[inline]
     fn index(&self, sq: Square) -> &Piece {
-        self.get(sq).expect("no piece found for square")
+        self.get(sq).expect(INDEX_ERR)
     }
 }
 
 impl ops::IndexMut<Square> for PieceMap {
     #[inline]
     fn index_mut(&mut self, sq: Square) -> &mut Piece {
-        self.get_mut(sq).expect("no piece found for square")
+        self.get_mut(sq).expect(INDEX_ERR)
     }
 }
 
