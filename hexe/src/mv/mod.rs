@@ -44,25 +44,25 @@ impl Move {
 
     /// Returns the start square for `self`.
     #[inline]
-    pub fn from(&self) -> Square {
+    pub fn from(self) -> Square {
         ((self.0 >> FROM_SHIFT) & FROM_MASK).into()
     }
 
     /// Returns the start square for `self`.
     #[inline]
-    pub fn to(&self) -> Square {
+    pub fn to(self) -> Square {
         ((self.0 >> TO_SHIFT) & TO_MASK).into()
     }
 
     /// Returns the promotion for `self`.
     #[inline]
-    pub fn promotion(&self) -> Promotion {
+    pub fn promotion(self) -> Promotion {
         ((self.0 >> PROM_SHIFT) & PROM_MASK).into()
     }
 
     /// Returns the kind for `self`.
     #[inline]
-    pub fn kind(&self) -> MoveKind {
+    pub fn kind(self) -> MoveKind {
         ((self.0 >> KIND_SHIFT) & KIND_MASK).into()
     }
 }
