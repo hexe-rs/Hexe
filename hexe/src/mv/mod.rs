@@ -11,6 +11,11 @@ const TO_SHIFT:   usize =  6;
 const PROM_SHIFT: usize = 12;
 const KIND_SHIFT: usize = 14;
 
+const FROM_MASK: u16 = 0b111111;
+const TO_MASK:   u16 = FROM_MASK;
+const PROM_MASK: u16 = 0b11;
+const KIND_MASK: u16 = PROM_MASK;
+
 macro_rules! base_bits {
     ($s1:expr, $s2:expr) => {
         (($s1 as u16) << FROM_SHIFT) | (($s2 as u16) << TO_SHIFT)
@@ -40,25 +45,25 @@ impl Move {
     /// Returns the start square for `self`.
     #[inline]
     pub fn from(&self) -> Square {
-        ((self.0 >> FROM_SHIFT) & 0x3F).into()
+        ((self.0 >> FROM_SHIFT) & FROM_MASK).into()
     }
 
     /// Returns the start square for `self`.
     #[inline]
     pub fn to(&self) -> Square {
-        ((self.0 >> TO_SHIFT) & 0x3F).into()
+        ((self.0 >> TO_SHIFT) & TO_MASK).into()
     }
 
     /// Returns the promotion for `self`.
     #[inline]
     pub fn promotion(&self) -> Promotion {
-        ((self.0 >> PROM_SHIFT) & 0x3).into()
+        ((self.0 >> PROM_SHIFT) & PROM_MASK).into()
     }
 
     /// Returns the kind for `self`.
     #[inline]
     pub fn kind(&self) -> MoveKind {
-        ((self.0 >> KIND_SHIFT) & 0x3).into()
+        ((self.0 >> KIND_SHIFT) & KIND_MASK).into()
     }
 }
 
