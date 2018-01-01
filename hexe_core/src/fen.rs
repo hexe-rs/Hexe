@@ -32,12 +32,12 @@ impl fmt::Display for Fen {
         self.pieces.map_fen(|s| f.write_str(s))?;
 
         {
-            let mut buf = *b"   ";
+            let mut buf: [u8; 4] = *b"    ";
             buf[1] = match self.color {
                 Color::White => b'w',
                 Color::Black => b'b',
             };
-            let string = unsafe { str::from_utf8_unchecked(&buf) };
+            let string = unsafe { str::from_utf8_unchecked(&buf[..3]) };
             f.write_str(string)?;
         }
 
