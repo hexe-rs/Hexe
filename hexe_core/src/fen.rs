@@ -44,9 +44,11 @@ impl fmt::Display for Fen {
         self.castling.map_str(|s| f.write_str(s))?;
 
         if let Some(sq) = self.en_passant {
-            f.write_char(' ')?;
-            sq.map_str(|s| f.write_str(s))?;
-            f.write_char(' ')?;
+            let mut buf: [u8; 4] = *b"    ";
+            buf[1] = char::from(sq.file()) as u8;
+            buf[2] = char::from(sq.rank()) as u8;
+            let string = unsafe { str::from_utf8_unchecked(&buf) };
+            f.write_str(string)?;
         } else {
             f.write_str(" - ")?;
         }
