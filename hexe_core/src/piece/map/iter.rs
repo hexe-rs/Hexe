@@ -1,5 +1,5 @@
+use super::super::super::iter::All;
 use super::*;
-use square::Squares;
 use core::mem;
 
 macro_rules! iter {
@@ -56,7 +56,7 @@ macro_rules! impl_iter {
 
 impl PieceMap {
     #[inline]
-    fn find_len(&self, iter: &Squares) -> usize {
+    fn find_len(&self, iter: &All<Square>) -> usize {
         iter.extract(&self.0).iter().fold(iter.len(), |len, &pc| {
             len - (pc == NONE) as usize
         })
@@ -69,7 +69,7 @@ impl<'a> IntoIterator for &'a PieceMap {
 
     #[inline]
     fn into_iter(self) -> Iter<'a> {
-        Iter { map: self, iter: Squares::default() }
+        Iter { map: self, iter: Default::default() }
     }
 }
 
@@ -79,7 +79,7 @@ impl<'a> IntoIterator for &'a mut PieceMap {
 
     #[inline]
     fn into_iter(self) -> IterMut<'a> {
-        IterMut { map: self, iter: Squares::default() }
+        IterMut { map: self, iter: Default::default() }
     }
 }
 
@@ -87,7 +87,7 @@ impl<'a> IntoIterator for &'a mut PieceMap {
 #[derive(Clone)]
 pub struct Iter<'a> {
     map: &'a PieceMap,
-    iter: Squares,
+    iter: All<Square>,
 }
 
 #[cfg(test)]
@@ -118,7 +118,7 @@ impl<'a> fmt::Debug for Iter<'a> {
 /// A mutable [`PieceMap`](struct.PieceMap.html) iterator.
 pub struct IterMut<'a> {
     map: &'a mut PieceMap,
-    iter: Squares,
+    iter: All<Square>,
 }
 
 #[cfg(test)]

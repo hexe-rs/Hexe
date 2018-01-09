@@ -43,16 +43,12 @@
 
 use core::{fmt, ops, str};
 use prelude::*;
-use iter::All;
 use uncon::*;
 
 #[cfg(feature = "serde")]
 use serde::*;
 
 mod tables;
-
-/// An iterator over all squares.
-pub type Squares = All<Square>;
 
 /// A square on a chess board.
 #[derive(Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
