@@ -11,10 +11,7 @@ macro_rules! impl_iterable {
             #[doc(hidden)]
             type Iter = Range<$raw>;
 
-            #[inline]
-            fn all() -> All<Self> {
-                All { iter: $all }
-            }
+            const ALL: All<Self> = All { iter: $all };
 
             #[inline]
             #[doc(hidden)]
@@ -56,8 +53,8 @@ pub trait AllIterable: Sized {
     #[doc(hidden)]
     type Iter: Sized;
 
-    /// Returns an iterator over all instances of this type.
-    fn all() -> All<Self>;
+    /// An iterator over all instances of this type.
+    const ALL: All<Self>;
 
     #[doc(hidden)]
     fn next(&mut Self::Iter) -> Option<Self>;
@@ -85,7 +82,7 @@ pub struct All<T: AllIterable> {
 
 impl<T: AllIterable> Default for All<T> {
     #[inline]
-    fn default() -> Self { T::all() }
+    fn default() -> Self { T::ALL }
 }
 
 impl<T: AllIterable> Iterator for All<T> {

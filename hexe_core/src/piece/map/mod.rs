@@ -411,7 +411,7 @@ impl PieceMap {
     pub fn extend_from<F>(&mut self, mut f: F)
         where F: FnMut(Square) -> Option<Piece>
     {
-        self.extend(Square::all().filter_map(|s| f(s).map(|p| (s, p))));
+        self.extend(Square::ALL.filter_map(|s| f(s).map(|p| (s, p))));
     }
 
     /// Retains only the elements specified by the predicate.
@@ -630,7 +630,7 @@ impl PieceMap {
     #[inline]
     pub fn map_str<T, F: FnOnce(&mut str) -> T>(&self, f: F) -> T {
         let mut buf = *::consts::BOARD_DOTS;
-        for square in Square::all() {
+        for square in Square::ALL {
             if let Some(&piece) = self.get(square) {
                 let ch = char::from(piece) as u8;
                 let idx = (0b111000 ^ square as usize) << 1;

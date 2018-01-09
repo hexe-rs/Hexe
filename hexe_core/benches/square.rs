@@ -37,7 +37,7 @@ fn rand_occ_pairs(n: usize) -> Vec<(Square, Bitboard)> {
 #[bench]
 fn squares_iter(b: &mut Bencher) {
     b.iter(|| {
-        for sq in black_box(Square::all()) {
+        for sq in black_box(Square::ALL) {
             black_box(sq);
         }
     });
@@ -46,7 +46,7 @@ fn squares_iter(b: &mut Bencher) {
 #[bench]
 fn squares_iter_rev(b: &mut Bencher) {
     b.iter(|| {
-        for sq in black_box(Square::all()).rev() {
+        for sq in black_box(Square::ALL).rev() {
             black_box(sq);
         }
     });
@@ -55,7 +55,7 @@ fn squares_iter_rev(b: &mut Bencher) {
 #[bench]
 fn square_color(b: &mut Bencher) {
     b.iter(|| {
-        for sq in Square::all() {
+        for sq in Square::ALL {
             black_box(black_box(sq).color());
         }
     })

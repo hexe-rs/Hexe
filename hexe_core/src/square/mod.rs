@@ -291,7 +291,7 @@ impl Square {
     ///
     /// ```
     /// # use hexe_core::prelude::*;
-    /// for s1 in Square::all() {
+    /// for s1 in Square::ALL {
     ///     for s2 in s1.knight_attacks() {
     ///         assert_eq!(s1.distance(s2), 2);
     ///     }
@@ -315,7 +315,7 @@ impl Square {
     ///
     /// ```
     /// # use hexe_core::prelude::*;
-    /// for s1 in Square::all() {
+    /// for s1 in Square::ALL {
     ///     for s2 in s1.knight_attacks() {
     ///         assert_eq!(s1.man_distance(s2), 3);
     ///     }
@@ -659,7 +659,7 @@ mod tests {
             fn $fn() {
                 let mut rng = thread_rng();
                 for occupied in (0..20_000).map(|_| Bitboard(rng.gen())) {
-                    for square in Square::all() {
+                    for square in Square::ALL {
                         let exp = Bitboard::from(square).$fn(!occupied);
                         let res = square.$fn(occupied);
                         if exp != res {
@@ -684,7 +684,7 @@ mod tests {
         ($($fn:ident)*) => {
             $(#[test]
             fn $fn() {
-                for square in Square::all() {
+                for square in Square::ALL {
                     let exp = Bitboard::from(square).$fn();
                     let res = square.$fn();
                     assert_eq!(exp, res);
@@ -704,8 +704,8 @@ mod tests {
             max(a.file().distance(b.file()), a.rank().distance(b.rank()))
         }
 
-        for s1 in Square::all() {
-            for s2 in Square::all() {
+        for s1 in Square::ALL {
+            for s2 in Square::ALL {
                 assert_eq!(square(s1, s2), s1.distance(s2));
             }
         }
@@ -713,8 +713,8 @@ mod tests {
 
     #[test]
     fn tri_index() {
-        for s1 in Square::all() {
-            for s2 in Square::all() {
+        for s1 in Square::ALL {
+            for s2 in Square::ALL {
                 let idx = s1.tri_index(s2);
                 assert_eq!(idx, s2.tri_index(s1));
                 assert!(idx < TRIANGLE_LEN);
@@ -725,7 +725,7 @@ mod tests {
     #[test]
     fn pawn_attacks() {
         for &color in &[Color::White, Color::Black] {
-            for square in Square::all() {
+            for square in Square::ALL {
                 let exp = Bitboard::from(square).pawn_attacks(color);
                 let res = square.pawn_attacks(color);
                 assert_eq!(exp, res);
@@ -751,8 +751,8 @@ mod tests {
 
     #[test]
     fn square_color() {
-        for s1 in Square::all() {
-            for s2 in Square::all() {
+        for s1 in Square::ALL {
+            for s2 in Square::ALL {
                 assert_eq!(s1.color() == s2.color(), s1.color_eq(s2));
             }
         }

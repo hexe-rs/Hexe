@@ -257,7 +257,7 @@ mod tests {
         let pos = Position::default();
         let all = pos.all_pieces();
 
-        for square in Square::all() {
+        for square in Square::ALL {
             if let Some(&piece) = pos.piece_at(square) {
                 assert!(all.contains(square));
                 assert!(pos.bitboard(piece).contains(square));
