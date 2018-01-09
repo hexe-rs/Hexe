@@ -43,6 +43,7 @@
 
 use core::{fmt, ops, str};
 use prelude::*;
+use iter::All;
 use uncon::*;
 
 #[cfg(feature = "serde")]
@@ -50,8 +51,8 @@ use serde::*;
 
 mod tables;
 
-mod squares;
-pub use self::squares::*;
+/// An iterator over all squares.
+pub type Squares = All<Square>;
 
 /// A square on a chess board.
 #[derive(Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
@@ -130,25 +131,6 @@ const RANK_SHIFT: usize = 3;
 const TRIANGLE_LEN: usize = 64 * 65 / 2;
 
 impl Square {
-    /// An efficient iterator over all squares.
-    ///
-    /// # Examples
-    ///
-    /// Basic usage:
-    ///
-    /// ```
-    /// # use hexe_core::square::Square;
-    /// // Perform operation on A1 through H8
-    /// for square in Square::all() {
-    ///     # break;
-    ///     /* ... */
-    /// }
-    /// ```
-    #[inline]
-    pub fn all() -> Squares {
-        Squares::default()
-    }
-
     /// Initializes a `Square` from a `File` and `Rank`.
     ///
     /// # Examples
