@@ -6,27 +6,27 @@ pub use self::vec::*;
 use prelude::*;
 use core::piece::Promotion;
 
-const FROM_SHIFT: usize =  0;
-const TO_SHIFT:   usize =  6;
+const SRC_SHIFT:  usize =  0;
+const DST_SHIFT:  usize =  6;
 const PROM_SHIFT: usize = 12;
 const KIND_SHIFT: usize = 14;
 
-const FROM_MASK: u16 = 0b111111;
-const TO_MASK:   u16 = FROM_MASK;
+const SRC_MASK:  u16 = 0b111111;
+const DST_MASK:  u16 = SRC_MASK;
 const PROM_MASK: u16 = 0b11;
 const KIND_MASK: u16 = PROM_MASK;
 
 macro_rules! base_bits {
     ($s1:expr, $s2:expr) => {
-        (($s1 as u16) << FROM_SHIFT) | (($s2 as u16) << TO_SHIFT)
+        (($s1 as u16) << SRC_SHIFT) | (($s2 as u16) << DST_SHIFT)
     }
 }
 
 /// A chess piece move from a start `Square` to an end `Square` that carries
 /// metadata for promotion and move kind.
 ///
-/// - 6 bits for "from" (start) square
-/// - 6 bits for "to" (end) square
+/// - 6 bits for source square
+/// - 6 bits for destination square
 /// - 2 bits for promotion piece kind
 /// - 2 bits for move kind
 #[derive(PartialEq, Eq, Clone, Copy, Hash)]
@@ -42,16 +42,16 @@ impl Move {
             | ((kind as u16) << KIND_SHIFT))
     }
 
-    /// Returns the start square for `self`.
+    /// Returns the source square for `self`.
     #[inline]
-    pub fn from(self) -> Square {
-        ((self.0 >> FROM_SHIFT) & FROM_MASK).into()
+    pub fn src(self) -> Square {
+        ((self.0 >> SRC_SHIFT) & SRC_MASK).into()
     }
 
-    /// Returns the start square for `self`.
+    /// Returns the destination square for `self`.
     #[inline]
-    pub fn to(self) -> Square {
-        ((self.0 >> TO_SHIFT) & TO_MASK).into()
+    pub fn dst(self) -> Square {
+        ((self.0 >> DST_SHIFT) & DST_MASK).into()
     }
 
     /// Returns the promotion for `self`.
