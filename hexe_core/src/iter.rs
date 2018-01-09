@@ -72,7 +72,10 @@ pub trait AllIterable: Sized {
     fn range(&Self::Iter) -> Range<usize>;
 }
 
-impl_iterable!(::square::Square, u8, 0..64);
+impl_iterable!(::square::Square,             u8, 0..64);
+impl_iterable!(::square::File,               u8, 0..8);
+impl_iterable!(::square::Rank,               u8, 0..8);
+impl_iterable!(::castle_rights::CastleRight, u8, 0..4);
 
 /// An iterator over all instances of `T`.
 #[derive(Clone, PartialEq, Eq)]
