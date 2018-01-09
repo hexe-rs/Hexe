@@ -15,25 +15,25 @@ macro_rules! impl_iterable {
 
             #[inline]
             #[doc(hidden)]
-            fn next(iter: &mut Self::Iter) -> Option<Self> {
+            fn __next(iter: &mut Self::Iter) -> Option<Self> {
                 iter.next().map(|n| unsafe { n.into_unchecked() })
             }
 
             #[inline]
             #[doc(hidden)]
-            fn next_back(iter: &mut Self::Iter) -> Option<Self> {
+            fn __next_back(iter: &mut Self::Iter) -> Option<Self> {
                 iter.next_back().map(|n| unsafe { n.into_unchecked() })
             }
 
             #[inline]
             #[doc(hidden)]
-            fn len(iter: &Self::Iter) -> usize {
+            fn __len(iter: &Self::Iter) -> usize {
                 iter.len()
             }
 
             #[inline]
             #[doc(hidden)]
-            fn range(iter: &Self::Iter) -> Range<usize> {
+            fn __range(iter: &Self::Iter) -> Range<usize> {
                 Range { start: iter.start as usize, end: iter.end as usize }
             }
         }
@@ -57,16 +57,16 @@ pub trait AllIterable: Sized {
     const ALL: All<Self>;
 
     #[doc(hidden)]
-    fn next(&mut Self::Iter) -> Option<Self>;
+    fn __next(&mut Self::Iter) -> Option<Self>;
 
     #[doc(hidden)]
-    fn next_back(&mut Self::Iter) -> Option<Self>;
+    fn __next_back(&mut Self::Iter) -> Option<Self>;
 
     #[doc(hidden)]
-    fn len(&Self::Iter) -> usize;
+    fn __len(&Self::Iter) -> usize;
 
     #[doc(hidden)]
-    fn range(&Self::Iter) -> Range<usize>;
+    fn __range(&Self::Iter) -> Range<usize>;
 }
 
 impl_iterable!(::square::Square,             u8, 0..64);
@@ -89,7 +89,7 @@ impl<T: AllIterable> Iterator for All<T> {
     type Item = T;
 
     #[inline]
-    fn next(&mut self) -> Option<T> { T::next(&mut self.iter) }
+    fn next(&mut self) -> Option<T> { T::__next(&mut self.iter) }
 
     #[inline]
     fn last(mut self) -> Option<T> { self.next_back() }
@@ -106,12 +106,12 @@ impl<T: AllIterable> Iterator for All<T> {
 
 impl<T: AllIterable> DoubleEndedIterator for All<T> {
     #[inline]
-    fn next_back(&mut self) -> Option<T> { T::next_back(&mut self.iter) }
+    fn next_back(&mut self) -> Option<T> { T::__next_back(&mut self.iter) }
 }
 
 impl<T: AllIterable> ExactSizeIterator for All<T> {
     #[inline]
-    fn len(&self) -> usize { T::len(&self.iter) }
+    fn len(&self) -> usize { T::__len(&self.iter) }
 }
 
 impl<T: AllIterable> All<T> {
@@ -126,7 +126,7 @@ impl<T: AllIterable> All<T> {
     /// Returns the range over which `self` iterates.
     #[inline]
     pub fn range(&self) -> Range<usize> {
-        T::range(&self.iter)
+        T::__range(&self.iter)
     }
 
     /// Returns whether `self` is empty.
