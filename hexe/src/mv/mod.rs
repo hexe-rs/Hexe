@@ -56,7 +56,7 @@ impl Move {
 
     /// Returns the promotion for `self`.
     #[inline]
-    pub fn promotion(self) -> Promotion {
+    pub fn prom(self) -> Promotion {
         ((self.0 >> PROM_SHIFT) & PROM_MASK).into()
     }
 
