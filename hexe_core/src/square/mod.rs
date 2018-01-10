@@ -233,7 +233,8 @@ impl Square {
         if cfg!(target_pointer_width = "64") {
             (Bitboard::BLACK >> self as usize).0.into()
         } else {
-            !Color::from(((self as u8) >> RANK_SHIFT) ^ (self as u8))
+            const BLACK: u32 = Bitboard::BLACK.0 as u32;
+            (BLACK >> (self as usize % 32)).into()
         }
     }
 
