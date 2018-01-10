@@ -230,12 +230,9 @@ impl Square {
     /// ```
     #[inline]
     pub fn color(self) -> Color {
-        if cfg!(target_pointer_width = "64") {
-            (Bitboard::BLACK >> self as usize).0.into()
-        } else {
-            const BLACK: u32 = Bitboard::BLACK.0 as u32;
-            (BLACK >> (self as usize % 32)).into()
-        }
+        const BLACK: usize = Bitboard::BLACK.0 as usize;
+        const MOD:   usize = ::consts::PTR_SIZE * 8;
+        (BLACK >> (self as usize % MOD)).into()
     }
 
     /// Returns whether `self` and `other` are equal in color.
