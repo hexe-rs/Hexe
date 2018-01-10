@@ -9,31 +9,31 @@ macro_rules! impl_iterable {
     ($t:ty, $raw:ty, $all:expr) => {
         impl AllIterable for $t {
             #[doc(hidden)]
-            type Iter = Range<$raw>;
+            type __Iter = Range<$raw>;
 
             const ALL: All<Self> = All { iter: $all };
 
             #[inline]
             #[doc(hidden)]
-            fn __next(iter: &mut Self::Iter) -> Option<Self> {
+            fn __next(iter: &mut Self::__Iter) -> Option<Self> {
                 iter.next().map(|n| unsafe { n.into_unchecked() })
             }
 
             #[inline]
             #[doc(hidden)]
-            fn __next_back(iter: &mut Self::Iter) -> Option<Self> {
+            fn __next_back(iter: &mut Self::__Iter) -> Option<Self> {
                 iter.next_back().map(|n| unsafe { n.into_unchecked() })
             }
 
             #[inline]
             #[doc(hidden)]
-            fn __len(iter: &Self::Iter) -> usize {
+            fn __len(iter: &Self::__Iter) -> usize {
                 iter.len()
             }
 
             #[inline]
             #[doc(hidden)]
-            fn __range(iter: &Self::Iter) -> Range<usize> {
+            fn __range(iter: &Self::__Iter) -> Range<usize> {
                 Range { start: iter.start as usize, end: iter.end as usize }
             }
         }
@@ -51,22 +51,22 @@ macro_rules! impl_iterable {
 /// A type whose instances can be iterated over via `hexe_core::iter::All`.
 pub trait AllIterable: Sized {
     #[doc(hidden)]
-    type Iter: Sized;
+    type __Iter: Sized;
 
     /// An iterator over all instances of this type.
     const ALL: All<Self>;
 
     #[doc(hidden)]
-    fn __next(&mut Self::Iter) -> Option<Self>;
+    fn __next(&mut Self::__Iter) -> Option<Self>;
 
     #[doc(hidden)]
-    fn __next_back(&mut Self::Iter) -> Option<Self>;
+    fn __next_back(&mut Self::__Iter) -> Option<Self>;
 
     #[doc(hidden)]
-    fn __len(&Self::Iter) -> usize;
+    fn __len(&Self::__Iter) -> usize;
 
     #[doc(hidden)]
-    fn __range(&Self::Iter) -> Range<usize>;
+    fn __range(&Self::__Iter) -> Range<usize>;
 }
 
 impl_iterable!(::square::Square,             u8, 0..64);
@@ -77,7 +77,7 @@ impl_iterable!(::castle_rights::CastleRight, u8, 0..4);
 /// An iterator over all instances of `T`.
 #[derive(Clone, PartialEq, Eq)]
 pub struct All<T: AllIterable> {
-    iter: T::Iter,
+    iter: T::__Iter,
 }
 
 impl<T: AllIterable> Default for All<T> {
