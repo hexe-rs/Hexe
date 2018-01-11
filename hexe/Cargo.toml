@@ -20,5 +20,6 @@ uncon_derive = { version = "1.1.1" }
 static_assertions = "0.2"
 
 [features]
+rand  = ["hexe_core/rand"]
 serde = ["hexe_core/serde"]
-simd = ["hexe_core/simd"]
+simd  = ["hexe_core/simd"]

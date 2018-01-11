@@ -75,6 +75,15 @@ impl AsMut<[u8]> for Zobrist {
     fn as_mut(&mut self) -> &mut [u8] { self.as_bytes_mut() }
 }
 
+#[cfg(any(test, feature = "rand"))]
+impl ::rand::Rand for Zobrist {
+    fn rand<R: ::rand::Rng>(rng: &mut R) -> Zobrist {
+        let mut zobrist = Zobrist::ZERO;
+        rng.fill_bytes(zobrist.as_bytes_mut());
+        zobrist
+    }
+}
+
 impl Zobrist {
     /// An instance with all hashes set to zero.
     pub const ZERO: Zobrist = Zobrist {
