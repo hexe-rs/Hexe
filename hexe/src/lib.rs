@@ -65,3 +65,4 @@ extern crate static_assertions;
 pub mod mv;
 pub mod position;
 pub mod prelude;
+pub mod zobrist;
