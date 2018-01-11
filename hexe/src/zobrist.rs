@@ -42,6 +42,15 @@ impl Default for Zobrist {
     }
 }
 
+impl PartialEq for Zobrist {
+    #[inline]
+    fn eq(&self, other: &Zobrist) -> bool {
+        self.as_slice() == other.as_slice()
+    }
+}
+
+impl Eq for Zobrist {}
+
 impl AsRef<[u64]> for Zobrist {
     #[inline]
     fn as_ref(&self) -> &[u64] {
