@@ -50,6 +50,8 @@ use serde::*;
 
 mod tables;
 
+impl_rand!(u8 => Square, File, Rank);
+
 /// A square on a chess board.
 #[derive(Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]

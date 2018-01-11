@@ -44,6 +44,18 @@ pub enum Color {
 
 static COLORS: [[u8; 5]; 2] = [*b"White", *b"Black"];
 
+#[cfg(any(test, feature = "rand"))]
+impl ::rand::Rand for Color {
+    #[inline]
+    fn rand<R: ::rand::Rng>(rng: &mut R) -> Self {
+        if bool::rand(rng) {
+            Color::White
+        } else {
+            Color::Black
+        }
+    }
+}
+
 impl fmt::Debug for Color {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Display::fmt(self, f)

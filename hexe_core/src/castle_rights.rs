@@ -41,6 +41,8 @@ use prelude::*;
 #[cfg(feature = "serde")]
 use serde::*;
 
+impl_rand!(u8 => CastleRights, CastleRight);
+
 /// Castle rights for a chess game.
 ///
 /// # Examples
@@ -283,6 +285,18 @@ pub enum CastleSide {
     King,
     /// Queen castling side (O-O-O).
     Queen,
+}
+
+#[cfg(any(test, feature = "rand"))]
+impl ::rand::Rand for CastleSide {
+    #[inline]
+    fn rand<R: ::rand::Rng>(rng: &mut R) -> Self {
+        if bool::rand(rng) {
+            CastleSide::King
+        } else {
+            CastleSide::Queen
+        }
+    }
 }
 
 #[cfg(test)]

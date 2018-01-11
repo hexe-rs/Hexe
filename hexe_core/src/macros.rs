@@ -18,6 +18,18 @@ macro_rules! forward_bit_ops_impl {
     )+ }
 }
 
+macro_rules! impl_rand {
+    ($s:ty => $($t:ty),+) => { $(
+        #[cfg(any(test, feature = "rand"))]
+        impl ::rand::Rand for $t {
+            #[inline]
+            fn rand<R: ::rand::Rng>(rng: &mut R) -> Self {
+                rng.gen::<$s>().into()
+            }
+        }
+    )+ }
+}
+
 macro_rules! impl_bit_set {
     ($($t:ident $full:expr => $x:ident);+ $(;)*) => { $(
         forward_bit_ops_impl! {

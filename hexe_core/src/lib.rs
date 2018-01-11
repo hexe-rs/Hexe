@@ -41,8 +41,9 @@
 use std as core;
 
 // External Crates /////////////////////////////////////////////////////////////
-#[cfg(test)]
+#[cfg(any(test, feature = "rand"))]
 extern crate rand;
+
 #[cfg(test)]
 #[macro_use]
 extern crate static_assertions;

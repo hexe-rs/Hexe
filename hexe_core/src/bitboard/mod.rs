@@ -65,6 +65,8 @@ use util::Bytes;
 use serde::*;
 use uncon::*;
 
+impl_rand!(u64 => Bitboard);
+
 /// A mapping of sixty-four bits to squares of a chess board.
 ///
 /// # Examples

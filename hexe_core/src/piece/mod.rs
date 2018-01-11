@@ -9,6 +9,8 @@ use serde::*;
 
 pub mod map;
 
+impl_rand!(u8 => Piece, PieceKind, Promotion);
+
 /// A chess piece with a kind and color.
 #[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
