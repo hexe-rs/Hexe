@@ -4,8 +4,10 @@ use std::fmt;
 
 type Keys = [u64; 409];
 
+type Bytes = [u8; 3272];
+
 #[cfg(test)]
-assert_eq_size!(zobrist_keys_size; Zobrist, Keys);
+assert_eq_size!(zobrist_keys_size; Zobrist, Keys, Bytes);
 
 /// Zobrist keys for hashing.
 pub struct Zobrist {
@@ -53,16 +55,22 @@ impl Eq for Zobrist {}
 
 impl AsRef<[u64]> for Zobrist {
     #[inline]
-    fn as_ref(&self) -> &[u64] {
-        self.as_slice()
-    }
+    fn as_ref(&self) -> &[u64] { self.as_slice() }
 }
 
 impl AsMut<[u64]> for Zobrist {
     #[inline]
-    fn as_mut(&mut self) -> &mut [u64] {
-        self.as_mut_slice()
-    }
+    fn as_mut(&mut self) -> &mut [u64] { self.as_mut_slice() }
+}
+
+impl AsRef<[u8]> for Zobrist {
+    #[inline]
+    fn as_ref(&self) -> &[u8] { self.as_bytes() }
+}
+
+impl AsMut<[u8]> for Zobrist {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [u8] { self.as_bytes_mut() }
 }
 
 impl Zobrist {
@@ -85,6 +93,20 @@ impl Zobrist {
     #[inline]
     pub fn as_mut_slice(&mut self) -> &mut [u64] {
         let ptr = self as *mut Zobrist as *mut Keys;
+        unsafe { &mut *ptr }
+    }
+
+    /// Returns the zobrist keys as a contiguous slice of bytes.
+    #[inline]
+    pub fn as_bytes(&self) -> &[u8] {
+        let ptr = self as *const Zobrist as *const Bytes;
+        unsafe { &*ptr }
+    }
+
+    /// Returns the zobrist keys as a contiguous mutable slice of bytes.
+    #[inline]
+    pub fn as_bytes_mut(&mut self) -> &mut [u8] {
+        let ptr = self as *mut Zobrist as *mut Bytes;
         unsafe { &mut *ptr }
     }
 }
