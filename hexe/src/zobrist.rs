@@ -2,6 +2,11 @@
 
 use std::fmt;
 
+type Keys = [u64; 409];
+
+#[cfg(test)]
+assert_eq_size!(zobrist_keys_size; Zobrist, Keys);
+
 /// Zobrist keys for hashing.
 pub struct Zobrist {
     /// Keys for each piece at each square.
@@ -45,4 +50,18 @@ impl Zobrist {
         en_passant: [0; 8],
         color: 0,
     };
+
+    /// Returns the zobrist keys as a contiguous slice.
+    #[inline]
+    pub fn as_slice(&self) -> &[u64] {
+        let ptr = self as *const Zobrist as *const Keys;
+        unsafe { &*ptr }
+    }
+
+    /// Returns the zobrist keys as a contiguous mutable slice.
+    #[inline]
+    pub fn as_mut_slice(&mut self) -> &mut [u64] {
+        let ptr = self as *mut Zobrist as *mut Keys;
+        unsafe { &mut *ptr }
+    }
 }
