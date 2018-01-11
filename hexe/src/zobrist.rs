@@ -2,9 +2,11 @@
 
 use std::fmt;
 
-type Keys = [u64; 409];
+const NUM_KEYS: usize = 409;
 
-type Bytes = [u8; 3272];
+type Keys = [u64; NUM_KEYS];
+
+type Bytes = [u8; NUM_KEYS * 8];
 
 #[cfg(test)]
 assert_eq_size!(zobrist_keys_size; Zobrist, Keys, Bytes);
