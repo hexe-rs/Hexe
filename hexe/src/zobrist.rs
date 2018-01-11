@@ -42,6 +42,20 @@ impl Default for Zobrist {
     }
 }
 
+impl AsRef<[u64]> for Zobrist {
+    #[inline]
+    fn as_ref(&self) -> &[u64] {
+        self.as_slice()
+    }
+}
+
+impl AsMut<[u64]> for Zobrist {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [u64] {
+        self.as_mut_slice()
+    }
+}
+
 impl Zobrist {
     /// An instance with all hashes set to zero.
     pub const ZERO: Zobrist = Zobrist {
