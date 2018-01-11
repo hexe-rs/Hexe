@@ -254,6 +254,12 @@ impl PieceMap {
         self.0.reverse()
     }
 
+    /// Shuffles the map in-place.
+    #[cfg(any(test, feature = "rand"))]
+    pub fn shuffle<R: ::rand::Rng>(&mut self, rng: &mut R) {
+        rng.shuffle(&mut self.0)
+    }
+
     #[inline]
     #[cfg_attr(feature = "simd", allow(dead_code))]
     fn inner_ptr_sized(&self) -> &[usize; SQUARE_NUM / PTR_SIZE] {
