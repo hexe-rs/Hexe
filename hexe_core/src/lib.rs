@@ -41,6 +41,9 @@
 use std as core;
 
 // External Crates /////////////////////////////////////////////////////////////
+#[cfg(any(test, feature = "rand"))]
+pub extern crate rand;
+
 #[cfg(test)]
 #[macro_use]
 extern crate static_assertions;
@@ -69,9 +72,6 @@ pub mod square;
 // Modules shared with hexe that aren't meant for public use
 #[doc(hidden)]
 pub mod _shared {
-    #[cfg(any(test, feature = "rand"))]
-    pub extern crate rand;
-
     #[cfg(feature = "serde")]
     pub extern crate serde;
 

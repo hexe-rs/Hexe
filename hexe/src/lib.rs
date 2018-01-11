@@ -56,6 +56,9 @@ use core::_shared::*;
 extern crate uncon_derive;
 extern crate uncon;
 
+#[cfg(any(test, feature = "rand"))]
+extern crate rand;
+
 #[cfg(test)]
 #[macro_use]
 extern crate static_assertions;
