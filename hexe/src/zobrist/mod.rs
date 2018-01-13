@@ -76,6 +76,7 @@ impl hash::Hash for Zobrist {
 }
 
 impl Default for Zobrist {
+    /// Returns an instance with all keys zeroed out.
     #[inline]
     fn default() -> Zobrist {
         unsafe { mem::zeroed() }
