@@ -125,6 +125,7 @@ impl Zobrist {
     }
 
     /// Returns the key for the castle rights.
+    #[inline]
     pub fn castle(&self, rights: CastleRights) -> u64 {
         *rights.extract(&self.castle)
     }
