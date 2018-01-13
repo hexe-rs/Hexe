@@ -1,6 +1,7 @@
 //! A structure for zobrist hashing.
 
 use std::fmt;
+use std::hash;
 use std::ptr;
 
 use core::castle_rights::CastleRights;
@@ -61,6 +62,13 @@ impl fmt::Debug for Zobrist {
             .field("en_passant", &self.en_passant)
             .field("color",      &self.color)
             .finish()
+    }
+}
+
+impl hash::Hash for Zobrist {
+    #[inline]
+    fn hash<H: hash::Hasher>(&self, state: &mut H) {
+        state.write(self.as_bytes());
     }
 }
 
