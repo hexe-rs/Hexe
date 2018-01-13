@@ -12,6 +12,7 @@ type Bytes = [u8; NUM_KEYS * 8];
 assert_eq_size!(zobrist_keys_size; Zobrist, Keys, Bytes);
 
 /// Zobrist keys for hashing.
+#[repr(C)]
 pub struct Zobrist {
     /// Keys for each piece at each square.
     pub pieces: [[u64; 64]; 6],
