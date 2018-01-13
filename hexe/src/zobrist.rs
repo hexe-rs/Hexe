@@ -1,6 +1,7 @@
 //! A structure for zobrist hashing.
 
 use std::fmt;
+use std::ptr;
 
 const NUM_KEYS: usize = 409;
 
@@ -22,6 +23,15 @@ pub struct Zobrist {
     pub en_passant: [u64; 8],
     /// Key for the playing color.
     pub color: u64,
+}
+
+// Copy is not implemented due to large structure size
+impl Clone for Zobrist {
+    #[inline]
+    fn clone(&self) -> Zobrist {
+        // Should be efficient memcpy
+        unsafe { ptr::read(self) }
+    }
 }
 
 impl fmt::Debug for Zobrist {
