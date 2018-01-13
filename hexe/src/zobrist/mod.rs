@@ -19,13 +19,13 @@ type Bytes = [u8; NUM_KEYS * 8];
 #[cfg(test)]
 assert_eq_size!(zobrist_keys_size; Zobrist, Keys, Bytes);
 
-/// An immutable static global instance.
+/// Static randomly-generated [`Zobrist`](struct.Zobrist.html) keys.
 ///
 /// # Backward Compatibility
 ///
 /// Hashes within this instance are **not** guaranteed to remain the same across
 /// different crate versions. Changing hashes is a backward compatible change.
-pub static GLOBAL: Zobrist = tables::STATIC;
+pub static KEYS: Zobrist = tables::STATIC;
 
 /// Zobrist keys for hashing.
 #[repr(C)]
@@ -179,11 +179,11 @@ mod tests {
     use rand::{Rng, SeedableRng, ChaChaRng};
 
     #[test]
-    fn global_init() {
+    fn keys_init() {
         const SEED: u32 = 0xDEAD_BEEF;
 
         let mut rng = ChaChaRng::from_seed(&[SEED]);
         let zobrist = rng.gen::<Zobrist>();
-        assert_eq!(zobrist, GLOBAL);
+        assert_eq!(zobrist, KEYS);
     }
 }
