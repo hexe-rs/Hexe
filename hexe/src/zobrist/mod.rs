@@ -3,6 +3,10 @@
 use std::fmt;
 use std::ptr;
 
+use core::castle_rights::CastleRights;
+use core::square::{File, Square};
+use core::piece::PieceKind;
+
 mod tables;
 
 const NUM_KEYS: usize = 409;
@@ -113,6 +117,23 @@ impl Zobrist {
         en_passant: [0; 8],
         color: 0,
     };
+
+    /// Returns the key for the piece kind at a square.
+    #[inline]
+    pub fn piece(&self, kind: PieceKind, square: Square) -> u64 {
+        self.pieces[kind as usize][square as usize]
+    }
+
+    /// Returns the key for the castle rights.
+    pub fn castle(&self, rights: CastleRights) -> u64 {
+        *rights.extract(&self.castle)
+    }
+
+    /// Returns the en passant key for the file.
+    #[inline]
+    pub fn en_passant(&self, file: File) -> u64 {
+        self.en_passant[file as usize]
+    }
 
     /// Returns the zobrist keys as a contiguous slice.
     #[inline]
