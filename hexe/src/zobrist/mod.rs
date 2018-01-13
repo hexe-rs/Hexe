@@ -3,6 +3,8 @@
 use std::fmt;
 use std::ptr;
 
+mod tables;
+
 const NUM_KEYS: usize = 409;
 
 type Keys = [u64; NUM_KEYS];
@@ -11,6 +13,14 @@ type Bytes = [u8; NUM_KEYS * 8];
 
 #[cfg(test)]
 assert_eq_size!(zobrist_keys_size; Zobrist, Keys, Bytes);
+
+/// An immutable static global instance.
+///
+/// # Backward Compatibility
+///
+/// Hashes within this instance are **not** guaranteed to remain the same across
+/// different crate versions. Changing hashes is a backward compatible change.
+pub static GLOBAL: Zobrist = tables::STATIC;
 
 /// Zobrist keys for hashing.
 #[repr(C)]
@@ -130,5 +140,20 @@ impl Zobrist {
     pub fn as_bytes_mut(&mut self) -> &mut [u8] {
         let ptr = self as *mut Zobrist as *mut Bytes;
         unsafe { &mut *ptr }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use rand::{Rng, SeedableRng, ChaChaRng};
+
+    #[test]
+    fn global_init() {
+        const SEED: u32 = 0xDEAD_BEEF;
+
+        let mut rng = ChaChaRng::from_seed(&[SEED]);
+        let zobrist = rng.gen::<Zobrist>();
+        assert_eq!(zobrist, GLOBAL);
     }
 }
