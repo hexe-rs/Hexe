@@ -42,7 +42,7 @@ use std as core;
 
 // External Crates /////////////////////////////////////////////////////////////
 #[cfg(any(test, feature = "rand"))]
-pub extern crate rand;
+extern crate rand;
 
 #[cfg(test)]
 #[macro_use]
