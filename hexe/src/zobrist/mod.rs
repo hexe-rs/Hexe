@@ -20,7 +20,7 @@ type Bytes = [u8; NUM_KEYS * 8];
 #[cfg(test)]
 assert_eq_size!(zobrist_keys_size; Zobrist, Keys, Bytes);
 
-/// Static randomly-generated [`Zobrist`](struct.Zobrist.html) keys.
+/// Static pseudorandomly-generated [`Zobrist`](struct.Zobrist.html) keys.
 ///
 /// # Backward Compatibility
 ///
