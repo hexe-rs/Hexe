@@ -2,6 +2,7 @@
 
 use std::fmt;
 use std::hash;
+use std::mem;
 use std::ptr;
 
 use core::castle_rights::CastleRights;
@@ -77,7 +78,7 @@ impl hash::Hash for Zobrist {
 impl Default for Zobrist {
     #[inline]
     fn default() -> Zobrist {
-        Zobrist::ZERO
+        unsafe { mem::zeroed() }
     }
 }
 
@@ -113,21 +114,13 @@ impl AsMut<[u8]> for Zobrist {
 #[cfg(any(test, feature = "rand"))]
 impl ::rand::Rand for Zobrist {
     fn rand<R: ::rand::Rng>(rng: &mut R) -> Zobrist {
-        let mut zobrist = Zobrist::ZERO;
+        let mut zobrist = Zobrist::default();
         rng.fill_bytes(zobrist.as_bytes_mut());
         zobrist
     }
 }
 
 impl Zobrist {
-    /// An instance with all hashes set to zero.
-    pub const ZERO: Zobrist = Zobrist {
-        pieces: [[0; 64]; 6],
-        castle: [0; 16],
-        en_passant: [0; 8],
-        color: 0,
-    };
-
     /// Returns the key for the piece kind at a square.
     #[inline]
     pub fn piece(&self, kind: PieceKind, square: Square) -> u64 {
