@@ -41,6 +41,9 @@ use prelude::*;
 #[cfg(feature = "serde")]
 use serde::*;
 
+const ALL_BITS: u8 = 0b1111;
+const MAX_LEN: usize = 1 + ALL_BITS as usize;
+
 impl_rand!(u8 => CastleRights, CastleRight);
 
 /// Castle rights for a chess game.
@@ -149,6 +152,20 @@ impl CastleRights {
     /// Black queenside.
     pub const BLACK_QUEENSIDE: CastleRights = CastleRights(0b1000);
 
+    /// Extracts a reference to the value within the buffer which the value
+    /// indexes.
+    #[inline]
+    pub fn extract<'a, T: 'a>(&self, array: &'a [T; MAX_LEN]) -> &'a T {
+        unsafe { array.get_unchecked(self.0 as usize) }
+    }
+
+    /// Extracts a mutable reference to the value within the buffer which the
+    /// value indexes.
+    #[inline]
+    pub fn extract_mut<'a, T: 'a>(&self, array: &'a mut [T; MAX_LEN]) -> &'a mut T {
+        unsafe { array.get_unchecked_mut(self.0 as usize) }
+    }
+
     /// Returns the result of applying a function to a mutable string
     /// representation of `self`.
     #[inline]
@@ -171,7 +188,7 @@ impl CastleRights {
     }
 }
 
-impl_bit_set! { CastleRights 0b1111 => CastleRight }
+impl_bit_set! { CastleRights ALL_BITS => CastleRight }
 
 impl_composition_ops! { CastleRights => CastleRight }
 
