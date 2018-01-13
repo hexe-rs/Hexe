@@ -27,7 +27,9 @@ assert_eq_size!(zobrist_keys_size; Zobrist, Keys, Bytes);
 /// different crate versions. Changing hashes is a backward compatible change.
 pub static KEYS: Zobrist = tables::STATIC;
 
-/// Zobrist keys for hashing.
+/// Keys for [Zobrist hashing][wiki].
+///
+/// [wiki]: https://en.wikipedia.org/wiki/Zobrist_hashing
 #[repr(C)]
 pub struct Zobrist {
     /// Keys for each piece at each square.
