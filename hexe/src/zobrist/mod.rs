@@ -140,6 +140,12 @@ impl Zobrist {
         self.en_passant[file as usize]
     }
 
+    /// Clear all hashes by setting them to zero.
+    #[inline]
+    pub fn clear(&mut self) {
+        unsafe { ::util::zero(self) }
+    }
+
     /// Returns the zobrist keys as a contiguous slice.
     #[inline]
     pub fn as_slice(&self) -> &[u64] {
