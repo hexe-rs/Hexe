@@ -65,6 +65,8 @@ extern crate static_assertions;
 
 // Modules /////////////////////////////////////////////////////////////////////
 
+mod util;
+
 pub mod mv;
 pub mod position;
 pub mod prelude;
