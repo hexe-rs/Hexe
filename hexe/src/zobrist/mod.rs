@@ -17,9 +17,6 @@ type Keys = [u64; NUM_KEYS];
 
 type Bytes = [u8; NUM_KEYS * 8];
 
-#[cfg(test)]
-assert_eq_size!(zobrist_keys_size; Zobrist, Keys, Bytes);
-
 /// Static pseudorandomly-generated [`Zobrist`](struct.Zobrist.html) keys.
 ///
 /// # Backward Compatibility
@@ -179,6 +176,8 @@ impl Zobrist {
 mod tests {
     use super::*;
     use rand::{Rng, SeedableRng, ChaChaRng};
+
+    assert_eq_size!(type_size; Zobrist, Keys, Bytes);
 
     #[test]
     fn keys_init() {
