@@ -3,10 +3,7 @@
 use super::*;
 use uncon::*;
 use std::borrow::{Borrow, BorrowMut};
-use std::cmp;
-use std::mem;
-use std::ops;
-use std::u8;
+use std::{cmp, mem, ops, u8};
 
 const VEC_CAP: usize = u8::MAX as usize;
 

@@ -1,9 +1,6 @@
 //! A structure for zobrist hashing.
 
-use std::fmt;
-use std::hash;
-use std::mem;
-use std::ptr;
+use std::{fmt, hash, mem, ptr};
 
 use core::castle_rights::CastleRights;
 use core::square::{File, Square};
