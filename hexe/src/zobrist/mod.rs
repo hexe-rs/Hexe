@@ -11,7 +11,14 @@ use core::piece::PieceKind;
 
 mod tables;
 
-const NUM_KEYS: usize = 409;
+const NUM_PIECES:  usize = 6;
+const NUM_SQUARES: usize = 64;
+const PIECE_TOTAL: usize = NUM_SQUARES * NUM_PIECES;
+const NUM_CASTLE:  usize = 0b1111 + 1;
+const NUM_COLORS:  usize = 1;
+const NUM_EP:      usize = 8;
+
+const NUM_KEYS: usize = PIECE_TOTAL + NUM_CASTLE + NUM_EP + NUM_COLORS;
 
 type Keys = [u64; NUM_KEYS];
 
@@ -31,11 +38,11 @@ pub static KEYS: Zobrist = tables::STATIC;
 #[repr(C)]
 pub struct Zobrist {
     /// Keys for each piece at each square.
-    pub pieces: [[u64; 64]; 6],
+    pub pieces: [[u64; NUM_SQUARES]; NUM_PIECES],
     /// Keys for each possible set of castle rights.
-    pub castle: [u64; 16],
+    pub castle: [u64; NUM_CASTLE],
     /// Keys for each en passant file.
-    pub en_passant: [u64; 8],
+    pub en_passant: [u64; NUM_EP],
     /// Key for the playing color.
     pub color: u64,
 }
