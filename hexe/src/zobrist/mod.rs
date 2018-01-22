@@ -15,11 +15,12 @@ const NUM_CASTLE:  usize = 0b1111 + 1;
 const NUM_COLORS:  usize = 1;
 const NUM_EP:      usize = 8;
 
-const NUM_KEYS: usize = PIECE_TOTAL + NUM_CASTLE + NUM_EP + NUM_COLORS;
+const NUM_KEYS:  usize = PIECE_TOTAL + NUM_CASTLE + NUM_EP + NUM_COLORS;
+const NUM_BYTES: usize = NUM_KEYS * 8;
 
 type Keys = [u64; NUM_KEYS];
 
-type Bytes = [u8; NUM_KEYS * 8];
+type Bytes = [u8; NUM_BYTES];
 
 /// Static pseudorandomly-generated [`Zobrist`](struct.Zobrist.html) keys.
 ///
