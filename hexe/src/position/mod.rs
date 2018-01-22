@@ -81,12 +81,6 @@ impl Position {
         self.piece_map.get(sq)
     }
 
-    /// Returns a bitboard containing squares for where all pieces reside.
-    #[inline]
-    pub fn all_pieces(&self) -> Bitboard {
-        self.bitboard(Color::White) | self.bitboard(Color::Black)
-    }
-
     /// Returns whether `self` contains the value.
     #[inline]
     #[allow(needless_lifetimes)]
@@ -97,7 +91,7 @@ impl Position {
     /// Returns the number of pieces on the board.
     #[inline]
     pub fn count(&self) -> usize {
-        self.all_pieces().len()
+        self.all_bitboard().len()
     }
 
     /// Returns the number of pieces for the retriever.
@@ -158,6 +152,12 @@ impl Position {
     #[inline]
     pub fn castle_rights(&self) -> CastleRights {
         self.state.castle_rights()
+    }
+
+    /// Returns a bitboard containing squares for where all pieces reside.
+    #[inline]
+    pub fn all_bitboard(&self) -> Bitboard {
+        self.bitboard(Color::White) | self.bitboard(Color::Black)
     }
 
     /// Returns the corresponding bitboard for the retriever.
@@ -255,7 +255,7 @@ mod tests {
     #[test]
     fn initial_pieces() {
         let pos = Position::default();
-        let all = pos.all_pieces();
+        let all = pos.all_bitboard();
 
         for square in Square::ALL {
             if let Some(&piece) = pos.piece_at(square) {
