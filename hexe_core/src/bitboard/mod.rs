@@ -262,6 +262,13 @@ impl Bitboard {
     /// Black board squares.
     pub const BLACK: Bitboard = Bitboard(0xAA55AA55AA55AA55);
 
+    /// Generates a random bitboard with few bits set.
+    #[inline]
+    #[cfg(any(test, feature = "rand"))]
+    pub fn rand_sparse<R: ::rand::Rng>(rng: &mut R) -> Bitboard {
+        Bitboard(rng.next_u64() & rng.next_u64() & rng.next_u64())
+    }
+
     /// Returns a `Bitboard` containing squares between `start` and `end`.
     #[inline]
     pub fn between(start: Square, end: Square) -> Bitboard {
