@@ -291,14 +291,13 @@ impl Bitboard {
     /// Returns whether the rank in `self` is empty.
     #[inline]
     pub fn rank_is_empty(self, rank: Rank) -> bool {
-        (self.0 >> rank as usize) & 0xFF == 0
+        (self.0 >> rank as usize) & masks::RANK_1.0 == 0
     }
 
     /// Returns whether the file in `self` is empty.
     #[inline]
     pub fn file_is_empty(self, file: File) -> bool {
-        const EMPTY: u64 = 0x0101010101010101;
-        (self.0 >> file as usize) & EMPTY == 0
+        (self.0 >> file as usize) & masks::FILE_A.0 == 0
     }
 
     /// Returns whether the path for `right` is empty within `self`.
