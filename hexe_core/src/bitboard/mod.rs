@@ -294,6 +294,13 @@ impl Bitboard {
         (self.0 >> rank as usize) & 0xFF == 0
     }
 
+    /// Returns whether the file in `self` is empty.
+    #[inline]
+    pub fn file_is_empty(self, file: File) -> bool {
+        const EMPTY: u64 = 0x0101010101010101;
+        (self.0 >> file as usize) & EMPTY == 0
+    }
+
     /// Returns whether the path for `right` is empty within `self`.
     #[inline]
     pub fn path_is_empty(self, right: CastleRight) -> bool {
@@ -433,5 +440,32 @@ impl Bitboard {
             unsafe { *buf.get_unchecked_mut(idx) = b'1' };
         }
         unsafe { f(str::from_utf8_unchecked_mut(&mut buf)) }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn file_is_empty() {
+        static EMPTIES: [u64; 8] = [
+            0xFEFEFEFEFEFEFEFE, 0xFDFDFDFDFDFDFDFC,
+            0xFBFBFBFBFBFBFBF8, 0xF7F7F7F7F7F7F7F0,
+            0xEFEFEFEFEFEFEFE0, 0xDFDFDFDFDFDFDFC0,
+            0xBFBFBFBFBFBFBF80, 0x7F7F7F7F7F7F7F00,
+        ];
+
+        for file in File::ALL {
+            let mut value = Bitboard::FULL;
+            let mut check = |slice| {
+                for &x in slice {
+                    value &= x;
+                    assert!(value.file_is_empty(file));
+                }
+            };
+            check(&EMPTIES[(file as usize)..]);
+            check(&EMPTIES[..(file as usize)]);
+        }
     }
 }
