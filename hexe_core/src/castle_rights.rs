@@ -287,8 +287,8 @@ pub mod path {
     /// All paths.
     pub static ALL: [Bitboard; 4] = [
         WHITE_KINGSIDE,
-        BLACK_KINGSIDE,
         WHITE_QUEENSIDE,
+        BLACK_KINGSIDE,
         BLACK_QUEENSIDE,
     ];
 }
@@ -336,6 +336,22 @@ mod tests {
         for right in CastleRights::FULL {
             let ch = char::from(right);
             assert_eq!(Some(right), CastleRight::from_char(ch));
+        }
+    }
+
+    #[test]
+    fn castle_right_path() {
+        fn path(right: CastleRight) -> Bitboard {
+            use self::CastleRight::*;
+            match right {
+                WhiteKingside  => path::WHITE_KINGSIDE,
+                BlackKingside  => path::BLACK_KINGSIDE,
+                WhiteQueenside => path::WHITE_QUEENSIDE,
+                BlackQueenside => path::BLACK_QUEENSIDE,
+            }
+        }
+        for right in CastleRights::FULL {
+            assert_eq!(right.path(), path(right));
         }
     }
 
