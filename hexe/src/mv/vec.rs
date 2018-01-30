@@ -3,7 +3,7 @@
 use super::*;
 use uncon::*;
 use std::borrow::{Borrow, BorrowMut};
-use std::{cmp, mem, ops, u8};
+use std::{cmp, mem, ops, ptr, u8};
 
 const VEC_CAP: usize = u8::MAX as usize;
 
@@ -46,7 +46,7 @@ impl Clone for MoveVec {
 impl Default for MoveVec {
     #[inline]
     fn default() -> Self {
-        MoveVec { buf: [0; VEC_CAP], len: 0 }
+        MoveVec { buf: unsafe { mem::uninitialized() }, len: 0 }
     }
 }
 
@@ -131,7 +131,7 @@ impl MoveVec {
         let mut vec = MoveVec::new();
         vec.len = cmp::min(len, VEC_CAP) as u8;
         for (i, m) in vec.iter_mut().enumerate() {
-            *m = init(i);
+            unsafe { ptr::write(m, init(i)) };
         }
         vec
     }
@@ -148,7 +148,7 @@ impl MoveVec {
         if self.len == u8::MAX {
             Some(mv)
         } else {
-            self.buf[self.len as usize] = mv.0;
+            unsafe { ptr::write(&mut self.buf[self.len as usize], mv.0) };
             self.len += 1;
             None
         }
@@ -167,27 +167,8 @@ impl MoveVec {
     /// it is full.
     #[inline]
     pub unsafe fn push_unchecked(&mut self, mv: Move) {
-        *self.buf.get_unchecked_mut(self.len as usize) = mv.0;
+        ptr::write(self.buf.get_unchecked_mut(self.len as usize), mv.0);
         self.len = self.len.wrapping_add(1);
-    }
-
-    /// Extends `self` with as many moves as it can fit.
-    ///
-    /// Moves that don't fit are returned as a slice of the original.
-    pub fn extend_from_slice<'a>(&mut self, moves: &'a [Move]) -> &'a [Move] {
-        let rem: &mut [Move] = unsafe {
-            (&mut self.buf[(self.len as usize)..]).into_unchecked()
-        };
-        if moves.len() > rem.len() {
-            self.len = VEC_CAP as _;
-            let (chunk, rest) = moves.split_at(rem.len());
-            rem.copy_from_slice(chunk);
-            rest
-        } else {
-            self.len += moves.len() as u8;
-            rem[..moves.len()].copy_from_slice(moves);
-            Default::default()
-        }
     }
 
     /// Pops the last move from the end of the vector and returns it.
@@ -219,8 +200,11 @@ impl MoveVec {
     /// Although it is perfectly safe to shrink the vector this way, one should
     /// use [`truncate`](#method.truncate) instead.
     ///
-    /// If used to grow the vector, moves past the previous length need to be
-    /// initialized.
+    /// If used to grow the vector, moves past the previous length must be
+    /// initialized via `ptr::write`. Otherwise, [undefined behavior][ub] will
+    /// occur.
+    ///
+    /// [ub]: https://en.wikipedia.org/wiki/Undefined_behavior
     #[inline]
     pub unsafe fn set_len(&mut self, len: usize) {
         self.len = cmp::min(len, VEC_CAP) as u8;
