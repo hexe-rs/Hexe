@@ -6,12 +6,12 @@ use misc::Contained;
 use uncon::*;
 
 macro_rules! impl_iterable {
-    ($t:ty, $raw:ty, $all:expr) => {
+    ($t:ty, $raw:ty, $max:expr) => {
         impl AllIterable for $t {
             #[doc(hidden)]
             type __Iter = Range<$raw>;
 
-            const ALL: All<Self> = All { iter: $all };
+            const ALL: All<Self> = All { iter: 0..($max as $raw) };
 
             #[inline]
             #[doc(hidden)]
@@ -69,10 +69,10 @@ pub trait AllIterable: Sized {
     fn __range(&Self::__Iter) -> Range<usize>;
 }
 
-impl_iterable!(::square::Square,             u8, 0..64);
-impl_iterable!(::square::File,               u8, 0..8);
-impl_iterable!(::square::Rank,               u8, 0..8);
-impl_iterable!(::castle_rights::CastleRight, u8, 0..4);
+impl_iterable!(::square::Square,             u8, 64);
+impl_iterable!(::square::File,               u8, 8);
+impl_iterable!(::square::Rank,               u8, 8);
+impl_iterable!(::castle_rights::CastleRight, u8, 4);
 
 /// An iterator over all instances of `T`.
 #[derive(Clone, PartialEq, Eq)]
