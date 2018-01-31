@@ -267,7 +267,7 @@ impl PieceMap {
     }
 
     #[inline]
-    fn inner_2d(&self) -> &[[u8; 8]; 8] {
+    fn inner_u64(&self) -> &[u64; 8] {
         unsafe { (&self.0).into_unchecked() }
     }
 
@@ -517,10 +517,7 @@ impl PieceMap {
     /// Returns whether the rank contains the piece.
     #[inline]
     pub fn rank_contains(&self, rank: Rank, pc: Piece) -> bool {
-        let this: u64 = unsafe {
-            mem::transmute(self.inner_2d()[rank as usize])
-        };
-        this.contains_byte(pc as u8)
+        self.inner_u64()[rank as usize].contains_byte(pc as u8)
     }
 
     /// Returns the first square for the piece.
