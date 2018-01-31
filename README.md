@@ -29,8 +29,8 @@ other chess programs for ease of code reuse.
 1. "Hexe" is German for witch. It denotes the use of magic bitboards within this
 project.
 
-2. It refers to Clarke's Third Law: "Any sufficiently advanced technology is
-indistinguishable from magic."
+2. It refers to [Clarke's Third Law][clarke-laws]: "Any sufficiently advanced
+technology is indistinguishable from magic."
 
 3. If she weighs the same as a duck... she's made of wood. And therefore...
 
@@ -44,11 +44,13 @@ Hexe is licensed under either of
 
 at your choosing.
 
-[license-apache]: https://github.com/hexe-rs/Hexe/blob/master/LICENSE-APACHE
-[license-mit]: https://github.com/hexe-rs/Hexe/blob/master/LICENSE-MIT
-
 > **Note:** This project initially began on 2017-01-04 in a separate repository.
 > This repo is a rewrite and expansion of that one.
 
 [travis]:       https://travis-ci.org/hexe-rs/Hexe
 [travis-badge]: https://travis-ci.org/hexe-rs/Hexe.svg?branch=master
+
+[license-apache]: https://github.com/hexe-rs/Hexe/blob/master/LICENSE-APACHE
+[license-mit]: https://github.com/hexe-rs/Hexe/blob/master/LICENSE-MIT
+
+[clarke-laws]: https://en.wikipedia.org/wiki/Clarke%27s_three_laws
