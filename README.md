@@ -26,13 +26,13 @@ other chess programs for ease of code reuse.
 
 ## Why Hexe?
 
-"Hexe" is German for witch. It denotes the use of magic bitboards within this
+1. "Hexe" is German for witch. It denotes the use of magic bitboards within this
 project.
 
-It also refers to Clarke's Third Law: "Any sufficiently advanced technology is
+2. It refers to Clarke's Third Law: "Any sufficiently advanced technology is
 indistinguishable from magic."
 
-Also, if she weighs the same as a duck... she's made of wood. And therefore...
+3. If she weighs the same as a duck... she's made of wood. And therefore...
 
 ## License
 
