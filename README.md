@@ -10,6 +10,10 @@
     A pure <a href="https://www.rust-lang.org">Rust</a> chess engine
 </p>
 
+----
+
+<p align="center"><em>(pronounced "Hekseh")</em></p>
+
 [![Build Status][travis-badge]][travis]
 ![LoC](https://tokei.rs/b1/github/hexe-rs/Hexe)
 
