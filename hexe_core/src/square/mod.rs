@@ -48,6 +48,8 @@ use uncon::*;
 #[cfg(feature = "serde")]
 use serde::*;
 
+#[cfg(all(test, nightly))]
+mod benches;
 mod tables;
 
 impl_rand!(u8 => Square, File, Rank);

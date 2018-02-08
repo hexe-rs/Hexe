@@ -1,10 +1,5 @@
-#![feature(test)]
-extern crate test;
-extern crate rand;
-extern crate hexe_core;
-
+use super::*;
 use test::{Bencher, black_box};
-use hexe_core::prelude::*;
 
 macro_rules! impl_sliding_benches {
     ($($f:ident)+) => { $(
@@ -23,7 +18,7 @@ macro_rules! impl_sliding_benches {
 impl_sliding_benches! { rook_attacks bishop_attacks queen_attacks }
 
 fn rand_square() -> Square {
-    Square::from(rand::random::<u8>())
+    Square::from(::rand::random::<u8>())
 }
 
 fn rand_pairs(n: usize) -> Vec<(Square, Square)> {
@@ -31,7 +26,7 @@ fn rand_pairs(n: usize) -> Vec<(Square, Square)> {
 }
 
 fn rand_occ_pairs(n: usize) -> Vec<(Square, Bitboard)> {
-    (0..n).map(|_| (rand_square(), Bitboard(rand::random()))).collect()
+    (0..n).map(|_| (rand_square(), Bitboard(::rand::random()))).collect()
 }
 
 #[bench]

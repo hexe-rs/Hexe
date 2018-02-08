@@ -1,15 +1,8 @@
-#![allow(unknown_lints)]
-#![allow(let_and_return)]
-
-#![feature(test)]
-extern crate test;
-extern crate rand;
-extern crate hexe_core;
-
+use super::*;
 use test::{Bencher, black_box};
-use rand::Rng;
-use hexe_core::piece::*;
-use hexe_core::square::Square;
+use rand::{Rng, self};
+
+use square::Square;
 
 macro_rules! piece_map {
     ($($s:expr => $p:expr),* $(,)*) => {
