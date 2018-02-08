@@ -1,10 +1,10 @@
 use super::*;
 use test::{Bencher, black_box};
-use rand::{Rand, self};
 
 macro_rules! impl_sliding_benches {
     ($($f:ident)+) => { $(
         #[bench]
+        #[cfg(feature = "std")]
         fn $f(b: &mut Bencher) {
             let pairs = rand_pairs::<Square, Bitboard>(1000);
             b.iter(|| {
@@ -18,8 +18,12 @@ macro_rules! impl_sliding_benches {
 
 impl_sliding_benches! { rook_attacks bishop_attacks queen_attacks }
 
-fn rand_pairs<T: Rand, U: Rand>(n: usize) -> Vec<(T, U)> {
-    (0..n).map(|_| (rand::random(), rand::random())).collect()
+#[cfg(feature = "std")]
+fn rand_pairs<T, U>(n: usize) -> Vec<(T, U)>
+    where T: ::rand::Rand,
+          U: ::rand::Rand,
+{
+    (0..n).map(|_| (::rand::random(), ::rand::random())).collect()
 }
 
 #[bench]
@@ -50,6 +54,7 @@ fn square_color(b: &mut Bencher) {
 }
 
 #[bench]
+#[cfg(feature = "std")]
 fn square_distance_1000(b: &mut Bencher) {
     let squares = rand_pairs::<Square, Square>(1000);
     b.iter(|| {
@@ -60,9 +65,10 @@ fn square_distance_1000(b: &mut Bencher) {
 }
 
 #[bench]
+#[cfg(feature = "std")]
 fn square_distance_normal_1000(b: &mut Bencher) {
     fn distance(s1: Square, s2: Square) -> usize {
-        use std::cmp::max;
+        use core::cmp::max;
         max(s1.file().distance(s2.file()), s1.rank().distance(s2.rank()))
     }
     let squares = rand_pairs::<Square, Square>(1000);
