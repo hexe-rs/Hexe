@@ -7,6 +7,9 @@ use prelude::*;
 mod state;
 pub use self::state::*;
 
+#[cfg(all(test, nightly))]
+mod benches;
+
 // The raw value used to represent no square for a space-optimized square.
 //
 // This should be unnecessary once `Option<Square>` is optimized to be a single
