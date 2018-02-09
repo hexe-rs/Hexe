@@ -23,8 +23,13 @@ This project is split into three crates
 
 - **[lib]** [`hexe`]: The chess engine's guts and insides.
 
-- **[lib]** [`hexe_core`]: The chess engine's building blocks. This crate may be
-used by other chess programs for ease of code reuse.
+    - Specialized for Hexe's use cases.
+
+- **[lib]** [`hexe_core`]: The chess engine's building blocks.
+
+    - Supports `no_std` builds.
+
+    - May be used by other chess programs for ease of code reuse.
 
 ## Why Hexe?
 
