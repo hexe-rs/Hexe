@@ -94,10 +94,7 @@ fn iter_len(b: &mut Bencher) {
 #[bench]
 fn len(b: &mut Bencher) {
     let mut map = map::PieceMap::STANDARD;
-    let mut rng = rand::thread_rng();
-    unsafe {
-        rng.shuffle(map.as_bytes_mut());
-    }
+    map.shuffle(&mut rand::thread_rng());
     b.iter(|| {
         black_box(black_box(&map).len());
     });
@@ -112,10 +109,7 @@ fn len_naive(b: &mut Bencher) {
     }
 
     let mut map = map::PieceMap::STANDARD;
-    let mut rng = rand::thread_rng();
-    unsafe {
-        rng.shuffle(map.as_bytes_mut());
-    }
+    map.shuffle(&mut rand::thread_rng());
 
     assert_eq!(map.len(), len(&map));
 
