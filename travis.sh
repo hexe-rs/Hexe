@@ -4,7 +4,7 @@ set -e
 
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-CRATES="hexe_core hexe hexe_bin"
+CRATES="hexe_core hexe"
 
 if [[ -n "$CLIPPY" ]]; then
     if ! cargo install clippy --debug --force; then
