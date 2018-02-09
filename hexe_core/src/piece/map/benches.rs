@@ -1,4 +1,4 @@
-use super::*;
+use super::{Piece, PieceMap};
 use test::{Bencher, black_box};
 use rand::{Rng, self};
 
@@ -8,14 +8,14 @@ macro_rules! piece_map {
     ($($s:expr => $p:expr),* $(,)*) => {
         {
             #[allow(unused_mut)]
-            let mut map = map::PieceMap::new();
+            let mut map = PieceMap::new();
             $(map.insert($s, $p);)*
             map
         }
     }
 }
 
-fn find_naive_impl(piece: Piece, map: &map::PieceMap) -> Option<Square> {
+fn find_naive_impl(piece: Piece, map: &PieceMap) -> Option<Square> {
     for (i, &slot) in map.as_bytes().iter().enumerate() {
         if slot == piece as u8 {
             return Some(i.into())
@@ -24,7 +24,7 @@ fn find_naive_impl(piece: Piece, map: &map::PieceMap) -> Option<Square> {
     None
 }
 
-fn contains(piece: Piece, map: &map::PieceMap) -> bool {
+fn contains(piece: Piece, map: &PieceMap) -> bool {
     map.as_bytes().contains(&(piece as u8))
 }
 
@@ -80,7 +80,7 @@ fn rfind(b: &mut Bencher) {
 
 #[bench]
 fn iter_len(b: &mut Bencher) {
-    let map = map::PieceMap::STANDARD;
+    let map = PieceMap::STANDARD;
     let mut iter = map.iter();
 
     iter.next();
@@ -93,7 +93,7 @@ fn iter_len(b: &mut Bencher) {
 
 #[bench]
 fn len(b: &mut Bencher) {
-    let mut map = map::PieceMap::STANDARD;
+    let mut map = PieceMap::STANDARD;
     map.shuffle(&mut rand::thread_rng());
     b.iter(|| {
         black_box(black_box(&map).len());
@@ -102,13 +102,13 @@ fn len(b: &mut Bencher) {
 
 #[bench]
 fn len_naive(b: &mut Bencher) {
-    fn len(map: &map::PieceMap) -> usize {
+    fn len(map: &PieceMap) -> usize {
         map.as_bytes().iter().fold(64, |len, &pc| {
             len - (pc == 12) as usize
         })
     }
 
-    let mut map = map::PieceMap::STANDARD;
+    let mut map = PieceMap::STANDARD;
     map.shuffle(&mut rand::thread_rng());
 
     assert_eq!(map.len(), len(&map));
@@ -137,7 +137,7 @@ fn eq(b: &mut Bencher) {
 
 #[bench]
 fn fen(b: &mut Bencher) {
-    let map = map::PieceMap::STANDARD;
+    let map = PieceMap::STANDARD;
     b.iter(|| {
         black_box(&map).map_str(|s| {
             black_box(s);
