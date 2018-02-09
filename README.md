@@ -19,9 +19,9 @@
 
 This project is split into two crates
 
-- `hexe`: The chess engine itself.
+- [`hexe`]: The chess engine itself.
 
-- `hexe_core`: The chess engine's building blocks. This crate may be used by
+- [`hexe_core`]: The chess engine's building blocks. This crate may be used by
 other chess programs for ease of code reuse.
 
 ## Why Hexe?
@@ -46,6 +46,9 @@ at your choosing.
 
 > **Note:** This project initially began on 2017-01-04 in a separate repository.
 > This repo is a rewrite and expansion of that one.
+
+[`hexe`]: https://docs.rs/hexe
+[`hexe_core`]: https://docs.rs/hexe_core
 
 [travis]:       https://travis-ci.org/hexe-rs/Hexe
 [travis-badge]: https://travis-ci.org/hexe-rs/Hexe.svg?branch=master
