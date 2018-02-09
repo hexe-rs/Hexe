@@ -22,6 +22,9 @@ rand = { version = "0.4", optional = true }
 rand = "0.4"
 static_assertions = "0.2"
 
+[build-dependencies]
+version_check = "0.1"
+
 [features]
 serde = ["hexe_core/serde"]
 simd  = ["hexe_core/simd"]
