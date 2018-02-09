@@ -9,9 +9,6 @@ use serde::*;
 
 pub mod map;
 
-#[cfg(all(test, nightly))]
-mod benches;
-
 impl_rand!(u8 => Piece, PieceKind, Promotion);
 
 /// A chess piece with a kind and color.

@@ -27,7 +27,7 @@ fn rand_pairs<T, U>(n: usize) -> Vec<(T, U)>
 }
 
 #[bench]
-fn squares_iter(b: &mut Bencher) {
+fn iter(b: &mut Bencher) {
     b.iter(|| {
         for sq in black_box(Square::ALL) {
             black_box(sq);
@@ -36,7 +36,7 @@ fn squares_iter(b: &mut Bencher) {
 }
 
 #[bench]
-fn squares_iter_rev(b: &mut Bencher) {
+fn iter_rev(b: &mut Bencher) {
     b.iter(|| {
         for sq in black_box(Square::ALL).rev() {
             black_box(sq);
@@ -45,7 +45,7 @@ fn squares_iter_rev(b: &mut Bencher) {
 }
 
 #[bench]
-fn square_color(b: &mut Bencher) {
+fn color(b: &mut Bencher) {
     b.iter(|| {
         for sq in Square::ALL {
             black_box(black_box(sq).color());
@@ -55,7 +55,7 @@ fn square_color(b: &mut Bencher) {
 
 #[bench]
 #[cfg(feature = "std")]
-fn square_distance_1000(b: &mut Bencher) {
+fn distance_1000(b: &mut Bencher) {
     let squares = rand_pairs::<Square, Square>(1000);
     b.iter(|| {
         for &(s1, s2) in &squares {
@@ -66,7 +66,7 @@ fn square_distance_1000(b: &mut Bencher) {
 
 #[bench]
 #[cfg(feature = "std")]
-fn square_distance_normal_1000(b: &mut Bencher) {
+fn distance_normal_1000(b: &mut Bencher) {
     fn distance(s1: Square, s2: Square) -> usize {
         use core::cmp::max;
         max(s1.file().distance(s2.file()), s1.rank().distance(s2.rank()))

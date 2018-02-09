@@ -51,6 +51,9 @@ pub use self::entry::*;
 mod iter;
 pub use self::iter::*;
 
+#[cfg(all(test, nightly))]
+mod benches;
+
 /// A mapping of sixty-four squares to pieces.
 ///
 /// This allows for faster lookups than possible with bitboards.
