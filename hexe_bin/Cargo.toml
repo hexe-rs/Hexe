@@ -5,7 +5,8 @@ authors = ["Nikolai Vazquez"]
 license = "MIT/Apache-2.0"
 repository = "https://github.com/hexe-rs/Hexe"
 description = "A chess engine."
-documentation = "https://docs.rs/hexe"
+documentation = "https://docs.rs/hexe_bin"
+include = ["Cargo.toml", "src/**/*.rs", "README*", "CHANGELOG*", "LICENSE*"]
 
 [[bin]]
 name = "hexe"
@@ -15,4 +16,3 @@ path = "src/main.rs"
 hexe = { path = "../hexe", version = "0.0.0" }
 
 [features]
-simd = ["hexe/simd"]
