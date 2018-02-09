@@ -13,8 +13,9 @@ name = "hexe"
 path = "src/main.rs"
 
 [dependencies]
-hexe = { path = "../hexe", version = "0.0.0" }
+hexe      = { path = "../hexe",      version = "0.0.0" }
+hexe_core = { path = "../hexe_core", version = "0.0.1" }
 
 [features]
-serde = ["hexe/serde"]
-simd  = ["hexe/simd"]
+serde = ["hexe/serde", "hexe_core/serde"]
+simd  = ["hexe/simd",  "hexe_core/simd"]
