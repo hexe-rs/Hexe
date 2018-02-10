@@ -116,7 +116,7 @@ impl Engine {
             name.push_str(next);
         }
 
-        while let Some(next) = iter.next() {
+        for next in iter {
             if !value.is_empty() {
                 value.push(' ');
             }
