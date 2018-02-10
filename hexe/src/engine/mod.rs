@@ -2,6 +2,16 @@
 
 use std::io::{self, BufRead};
 
+macro_rules! name { () => { "Hexe" } }
+
+macro_rules! authors { () => { "Nikolai Vazquez" } }
+
+macro_rules! id {
+    ($mac:ident) => {
+        concat!("id ", stringify!($mac), " ", $mac!())
+    }
+}
+
 /// An instance of the Hexe chess engine.
 pub struct Engine {
     options: Options,
@@ -46,13 +56,19 @@ impl Engine {
 
             match cmd {
                 "quit"       => return,
-                "uci"        => (),
+                "uci"        => self.uci(),
                 "isready"    => println!("readyok"),
                 "ucinewgame" => (),
                 "go"         => (),
                 _            => println!("Unknown command: {}", cmd),
             }
         }
+    }
+
+    fn uci(&self) {
+        println!(id!(name));
+        println!(id!(authors));
+        println!("uciok");
     }
 }
 
