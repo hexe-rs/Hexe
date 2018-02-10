@@ -39,6 +39,8 @@ impl Default for Limits {
     }
 }
 
+type UciIter<'a> = str::SplitWhitespace<'a>;
+
 /// UCI related functionality.
 impl Engine {
     /// Runs the UCI (Universal Chess Interface) loop.
@@ -94,11 +96,11 @@ impl Engine {
 
     }
 
-    fn uci_position(&mut self, _: str::SplitWhitespace) {
+    fn uci_position(&mut self, _: UciIter) {
 
     }
 
-    fn uci_set_option(&mut self, mut iter: str::SplitWhitespace) {
+    fn uci_set_option(&mut self, mut iter: UciIter) {
         iter.next(); // consume "name"
 
         let mut name  = String::new();
@@ -130,7 +132,7 @@ impl Engine {
 
     }
 
-    fn uci_go(&mut self, mut iter: str::SplitWhitespace) {
+    fn uci_go(&mut self, mut iter: UciIter) {
         let mut limits = Limits::default();
         let mut moves  = Vec::<Move>::new();
 
