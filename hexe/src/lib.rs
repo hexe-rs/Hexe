@@ -76,6 +76,7 @@ extern crate static_assertions;
 
 mod util;
 
+pub mod engine;
 pub mod mv;
 pub mod position;
 pub mod prelude;
