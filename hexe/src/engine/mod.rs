@@ -4,12 +4,15 @@ use std::io::{self, BufRead};
 
 /// An instance of the Hexe chess engine.
 pub struct Engine {
+    options: Options,
 }
 
 impl Engine {
     /// Creates an instance of the engine.
-    pub fn new() -> Engine {
-        Engine {}
+    pub fn new(options: Options) -> Engine {
+        Engine {
+            options: options,
+        }
     }
 
     /// Runs the UCI (Universal Chess Interface) loop.
@@ -47,3 +50,6 @@ impl Engine {
     }
 }
 
+/// Chess engine options.
+pub struct Options {
+}
