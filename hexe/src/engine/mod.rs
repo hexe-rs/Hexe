@@ -1,6 +1,7 @@
 //! The Hexe chess engine as a self-contained type.
 
 use std::io::{self, BufRead};
+use std::str;
 
 macro_rules! name { () => { "Hexe" } }
 
@@ -58,8 +59,8 @@ impl Engine {
                 "quit"       => return,
                 "uci"        => self.uci(),
                 "isready"    => println!("readyok"),
-                "ucinewgame" => (),
-                "go"         => (),
+                "ucinewgame" => self.uci_new_game(),
+                "go"         => self.uci_go(split),
                 _            => println!("Unknown command: {}", cmd),
             }
         }
@@ -69,6 +70,14 @@ impl Engine {
         println!(id!(name));
         println!(id!(authors));
         println!("uciok");
+    }
+
+    fn uci_new_game(&mut self) {
+
+    }
+
+    fn uci_go(&mut self, mut iter: str::SplitWhitespace) {
+
     }
 }
 
