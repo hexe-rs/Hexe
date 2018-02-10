@@ -35,8 +35,9 @@ impl Engine {
               I::Item: AsRef<str>,
     {
         for line in lines {
-            let mut split = line.as_ref().split_whitespace();
-            let cmd: &str = split.next().unwrap_or("");
+            let line      = line.as_ref();
+            let mut split = line.split_whitespace();
+            let cmd       = split.next().unwrap_or("");
 
             match cmd {
                 "quit"       => return,
@@ -48,7 +49,7 @@ impl Engine {
                 "ucinewgame" => self.uci_new_game(),
                 "go"         => self.uci_go(split),
                 "isready"    => println!("readyok"),
-                _            => println!("Unknown command: {}", cmd),
+                _            => println!("Unknown command: {}", line),
             }
         }
     }
