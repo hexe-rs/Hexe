@@ -57,6 +57,10 @@ impl Engine {
 
             match cmd {
                 "quit"       => return,
+                "stop"       => self.uci_stop(),
+                "ponderhit"  => self.uci_ponder_hit(),
+                "position"   => self.uci_position(split),
+                "setoption"  => self.uci_set_option(split),
                 "uci"        => self.uci(),
                 "isready"    => println!("readyok"),
                 "ucinewgame" => self.uci_new_game(),
@@ -72,11 +76,27 @@ impl Engine {
         println!("uciok");
     }
 
+    fn uci_stop(&mut self) {
+
+    }
+
+    fn uci_ponder_hit(&mut self) {
+
+    }
+
+    fn uci_position(&mut self, _: str::SplitWhitespace) {
+
+    }
+
+    fn uci_set_option(&mut self, _: str::SplitWhitespace) {
+
+    }
+
     fn uci_new_game(&mut self) {
 
     }
 
-    fn uci_go(&mut self, mut iter: str::SplitWhitespace) {
+    fn uci_go(&mut self, _: str::SplitWhitespace) {
 
     }
 }
