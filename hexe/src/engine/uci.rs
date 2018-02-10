@@ -136,10 +136,8 @@ impl Engine {
 
         macro_rules! update {
             ($val:expr) => {
-                if let Some(x) = iter.next() {
-                    if let Ok(val) = x.parse() {
-                        $val = val;
-                    }
+                if let Some(Ok(val)) = iter.next().map(str::parse) {
+                    $val = val
                 }
             }
         }
