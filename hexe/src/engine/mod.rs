@@ -57,14 +57,14 @@ impl Engine {
 
             match cmd {
                 "quit"       => return,
+                "uci"        => self.uci(),
                 "stop"       => self.uci_stop(),
                 "ponderhit"  => self.uci_ponder_hit(),
                 "position"   => self.uci_position(split),
                 "setoption"  => self.uci_set_option(split),
-                "uci"        => self.uci(),
-                "isready"    => println!("readyok"),
                 "ucinewgame" => self.uci_new_game(),
                 "go"         => self.uci_go(split),
+                "isready"    => println!("readyok"),
                 _            => println!("Unknown command: {}", cmd),
             }
         }
