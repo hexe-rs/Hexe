@@ -1,7 +1,14 @@
 use super::*;
 
 use std::io::{self, BufRead};
+use std::mem;
 use std::str;
+
+use core::color::Color;
+use mv::Move;
+
+const WHITE: usize = Color::White as usize;
+const BLACK: usize = Color::Black as usize;
 
 macro_rules! name { () => { "Hexe" } }
 
@@ -10,6 +17,25 @@ macro_rules! authors { () => { "Nikolai Vazquez" } }
 macro_rules! id {
     ($mac:ident) => {
         concat!("id ", stringify!($mac), " ", $mac!())
+    }
+}
+
+struct Limits {
+    ponder: bool,
+    infinite: bool,
+    moves_to_go: u32,
+    time: [u32; 2],
+    inc: [u32; 2],
+    depth: u32,
+    nodes: u32,
+    mate: u32,
+    move_time: u32,
+}
+
+impl Default for Limits {
+    fn default() -> Limits {
+        // Safe because `bool` uses 0 to represent `false`
+        unsafe { mem::zeroed() }
     }
 }
 
@@ -80,7 +106,50 @@ impl Engine {
 
     }
 
-    fn uci_go(&mut self, _: str::SplitWhitespace) {
+    fn uci_go(&mut self, mut iter: str::SplitWhitespace) {
+        let mut limits = Limits::default();
+        let mut moves  = Vec::<Move>::new();
+
+        macro_rules! update {
+            ($val:expr) => {
+                if let Some(x) = iter.next() {
+                    if let Ok(val) = x.parse() {
+                        $val = val;
+                    }
+                }
+            }
+        }
+
+        while let Some(next) = iter.next() {
+            match next {
+                "searchmoves" => while let Some(m) = iter.next() {
+                    if let Some(mv) = self.uci_read_move(m) {
+                        moves.push(mv);
+                    }
+                },
+                "ponder"    => limits.ponder = true,
+                "infinite"  => limits.infinite = true,
+                "wtime"     => update!(limits.time[WHITE]),
+                "btime"     => update!(limits.time[BLACK]),
+                "winc"      => update!(limits.inc[WHITE]),
+                "binc"      => update!(limits.inc[BLACK]),
+                "movestogo" => update!(limits.moves_to_go),
+                "depth"     => update!(limits.depth),
+                "nodes"     => update!(limits.nodes),
+                "mate"      => update!(limits.mate),
+                "movetime"  => update!(limits.move_time),
+                _ => continue,
+            }
+        }
+
+        self.uci_start_thinking(&limits, &moves);
+    }
+
+    fn uci_read_move(&self, s: &str) -> Option<Move> {
+        None
+    }
+
+    fn uci_start_thinking(&mut self, limits: &Limits, moves: &[Move]) {
 
     }
 }
