@@ -98,8 +98,32 @@ impl Engine {
 
     }
 
-    fn uci_set_option(&mut self, _: str::SplitWhitespace) {
+    fn uci_set_option(&mut self, mut iter: str::SplitWhitespace) {
+        iter.next(); // consume "name"
 
+        let mut name  = String::new();
+        let mut value = String::new();
+
+        while let Some(next) = iter.next() {
+            if next == "value" {
+                break;
+            }
+            if !name.is_empty() {
+                name.push(' ');
+            }
+            name.push_str(next);
+        }
+
+        while let Some(next) = iter.next() {
+            if !value.is_empty() {
+                value.push(' ');
+            }
+            value.push_str(next);
+        }
+
+        if !self.options.set(&name, &value) {
+            println!("No such option: {}", name);
+        }
     }
 
     fn uci_new_game(&mut self) {

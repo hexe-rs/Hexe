@@ -31,3 +31,11 @@ impl Default for Options {
         Options {}
     }
 }
+
+impl Options {
+    /// Attempts to set the option of `name` to `value`. Returns `false` if
+    /// `name` is not an option.
+    fn set(&mut self, name: &str, value: &str) -> bool {
+        false
+    }
+}
