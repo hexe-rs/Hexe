@@ -106,6 +106,17 @@ impl<'a> Uci<'a> {
     ///
     /// This method retains a lock on `stdin` until it exits. To feed commands
     /// differently, use [`start_with`](#method.start_with).
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```rust,norun
+    /// use hexe::engine::Engine;
+    ///
+    /// let mut engine = Engine::default();
+    /// engine.uci().start();
+    /// ```
     pub fn start(&mut self) {
         let stdin = io::stdin();
         let lines = stdin.lock()
@@ -115,6 +126,21 @@ impl<'a> Uci<'a> {
     }
 
     /// Runs the UCI loop, feeding commands from an iterator.
+    ///
+    /// # Examples
+    ///
+    /// The UCI can be fed command line arguments.
+    ///
+    /// ```rust,norun
+    /// use hexe::engine::Engine;
+    /// use std::env;
+    ///
+    /// let mut args = env::args();
+    /// args.next(); // discard program name
+    ///
+    /// let mut engine = Engine::default();
+    /// engine.uci().start_with(args);
+    /// ```
     pub fn start_with<I>(&mut self, commands: I)
         where I: IntoIterator,
               I::Item: AsRef<str>,
