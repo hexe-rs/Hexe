@@ -76,6 +76,12 @@ impl<'a> From<Engine> for Uci<'a> {
     }
 }
 
+impl<'a> Default for Uci<'a> {
+    fn default() -> Uci<'a> {
+        Uci(UciInner::Owned(Box::default()))
+    }
+}
+
 impl<'a> Uci<'a> {
     /// Returns a reference to the underlying engine over which `self` iterates.
     #[inline]
