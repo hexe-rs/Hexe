@@ -20,7 +20,9 @@ macro_rules! id {
     }
 }
 
-/// Run the engine via the Universal Chess Interface.
+/// Runs the engine via the [Universal Chess Interface][uci] (UCI) protocol.
+///
+/// [uci]: http://wbec-ridderkerk.nl/html/UCIProtocol.html
 pub struct Uci<'a>(UciInner<'a>);
 
 /// A type like Cow with mutability and without the `Clone` restriction.
