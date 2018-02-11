@@ -20,10 +20,24 @@ macro_rules! id {
     }
 }
 
-/// Runs the engine via the [Universal Chess Interface][uci] (UCI) protocol.
-///
-/// [uci]: http://wbec-ridderkerk.nl/html/UCIProtocol.html
-pub struct Uci<'a>(UciInner<'a>);
+struct Limits {
+    ponder: bool,
+    infinite: bool,
+    moves_to_go: u32,
+    time: [u32; 2],
+    inc: [u32; 2],
+    depth: u32,
+    nodes: u32,
+    mate: u32,
+    move_time: u32,
+}
+
+impl Default for Limits {
+    fn default() -> Limits {
+        // Safe because `bool` uses 0 to represent `false`
+        unsafe { mem::zeroed() }
+    }
+}
 
 /// A type like Cow with mutability and without the `Clone` restriction.
 ///
@@ -33,6 +47,13 @@ enum UciInner<'a> {
     Borrowed(&'a mut Engine),
     Owned(Box<Engine>),
 }
+
+type UciIter<'a> = str::SplitWhitespace<'a>;
+
+/// Runs the engine via the [Universal Chess Interface][uci] (UCI) protocol.
+///
+/// [uci]: http://wbec-ridderkerk.nl/html/UCIProtocol.html
+pub struct Uci<'a>(UciInner<'a>);
 
 impl<'a> From<&'a mut Engine> for Uci<'a> {
     #[inline]
@@ -54,27 +75,6 @@ impl<'a> From<Engine> for Uci<'a> {
         Box::new(engine).into()
     }
 }
-
-struct Limits {
-    ponder: bool,
-    infinite: bool,
-    moves_to_go: u32,
-    time: [u32; 2],
-    inc: [u32; 2],
-    depth: u32,
-    nodes: u32,
-    mate: u32,
-    move_time: u32,
-}
-
-impl Default for Limits {
-    fn default() -> Limits {
-        // Safe because `bool` uses 0 to represent `false`
-        unsafe { mem::zeroed() }
-    }
-}
-
-type UciIter<'a> = str::SplitWhitespace<'a>;
 
 impl<'a> Uci<'a> {
     /// Returns a reference to the underlying engine over which `self` iterates.
