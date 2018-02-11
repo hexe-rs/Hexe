@@ -178,9 +178,7 @@ impl Engine {
 
     fn run_uci_line(&mut self, line: &str) {
         let mut split = line.split_whitespace();
-        let cmd       = split.next().unwrap_or("");
-
-        match cmd {
+        match split.next().unwrap_or("") {
             "quit"       => return,
             "uci"        => self.cmd_uci(),
             "stop"       => self.cmd_stop(),
