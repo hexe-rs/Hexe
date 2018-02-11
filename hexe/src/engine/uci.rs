@@ -168,6 +168,7 @@ impl Engine {
     fn cmd_uci(&self) {
         println!(id!(name));
         println!(id!(authors));
+        self.options.report();
         println!("uciok");
     }
 

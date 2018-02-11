@@ -3,6 +3,8 @@
 // TODO lint when everything is implemented
 #![allow(unused_variables)]
 
+use std::usize;
+
 mod uci;
 pub use self::uci::Uci;
 
@@ -89,5 +91,13 @@ impl Options {
         } else {
             false
         }
+    }
+
+    fn report(&self) {
+        println!(
+            "\noption name Threads type spin default {} min 1 max {}",
+            ::num_cpus::get(),
+            usize::MAX,
+        );
     }
 }
