@@ -8,6 +8,12 @@ description = "A chess engine."
 documentation = "https://docs.rs/hexe"
 include = ["Cargo.toml", "src/**/*.rs", "README*", "CHANGELOG*", "LICENSE*"]
 
+[[bin]]
+name = "hexe"
+
+[lib]
+name = "hexe"
+
 [badges]
 travis-ci = { repository = "hexe-rs/Hexe" }
 

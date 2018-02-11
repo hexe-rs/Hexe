@@ -17,15 +17,13 @@
 [![Build Status][travis-badge]][travis]
 ![LoC](https://tokei.rs/b1/github/hexe-rs/Hexe)
 
-This project is split into three crates
+This project is split into two crates
 
-- **[bin]** `hexe_bin`: The runnable chess engine itself.
-
-- **[lib]** [`hexe`]: The chess engine's guts and insides.
+- **[ lib + bin ]** [`hexe`]: The chess engine itself.
 
     - Specialized for Hexe's use cases.
 
-- **[lib]** [`hexe_core`]: The chess engine's building blocks.
+- **[ lib ]** [`hexe_core`]: The chess engine's building blocks.
 
     - Supports `no_std` builds.
 
