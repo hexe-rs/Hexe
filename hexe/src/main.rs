@@ -1,17 +1,13 @@
 extern crate hexe;
 
 use std::env;
+use std::ffi::OsString;
 
-/// A string that defaults to `str::default()` if `None`.
-struct FallbackStr<T>(Option<T>);
-
-impl<T: AsRef<str>> AsRef<str> for FallbackStr<T> {
-    fn as_ref(&self) -> &str {
-        if let Some(ref s) = self.0 {
-            s.as_ref()
-        } else {
-            Default::default()
-        }
+/// Converts the input into a String while trying to keep the original buffer.
+fn to_string(os_str: OsString) -> String {
+    match os_str.into_string() {
+        Ok(s) => s,
+        Err(s) => s.to_string_lossy().into_owned()
     }
 }
 
@@ -24,7 +20,7 @@ fn main() {
         1 => uci.start(),
         _ => {
             args.next();
-            uci.start_with(args.map(|a| FallbackStr(a.into_string().ok())));
+            uci.start_with(args.map(to_string));
         },
     }
 }
