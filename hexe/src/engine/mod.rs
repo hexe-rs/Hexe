@@ -24,6 +24,12 @@ impl Engine {
             options: options,
         }
     }
+
+    /// Creates a Universal Chess Interface for this engine.
+    #[inline]
+    pub fn uci(&mut self) -> Uci {
+        Uci::from(self)
+    }
 }
 
 /// Chess engine options.
