@@ -128,7 +128,6 @@ impl<'a> Uci<'a> {
 }
 
 impl Engine {
-    #[inline]
     fn run_uci(&mut self, command: &str) {
         for line in command.lines() {
             self.run_uci_line(line);
