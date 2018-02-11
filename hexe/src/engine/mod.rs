@@ -34,11 +34,23 @@ impl Engine {
 
 /// Chess engine options.
 pub struct Options {
+    num_threads: usize,
+}
+
+impl Options {
+    /// Set the number of threads to be used by the engine.
+    #[inline]
+    pub fn num_threads(mut self, num_threads: usize) -> Options {
+        self.num_threads = num_threads;
+        self
+    }
 }
 
 impl Default for Options {
     fn default() -> Options {
-        Options {}
+        Options {
+            num_threads: 0,
+        }
     }
 }
 
