@@ -9,9 +9,8 @@ fn main() {
     let mut eng = hexe::engine::Engine::default();
     let mut uci = eng.uci();
 
-    if args.len() == 0 {
-        uci.start();
-    } else {
-        uci.start_with(args);
+    match args.len() {
+        0 => uci.start(),
+        _ => uci.start_with(args),
     }
 }
