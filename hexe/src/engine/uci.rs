@@ -53,27 +53,6 @@ impl<'a> From<Engine> for Uci<'a> {
     }
 }
 
-impl<'a> Uci<'a> {
-    /// Returns a reference to the underlying engine over which `self` iterates.
-    #[inline]
-    pub fn engine(&self) -> &Engine {
-        match self.0 {
-            UciInner::Borrowed(ref engine) => engine,
-            UciInner::Owned(ref engine) => &**engine,
-        }
-    }
-
-    /// Returns a mutable reference to the underlying engine over which `self`
-    /// iterates.
-    #[inline]
-    pub fn engine_mut(&mut self) -> &mut Engine {
-        match self.0 {
-            UciInner::Borrowed(ref mut engine) => engine,
-            UciInner::Owned(ref mut engine) => &mut **engine,
-        }
-    }
-}
-
 struct Limits {
     ponder: bool,
     infinite: bool,
@@ -95,24 +74,42 @@ impl Default for Limits {
 
 type UciIter<'a> = str::SplitWhitespace<'a>;
 
-/// UCI related functionality.
-impl Engine {
-    /// Runs the UCI (Universal Chess Interface) loop.
+impl<'a> Uci<'a> {
+    /// Returns a reference to the underlying engine over which `self` iterates.
+    #[inline]
+    pub fn engine(&self) -> &Engine {
+        match self.0 {
+            UciInner::Borrowed(ref engine) => engine,
+            UciInner::Owned(ref engine) => &**engine,
+        }
+    }
+
+    /// Returns a mutable reference to the underlying engine over which `self`
+    /// iterates.
+    #[inline]
+    pub fn engine_mut(&mut self) -> &mut Engine {
+        match self.0 {
+            UciInner::Borrowed(ref mut engine) => engine,
+            UciInner::Owned(ref mut engine) => &mut **engine,
+        }
+    }
+
+    /// Runs the UCI loop.
     ///
     /// This method retains a lock on `stdin` until it exits. To feed lines
-    /// differently, use [`start_uci_with`](#method.start_uci_with).
-    pub fn start_uci(&mut self) {
+    /// differently, use [`start_with`](#method.start_with).
+    pub fn start(&mut self) {
         let stdin = io::stdin();
         let lines = stdin.lock()
                          .lines()
                          .filter_map(Result::ok);
-        self.start_uci_with(lines);
+        self.start_with(lines);
     }
 
     /// Runs the UCI (Universal Chess Interface) loop.
     ///
     /// UCI commands are fed via the `lines` iterator.
-    pub fn start_uci_with<I>(&mut self, lines: I)
+    pub fn start_with<I>(&mut self, lines: I)
         where I: IntoIterator,
               I::Item: AsRef<str>,
     {
@@ -123,38 +120,38 @@ impl Engine {
 
             match cmd {
                 "quit"       => return,
-                "uci"        => self.uci(),
-                "stop"       => self.uci_stop(),
-                "ponderhit"  => self.uci_ponder_hit(),
-                "position"   => self.uci_position(split),
-                "setoption"  => self.uci_set_option(split),
-                "ucinewgame" => self.uci_new_game(),
-                "go"         => self.uci_go(split),
+                "uci"        => self.cmd_uci(),
+                "stop"       => self.cmd_stop(),
+                "ponderhit"  => self.cmd_ponder_hit(),
+                "position"   => self.cmd_position(split),
+                "setoption"  => self.cmd_set_option(split),
+                "ucinewgame" => self.cmd_new_game(),
+                "go"         => self.cmd_go(split),
                 "isready"    => println!("readyok"),
                 _            => println!("Unknown command: {}", line),
             }
         }
     }
 
-    fn uci(&self) {
+    fn cmd_uci(&self) {
         println!(id!(name));
         println!(id!(authors));
         println!("uciok");
     }
 
-    fn uci_stop(&mut self) {
+    fn cmd_stop(&mut self) {
 
     }
 
-    fn uci_ponder_hit(&mut self) {
+    fn cmd_ponder_hit(&mut self) {
 
     }
 
-    fn uci_position(&mut self, _: UciIter) {
+    fn cmd_position(&mut self, _: UciIter) {
 
     }
 
-    fn uci_set_option(&mut self, mut iter: UciIter) {
+    fn cmd_set_option(&mut self, mut iter: UciIter) {
         iter.next(); // consume "name"
 
         let mut name  = String::new();
@@ -177,16 +174,16 @@ impl Engine {
             value.push_str(next);
         }
 
-        if !self.options.set(&name, &value) {
+        if !self.engine_mut().options.set(&name, &value) {
             println!("No such option: {}", name);
         }
     }
 
-    fn uci_new_game(&mut self) {
+    fn cmd_new_game(&mut self) {
 
     }
 
-    fn uci_go(&mut self, mut iter: UciIter) {
+    fn cmd_go(&mut self, mut iter: UciIter) {
         let mut limits = Limits::default();
         let mut moves  = Vec::<Move>::new();
 
@@ -201,7 +198,7 @@ impl Engine {
         while let Some(next) = iter.next() {
             match next {
                 "searchmoves" => while let Some(m) = iter.next() {
-                    if let Some(mv) = self.uci_read_move(m) {
+                    if let Some(mv) = self.cmd_read_move(m) {
                         moves.push(mv);
                     }
                 },
@@ -220,14 +217,14 @@ impl Engine {
             }
         }
 
-        self.uci_start_thinking(&limits, &moves);
+        self.cmd_start_thinking(&limits, &moves);
     }
 
-    fn uci_read_move(&self, s: &str) -> Option<Move> {
+    fn cmd_read_move(&self, s: &str) -> Option<Move> {
         None
     }
 
-    fn uci_start_thinking(&mut self, limits: &Limits, moves: &[Move]) {
+    fn cmd_start_thinking(&mut self, limits: &Limits, moves: &[Move]) {
 
     }
 }
