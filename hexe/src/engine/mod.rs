@@ -19,7 +19,10 @@ impl Default for Engine {
 
 impl Engine {
     /// Creates an instance of the engine.
-    pub fn new(options: Options) -> Engine {
+    pub fn new(mut options: Options) -> Engine {
+        if options.num_threads == 0 {
+            options.num_threads = ::num_cpus::get();
+        }
         Engine {
             options: options,
         }
@@ -39,6 +42,10 @@ pub struct Options {
 
 impl Options {
     /// Set the number of threads to be used by the engine.
+    ///
+    /// If `num_threads` is 0, or you do not call this function, then the number
+    /// of threads will be selected automatically. The default is the number of
+    /// logical CPUs.
     #[inline]
     pub fn num_threads(mut self, num_threads: usize) -> Options {
         self.num_threads = num_threads;

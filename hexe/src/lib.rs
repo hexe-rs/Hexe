@@ -61,6 +61,8 @@ pub extern crate hexe_core as core;
 #[allow(unused_imports)]
 use core::_shared::*;
 
+extern crate num_cpus;
+
 #[macro_use]
 extern crate uncon_derive;
 extern crate uncon;
