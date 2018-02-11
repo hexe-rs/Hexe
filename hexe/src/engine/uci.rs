@@ -111,7 +111,7 @@ impl<'a> Uci<'a> {
         }
     }
 
-    /// Runs the UCI loop, feeding commands via the iterator.
+    /// Runs the UCI loop, feeding commands from an iterator.
     pub fn start_with<I>(&mut self, commands: I)
         where I: IntoIterator,
               I::Item: AsRef<str>,
