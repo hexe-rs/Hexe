@@ -113,6 +113,7 @@ impl<'a> Uci<'a> {
         where I: IntoIterator,
               I::Item: AsRef<str>,
     {
+        let engine = self.engine_mut();
         for line in lines {
             let line      = line.as_ref();
             let mut split = line.split_whitespace();
@@ -120,19 +121,21 @@ impl<'a> Uci<'a> {
 
             match cmd {
                 "quit"       => return,
-                "uci"        => self.cmd_uci(),
-                "stop"       => self.cmd_stop(),
-                "ponderhit"  => self.cmd_ponder_hit(),
-                "position"   => self.cmd_position(split),
-                "setoption"  => self.cmd_set_option(split),
-                "ucinewgame" => self.cmd_new_game(),
-                "go"         => self.cmd_go(split),
+                "uci"        => engine.cmd_uci(),
+                "stop"       => engine.cmd_stop(),
+                "ponderhit"  => engine.cmd_ponder_hit(),
+                "position"   => engine.cmd_position(split),
+                "setoption"  => engine.cmd_set_option(split),
+                "ucinewgame" => engine.cmd_new_game(),
+                "go"         => engine.cmd_go(split),
                 "isready"    => println!("readyok"),
                 _            => println!("Unknown command: {}", line),
             }
         }
     }
+}
 
+impl Engine {
     fn cmd_uci(&self) {
         println!(id!(name));
         println!(id!(authors));
@@ -174,7 +177,7 @@ impl<'a> Uci<'a> {
             value.push_str(next);
         }
 
-        if !self.engine_mut().options.set(&name, &value) {
+        if !self.options.set(&name, &value) {
             println!("No such option: {}", name);
         }
     }
