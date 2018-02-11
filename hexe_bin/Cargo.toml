@@ -16,4 +16,4 @@ path = "src/main.rs"
 hexe = { path = "../hexe", version = "0.0.0" }
 
 [features]
-simd = ["hexe/simd",  "hexe_core/simd"]
+simd = ["hexe/simd"]
