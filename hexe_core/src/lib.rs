@@ -7,7 +7,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! hexe_core = "0.0.0"
+//! hexe_core = "0.0.1"
 //! ```
 //!
 //! and this to your crate root:
