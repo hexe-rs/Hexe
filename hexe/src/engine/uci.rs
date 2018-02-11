@@ -94,48 +94,65 @@ impl<'a> Uci<'a> {
         }
     }
 
-    /// Runs the UCI loop.
+    /// Runs the UCI loop, feeding commands from `stdin`.
     ///
-    /// This method retains a lock on `stdin` until it exits. To feed lines
+    /// This method retains a lock on `stdin` until it exits. To feed commands
     /// differently, use [`start_with`](#method.start_with).
     pub fn start(&mut self) {
         let stdin = io::stdin();
         let lines = stdin.lock()
                          .lines()
                          .filter_map(Result::ok);
-        self.start_with(lines);
+        let engine = self.engine_mut();
+        for line in lines {
+            engine.run_uci(&line);
+        }
     }
 
-    /// Runs the UCI (Universal Chess Interface) loop.
-    ///
-    /// UCI commands are fed via the `lines` iterator.
-    pub fn start_with<I>(&mut self, lines: I)
+    /// Runs the UCI loop, feeding commands via the iterator.
+    pub fn start_with<I>(&mut self, commands: I)
         where I: IntoIterator,
               I::Item: AsRef<str>,
     {
         let engine = self.engine_mut();
-        for line in lines {
-            let line      = line.as_ref();
-            let mut split = line.split_whitespace();
-            let cmd       = split.next().unwrap_or("");
-
-            match cmd {
-                "quit"       => return,
-                "uci"        => engine.cmd_uci(),
-                "stop"       => engine.cmd_stop(),
-                "ponderhit"  => engine.cmd_ponder_hit(),
-                "position"   => engine.cmd_position(split),
-                "setoption"  => engine.cmd_set_option(split),
-                "ucinewgame" => engine.cmd_new_game(),
-                "go"         => engine.cmd_go(split),
-                "isready"    => println!("readyok"),
-                _            => println!("Unknown command: {}", line),
-            }
+        for line in commands {
+            engine.run_uci(line.as_ref());
         }
+    }
+
+    /// Runs a single UCI command or multiple if newlines are found.
+    #[inline]
+    pub fn run(&mut self, command: &str) {
+        self.engine_mut().run_uci(command);
     }
 }
 
 impl Engine {
+    #[inline]
+    fn run_uci(&mut self, command: &str) {
+        for line in command.lines() {
+            self.run_uci_line(line);
+        }
+    }
+
+    fn run_uci_line(&mut self, line: &str) {
+        let mut split = line.split_whitespace();
+        let cmd       = split.next().unwrap_or("");
+
+        match cmd {
+            "quit"       => return,
+            "uci"        => self.cmd_uci(),
+            "stop"       => self.cmd_stop(),
+            "ponderhit"  => self.cmd_ponder_hit(),
+            "position"   => self.cmd_position(split),
+            "setoption"  => self.cmd_set_option(split),
+            "ucinewgame" => self.cmd_new_game(),
+            "go"         => self.cmd_go(split),
+            "isready"    => println!("readyok"),
+            _            => println!("Unknown command: {}", line),
+        }
+    }
+
     fn cmd_uci(&self) {
         println!(id!(name));
         println!(id!(authors));
