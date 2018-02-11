@@ -132,10 +132,18 @@ impl<'a> Uci<'a> {
     }
 }
 
+macro_rules! unknown_command {
+    ($cmd:expr) => { println!("Unknown command: {}", $cmd) }
+}
+
 impl Engine {
     fn run_uci(&mut self, command: &str) {
-        for line in command.lines() {
-            self.run_uci_line(line);
+        if command.is_empty() {
+            unknown_command!(command);
+        } else {
+            for line in command.lines() {
+                self.run_uci_line(line);
+            }
         }
     }
 
@@ -153,7 +161,7 @@ impl Engine {
             "ucinewgame" => self.cmd_new_game(),
             "go"         => self.cmd_go(split),
             "isready"    => println!("readyok"),
-            _            => println!("Unknown command: {}", line),
+            _            => unknown_command!(line),
         }
     }
 
