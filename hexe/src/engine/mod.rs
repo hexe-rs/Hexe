@@ -65,6 +65,29 @@ impl Options {
     /// Attempts to set the option of `name` to `value`. Returns `false` if
     /// `name` is not an option.
     fn set(&mut self, name: &str, value: &str) -> bool {
-        false
+        // Performs a case-insensitive check against the option
+        let match_option = |opt: &str| {
+            if name.len() == opt.len() {
+                let a = name.as_bytes().iter();
+                let b = opt.as_bytes().iter();
+                for (&a, &b) in a.zip(b) {
+                    if a | 32 != b {
+                        return false;
+                    }
+                }
+                true
+            } else {
+                false
+            }
+        };
+
+        if match_option("threads") {
+            if let Ok(val) = value.parse() {
+                self.num_threads = val;
+            }
+            true
+        } else {
+            false
+        }
     }
 }
