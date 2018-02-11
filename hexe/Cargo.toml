@@ -8,10 +8,10 @@ description = "A chess engine."
 documentation = "https://docs.rs/hexe"
 include = ["Cargo.toml", "src/**/*.rs", "README*", "CHANGELOG*", "LICENSE*"]
 
-[[bin]]
+[lib]
 name = "hexe"
 
-[lib]
+[[bin]]
 name = "hexe"
 
 [badges]
