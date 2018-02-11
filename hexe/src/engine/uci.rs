@@ -105,10 +105,7 @@ impl<'a> Uci<'a> {
         let lines = stdin.lock()
                          .lines()
                          .filter_map(Result::ok);
-        let engine = self.engine_mut();
-        for line in lines {
-            engine.run_uci(&line);
-        }
+        self.start_with(lines);
     }
 
     /// Runs the UCI loop, feeding commands from an iterator.
