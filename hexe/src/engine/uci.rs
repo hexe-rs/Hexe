@@ -124,7 +124,9 @@ impl<'a> Uci<'a> {
                          .filter_map(Result::ok);
         let engine = self.engine_mut();
         for line in lines {
-            engine.run_uci_line(&line);
+            if !engine.run_uci_line(&line) {
+                break;
+            }
         }
     }
 
@@ -171,15 +173,17 @@ impl Engine {
             unknown_command!(command);
         } else {
             for line in command.lines() {
-                self.run_uci_line(line);
+                if !self.run_uci_line(line) {
+                    break;
+                }
             }
         }
     }
 
-    fn run_uci_line(&mut self, line: &str) {
+    fn run_uci_line(&mut self, line: &str) -> bool {
         let mut split = line.split_whitespace();
         match split.next().unwrap_or("") {
-            "quit"       => return,
+            "quit"       => return false,
             "uci"        => self.cmd_uci(),
             "stop"       => self.cmd_stop(),
             "ponderhit"  => self.cmd_ponder_hit(),
@@ -190,6 +194,7 @@ impl Engine {
             "isready"    => println!("readyok"),
             _            => unknown_command!(line),
         }
+        true
     }
 
     fn cmd_uci(&self) {
