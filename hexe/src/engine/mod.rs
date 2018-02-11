@@ -4,6 +4,7 @@
 #![allow(unused_variables)]
 
 mod uci;
+pub use self::uci::Uci;
 
 /// An instance of the Hexe chess engine.
 pub struct Engine {

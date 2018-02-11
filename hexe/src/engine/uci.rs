@@ -20,6 +20,60 @@ macro_rules! id {
     }
 }
 
+/// Run the engine via the Universal Chess Interface.
+pub struct Uci<'a>(UciInner<'a>);
+
+/// A type like Cow with mutability and without the `Clone` restriction.
+///
+/// Whether the Engine is owned or mutably borrowed, there is no cost of getting
+/// a reference to the underlying engine.
+enum UciInner<'a> {
+    Borrowed(&'a mut Engine),
+    Owned(Box<Engine>),
+}
+
+impl<'a> From<&'a mut Engine> for Uci<'a> {
+    #[inline]
+    fn from(engine: &'a mut Engine) -> Uci<'a> {
+        Uci(UciInner::Borrowed(engine))
+    }
+}
+
+impl<'a> From<Box<Engine>> for Uci<'a> {
+    #[inline]
+    fn from(engine: Box<Engine>) -> Uci<'a> {
+        Uci(UciInner::Owned(engine))
+    }
+}
+
+impl<'a> From<Engine> for Uci<'a> {
+    #[inline]
+    fn from(engine: Engine) -> Uci<'a> {
+        Box::new(engine).into()
+    }
+}
+
+impl<'a> Uci<'a> {
+    /// Returns a reference to the underlying engine over which `self` iterates.
+    #[inline]
+    pub fn engine(&self) -> &Engine {
+        match self.0 {
+            UciInner::Borrowed(ref engine) => engine,
+            UciInner::Owned(ref engine) => &**engine,
+        }
+    }
+
+    /// Returns a mutable reference to the underlying engine over which `self`
+    /// iterates.
+    #[inline]
+    pub fn engine_mut(&mut self) -> &mut Engine {
+        match self.0 {
+            UciInner::Borrowed(ref mut engine) => engine,
+            UciInner::Owned(ref mut engine) => &mut **engine,
+        }
+    }
+}
+
 struct Limits {
     ponder: bool,
     infinite: bool,
