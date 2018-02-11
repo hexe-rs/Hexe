@@ -1,5 +1,8 @@
 //! The Hexe chess engine as a self-contained type.
 
+// TODO lint when everything is implemented
+#![allow(unused_variables)]
+
 mod uci;
 
 /// An instance of the Hexe chess engine.
