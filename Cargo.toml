@@ -3,3 +3,6 @@ members = [
     "hexe",
     "hexe_core",
 ]
+
+[profile.release]
+lto = true
