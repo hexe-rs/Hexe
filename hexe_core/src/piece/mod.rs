@@ -71,14 +71,14 @@ impl Piece {
 
     /// Returns the `PieceKind` for the `Piece`.
     #[inline]
-    pub fn kind(&self) -> PieceKind {
-        unsafe { PieceKind::from_unchecked((*self as u8) >> 1) }
+    pub fn kind(self) -> PieceKind {
+        unsafe { PieceKind::from_unchecked((self as u8) >> 1) }
     }
 
     /// Returns the `Color` for the `Piece`.
     #[inline]
-    pub fn color(&self) -> Color {
-        ((*self as u8) & 1).into()
+    pub fn color(self) -> Color {
+        ((self as u8) & 1).into()
     }
 
     /// Converts `self` into a character.

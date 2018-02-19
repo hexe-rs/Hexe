@@ -597,13 +597,13 @@ impl PieceMap {
     /// Returns the color of the piece at the given square, if any.
     #[inline]
     pub fn color_at(&self, sq: Square) -> Option<Color> {
-        self.get(sq).map(Piece::color)
+        self.get(sq).map(|p| p.color())
     }
 
     /// Returns the kind of the piece at the given square, if any.
     #[inline]
     pub fn kind_at(&self, sq: Square) -> Option<PieceKind> {
-        self.get(sq).map(Piece::kind)
+        self.get(sq).map(|p| p.kind())
     }
 
     /// Returns the result of applying a function to a mutable string
