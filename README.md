@@ -17,19 +17,25 @@
 [![Build Status][travis-badge]][travis]
 ![LoC](https://tokei.rs/b1/github/hexe-rs/Hexe)
 
-This project is split into two crates
+## What is Hexe?
 
-- **[ lib + bin ]** [`hexe`]: The chess engine itself.
+Hexe is an open-source chess engine written in Rust. It is written primarily as
+a library, with a executable that directly utilizes that library. This project
+is split into two packages (crates):
 
-    - Specialized for Hexe's use cases.
+- **[ lib + bin ]** [`hexe`]: The chess engine itself
 
-- **[ lib ]** [`hexe_core`]: The chess engine's building blocks.
+    - Specialized for Hexe's use cases
 
-    - Supports `no_std` builds.
+    - Contains all code used run the executable
 
-    - May be used by other chess programs for ease of code reuse.
+- **[ lib ]** [`hexe_core`]: The chess engine's building blocks
 
-## Why Hexe?
+    - Supports `no_std` builds
+
+    - May be used by other chess programs for ease of code reuse
+
+## Why "Hexe"?
 
 1. "Hexe" is German for witch. It denotes the use of magic bitboards within this
 project.
