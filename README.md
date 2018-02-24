@@ -20,7 +20,7 @@
 ## What is Hexe?
 
 Hexe is an open-source chess engine written in Rust. It is written primarily as
-a library, with a executable that directly utilizes that library. This project
+a library, with an executable that directly utilizes that library. This project
 is split into two packages (crates):
 
 - **[ lib + bin ]** [`hexe`]: The chess engine itself
