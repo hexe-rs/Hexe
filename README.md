@@ -27,7 +27,7 @@ is split into two packages (crates):
 
     - Specialized for Hexe's use cases
 
-    - Contains all code used run the executable
+    - Contains all code used to run the executable
 
 - **[ lib ]** [`hexe_core`]: The chess engine's building blocks
 
