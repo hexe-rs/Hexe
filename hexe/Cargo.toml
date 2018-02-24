@@ -6,6 +6,7 @@ license = "MIT/Apache-2.0"
 repository = "https://github.com/hexe-rs/Hexe"
 description = "A chess engine."
 documentation = "https://docs.rs/hexe"
+keywords = ["chess", "engine", "ai", "magic"]
 include = ["Cargo.toml", "src/**/*.rs", "README*", "CHANGELOG*", "LICENSE*"]
 
 [lib]
