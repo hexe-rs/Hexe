@@ -45,6 +45,26 @@ technology is indistinguishable from magic."
 
 3. If she weighs the same as a duck... she's made of wood. And therefore...
 
+## Features
+
+The goal of this project is to have the following features:
+
+### [`hexe`]
+
+- [x] UCI compatibility
+- [ ] Aspiration Windows
+- [ ] Iterative Deepening
+- [ ] Killer Moves
+- [ ] Minimax with Alpha-Beta pruning
+- [ ] Null Move Heuristic
+- [ ] Transposition Tables
+- [ ] Work-stealing multi-threaded search
+
+### [`hexe_core`]
+
+- [x] Bitboard and square-to-piece map chess board representations
+- [x] Lookup tables and magic Bitboards without runtime initialization
+
 ## License
 
 Hexe is licensed under either of
