@@ -2,8 +2,6 @@
 
 set -e
 
-CRATES="hexe_core hexe"
-
 if [[ -n "$CLIPPY" ]]; then
     if ! cargo install clippy --debug --force; then
         echo "COULD NOT COMPILE CLIPPY, IGNORING CLIPPY TESTS"
@@ -11,7 +9,7 @@ if [[ -n "$CLIPPY" ]]; then
     fi
 
     DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    for crate in $CRATES; do
+    for crate in hexe_core hexe; do
         cd "$DIR/$crate"
         cargo clippy -- -Dclippy
     done
@@ -23,8 +21,7 @@ else
         TARGET_ARGS="--target $TARGET"
     fi
 
-    for crate in $CRATES; do
-        cargo test -p $crate $TARGET_ARGS $FEATURES
-        cargo test -p $crate $TARGET_ARGS $FEATURES --no-default-features
-    done
+    cargo test $TARGET_ARGS -p hexe      $FEATURES
+    cargo test $TARGET_ARGS -p hexe_core $FEATURES
+    cargo test $TARGET_ARGS -p hexe_core $FEATURES --no-default-features
 fi
