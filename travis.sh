@@ -2,8 +2,6 @@
 
 set -e
 
-DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
 CRATES="hexe_core hexe"
 
 if [[ -n "$CLIPPY" ]]; then
@@ -12,6 +10,7 @@ if [[ -n "$CLIPPY" ]]; then
         exit
     fi
 
+    DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     for crate in $CRATES; do
         cd "$DIR/$crate"
         cargo clippy -- -Dclippy
@@ -25,8 +24,7 @@ else
     fi
 
     for crate in $CRATES; do
-        cd "$DIR/$crate"
-        cargo test $TARGET_ARGS $FEATURES
-        cargo test $TARGET_ARGS $FEATURES --no-default-features
+        cargo test -p $crate $TARGET_ARGS $FEATURES
+        cargo test -p $crate $TARGET_ARGS $FEATURES --no-default-features
     done
 fi
