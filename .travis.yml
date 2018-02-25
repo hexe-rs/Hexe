@@ -9,18 +9,22 @@ rust:
 
 matrix:
   include:
+    # Test 32-bit Linux
     - rust: stable
       env: TARGET="i686-unknown-linux-gnu"
       addons:
         apt:
           packages:
             - gcc-multilib
+    # Test 64-bit macOS
     - rust: stable
       os: osx
+    # Test extra features
     - rust: stable
       env: FEATURES="--features serde"
     - rust: nightly
       env: FEATURES="--features simd"
+    # Run linter
     - rust: nightly
       env: CLIPPY="true"
 
