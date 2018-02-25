@@ -14,7 +14,8 @@
 
 <p align="center"><em>(pronounced "Hekseh")</em></p>
 
-[![Build Status][travis-badge]][travis]
+[![Travis Status][travis-badge]][travis]
+[![AppVeyor Status][appv-badge]][appv]
 ![LoC](https://tokei.rs/b1/github/hexe-rs/Hexe)
 
 ## What is Hexe?
@@ -83,6 +84,8 @@ at your choosing.
 
 [travis]:       https://travis-ci.org/hexe-rs/Hexe
 [travis-badge]: https://travis-ci.org/hexe-rs/Hexe.svg?branch=master
+[appv]:         https://ci.appveyor.com/project/nvzqz/hexe
+[appv-badge]:   https://ci.appveyor.com/api/projects/status/github/hexe-rs/Hexe?svg=true
 
 [license-apache]: https://github.com/hexe-rs/Hexe/blob/master/LICENSE-APACHE
 [license-mit]: https://github.com/hexe-rs/Hexe/blob/master/LICENSE-MIT
