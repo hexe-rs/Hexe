@@ -36,6 +36,6 @@ install:
 build: false
 
 test_script:
-  - cargo test -p hexe      %FEATURES%
-  - cargo test -p hexe_core %FEATURES%
-  - cargo test -p hexe_core %FEATURES% --no-default-features
+  - cargo test -p hexe
+  - cargo test -p hexe_core
+  - cargo test -p hexe_core --no-default-features
