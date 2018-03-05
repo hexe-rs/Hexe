@@ -448,7 +448,15 @@ impl PieceMap {
         self.0 = [NONE; SQUARE_NUM];
     }
 
-    /// Efficiently removes all pieces from the given rank.
+    /// Removes all pieces from the given file.
+    #[inline]
+    pub fn clear_file(&mut self, file: File) {
+        for rank in self.inner_2d_mut() {
+            rank[file as usize] = NONE;
+        }
+    }
+
+    /// Removes all pieces from the given rank.
     #[inline]
     pub fn clear_rank(&mut self, rank: Rank) {
         self.inner_2d_mut()[rank as usize] = [NONE; 8];
