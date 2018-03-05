@@ -31,6 +31,8 @@
 #![allow(cast_lossless)]
 #![allow(explicit_into_iter_loop)]
 #![allow(inline_always)]
+#![allow(redundant_field_names)]
+#![allow(suspicious_arithmetic_impl)]
 #![allow(unreadable_literal)]
 #![allow(verbose_bit_mask)]
 #![deny(bool_comparison)]
