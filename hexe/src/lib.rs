@@ -43,6 +43,7 @@
 #![deny(missing_docs)]
 
 // Clippy
+#![allow(redundant_field_names)]
 #![allow(unreadable_literal)]
 
 // Attributes //////////////////////////////////////////////////////////////////
