@@ -1,7 +1,7 @@
 //! A square to piece mapping for fast square lookups.
 
 use super::*;
-use core::{fmt, mem, ops, ptr};
+use core::{fmt, hash, mem, ops, ptr};
 use consts::PTR_SIZE;
 use misc::Contained;
 use prelude::*;
@@ -98,6 +98,13 @@ impl Default for PieceMap {
     #[inline]
     fn default() -> PieceMap {
         PieceMap::EMPTY
+    }
+}
+
+impl hash::Hash for PieceMap {
+    #[inline]
+    fn hash<H: hash::Hasher>(&self, state: &mut H) {
+        state.write(&self.0);
     }
 }
 
