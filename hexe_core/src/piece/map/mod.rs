@@ -411,8 +411,8 @@ impl PieceMap {
         static SQUARES: [[(Square, Square); 2]; 4] = [
             // King, Rook
             [(Square::E1, Square::G1), (Square::H1, Square::F1)],
-            [(Square::E8, Square::G8), (Square::H8, Square::F8)],
             [(Square::E1, Square::C1), (Square::A1, Square::D1)],
+            [(Square::E8, Square::G8), (Square::H8, Square::F8)],
             [(Square::E8, Square::C8), (Square::A8, Square::D8)],
         ];
         let squares = &SQUARES[castling as usize];
@@ -940,6 +940,58 @@ mod tests {
 
         for &fail in &fails {
             assert_eq!(None, PieceMap::from_fen(fail));
+        }
+    }
+
+    #[test]
+    fn castle() {
+        macro_rules! test {
+            (
+                right: $right:ident;
+                clear: $($cs:ident),+;
+                empty: $($es:ident),+;
+                king:  $king:ident;
+                rook:  $rook:ident;
+            ) => { {
+                let mut map = PieceMap::STANDARD;
+                let right   = CastleRight::$right;
+                let color   = right.color();
+                let king    = Piece::new(PieceKind::King, color);
+                let rook    = Piece::new(PieceKind::Rook, color);
+                $(map.remove(Square::$cs);)+
+                map.castle(right);
+                $(assert!(!map.contains(Square::$es));)+
+                assert_eq!(map[Square::$king], king);
+                assert_eq!(map[Square::$rook], rook);
+            } }
+        }
+        test! {
+            right: WhiteQueenside;
+            clear: B1, C1, D1;
+            empty: A1, B1, E1;
+            king:  C1;
+            rook:  D1;
+        }
+        test! {
+            right: WhiteKingside;
+            clear: F1, G1;
+            empty: E1, H1;
+            king:  G1;
+            rook:  F1;
+        }
+        test! {
+            right: BlackQueenside;
+            clear: B8, C8, D8;
+            empty: A8, B8, E8;
+            king:  C8;
+            rook:  D8;
+        }
+        test! {
+            right: BlackKingside;
+            clear: F8, G8;
+            empty: E8, H8;
+            king:  G8;
+            rook:  F8;
         }
     }
 }
