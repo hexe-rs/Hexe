@@ -10,19 +10,25 @@ struct Magic {
     idx: usize, // Offset
 }
 
+impl Magic {
+    #[inline]
+    fn index(&self, occupied: u64, shift: u8) -> usize {
+        let val = (occupied & self.mask).wrapping_mul(self.num);
+        ((val >> (64 - shift)) as usize).wrapping_add(self.idx)
+    }
+}
+
 #[inline]
-fn attacks(magic: &Magic, occupied: Bitboard, shift: u8) -> u64 {
-    let val = (occupied.0 & magic.mask).wrapping_mul(magic.num) >> (64 - shift);
-    let idx = (val as usize).wrapping_add(magic.idx);
-    unsafe { *tables::ATTACKS.get_unchecked(idx) }
+fn attacks(magic: &Magic, occupied: u64, shift: u8) -> u64 {
+    unsafe { *tables::ATTACKS.get_unchecked(magic.index(occupied, shift)) }
 }
 
 #[inline]
 pub fn rook_attacks(square: Square, occupied: Bitboard) -> Bitboard {
-    attacks(&tables::MAGICS[0][square as usize], occupied, 12).into()
+    attacks(&tables::MAGICS[0][square as usize], occupied.0, 12).into()
 }
 
 #[inline]
 pub fn bishop_attacks(square: Square, occupied: Bitboard) -> Bitboard {
-    attacks(&tables::MAGICS[1][square as usize], occupied, 9).into()
+    attacks(&tables::MAGICS[1][square as usize], occupied.0, 9).into()
 }
