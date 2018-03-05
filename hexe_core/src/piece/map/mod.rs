@@ -406,8 +406,11 @@ impl PieceMap {
     }
 
     /// Performs a **blind** castle of the pieces for the castling right.
+    ///
+    /// Under legal castling circumstances, this method makes it so that squares
+    /// involved with castling using `right` are in a correct state post-castle.
     #[inline]
-    pub fn castle(&mut self, castling: CastleRight) {
+    pub fn castle(&mut self, right: CastleRight) {
         static SQUARES: [[(Square, Square); 2]; 4] = [
             // King, Rook
             [(Square::E1, Square::G1), (Square::H1, Square::F1)],
@@ -415,7 +418,7 @@ impl PieceMap {
             [(Square::E8, Square::G8), (Square::H8, Square::F8)],
             [(Square::E8, Square::C8), (Square::A8, Square::D8)],
         ];
-        let squares = &SQUARES[castling as usize];
+        let squares = &SQUARES[right as usize];
         let (k1, k2) = squares[0];
         let (r1, r2) = squares[1];
         self.relocate(k1, k2);
