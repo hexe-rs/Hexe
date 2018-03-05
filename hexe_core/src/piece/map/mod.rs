@@ -948,6 +948,17 @@ mod tests {
 
     #[test]
     fn castle() {
+        fn affected_range(right: CastleRight) -> ops::Range<usize> {
+            match right {
+                CastleRight::WhiteKingside  => 4..8,
+                CastleRight::WhiteQueenside => 0..5,
+                CastleRight::BlackKingside  => 60..64,
+                CastleRight::BlackQueenside => 56..61,
+            }
+        }
+
+        let original = PieceMap::STANDARD;
+
         macro_rules! test {
             (
                 right: $right:ident;
@@ -956,7 +967,7 @@ mod tests {
                 king:  $king:ident;
                 rook:  $rook:ident;
             ) => { {
-                let mut map = PieceMap::STANDARD;
+                let mut map = original.clone();
                 let right   = CastleRight::$right;
                 let color   = right.color();
                 let king    = Piece::new(PieceKind::King, color);
@@ -966,6 +977,12 @@ mod tests {
                 $(assert!(!map.contains(Square::$es));)+
                 assert_eq!(map[Square::$king], king);
                 assert_eq!(map[Square::$rook], rook);
+
+                let range = affected_range(right);
+                let start = ..range.start;
+                let end   = range.end..SQUARE_NUM;
+                assert_eq!(&map.0[start.clone()], &original.0[start]);
+                assert_eq!(&map.0[end.clone()],   &original.0[end]);
             } }
         }
         test! {
