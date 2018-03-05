@@ -411,18 +411,30 @@ impl PieceMap {
     /// involved with castling using `right` are in a correct state post-castle.
     #[inline]
     pub fn castle(&mut self, right: CastleRight) {
-        static SQUARES: [[(Square, Square); 2]; 4] = [
-            // King, Rook
-            [(Square::E1, Square::G1), (Square::H1, Square::F1)],
-            [(Square::E1, Square::C1), (Square::A1, Square::D1)],
-            [(Square::E8, Square::G8), (Square::H8, Square::F8)],
-            [(Square::E8, Square::C8), (Square::A8, Square::D8)],
+        use piece::Piece::*;
+        use square::Square::*;
+
+        macro_rules! quad {
+            ($a:expr, $b:expr, $c:expr, $d:expr) => {
+                (($d as u32) << 24) |
+                (($c as u32) << 16) |
+                (($b as u32) << 8)  |
+                ( $a as u32)
+            }
+        }
+
+        static VALUES: [(u32, Square, Square); 4] = [
+            (quad!(NONE, WhiteRook, WhiteKing, NONE),      E1, E1),
+            (quad!(NONE, NONE,      WhiteKing, WhiteRook), E1, A1),
+            (quad!(NONE, BlackRook, BlackKing, NONE),      E8, E8),
+            (quad!(NONE, NONE,      BlackKing, BlackRook), E8, A8),
         ];
-        let squares = &SQUARES[right as usize];
-        let (k1, k2) = squares[0];
-        let (r1, r2) = squares[1];
-        self.relocate(k1, k2);
-        self.relocate(r1, r2);
+
+        let (val, king_sq, start_sq) = VALUES[right as usize];
+        self.remove(king_sq);
+
+        let ptr = &mut self.0[start_sq as usize] as *mut u8 as *mut u32;
+        unsafe { *ptr = val };
     }
 
     /// Inserts all pieces for which the function returns `Some`.
