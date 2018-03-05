@@ -556,21 +556,17 @@ impl PieceMap {
     /// Returns the first square for the piece.
     #[inline]
     pub fn find(&self, pc: Piece) -> Option<Square> {
-        if let Some(index) = ::memchr::memchr(pc as u8, &self.0) {
-            unsafe { Some(index.into_unchecked()) }
-        } else {
-            None
-        }
+        ::memchr::memchr(pc as u8, &self.0).map(|index| unsafe {
+            index.into_unchecked()
+        })
     }
 
     /// Returns the last square for the piece.
     #[inline]
     pub fn rfind(&self, pc: Piece) -> Option<Square> {
-        if let Some(index) = ::memchr::memrchr(pc as u8, &self.0) {
-            unsafe { Some(index.into_unchecked()) }
-        } else {
-            None
-        }
+        ::memchr::memrchr(pc as u8, &self.0).map(|index| unsafe {
+            index.into_unchecked()
+        })
     }
 
     /// Gets the given square's corresponding entry in the map for in-place
