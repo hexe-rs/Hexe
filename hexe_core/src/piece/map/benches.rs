@@ -1,7 +1,10 @@
 use super::{Piece, PieceMap};
+
 use test::{Bencher, black_box};
 use rand::{Rng, self};
 
+use castle_rights::CastleRight;
+use iter::AllIterable;
 use square::Square;
 
 macro_rules! piece_map {
@@ -142,5 +145,16 @@ fn fen(b: &mut Bencher) {
         black_box(&map).map_str(|s| {
             black_box(s);
         });
+    });
+}
+
+#[bench]
+fn castle(b: &mut Bencher) {
+    b.iter(|| {
+        let mut map = PieceMap::EMPTY;
+        for right in CastleRight::ALL {
+            black_box(&mut map).castle(right);
+        }
+        black_box(&mut map);
     });
 }
