@@ -151,7 +151,7 @@ fn fen(b: &mut Bencher) {
 #[bench]
 fn castle(b: &mut Bencher) {
     b.iter(|| {
-        let mut map = PieceMap::EMPTY;
+        let mut map = PieceMap([super::NONE; 64]);
         for right in CastleRight::ALL {
             black_box(&mut map).castle(right);
         }
