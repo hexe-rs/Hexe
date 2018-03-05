@@ -423,18 +423,23 @@ impl PieceMap {
             }
         }
 
-        static VALUES: [(u32, Square, Square); 4] = [
-            (quad!(NONE, WhiteRook, WhiteKing, NONE),      E1, E1),
-            (quad!(NONE, NONE,      WhiteKing, WhiteRook), E1, A1),
-            (quad!(NONE, BlackRook, BlackKing, NONE),      E8, E8),
-            (quad!(NONE, NONE,      BlackKing, BlackRook), E8, A8),
-        ];
+        struct Values { value: [u32; 4], pairs: [(Square, Square); 4] }
 
-        let (val, king_sq, start_sq) = VALUES[right as usize];
+        static VALUES: Values = Values {
+            value: [
+                quad!(NONE, WhiteRook, WhiteKing, NONE),
+                quad!(NONE, NONE,      WhiteKing, WhiteRook),
+                quad!(NONE, BlackRook, BlackKing, NONE),
+                quad!(NONE, NONE,      BlackKing, BlackRook),
+            ],
+            pairs: [(E1, E1), (E1, A1), (E8, E8), (E8, A8)],
+        };
+
+        let (king_sq, start_sq) = VALUES.pairs[right as usize];
         self.remove(king_sq);
 
         let ptr = &mut self.0[start_sq as usize] as *mut u8 as *mut u32;
-        unsafe { *ptr = val };
+        unsafe { *ptr = VALUES.value[right as usize] };
     }
 
     /// Inserts all pieces for which the function returns `Some`.
