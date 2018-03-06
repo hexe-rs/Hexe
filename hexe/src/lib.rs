@@ -18,7 +18,6 @@
 //! # fn main() {}
 //! ```
 //!
-//!
 //! # Using `hexe_core`
 //!
 //! This crate reexports the [`hexe_core`] crate as `hexe::core`. Its most
@@ -29,6 +28,14 @@
 //! ```
 //! use hexe::core as hexe_core;
 //! ```
+//!
+//! ## What `hexe_core` Provides
+//!
+//! - [Various board representations](https://docs.rs/hexe_core#board-representation)
+//!
+//! - [Dead.](https://docs.rs/hexe_core/0.0.2/hexe_core/castle_rights/struct.CastleRights.html)
+//!   [Simple.](https://docs.rs/hexe_core/0.0.2/hexe_core/square/enum.Square.html)
+//!   [Primitives.](https://docs.rs/hexe_core/0.0.2/hexe_core/piece/enum.Piece.html)
 //!
 //! [crate]: https://crates.io/crates/hexe
 //! [`hexe_core`]: https://docs.rs/hexe_core
