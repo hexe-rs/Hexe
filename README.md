@@ -66,6 +66,21 @@ The goal of this project is to have the following features:
 - [x] Bitboard and square-to-piece map chess board representations
 - [x] Lookup tables and magic Bitboards without runtime initialization
 
+### Cross-Platform Compatibility
+
+Hexe is written to be available for the main platforms that Rust compiles to.
+`hexe` and `hexe_core` are both automatically tested—separately—against all
+[Tier 1 platforms][tier1]. As of this writing, they are:
+
+| Platform   | Version      | Bits  |
+| :--------- | :----------- | :---- |
+| macOS      | 10.7+, Lion+ | 32/64 |
+| MinGw/MSVC | Windows 7+   | 32/64 |
+| Linux      | 2.6.18+      | 32/64 |
+
+`hexe_core` is designed to not require [the Rust standard library][std]. Because
+of this, it is compatible with all platforms that stable Rust compiles to.
+
 ### Cross-Language Compatibility
 
 Hexe wrappers are currently available in the following languages:
@@ -97,4 +112,6 @@ at your choosing.
 [license-apache]: https://github.com/hexe-rs/Hexe/blob/master/LICENSE-APACHE
 [license-mit]: https://github.com/hexe-rs/Hexe/blob/master/LICENSE-MIT
 
+[std]:         https://doc.rust-lang.org/std/
+[tier1]:       https://forge.rust-lang.org/platform-support.html#tier-1
 [clarke-laws]: https://en.wikipedia.org/wiki/Clarke%27s_three_laws
