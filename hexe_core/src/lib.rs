@@ -130,6 +130,7 @@ pub mod fen;
 pub mod iter;
 pub mod misc;
 pub mod piece;
+pub mod seg_board;
 pub mod square;
 
 // Modules shared with hexe that aren't meant for public use
