@@ -262,6 +262,16 @@ impl Bitboard {
     /// Black board squares.
     pub const BLACK: Bitboard = Bitboard(0xAA55AA55AA55AA55);
 
+    #[inline]
+    pub(crate) fn convert_ref(x: &u64) -> &Bitboard {
+        unsafe { x.into_unchecked() }
+    }
+
+    #[inline]
+    pub(crate) fn convert_mut(x: &mut u64) -> &mut Bitboard {
+        unsafe { x.into_unchecked() }
+    }
+
     /// Generates a random bitboard with few bits set.
     #[inline]
     #[cfg(any(test, feature = "rand"))]
