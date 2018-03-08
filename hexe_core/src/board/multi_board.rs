@@ -105,8 +105,34 @@ impl MultiBoard {
 
     /// Performs a **blind** castle of the pieces for the castling right.
     ///
+    /// # Invariants
+    ///
     /// Under legal castling circumstances, this method makes it so that squares
     /// involved with castling using `right` are in a correct state post-castle.
+    ///
+    /// There are some cases where the board state may be invalidated if the
+    /// above invariant isn't correctly met:
+    ///
+    /// - If he king is not in its initial position, then a king will spawn
+    ///   both where it was expected to be, as well as where it would move to.
+    ///   The same will happen when the rook is not at its corner of the board.
+    ///
+    /// - If another rook is located where the castling rook is being moved to
+    ///   then both rooks will be removed.
+    ///
+    /// - If any other pieces are located at the involved squares, then other
+    ///   strange things will happen.
+    ///
+    /// The above are all the result of properly defined behavior. They are just
+    /// side effects of how the board is represented and this use of [XOR].
+    ///
+    /// # Undo-Redo
+    ///
+    /// Because this method internally uses [XOR], it is its own inverse. If the
+    /// involved king and rook sit at their destination squares, they will be
+    /// moved back to their initial squares.
+    ///
+    /// [XOR]: https://en.wikipedia.org/wiki/Exclusive_or
     #[inline]
     pub fn castle(&mut self, right: CastleRight) {
         // (King, Rook)
