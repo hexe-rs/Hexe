@@ -78,6 +78,12 @@ impl SegBoard {
     /// The board for standard chess.
     pub const STANDARD: SegBoard = values::STANDARD;
 
+    /// Clears the board of all pieces.
+    #[inline]
+    pub fn clear(&mut self) {
+        unsafe { ::util::zero(self) }
+    }
+
     /// Returns references to the underlying bitboards for `Color` and
     /// `PieceKind`, respectively.
     #[inline]
