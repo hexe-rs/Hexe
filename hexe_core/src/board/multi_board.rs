@@ -3,8 +3,10 @@
 use core::{ops, mem};
 
 use board::Bitboard;
+use castle_rights::CastleRight;
 use color::Color;
 use piece::PieceKind;
+use square::Square;
 
 const NUM_PIECES: usize = 6;
 const NUM_COLORS: usize = 2;
@@ -100,5 +102,31 @@ impl MultiBoard {
         let colors = &mut self.colors as *mut _ as *mut _;
         let pieces = &mut self.pieces as *mut _ as *mut _;
         unsafe { (&mut *colors, &mut *pieces) }
+    }
+
+    /// Performs a **blind** castle of the pieces for the castling right.
+    ///
+    /// Under legal castling circumstances, this method makes it so that squares
+    /// involved with castling using `right` are in a correct state post-castle.
+    #[inline]
+    pub fn castle(&mut self, right: CastleRight) {
+        use self::Square::*;
+
+        macro_rules! mask {
+            ($s1:expr, $s2:expr) => { (1 << $s1 as u64) | (1 << $s2 as u64) }
+        }
+
+        // (King, Rook)
+        static MASKS: [(u64, u64); 4] = [
+            (mask!(E1, G1), mask!(H1, F1)),
+            (mask!(E1, C1), mask!(A1, D1)),
+            (mask!(E8, G8), mask!(H8, F8)),
+            (mask!(E8, C8), mask!(A8, D8)),
+        ];
+
+        let (king, rook) = MASKS[right as usize];
+        self[right.color()]   ^= king | rook;
+        self[PieceKind::King] ^= king;
+        self[PieceKind::Rook] ^= rook;
     }
 }
