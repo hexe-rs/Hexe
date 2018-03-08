@@ -298,18 +298,6 @@ impl Bitboard {
         self.0.contains_zero_byte()
     }
 
-    /// Returns whether the rank in `self` is empty.
-    #[inline]
-    pub fn rank_is_empty(self, rank: Rank) -> bool {
-        (self.0 >> ((rank as usize) << 3)) & masks::RANK_1.0 == 0
-    }
-
-    /// Returns whether the file in `self` is empty.
-    #[inline]
-    pub fn file_is_empty(self, file: File) -> bool {
-        (self.0 >> file as usize) & masks::FILE_A.0 == 0
-    }
-
     /// Returns whether the path for `right` is empty within `self`.
     #[inline]
     pub fn path_is_empty(self, right: CastleRight) -> bool {
@@ -449,42 +437,5 @@ impl Bitboard {
             unsafe { *buf.get_unchecked_mut(idx) = b'1' };
         }
         unsafe { f(str::from_utf8_unchecked_mut(&mut buf)) }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn component_is_empty() {
-        use self::masks::*;
-
-        macro_rules! test {
-            ($t:ident, $meth:ident, $empties:expr) => {
-                let empties = $empties;
-                for val in $t::ALL {
-                    let mut value = Bitboard::FULL;
-                    let mut check = |slice| {
-                        for &x in slice {
-                            value &= x;
-                            assert!(value.$meth(val));
-                        }
-                    };
-                    check(&empties[(val as usize)..]);
-                    check(&empties[..(val as usize)]);
-                }
-            }
-        }
-
-        test!(File, file_is_empty, [
-           !FILE_A, !FILE_B, !FILE_C, !FILE_D,
-           !FILE_E, !FILE_F, !FILE_G, !FILE_H,
-        ]);
-
-        test!(Rank, rank_is_empty, [
-           !RANK_1, !RANK_2, !RANK_3, !RANK_4,
-           !RANK_5, !RANK_6, !RANK_7, !RANK_8,
-        ]);
     }
 }
