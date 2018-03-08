@@ -458,11 +458,11 @@ mod tests {
 
     #[test]
     fn file_is_empty() {
+        use self::masks::*;
+
         static EMPTIES: [u64; 8] = [
-            0xFEFEFEFEFEFEFEFE, 0xFDFDFDFDFDFDFDFC,
-            0xFBFBFBFBFBFBFBF8, 0xF7F7F7F7F7F7F7F0,
-            0xEFEFEFEFEFEFEFE0, 0xDFDFDFDFDFDFDFC0,
-            0xBFBFBFBFBFBFBF80, 0x7F7F7F7F7F7F7F00,
+            !FILE_A.0, !FILE_B.0, !FILE_C.0, !FILE_D.0,
+            !FILE_E.0, !FILE_F.0, !FILE_G.0, !FILE_H.0,
         ];
 
         for file in File::ALL {
