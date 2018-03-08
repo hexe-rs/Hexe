@@ -1,6 +1,6 @@
 //! A chess game state position.
 
-use core::board::PieceMap;
+use core::board::{MultiBoard, PieceMap};
 use core::misc::Contained;
 use prelude::*;
 
@@ -28,11 +28,8 @@ pub struct Position {
     /// A piece map board representation for fast lookups.
     piece_map: PieceMap,
 
-    /// Bitboards for each piece kind.
-    pieces: [Bitboard; 6],
-
-    /// Bitboards for each color.
-    colors: [Bitboard; 2],
+    /// Bitboards for each color and piece kind.
+    board: MultiBoard,
 
     /// The color for the player whose turn it is.
     player: Color,
@@ -52,20 +49,10 @@ impl Eq for Position {}
 
 impl Default for Position {
     fn default() -> Position {
-        const PAWN:   Bitboard = Bitboard(0x00FF00000000FF00);
-        const KNIGHT: Bitboard = Bitboard(0x4200000000000042);
-        const BISHOP: Bitboard = Bitboard(0x2400000000000024);
-        const ROOK:   Bitboard = Bitboard(0x8100000000000081);
-        const QUEEN:  Bitboard = Bitboard(0x0800000000000008);
-        const KING:   Bitboard = Bitboard(0x1000000000000010);
-        const WHITE:  Bitboard = Bitboard(0x000000000000FFFF);
-        const BLACK:  Bitboard = Bitboard(0xFFFF000000000000);
-
         Position {
             state: State::default(),
             piece_map: PieceMap::STANDARD,
-            pieces: [PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING],
-            colors: [WHITE, BLACK],
+            board: MultiBoard::STANDARD,
             player: Color::White,
         }
     }
@@ -233,14 +220,14 @@ pub trait BitboardRetriever {
 impl BitboardRetriever for PieceKind {
     #[inline]
     fn bitboard(self, pos: &Position) -> Bitboard {
-        pos.pieces[self as usize]
+        pos.board[self]
     }
 }
 
 impl BitboardRetriever for Color {
     #[inline]
     fn bitboard(self, pos: &Position) -> Bitboard {
-        pos.colors[self as usize]
+        pos.board[self]
     }
 }
 
@@ -267,7 +254,8 @@ mod tests {
                 assert!(pos.bitboard(piece.kind()).contains(square));
                 assert!(pos.bitboard(piece.color()).contains(square));
             } else {
-                for &slice in &[&pos.pieces[..], &pos.colors[..]] {
+                let (a, b) = pos.board.split();
+                for &slice in &[&a[..], &b[..]] {
                     for &bitboard in slice {
                         assert!(!bitboard.contains(square));
                     }
