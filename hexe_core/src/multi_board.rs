@@ -21,7 +21,7 @@ mod values {
     const WHITE:  u64 = 0x000000000000FFFF;
     const BLACK:  u64 = 0xFFFF000000000000;
 
-    pub const STANDARD: SegBoard = SegBoard {
+    pub const STANDARD: MultiBoard = MultiBoard {
         pieces: [PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING],
         colors: [WHITE, BLACK],
     };
@@ -30,19 +30,19 @@ mod values {
 /// A full chess board, represented as multiple bitboard segments.
 #[repr(C)]
 #[derive(Clone)]
-pub struct SegBoard {
+pub struct MultiBoard {
     pieces: [u64; NUM_PIECES],
     colors: [u64; NUM_COLORS],
 }
 
-impl Default for SegBoard {
+impl Default for MultiBoard {
     #[inline]
-    fn default() -> SegBoard {
+    fn default() -> MultiBoard {
         unsafe { mem::zeroed() }
     }
 }
 
-impl ops::Index<PieceKind> for SegBoard {
+impl ops::Index<PieceKind> for MultiBoard {
     type Output = Bitboard;
 
     #[inline]
@@ -51,14 +51,14 @@ impl ops::Index<PieceKind> for SegBoard {
     }
 }
 
-impl ops::IndexMut<PieceKind> for SegBoard {
+impl ops::IndexMut<PieceKind> for MultiBoard {
     #[inline]
     fn index_mut(&mut self, kind: PieceKind) -> &mut Bitboard {
         Bitboard::convert_mut(&mut self.pieces[kind as usize])
     }
 }
 
-impl ops::Index<Color> for SegBoard {
+impl ops::Index<Color> for MultiBoard {
     type Output = Bitboard;
 
     #[inline]
@@ -67,16 +67,16 @@ impl ops::Index<Color> for SegBoard {
     }
 }
 
-impl ops::IndexMut<Color> for SegBoard {
+impl ops::IndexMut<Color> for MultiBoard {
     #[inline]
     fn index_mut(&mut self, color: Color) -> &mut Bitboard {
         Bitboard::convert_mut(&mut self.colors[color as usize])
     }
 }
 
-impl SegBoard {
+impl MultiBoard {
     /// The board for standard chess.
-    pub const STANDARD: SegBoard = values::STANDARD;
+    pub const STANDARD: MultiBoard = values::STANDARD;
 
     /// Clears the board of all pieces.
     #[inline]
