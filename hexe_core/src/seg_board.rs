@@ -10,6 +10,7 @@ const NUM_PIECES: usize = 6;
 const NUM_COLORS: usize = 2;
 
 /// A full chess board, represented as multiple bitboard segments.
+#[repr(C)]
 #[derive(Clone)]
 pub struct SegBoard {
     pieces: [u64; NUM_PIECES],
