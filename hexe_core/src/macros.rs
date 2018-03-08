@@ -18,6 +18,12 @@ macro_rules! forward_bit_ops_impl {
     )+ }
 }
 
+macro_rules! squares {
+    ($($s:ident),+) => {
+        $(1 << ::square::Square::$s as u64)|+
+    }
+}
+
 macro_rules! impl_rand {
     ($s:ty => $($t:ty),+) => { $(
         #[cfg(any(test, feature = "rand"))]

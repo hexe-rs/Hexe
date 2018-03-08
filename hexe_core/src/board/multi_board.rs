@@ -6,7 +6,6 @@ use board::Bitboard;
 use castle_rights::CastleRight;
 use color::Color;
 use piece::PieceKind;
-use square::Square;
 
 const NUM_PIECES: usize = 6;
 const NUM_COLORS: usize = 2;
@@ -15,11 +14,11 @@ mod values {
     use super::*;
 
     const PAWN:   u64 = 0x00FF00000000FF00;
-    const KNIGHT: u64 = 0x4200000000000042;
-    const BISHOP: u64 = 0x2400000000000024;
-    const ROOK:   u64 = 0x8100000000000081;
-    const QUEEN:  u64 = 0x0800000000000008;
-    const KING:   u64 = 0x1000000000000010;
+    const KNIGHT: u64 = squares!(B1, B8, G1, G8);
+    const BISHOP: u64 = squares!(C1, C8, F1, F8);
+    const ROOK:   u64 = squares!(A1, A8, H1, H8);
+    const QUEEN:  u64 = squares!(D1, D8);
+    const KING:   u64 = squares!(E1, E8);
     const WHITE:  u64 = 0x000000000000FFFF;
     const BLACK:  u64 = 0xFFFF000000000000;
 
@@ -110,18 +109,12 @@ impl MultiBoard {
     /// involved with castling using `right` are in a correct state post-castle.
     #[inline]
     pub fn castle(&mut self, right: CastleRight) {
-        use self::Square::*;
-
-        macro_rules! mask {
-            ($s1:expr, $s2:expr) => { (1 << $s1 as u64) | (1 << $s2 as u64) }
-        }
-
         // (King, Rook)
         static MASKS: [(u64, u64); 4] = [
-            (mask!(E1, G1), mask!(H1, F1)),
-            (mask!(E1, C1), mask!(A1, D1)),
-            (mask!(E8, G8), mask!(H8, F8)),
-            (mask!(E8, C8), mask!(A8, D8)),
+            (squares!(E1, G1), squares!(H1, F1)),
+            (squares!(E1, C1), squares!(A1, D1)),
+            (squares!(E8, G8), squares!(H8, F8)),
+            (squares!(E8, C8), squares!(A8, D8)),
         ];
 
         let (king, rook) = MASKS[right as usize];
