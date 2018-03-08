@@ -9,6 +9,24 @@ use piece::PieceKind;
 const NUM_PIECES: usize = 6;
 const NUM_COLORS: usize = 2;
 
+mod values {
+    use super::*;
+
+    const PAWN:   u64 = 0x00FF00000000FF00;
+    const KNIGHT: u64 = 0x4200000000000042;
+    const BISHOP: u64 = 0x2400000000000024;
+    const ROOK:   u64 = 0x8100000000000081;
+    const QUEEN:  u64 = 0x0800000000000008;
+    const KING:   u64 = 0x1000000000000010;
+    const WHITE:  u64 = 0x000000000000FFFF;
+    const BLACK:  u64 = 0xFFFF000000000000;
+
+    pub const STANDARD: SegBoard = SegBoard {
+        pieces: [PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING],
+        colors: [WHITE, BLACK],
+    };
+}
+
 /// A full chess board, represented as multiple bitboard segments.
 #[repr(C)]
 #[derive(Clone)]
@@ -57,6 +75,9 @@ impl ops::IndexMut<Color> for SegBoard {
 }
 
 impl SegBoard {
+    /// The board for standard chess.
+    pub const STANDARD: SegBoard = values::STANDARD;
+
     /// Returns references to the underlying bitboards for `Color` and
     /// `PieceKind`, respectively.
     #[inline]
