@@ -460,9 +460,9 @@ mod tests {
     fn file_is_empty() {
         use self::masks::*;
 
-        static EMPTIES: [u64; 8] = [
-            !FILE_A.0, !FILE_B.0, !FILE_C.0, !FILE_D.0,
-            !FILE_E.0, !FILE_F.0, !FILE_G.0, !FILE_H.0,
+        let empties = [
+            !FILE_A, !FILE_B, !FILE_C, !FILE_D,
+            !FILE_E, !FILE_F, !FILE_G, !FILE_H,
         ];
 
         for file in File::ALL {
@@ -473,8 +473,8 @@ mod tests {
                     assert!(value.file_is_empty(file));
                 }
             };
-            check(&EMPTIES[(file as usize)..]);
-            check(&EMPTIES[..(file as usize)]);
+            check(&empties[(file as usize)..]);
+            check(&empties[..(file as usize)]);
         }
     }
 }
