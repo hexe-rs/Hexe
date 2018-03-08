@@ -1,6 +1,6 @@
 //! A bitboard-segmented chess board representations.
 
-use core::ops;
+use core::{ops, mem};
 
 use bitboard::Bitboard;
 use color::Color;
@@ -15,6 +15,13 @@ const NUM_COLORS: usize = 2;
 pub struct SegBoard {
     pieces: [u64; NUM_PIECES],
     colors: [u64; NUM_COLORS],
+}
+
+impl Default for SegBoard {
+    #[inline]
+    fn default() -> SegBoard {
+        unsafe { mem::zeroed() }
+    }
 }
 
 impl ops::Index<PieceKind> for SegBoard {
