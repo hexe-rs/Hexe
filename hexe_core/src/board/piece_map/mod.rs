@@ -63,6 +63,7 @@ const SQUARE_NUM: usize = 64;
 /// **Note:** `PieceMap::default()` returns an empty piece map. Use
 /// [`PieceMap::STANDARD`](#associatedconstant.STANDARD) to get a mapping for
 /// standard chess.
+#[repr(C)]
 pub struct PieceMap([u8; SQUARE_NUM]);
 
 impl Clone for PieceMap {
