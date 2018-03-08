@@ -61,7 +61,7 @@ impl_rand!(u8 => CastleRights, CastleRight);
 /// );
 /// ```
 ///
-/// [`Bitboard`]: ../bitboard/struct.Bitboard.html
+/// [`Bitboard`]: ../board/bitboard/struct.Bitboard.html
 #[derive(PartialEq, Eq, Clone, Copy, Hash, FromUnchecked)]
 pub struct CastleRights(u8);
 

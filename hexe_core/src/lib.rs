@@ -22,7 +22,7 @@
 //! There are two primary chess board representations provided. Both have
 //! various advantages and disadvantages, which are outlined below:
 //!
-//! ### [`Bitboard`](bitboard/struct.Bitboard.html)
+//! ### [`Bitboard`](board/bitboard/struct.Bitboard.html)
 //!
 //! **Mapping:** bit-to-square
 //!
@@ -49,7 +49,7 @@
 //!
 //!     - Operations are often done using 64-bit (8 byte) integers
 //!
-//! ### [`PieceMap`](piece/map/struct.PieceMap.html)
+//! ### [`PieceMap`](board/piece_map/struct.PieceMap.html)
 //!
 //! **Mapping:** byte-to-square
 //!
