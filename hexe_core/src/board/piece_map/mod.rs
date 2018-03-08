@@ -1,18 +1,25 @@
 //! A square to piece mapping for fast square lookups.
 
-use super::*;
-use core::{fmt, hash, mem, ops, ptr};
-use consts::PTR_SIZE;
-use misc::Contained;
-use prelude::*;
-use util::*;
+use core::{fmt, hash, mem, ops, ptr, str};
 
 #[cfg(feature = "simd")]
 use simd::u8x16;
 
-const NONE: u8 = 12;
+use consts::PTR_SIZE;
+use misc::Contained;
+use piece::Piece;
+use prelude::*;
+use uncon::*;
+use util::*;
 
-const SQUARE_NUM: usize = 64;
+mod entry;
+pub use self::entry::*;
+
+mod iter;
+pub use self::iter::*;
+
+#[cfg(all(test, nightly))]
+mod benches;
 
 mod tables {
     use super::*;
@@ -45,14 +52,9 @@ mod tables {
     ];
 }
 
-mod entry;
-pub use self::entry::*;
+const NONE: u8 = 12;
 
-mod iter;
-pub use self::iter::*;
-
-#[cfg(all(test, nightly))]
-mod benches;
+const SQUARE_NUM: usize = 64;
 
 /// A mapping of sixty-four squares to pieces.
 ///
@@ -224,7 +226,7 @@ impl PieceMap {
     /// Basic usage:
     ///
     /// ```
-    /// # use hexe_core::piece::map::*;
+    /// # use hexe_core::board::piece_map::*;
     /// let piece_map = PieceMap::from_init(|sq| {
     ///     # None
     ///     /* ... */
@@ -249,7 +251,7 @@ impl PieceMap {
     /// Basic usage:
     ///
     /// ```
-    /// # use hexe_core::piece::map::*;
+    /// # use hexe_core::board::piece_map::*;
     /// # use hexe_core::prelude::*;
     /// let mut map = PieceMap::new();
     /// let piece = Piece::WhitePawn;
@@ -383,7 +385,7 @@ impl PieceMap {
     /// Basic usage:
     ///
     /// ```
-    /// # use hexe_core::piece::map::*;
+    /// # use hexe_core::board::piece_map::*;
     /// # use hexe_core::prelude::Square::*;
     /// # use hexe_core::prelude::Piece::*;
     /// let mut map = PieceMap::STANDARD;
@@ -535,7 +537,7 @@ impl PieceMap {
     /// Basic usage:
     ///
     /// ```
-    /// # use hexe_core::piece::map::*;
+    /// # use hexe_core::board::piece_map::*;
     /// # use hexe_core::prelude::*;
     /// let sq = Square::B7;
     /// let pc = Piece::WhiteRook;
@@ -648,7 +650,7 @@ impl PieceMap {
     /// directly without using this method.
     ///
     /// ```
-    /// # use hexe_core::piece::map::*;
+    /// # use hexe_core::board::piece_map::*;
     /// let map = PieceMap::STANDARD;
     /// let exp = "r n b q k b n r\n\
     ///            p p p p p p p p\n\

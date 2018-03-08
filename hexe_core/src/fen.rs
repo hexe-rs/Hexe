@@ -6,7 +6,7 @@ use core::fmt::{self, Write};
 use core::str;
 
 use prelude::*;
-use piece::map::PieceMap;
+use board::PieceMap;
 
 /// A type that can be used to parse [Forsyth–Edwards Notation (FEN)][fen].
 ///

@@ -1,6 +1,6 @@
 //! A chess game state position.
 
-use core::piece::map::PieceMap;
+use core::board::PieceMap;
 use core::misc::Contained;
 use prelude::*;
 

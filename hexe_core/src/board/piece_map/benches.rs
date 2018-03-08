@@ -1,7 +1,7 @@
 use super::{Piece, PieceMap};
 
 use test::{Bencher, black_box};
-use rand::{Rng, self};
+use rand;
 
 use castle_rights::CastleRight;
 use iter::AllIterable;

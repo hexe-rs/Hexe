@@ -1,4 +1,4 @@
-use bitboard::Bitboard;
+use board::Bitboard;
 use square::Square;
 
 mod tables;

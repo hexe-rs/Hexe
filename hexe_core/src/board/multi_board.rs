@@ -2,7 +2,7 @@
 
 use core::{ops, mem};
 
-use bitboard::Bitboard;
+use board::Bitboard;
 use color::Color;
 use piece::PieceKind;
 

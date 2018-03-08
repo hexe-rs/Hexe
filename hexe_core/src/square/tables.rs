@@ -1,4 +1,4 @@
-use bitboard::masks::*;
+use board::bitboard::masks::*;
 
 pub const BETWEEN_START: usize = 4;
 pub const LINE_START: usize = BETWEEN_START + 64;
