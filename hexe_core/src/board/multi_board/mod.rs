@@ -346,11 +346,50 @@ impl MultiBoard {
     /// The above are all the result of properly defined behavior. They are just
     /// side effects of how the board is represented and this use of [XOR].
     ///
-    /// # Undo-Redo
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use hexe_core::board::MultiBoard;
+    /// use hexe_core::prelude::*;
+    ///
+    /// let mut board: MultiBoard = {
+    ///     /* create board */
+    ///     # let mut board = MultiBoard::STANDARD;
+    ///     # board.remove_all(Square::B1 | Square::C1 | Square::D1);
+    ///     # board
+    /// };
+    ///
+    /// board.castle(CastleRight::WhiteQueenside);
+    /// board.contains(Square::C1, Piece::WhiteKing);
+    /// board.contains(Square::D1, Piece::WhiteRook);
+    /// ```
+    ///
+    /// ## Undo-Redo
     ///
     /// Because this method internally uses [XOR], it is its own inverse. If the
     /// involved king and rook sit at their destination squares, they will be
     /// moved back to their initial squares.
+    ///
+    /// ```
+    /// use hexe_core::board::MultiBoard;
+    /// use hexe_core::castle::CastleRight;
+    ///
+    /// let mut board: MultiBoard = {
+    ///     /* create board */
+    ///     # MultiBoard::STANDARD
+    /// };
+    ///
+    /// let right = CastleRight::WhiteQueenside;
+    /// let clone = board.clone();
+    ///
+    /// board.castle(right);
+    /// board.castle(right);
+    ///
+    /// assert!(board == clone);
+    /// ```
     ///
     /// [XOR]: https://en.wikipedia.org/wiki/Exclusive_or
     #[inline]
