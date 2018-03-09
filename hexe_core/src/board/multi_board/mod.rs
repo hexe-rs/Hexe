@@ -57,8 +57,8 @@ impl PartialEq for MultiBoard {
             let that = other.bytes();
 
             for i in (0..(NUM_BOARDS / 2)).map(|i| i * 16) {
-                let a = u8x16::load(&this, i);
-                let b = u8x16::load(&that, i);
+                let a = u8x16::load(this, i);
+                let b = u8x16::load(that, i);
                 if !a.eq(b).all() {
                     return false;
                 }
