@@ -363,8 +363,8 @@ impl MultiBoard {
     /// };
     ///
     /// board.castle(CastleRight::WhiteQueenside);
-    /// board.contains(Square::C1, Piece::WhiteKing);
-    /// board.contains(Square::D1, Piece::WhiteRook);
+    /// assert!(board.contains(Square::C1, Piece::WhiteKing));
+    /// assert!(board.contains(Square::D1, Piece::WhiteRook));
     /// ```
     ///
     /// ## Undo-Redo
