@@ -48,7 +48,7 @@ impl PartialEq for MultiBoard {
         #[cfg(feature = "simd")]
         {
             use simd::u8x16;
-            const SUN_SIMD: usize = 16;
+            const NUM_SIMD: usize = 16;
 
             if self as *const _ == other as *const _ {
                 return true;
@@ -57,7 +57,7 @@ impl PartialEq for MultiBoard {
             let this = self.bytes();
             let that = other.bytes();
 
-            for i in (0..(NUM_BYTES / SUN_SIMD)).map(|i| i * SUN_SIMD) {
+            for i in (0..(NUM_BYTES / NUM_SIMD)).map(|i| i * NUM_SIMD) {
                 let a = u8x16::load(this, i);
                 let b = u8x16::load(that, i);
                 if !a.eq(b).all() {
