@@ -277,8 +277,7 @@ impl MultiBoard {
     ///
     /// ```
     /// use hexe_core::board::MultiBoard;
-    /// use hexe_core::color::Color;
-    /// use hexe_core::square::Square;
+    /// use hexe_core::prelude::*;
     ///
     /// let mut board = MultiBoard::STANDARD;
     /// let squares = [
