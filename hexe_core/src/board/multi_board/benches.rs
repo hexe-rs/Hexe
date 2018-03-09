@@ -20,6 +20,26 @@ fn remove_squares_10(b: &mut Bencher) {
 }
 
 #[bench]
+fn len_1000(b: &mut Bencher) {
+    let board = MultiBoard::STANDARD;
+    b.iter(|| {
+        for _ in 0..1000 {
+            black_box(black_box(&board).len());
+        }
+    });
+}
+
+#[bench]
+fn is_empty_1000(b: &mut Bencher) {
+    let board = MultiBoard::default();
+    b.iter(|| {
+        for _ in 0..1000 {
+            black_box(black_box(&board).is_empty());
+        }
+    });
+}
+
+#[bench]
 fn eq(b: &mut Bencher) {
     let x = MultiBoard::STANDARD;
     let y = MultiBoard::STANDARD;

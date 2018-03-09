@@ -95,16 +95,18 @@ fn iter_len(b: &mut Bencher) {
 }
 
 #[bench]
-fn len(b: &mut Bencher) {
+fn len_1000(b: &mut Bencher) {
     let mut map = PieceMap::STANDARD;
     map.shuffle(&mut rand::thread_rng());
     b.iter(|| {
-        black_box(black_box(&map).len());
+        for _ in 0..1000 {
+            black_box(black_box(&map).len());
+        }
     });
 }
 
 #[bench]
-fn len_naive(b: &mut Bencher) {
+fn len_naive_1000(b: &mut Bencher) {
     fn len(map: &PieceMap) -> usize {
         map.as_bytes().iter().fold(64, |len, &pc| {
             len - (pc == 12) as usize
@@ -117,15 +119,19 @@ fn len_naive(b: &mut Bencher) {
     assert_eq!(map.len(), len(&map));
 
     b.iter(|| {
-        black_box(len(black_box(&map)));
+        for _ in 0..1000 {
+            black_box(len(black_box(&map)));
+        }
     });
 }
 
 #[bench]
-fn is_empty(b: &mut Bencher) {
+fn is_empty_1000(b: &mut Bencher) {
     let map = piece_map!();
     b.iter(|| {
-        black_box(black_box(&map).is_empty());
+        for _ in 0..1000 {
+            black_box(black_box(&map).is_empty());
+        }
     });
 }
 
