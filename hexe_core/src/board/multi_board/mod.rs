@@ -8,9 +8,8 @@ use color::Color;
 use piece::PieceKind;
 use square::Square;
 
-const NUM_PIECES: usize = 6;
-const NUM_COLORS: usize = 2;
-const NUM_BOARDS: usize = NUM_PIECES + NUM_COLORS;
+#[cfg(all(test, nightly))]
+mod benches;
 
 mod values {
     use super::*;
@@ -29,6 +28,10 @@ mod values {
         colors: [WHITE, BLACK],
     };
 }
+
+const NUM_PIECES: usize = 6;
+const NUM_COLORS: usize = 2;
+const NUM_BOARDS: usize = NUM_PIECES + NUM_COLORS;
 
 /// A full chess board, represented as multiple bitboard segments.
 #[repr(C)]
