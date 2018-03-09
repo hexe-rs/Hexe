@@ -181,7 +181,7 @@ impl MultiBoard {
         Bitboard(self.colors[0] | self.colors[1]).len()
     }
 
-    /// Removes the pieces at `squares`.
+    /// Removes the pieces at `square`.
     ///
     /// # Examples
     ///
@@ -199,22 +199,18 @@ impl MultiBoard {
     ///     Square::F2,
     /// ];
     ///
-    /// board.remove_squares(squares.iter().cloned());
-    ///
     /// for &square in squares.iter() {
-    ///     assert!(!board[Color::White].contains(square))
+    ///     assert!(board[Color::White].contains(square));
+    ///     board.remove(square);
+    ///     assert!(!board[Color::White].contains(square));
     /// }
     /// ```
     #[inline]
-    pub fn remove_squares<S>(&mut self, squares: S)
-        where S: IntoIterator<Item=Square>
-    {
-        for s in squares {
-            let square = !Bitboard::from(s).0;
-            let boards: &mut [u64] = self.as_mut();
-            for board in boards {
-                *board &= square;
-            }
+    pub fn remove(&mut self, square: Square) {
+        let square = !Bitboard::from(square).0;
+        let boards: &mut [u64] = self.as_mut();
+        for board in boards {
+            *board &= square;
         }
     }
 
