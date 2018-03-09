@@ -20,6 +20,15 @@ fn remove_squares_10(b: &mut Bencher) {
 }
 
 #[bench]
+fn eq(b: &mut Bencher) {
+    let x = MultiBoard::STANDARD;
+    let y = MultiBoard::STANDARD;
+    b.iter(|| {
+        black_box(black_box(&x) == black_box(&y));
+    });
+}
+
+#[bench]
 fn castle_all(b: &mut Bencher) {
     b.iter(|| {
         let mut board = MultiBoard::default();

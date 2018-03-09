@@ -7,6 +7,7 @@ use castle::CastleRight;
 use color::Color;
 use piece::PieceKind;
 use square::Square;
+use uncon::*;
 
 #[cfg(all(test, nightly))]
 mod benches;
@@ -35,10 +36,40 @@ const NUM_BOARDS: usize = NUM_PIECES + NUM_COLORS;
 
 /// A full chess board, represented as multiple bitboard segments.
 #[repr(C)]
-#[derive(Clone)]
+#[derive(Clone, Eq)]
 pub struct MultiBoard {
     pieces: [u64; NUM_PIECES],
     colors: [u64; NUM_COLORS],
+}
+
+impl PartialEq for MultiBoard {
+    #[inline]
+    fn eq(&self, other: &Self) -> bool {
+        #[cfg(feature = "simd")]
+        {
+            use simd::u8x16;
+
+            if self as *const _ == other as *const _ {
+                return true;
+            }
+
+            let this = self.bytes();
+            let that = other.bytes();
+
+            for i in (0..(NUM_BOARDS / 2)).map(|i| i * 16) {
+                let a = u8x16::load(&this, i);
+                let b = u8x16::load(&that, i);
+                if !a.eq(b).all() {
+                    return false;
+                }
+            }
+            true
+        }
+        #[cfg(not(feature = "simd"))]
+        {
+            self.bytes()[..] == other.bytes()[..]
+        }
+    }
 }
 
 impl Default for MultiBoard {
@@ -115,6 +146,11 @@ impl ops::IndexMut<Color> for MultiBoard {
 impl MultiBoard {
     /// The board for standard chess.
     pub const STANDARD: MultiBoard = values::STANDARD;
+
+    #[inline]
+    fn bytes(&self) -> &[u8; NUM_BOARDS * 8] {
+        unsafe { self.into_unchecked() }
+    }
 
     /// Clears the board of all pieces.
     #[inline]
