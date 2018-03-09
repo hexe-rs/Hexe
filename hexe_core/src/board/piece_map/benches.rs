@@ -149,7 +149,7 @@ fn fen(b: &mut Bencher) {
 }
 
 #[bench]
-fn castle(b: &mut Bencher) {
+fn castle_all(b: &mut Bencher) {
     b.iter(|| {
         let mut map = PieceMap([super::NONE; 64]);
         for right in CastleRight::ALL {

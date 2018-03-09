@@ -1,4 +1,6 @@
 use super::MultiBoard;
+use castle_rights::CastleRight;
+use iter::AllIterable;
 use square::Square;
 
 use test::{Bencher, black_box};
@@ -14,5 +16,16 @@ fn remove_squares_10(b: &mut Bencher) {
         let squares = black_box(&squares[..]);
         black_box(&mut board).remove_squares(squares.iter().cloned());
         black_box(&board);
+    });
+}
+
+#[bench]
+fn castle_all(b: &mut Bencher) {
+    b.iter(|| {
+        let mut board = MultiBoard::default();
+        for right in CastleRight::ALL {
+            black_box(&mut board).castle(right);
+        }
+        black_box(&mut board);
     });
 }
