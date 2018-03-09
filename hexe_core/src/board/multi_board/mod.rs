@@ -249,7 +249,7 @@ impl MultiBoard {
     ///
     /// for &square in squares.iter() {
     ///     assert!(board[Color::White].contains(square));
-    ///     board.remove(square);
+    ///     board.remove_all(square);
     ///     assert!(!board[Color::White].contains(square));
     /// }
     /// ```
