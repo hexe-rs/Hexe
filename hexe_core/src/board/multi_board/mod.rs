@@ -202,6 +202,7 @@ impl MultiBoard {
     /// assert!(!board.contains(Square::H8, Piece::BlackPawn));
     /// assert!(!board.contains(Square::B1, PieceKind::Bishop));
     /// ```
+    #[inline]
     pub fn contains<B, V: Contained<B>>(&self, bits: B, value: V) -> bool {
         value.contained(bits, self)
     }
