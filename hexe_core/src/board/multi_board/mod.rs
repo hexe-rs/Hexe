@@ -186,15 +186,25 @@ impl MultiBoard {
     /// It _does not_ check whether pieces are located at `bits`.
     ///
     /// If the board may contain pieces at `bits`, then
-    /// [`remove`](#method.remove) should be called first.
+    /// [`remove_all`](#method.remove_all) should be called first.
     #[inline]
     pub fn insert<T: Into<Bitboard>>(&mut self, bits: T, piece: Piece) {
         let value = bits.into().0;
         self[piece.color()] |= value;
-        self[piece.kind()]  |= value;
+        self[piece.kind() ] |= value;
     }
 
-    /// Removes the pieces at `bits`.
+    /// Performs a **blind** removal of each `piece` at `bits`.
+    ///
+    /// It _does not_ check whether other pieces are located at `bits`.
+    #[inline]
+    pub fn remove<T: Into<Bitboard>>(&mut self, bits: T, piece: Piece) {
+        let value = !bits.into().0;
+        self[piece.color()] &= value;
+        self[piece.kind() ] &= value;
+    }
+
+    /// Removes all pieces at `bits`.
     ///
     /// # Examples
     ///
@@ -219,7 +229,7 @@ impl MultiBoard {
     /// }
     /// ```
     #[inline]
-    pub fn remove<T: Into<Bitboard>>(&mut self, bits: T) {
+    pub fn remove_all<T: Into<Bitboard>>(&mut self, bits: T) {
         let value = !bits.into().0;
         for board in AsMut::<[u64]>::as_mut(self) {
             *board &= value;
