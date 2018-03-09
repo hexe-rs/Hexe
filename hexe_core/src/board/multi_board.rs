@@ -6,6 +6,7 @@ use board::Bitboard;
 use castle_rights::CastleRight;
 use color::Color;
 use piece::PieceKind;
+use square::Square;
 
 const NUM_PIECES: usize = 6;
 const NUM_COLORS: usize = 2;
@@ -83,6 +84,45 @@ impl MultiBoard {
     #[inline]
     pub fn clear(&mut self) {
         unsafe { ::util::zero(self) }
+    }
+
+    /// Removes the pieces at `squares`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use hexe_core::board::MultiBoard;
+    /// use hexe_core::color::Color;
+    /// use hexe_core::square::Square;
+    ///
+    /// let mut board = MultiBoard::STANDARD;
+    /// let squares = [
+    ///     Square::A1,
+    ///     Square::C1,
+    ///     Square::F2,
+    /// ];
+    ///
+    /// board.remove_squares(squares.iter().cloned());
+    ///
+    /// for &square in squares.iter() {
+    ///     assert!(!board[Color::White].contains(square))
+    /// }
+    /// ```
+    #[inline]
+    pub fn remove_squares<S>(&mut self, squares: S)
+        where S: IntoIterator<Item=Square>
+    {
+        for s in squares {
+            let board = !Bitboard::from(s).0;
+            for color in self.colors.iter_mut() {
+                *color &= board;
+            }
+            for piece in self.pieces.iter_mut() {
+                *piece &= board;
+            }
+        }
     }
 
     /// Returns references to the underlying bitboards for `Color` and
