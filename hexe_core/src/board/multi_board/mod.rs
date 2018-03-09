@@ -170,10 +170,20 @@ impl MultiBoard {
     ///
     /// For much better performance and readability, is recommended to use this
     /// method over checking whether `board.len() == 0`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use hexe_core::board::MultiBoard;
+    ///
+    /// assert!(!MultiBoard::STANDARD.is_empty());
+    /// assert!(MultiBoard::default().is_empty());
+    /// ```
     #[inline]
     pub fn is_empty(&self) -> bool {
-        self.colors[0] == 0 &&
-        self.colors[1] == 0
+        self.all_bits().is_empty()
     }
 
     /// Returns the total number of pieces in `self`.
