@@ -32,6 +32,7 @@ mod values {
 const NUM_PIECES: usize = 6;
 const NUM_COLORS: usize = 2;
 const NUM_BOARDS: usize = NUM_PIECES + NUM_COLORS;
+const NUM_BYTES:  usize = NUM_BOARDS * 8;
 
 /// A full chess board, represented as multiple bitboard segments.
 #[repr(C)]
@@ -154,7 +155,7 @@ impl MultiBoard {
     pub const STANDARD: MultiBoard = values::STANDARD;
 
     #[inline]
-    fn bytes(&self) -> &[u8; NUM_BOARDS * 8] {
+    fn bytes(&self) -> &[u8; NUM_BYTES] {
         unsafe { self.into_unchecked() }
     }
 
