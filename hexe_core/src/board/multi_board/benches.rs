@@ -6,7 +6,7 @@ use square::Square;
 use test::{Bencher, black_box};
 
 #[bench]
-fn remove_10(b: &mut Bencher) {
+fn remove_all_10(b: &mut Bencher) {
     let squares = [
         Square::B1, Square::C2, Square::H8, Square::A7, Square::A1,
         Square::B8, Square::C7, Square::H1, Square::A2, Square::A8,
@@ -15,7 +15,7 @@ fn remove_10(b: &mut Bencher) {
         let mut board = MultiBoard::STANDARD;
         let squares = black_box(&squares[..]);
         for &square in squares {
-            black_box(&mut board).remove(square);
+            black_box(&mut board).remove_all(square);
         }
         black_box(&board);
     });
