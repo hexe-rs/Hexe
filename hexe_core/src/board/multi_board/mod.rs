@@ -6,7 +6,6 @@ use board::Bitboard;
 use castle::CastleRight;
 use color::Color;
 use piece::{Piece, PieceKind};
-use square::Square;
 use uncon::*;
 
 #[cfg(all(test, nightly))]
@@ -182,7 +181,10 @@ impl MultiBoard {
     }
 
     /// Performs a **blind** insertion of `piece` at a each square in `bits`.
-    /// It _does_ not check whether pieces are located at `bits`.
+    /// It _does not_ check whether pieces are located at `bits`.
+    ///
+    /// If the board may contain pieces at `bits`, then
+    /// [`remove`](#method.remove) should be called first.
     #[inline]
     pub fn insert<T: Into<Bitboard>>(&mut self, bits: T, piece: Piece) {
         let value = bits.into().0;
@@ -190,7 +192,7 @@ impl MultiBoard {
         self[piece.kind()]  |= value;
     }
 
-    /// Removes the pieces at `square`.
+    /// Removes the pieces at `bits`.
     ///
     /// # Examples
     ///
@@ -215,11 +217,10 @@ impl MultiBoard {
     /// }
     /// ```
     #[inline]
-    pub fn remove(&mut self, square: Square) {
-        let square = !Bitboard::from(square).0;
-        let boards: &mut [u64] = self.as_mut();
-        for board in boards {
-            *board &= square;
+    pub fn remove<T: Into<Bitboard>>(&mut self, bits: T) {
+        let value = !bits.into().0;
+        for board in AsMut::<[u64]>::as_mut(self) {
+            *board &= value;
         }
     }
 
