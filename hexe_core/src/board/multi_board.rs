@@ -10,6 +10,7 @@ use square::Square;
 
 const NUM_PIECES: usize = 6;
 const NUM_COLORS: usize = 2;
+const NUM_BOARDS: usize = NUM_PIECES + NUM_COLORS;
 
 mod values {
     use super::*;
@@ -41,6 +42,38 @@ impl Default for MultiBoard {
     #[inline]
     fn default() -> MultiBoard {
         unsafe { mem::zeroed() }
+    }
+}
+
+impl AsRef<[u64]> for MultiBoard {
+    #[inline]
+    fn as_ref(&self) -> &[u64] {
+        let array = self as *const _ as *const [_; NUM_BOARDS];
+        unsafe { &*array }
+    }
+}
+
+impl AsMut<[u64]> for MultiBoard {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [u64] {
+        let array = self as *mut _ as *mut [_; NUM_BOARDS];
+        unsafe { &mut *array }
+    }
+}
+
+impl AsRef<[Bitboard]> for MultiBoard {
+    #[inline]
+    fn as_ref(&self) -> &[Bitboard] {
+        let array = self as *const _ as *const [_; NUM_BOARDS];
+        unsafe { &*array }
+    }
+}
+
+impl AsMut<[Bitboard]> for MultiBoard {
+    #[inline]
+    fn as_mut(&mut self) -> &mut [Bitboard] {
+        let array = self as *mut _ as *mut [_; NUM_BOARDS];
+        unsafe { &mut *array }
     }
 }
 
