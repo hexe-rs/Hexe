@@ -3,7 +3,7 @@ use super::{Piece, PieceMap};
 use test::{Bencher, black_box};
 use rand;
 
-use castle_rights::CastleRight;
+use castle::CastleRight;
 use iter::AllIterable;
 use square::Square;
 

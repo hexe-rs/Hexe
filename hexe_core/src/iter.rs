@@ -72,7 +72,7 @@ pub trait AllIterable: Sized {
 impl_iterable!(::square::Square,             u8, 64);
 impl_iterable!(::square::File,               u8, 8);
 impl_iterable!(::square::Rank,               u8, 8);
-impl_iterable!(::castle_rights::CastleRight, u8, 4);
+impl_iterable!(::castle::CastleRight, u8, 4);
 
 /// An iterator over all instances of `T`.
 #[derive(Clone, PartialEq, Eq)]

@@ -3,7 +3,7 @@
 use core::{ops, mem};
 
 use board::Bitboard;
-use castle_rights::CastleRight;
+use castle::CastleRight;
 use color::Color;
 use piece::PieceKind;
 use square::Square;

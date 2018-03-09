@@ -1,5 +1,5 @@
 use super::MultiBoard;
-use castle_rights::CastleRight;
+use castle::CastleRight;
 use iter::AllIterable;
 use square::Square;
 

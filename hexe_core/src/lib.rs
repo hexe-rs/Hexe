@@ -124,7 +124,7 @@ mod macros;
 pub mod prelude;
 
 pub mod board;
-pub mod castle_rights;
+pub mod castle;
 pub mod color;
 pub mod fen;
 pub mod iter;

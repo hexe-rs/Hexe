@@ -2,7 +2,7 @@
 
 use std::{fmt, hash, mem, ptr};
 
-use core::castle_rights::CastleRights;
+use core::castle::CastleRights;
 use core::square::{File, Square};
 use core::piece::PieceKind;
 
