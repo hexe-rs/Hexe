@@ -177,9 +177,39 @@ impl MultiBoard {
     }
 
     /// Returns the total number of pieces in `self`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use hexe_core::board::MultiBoard;
+    ///
+    /// let board = MultiBoard::STANDARD;
+    /// assert_eq!(board.len(), 32);
+    /// ```
     #[inline]
     pub fn len(&self) -> usize {
-        Bitboard(self.colors[0] | self.colors[1]).len()
+        self.all_bits().len()
+    }
+
+    /// Returns all bits of the pieces contained in `self`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use hexe_core::board::MultiBoard;
+    ///
+    /// let board = MultiBoard::STANDARD;
+    /// let value = 0xFFFF00000000FFFFu64;
+    ///
+    /// assert_eq!(board.all_bits(), value.into());
+    /// ```
+    #[inline]
+    pub fn all_bits(&self) -> Bitboard {
+        Bitboard(self.colors[0] | self.colors[1])
     }
 
     /// Returns whether the `bits` of `value` are contained in `self`.
