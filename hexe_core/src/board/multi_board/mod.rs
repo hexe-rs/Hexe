@@ -182,6 +182,30 @@ impl MultiBoard {
         Bitboard(self.colors[0] | self.colors[1]).len()
     }
 
+    /// Returns whether the `bits` of `value` are contained in `self`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use hexe_core::board::MultiBoard;
+    /// use hexe_core::prelude::*;
+    ///
+    /// let board = MultiBoard::STANDARD;
+    ///
+    /// assert!(board.contains(Square::C7, Color::Black));
+    /// assert!(board.contains(Square::H1, Piece::WhiteRook));
+    /// assert!(board.contains(Square::B8, PieceKind::Knight));
+    ///
+    /// assert!(!board.contains(Square::C2, Color::Black));
+    /// assert!(!board.contains(Square::H8, Piece::BlackPawn));
+    /// assert!(!board.contains(Square::B1, PieceKind::Bishop));
+    /// ```
+    pub fn contains<B, V: Contained<B>>(&self, bits: B, value: V) -> bool {
+        value.contained(bits, self)
+    }
+
     /// Performs a **blind** insertion of `piece` at a each square in `bits`.
     /// It _does not_ check whether pieces are located at `bits`.
     ///
@@ -298,5 +322,34 @@ impl MultiBoard {
         self[right.color()]   ^= king | rook;
         self[PieceKind::King] ^= king;
         self[PieceKind::Rook] ^= rook;
+    }
+}
+
+/// A type whose bits may be contained in `board`.
+pub trait Contained<T> {
+    /// Returns whether the `bits` of `self` are contained in `board`.
+    fn contained(self, bits: T, board: &MultiBoard) -> bool;
+}
+
+impl<T: Into<Bitboard>> Contained<T> for Color {
+    #[inline]
+    fn contained(self, bits: T, board: &MultiBoard) -> bool {
+        board[self].contains(bits)
+    }
+}
+
+impl<T: Into<Bitboard>> Contained<T> for Piece {
+    #[inline]
+    fn contained(self, bits: T, board: &MultiBoard) -> bool {
+        let value = bits.into().0;
+        board[self.color()].contains(value) &&
+        board[self.kind() ].contains(value)
+    }
+}
+
+impl<T: Into<Bitboard>> Contained<T> for PieceKind {
+    #[inline]
+    fn contained(self, bits: T, board: &MultiBoard) -> bool {
+        board[self].contains(bits)
     }
 }
