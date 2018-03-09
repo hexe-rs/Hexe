@@ -165,6 +165,22 @@ impl MultiBoard {
         unsafe { ::util::zero(self) }
     }
 
+    /// Returns whether `self` is empty.
+    ///
+    /// For much better performance and readability, is recommended to use this
+    /// method over checking whether `board.len() == 0`.
+    #[inline]
+    pub fn is_empty(&self) -> bool {
+        self.colors[0] == 0 &&
+        self.colors[1] == 0
+    }
+
+    /// Returns the total number of pieces in `self`.
+    #[inline]
+    pub fn len(&self) -> usize {
+        Bitboard(self.colors[0] | self.colors[1]).len()
+    }
+
     /// Removes the pieces at `squares`.
     ///
     /// # Examples
