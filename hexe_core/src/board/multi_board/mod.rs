@@ -1,6 +1,6 @@
 //! A bitboard-segmented chess board representations.
 
-use core::{ops, mem};
+use core::{hash, ops, mem};
 
 use board::Bitboard;
 use castle::CastleRight;
@@ -108,6 +108,13 @@ impl AsMut<[Bitboard]> for MultiBoard {
     fn as_mut(&mut self) -> &mut [Bitboard] {
         let array = self as *mut _ as *mut [_; NUM_BOARDS];
         unsafe { &mut *array }
+    }
+}
+
+impl hash::Hash for MultiBoard {
+    #[inline]
+    fn hash<H: hash::Hasher>(&self, state: &mut H) {
+        state.write(self.bytes());
     }
 }
 
