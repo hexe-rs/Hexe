@@ -151,12 +151,10 @@ impl MultiBoard {
         where S: IntoIterator<Item=Square>
     {
         for s in squares {
-            let board = !Bitboard::from(s).0;
-            for color in self.colors.iter_mut() {
-                *color &= board;
-            }
-            for piece in self.pieces.iter_mut() {
-                *piece &= board;
+            let square = !Bitboard::from(s).0;
+            let boards: &mut [u64] = self.as_mut();
+            for board in boards {
+                *board &= square;
             }
         }
     }
