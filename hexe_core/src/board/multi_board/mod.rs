@@ -5,7 +5,7 @@ use core::{hash, ops, mem};
 use board::Bitboard;
 use castle::CastleRight;
 use color::Color;
-use piece::PieceKind;
+use piece::{Piece, PieceKind};
 use square::Square;
 use uncon::*;
 
@@ -179,6 +179,15 @@ impl MultiBoard {
     #[inline]
     pub fn len(&self) -> usize {
         Bitboard(self.colors[0] | self.colors[1]).len()
+    }
+
+    /// Performs a **blind** insertion of `piece` at a each square in `bits`.
+    /// It _does_ not check whether pieces are located at `bits`.
+    #[inline]
+    pub fn insert<T: Into<Bitboard>>(&mut self, bits: T, piece: Piece) {
+        let value = bits.into().0;
+        self[piece.color()] |= value;
+        self[piece.kind()]  |= value;
     }
 
     /// Removes the pieces at `square`.
