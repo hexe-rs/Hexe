@@ -243,7 +243,7 @@ impl MultiBoard {
     /// assert!(!board.contains(Square::B1, PieceKind::Bishop));
     /// ```
     #[inline]
-    pub fn contains<B, V: Contained<B>>(&self, bits: B, value: V) -> bool {
+    pub fn contains<B, V: Index<B>>(&self, bits: B, value: V) -> bool {
         value.contained(bits, self)
     }
 
@@ -365,20 +365,21 @@ impl MultiBoard {
     }
 }
 
-/// A type whose bits may be contained in `board`.
-pub trait Contained<T> {
+/// A type that can be used for [`MultiBoard`](struct.MultiBoard.html) indexing
+/// operations.
+pub trait Index<T> {
     /// Returns whether the `bits` of `self` are contained in `board`.
     fn contained(self, bits: T, board: &MultiBoard) -> bool;
 }
 
-impl<T: Into<Bitboard>> Contained<T> for Color {
+impl<T: Into<Bitboard>> Index<T> for Color {
     #[inline]
     fn contained(self, bits: T, board: &MultiBoard) -> bool {
         board[self].contains(bits)
     }
 }
 
-impl<T: Into<Bitboard>> Contained<T> for Piece {
+impl<T: Into<Bitboard>> Index<T> for Piece {
     #[inline]
     fn contained(self, bits: T, board: &MultiBoard) -> bool {
         let value = bits.into().0;
@@ -387,7 +388,7 @@ impl<T: Into<Bitboard>> Contained<T> for Piece {
     }
 }
 
-impl<T: Into<Bitboard>> Contained<T> for PieceKind {
+impl<T: Into<Bitboard>> Index<T> for PieceKind {
     #[inline]
     fn contained(self, bits: T, board: &MultiBoard) -> bool {
         board[self].contains(bits)
