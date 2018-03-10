@@ -17,7 +17,7 @@ name = "hexe"
 
 [badges]
 travis-ci = { repository = "hexe-rs/Hexe" }
-appveyor  = { repository = "hexe-rs/Hexe" }
+appveyor  = { repository = "nvzqz/Hexe" }
 
 [dependencies]
 hexe_core    = { path = "../hexe_core", version = "0.0.3" }
