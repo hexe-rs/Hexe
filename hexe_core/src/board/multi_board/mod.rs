@@ -251,8 +251,9 @@ impl MultiBoard {
     /// that may be at `bits`.
     #[inline]
     pub fn insert<T: Into<Bitboard>>(&mut self, bits: T, piece: Piece) {
-        self.remove_all(bits);
-        self.insert_unchecked(piece);
+        let value = bits.into();
+        self.remove_all(value);
+        self.insert_unchecked(value, piece);
     }
 
     /// Performs a **blind** insertion of `piece` at a each square in `bits`.
