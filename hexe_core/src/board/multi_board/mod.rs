@@ -389,7 +389,7 @@ impl MultiBoard {
     /// There are some cases where the board state may be invalidated if the
     /// above invariant isn't correctly met:
     ///
-    /// - If he king is not in its initial position, then a king will spawn
+    /// - If the king is not in its initial position, then a king will spawn
     ///   both where it was expected to be, as well as where it would move to.
     ///   The same will happen when the rook is not at its corner of the board.
     ///
