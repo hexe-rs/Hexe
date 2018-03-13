@@ -242,6 +242,27 @@ impl MultiBoard {
         value.bitboard(self)
     }
 
+    /// Returns the total number of `value` in `self`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use hexe_core::board::MultiBoard;
+    /// use hexe_core::prelude::*;
+    ///
+    /// let board = MultiBoard::STANDARD;
+    ///
+    /// assert_eq!(board.count_of(Color::Black), 16);
+    /// assert_eq!(board.count_of(Piece::WhiteRook), 2);
+    /// assert_eq!(board.count_of(PieceKind::Queen), 2);
+    /// ```
+    #[inline]
+    pub fn count_of<T: Index>(&self, value: T) -> usize {
+        self.bitboard(value).len()
+    }
+
     /// Returns whether the `bits` of `value` are contained in `self`.
     ///
     /// # Examples
