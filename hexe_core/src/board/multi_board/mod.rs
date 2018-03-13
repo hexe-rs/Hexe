@@ -247,13 +247,21 @@ impl MultiBoard {
         value.contained(bits, self)
     }
 
-    /// Performs a **blind** insertion of `piece` at a each square in `bits`.
-    /// It _does not_ check whether pieces are located at `bits`.
-    ///
-    /// If the board may contain pieces at `bits`, then
-    /// [`remove_all`](#method.remove_all) should be called first.
+    /// Inserts `piece` at each square in `bits`, removing any other pieces
+    /// that may be at `bits`.
     #[inline]
     pub fn insert<T: Into<Bitboard>>(&mut self, bits: T, piece: Piece) {
+        self.remove_all(bits);
+        self.insert_unchecked(piece);
+    }
+
+    /// Performs a **blind** insertion of `piece` at a each square in `bits`.
+    /// It _does not_ check whether other pieces are located at `bits`.
+    ///
+    /// If the board may contain pieces at `bits`, then
+    /// [`insert`](#method.insert) should be called instead.
+    #[inline]
+    pub fn insert_unchecked<T: Into<Bitboard>>(&mut self, bits: T, piece: Piece) {
         let value = bits.into().0;
         self[piece.color()] |= value;
         self[piece.kind() ] |= value;
