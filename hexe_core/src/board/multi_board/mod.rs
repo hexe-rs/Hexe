@@ -494,7 +494,7 @@ impl Index for Color {
 
     #[inline]
     fn remove<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
-        self.remove_unchecked(board[self].0 & bits.into().0, board);
+        self.remove_unchecked(board[self] & bits.into(), board);
     }
 
     #[inline]
@@ -522,8 +522,8 @@ impl Index for Piece {
 
     #[inline]
     fn remove<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
-        let value = board[self.color()].0 | board[self.kind()].0;
-        self.remove_unchecked(value & bits.into().0, board);
+        let value = board[self.color()] | board[self.kind()];
+        self.remove_unchecked(value & bits.into(), board);
     }
 
     #[inline]
@@ -547,7 +547,7 @@ impl Index for PieceKind {
 
     #[inline]
     fn remove<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
-        self.remove_unchecked(board[self].0 & bits.into().0, board);
+        self.remove_unchecked(board[self] & bits.into(), board);
     }
 
     #[inline]
