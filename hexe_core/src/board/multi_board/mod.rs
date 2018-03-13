@@ -243,7 +243,9 @@ impl MultiBoard {
     /// assert!(!board.contains(Square::B1, PieceKind::Bishop));
     /// ```
     #[inline]
-    pub fn contains<B, V: Index<B>>(&self, bits: B, value: V) -> bool {
+    pub fn contains<T, U>(&self, bits: T, value: U) -> bool
+        where T: Into<Bitboard>, U: Index
+    {
         value.contained(bits, self)
     }
 
@@ -257,10 +259,10 @@ impl MultiBoard {
     }
 
     /// Performs a **blind** insertion of `piece` at a each square in `bits`.
-    /// It _does not_ check whether other pieces are located at `bits`.
     ///
-    /// If the board may contain pieces at `bits`, then
-    /// [`insert`](#method.insert) should be called instead.
+    /// It _does not_ check whether other pieces are located at `bits`. If the
+    /// board may contain pieces at `bits`, then [`insert`](#method.insert)
+    /// should be called instead.
     #[inline]
     pub fn insert_unchecked<T: Into<Bitboard>>(&mut self, bits: T, piece: Piece) {
         let value = bits.into().0;
@@ -270,8 +272,10 @@ impl MultiBoard {
 
     /// Removes each piece at `bits` for `value`.
     #[inline]
-    pub fn remove<B, V: Index<B>>(&mut self, bits: B, value: V) {
-        value.remove(bits, self)
+    pub fn remove<T, U>(&mut self, bits: T, value: U)
+        where T: Into<Bitboard>, U: Index
+    {
+        value.remove(bits, self);
     }
 
     /// Performs a **blind** removal of `value` at `bits`.
@@ -279,8 +283,10 @@ impl MultiBoard {
     /// It _does not_ check whether other pieces that `value` does not represent
     /// are located at `bits`.
     #[inline]
-    pub fn remove_unchecked<B, V: Index<B>>(&mut self, bits: B, value: V) {
-        value.remove_unchecked(bits, self)
+    pub fn remove_unchecked<T, U>(&mut self, bits: T, value: U)
+        where T: Into<Bitboard>, U: Index
+    {
+        value.remove_unchecked(bits, self);
     }
 
     /// Removes all pieces at `bits`.
@@ -420,30 +426,30 @@ impl MultiBoard {
 
 /// A type that can be used for [`MultiBoard`](struct.MultiBoard.html) indexing
 /// operations.
-pub trait Index<T> {
+pub trait Index {
     /// Returns whether the `bits` of `self` are contained in `board`.
-    fn contained(self, bits: T, board: &MultiBoard) -> bool;
+    fn contained<T: Into<Bitboard>>(self, bits: T, board: &MultiBoard) -> bool;
 
     /// Removes the `bits` of `self` from `board`.
-    fn remove(self, bits: T, board: &mut MultiBoard);
+    fn remove<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard);
 
     /// Performs a **blind** removal of `self` at `bits` in `board`.
-    fn remove_unchecked(self, bits: T, board: &mut MultiBoard);
+    fn remove_unchecked<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard);
 }
 
-impl<T: Into<Bitboard>> Index<T> for Color {
+impl Index for Color {
     #[inline]
-    fn contained(self, bits: T, board: &MultiBoard) -> bool {
+    fn contained<T: Into<Bitboard>>(self, bits: T, board: &MultiBoard) -> bool {
         board[self].contains(bits)
     }
 
     #[inline]
-    fn remove(self, bits: T, board: &mut MultiBoard) {
+    fn remove<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
         self.remove_unchecked(board[self].0 & bits.into().0, board);
     }
 
     #[inline]
-    fn remove_unchecked(self, bits: T, board: &mut MultiBoard) {
+    fn remove_unchecked<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
         let value = !bits.into().0;
         board[self] &= value;
         for piece in &mut board.pieces {
@@ -452,41 +458,41 @@ impl<T: Into<Bitboard>> Index<T> for Color {
     }
 }
 
-impl<T: Into<Bitboard>> Index<T> for Piece {
+impl Index for Piece {
     #[inline]
-    fn contained(self, bits: T, board: &MultiBoard) -> bool {
+    fn contained<T: Into<Bitboard>>(self, bits: T, board: &MultiBoard) -> bool {
         let value = bits.into().0;
         board[self.color()].contains(value) &&
         board[self.kind() ].contains(value)
     }
 
     #[inline]
-    fn remove(self, bits: T, board: &mut MultiBoard) {
+    fn remove<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
         let value = board[self.color()].0 | board[self.kind()].0;
         self.remove_unchecked(value & bits.into().0, board);
     }
 
     #[inline]
-    fn remove_unchecked(self, bits: T, board: &mut MultiBoard) {
+    fn remove_unchecked<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
         let value = !bits.into().0;
         board[self.color()] &= value;
         board[self.kind() ] &= value;
     }
 }
 
-impl<T: Into<Bitboard>> Index<T> for PieceKind {
+impl Index for PieceKind {
     #[inline]
-    fn contained(self, bits: T, board: &MultiBoard) -> bool {
+    fn contained<T: Into<Bitboard>>(self, bits: T, board: &MultiBoard) -> bool {
         board[self].contains(bits)
     }
 
     #[inline]
-    fn remove(self, bits: T, board: &mut MultiBoard) {
+    fn remove<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
         self.remove_unchecked(board[self].0 & bits.into().0, board);
     }
 
     #[inline]
-    fn remove_unchecked(self, bits: T, board: &mut MultiBoard) {
+    fn remove_unchecked<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
         let value = !bits.into().0;
         board[self] &= value;
         for color in &mut board.colors {
