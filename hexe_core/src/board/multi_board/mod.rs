@@ -254,12 +254,12 @@ impl MultiBoard {
     ///
     /// let board = MultiBoard::STANDARD;
     ///
-    /// assert_eq!(board.count_of(Color::Black), 16);
-    /// assert_eq!(board.count_of(Piece::WhiteRook), 2);
-    /// assert_eq!(board.count_of(PieceKind::Queen), 2);
+    /// assert_eq!(board.count(Color::Black), 16);
+    /// assert_eq!(board.count(Piece::WhiteRook), 2);
+    /// assert_eq!(board.count(PieceKind::Queen), 2);
     /// ```
     #[inline]
-    pub fn count_of<T: Index>(&self, value: T) -> usize {
+    pub fn count<T: Index>(&self, value: T) -> usize {
         self.bitboard(value).len()
     }
 

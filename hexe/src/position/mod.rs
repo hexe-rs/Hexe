@@ -78,9 +78,9 @@ impl Position {
         value.contained_in(self)
     }
 
-    /// Returns the number of pieces on the board.
+    /// Returns the total number of pieces on the board.
     #[inline]
-    pub fn count(&self) -> usize {
+    pub fn total_count(&self) -> usize {
         self.all_bitboard().len()
     }
 
@@ -95,16 +95,16 @@ impl Position {
     /// # use hexe::prelude::*;
     /// let pos = Position::default();
     ///
-    /// assert_eq!(pos.count_of(PieceKind::Knight), 4);
-    /// assert_eq!(pos.count_of(Color::White), 16);
-    /// assert_eq!(pos.count_of(Piece::BlackPawn), 8);
+    /// assert_eq!(pos.count(PieceKind::Knight), 4);
+    /// assert_eq!(pos.count(Color::White), 16);
+    /// assert_eq!(pos.count(Piece::BlackPawn), 8);
     /// ```
     ///
     /// [`Piece`]:     ../piece/enum.Piece.html
     /// [`PieceKind`]: ../piece/enum.PieceKind.html
     /// [`Color`]:     ../color/enum.Color.html
     #[inline]
-    pub fn count_of<T: BitboardRetriever>(&self, retr: T) -> usize {
+    pub fn count<T: BitboardRetriever>(&self, retr: T) -> usize {
         self.bitboard(retr).len()
     }
 

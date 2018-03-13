@@ -9,14 +9,14 @@ use simd::u8x16;
 /// A type that can efficiently return the count of a given value within itself.
 pub trait Count<T> {
     /// The number of occurrences of `value` within `self`.
-    fn count_of(self, value: T) -> usize;
+    fn count(self, value: T) -> usize;
 }
 
 macro_rules! impl_count {
     ($($N:expr)+) => { $(
         impl<'a> Count<u8> for &'a [u8; $N] {
             #[inline]
-            fn count_of(self, needle: u8) -> usize {
+            fn count(self, needle: u8) -> usize {
                 #[cfg(feature = "simd")]
                 type B = u8x16;
 
