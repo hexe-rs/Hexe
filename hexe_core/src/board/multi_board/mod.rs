@@ -222,6 +222,26 @@ impl MultiBoard {
         Bitboard(self.colors[0] | self.colors[1])
     }
 
+    /// Returns the `Bitboard` for `value` in `self`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use hexe_core::board::MultiBoard;
+    /// use hexe_core::prelude::*;
+    ///
+    /// let board   = MultiBoard::STANDARD;
+    /// let king_sq = board.bitboard(Piece::WhiteKing).lsb();
+    ///
+    /// assert_eq!(king_sq, Some(Square::E1));
+    /// ```
+    #[inline]
+    pub fn bitboard<T: Index>(&self, value: T) -> Bitboard {
+        value.bitboard(self)
+    }
+
     /// Returns whether the `bits` of `value` are contained in `self`.
     ///
     /// # Examples
@@ -427,6 +447,9 @@ impl MultiBoard {
 /// A type that can be used for [`MultiBoard`](struct.MultiBoard.html) indexing
 /// operations.
 pub trait Index {
+    /// Returns the bitboard for `self` in `board`.
+    fn bitboard(self, board: &MultiBoard) -> Bitboard;
+
     /// Returns whether the `bits` of `self` are contained in `board`.
     fn contained<T: Into<Bitboard>>(self, bits: T, board: &MultiBoard) -> bool;
 
@@ -438,6 +461,11 @@ pub trait Index {
 }
 
 impl Index for Color {
+    #[inline]
+    fn bitboard(self, board: &MultiBoard) -> Bitboard {
+        board[self]
+    }
+
     #[inline]
     fn contained<T: Into<Bitboard>>(self, bits: T, board: &MultiBoard) -> bool {
         board[self].contains(bits)
@@ -460,6 +488,11 @@ impl Index for Color {
 
 impl Index for Piece {
     #[inline]
+    fn bitboard(self, board: &MultiBoard) -> Bitboard {
+        self.color().bitboard(board) & self.kind().bitboard(board)
+    }
+
+    #[inline]
     fn contained<T: Into<Bitboard>>(self, bits: T, board: &MultiBoard) -> bool {
         let value = bits.into().0;
         board[self.color()].contains(value) &&
@@ -481,6 +514,11 @@ impl Index for Piece {
 }
 
 impl Index for PieceKind {
+    #[inline]
+    fn bitboard(self, board: &MultiBoard) -> Bitboard {
+        board[self]
+    }
+
     #[inline]
     fn contained<T: Into<Bitboard>>(self, bits: T, board: &MultiBoard) -> bool {
         board[self].contains(bits)
