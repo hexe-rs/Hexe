@@ -297,7 +297,7 @@ impl MultiBoard {
     pub fn contains<T, U>(&self, bits: T, value: U) -> bool
         where T: Into<Bitboard>, U: Index
     {
-        value.contained(bits, self)
+        self.bitboard(value).contains(bits)
     }
 
     /// Inserts `piece` at each square in `bits`, removing any other pieces
@@ -481,9 +481,6 @@ pub trait Index {
     /// Returns the bitboard for `self` in `board`.
     fn bitboard(self, board: &MultiBoard) -> Bitboard;
 
-    /// Returns whether the `bits` of `self` are contained in `board`.
-    fn contained<T: Into<Bitboard>>(self, bits: T, board: &MultiBoard) -> bool;
-
     /// Removes the `bits` of `self` from `board`.
     fn remove<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard);
 
@@ -495,11 +492,6 @@ impl Index for Color {
     #[inline]
     fn bitboard(self, board: &MultiBoard) -> Bitboard {
         board[self]
-    }
-
-    #[inline]
-    fn contained<T: Into<Bitboard>>(self, bits: T, board: &MultiBoard) -> bool {
-        board[self].contains(bits)
     }
 
     #[inline]
@@ -524,13 +516,6 @@ impl Index for Piece {
     }
 
     #[inline]
-    fn contained<T: Into<Bitboard>>(self, bits: T, board: &MultiBoard) -> bool {
-        let value = bits.into().0;
-        board[self.color()].contains(value) &&
-        board[self.kind() ].contains(value)
-    }
-
-    #[inline]
     fn remove<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
         let value = board[self.color()] | board[self.kind()];
         self.remove_unchecked(value & bits.into(), board);
@@ -548,11 +533,6 @@ impl Index for PieceKind {
     #[inline]
     fn bitboard(self, board: &MultiBoard) -> Bitboard {
         board[self]
-    }
-
-    #[inline]
-    fn contained<T: Into<Bitboard>>(self, bits: T, board: &MultiBoard) -> bool {
-        board[self].contains(bits)
     }
 
     #[inline]
