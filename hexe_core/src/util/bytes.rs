@@ -49,7 +49,7 @@ macro_rules! impl_bytes {
                 const L: $t = LO as $t;
 
                 let x = self ^ other;
-                !((((x & !H) + !H) | x) >> 7) & L
+                !(((x & !H).wrapping_add(!H) | x) >> 7) & L
             }
 
             #[inline]
