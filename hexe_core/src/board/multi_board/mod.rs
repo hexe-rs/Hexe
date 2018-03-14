@@ -1,4 +1,4 @@
-//! A bitboard-segmented chess board representations.
+//! A bitboard-segmented chess board representation.
 
 use core::{hash, ops, mem};
 
