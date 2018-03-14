@@ -35,7 +35,7 @@ macro_rules! impl_count {
                 let splat = B::splat(needle);
 
                 chunks.into_iter().fold(B::splat(0), |sums, chunk| {
-                    sums.increment(chunk.bytes_equal(splat))
+                    sums.increment(chunk.bytes_eq(splat))
                 }).sum()
             }
         }

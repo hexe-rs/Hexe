@@ -12,7 +12,7 @@ pub trait Bytes: Sized {
 
     /// Performs a byte-wise equality check against `other` and stores the
     /// individual results within each byte.
-    fn bytes_equal(self, other: Self) -> Self;
+    fn bytes_eq(self, other: Self) -> Self;
 
     /// Increments each byte within `self`.
     fn increment(self, incr: Self) -> Self;
@@ -44,7 +44,7 @@ macro_rules! impl_bytes {
             }
 
             #[inline]
-            fn bytes_equal(self, other: Self) -> Self {
+            fn bytes_eq(self, other: Self) -> Self {
                 const H: $t = HI as $t;
                 const L: $t = LO as $t;
 
@@ -93,7 +93,7 @@ impl Bytes for u8x16 {
     }
 
     #[inline]
-    fn bytes_equal(self, other: Self) -> Self {
+    fn bytes_eq(self, other: Self) -> Self {
         self.eq(other).to_repr().to_u8()
     }
 
