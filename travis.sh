@@ -21,7 +21,9 @@ else
         TARGET_ARGS="--target $TARGET"
     fi
 
-    cargo test $TARGET_ARGS -p hexe      $FEATURES
-    cargo test $TARGET_ARGS -p hexe_core $FEATURES
-    cargo test $TARGET_ARGS -p hexe_core $FEATURES --no-default-features
+    cargo test $TARGET_ARGS -p hexe $FEATURES
+
+    cd hexe_core
+    cargo test $TARGET_ARGS $FEATURES
+    cargo test $TARGET_ARGS $FEATURES --no-default-features
 fi
