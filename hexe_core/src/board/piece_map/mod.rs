@@ -634,6 +634,17 @@ impl PieceMap {
         self.get(sq).map(|p| p.color())
     }
 
+    /// Returns the color of the piece at the square without checking whether a
+    /// valid piece exists there.
+    ///
+    /// Because of how `Color` is encoded in `Piece`, this is not an `unsafe`
+    /// operation. If the square is empty, the returned color is `White`.
+    /// However, errors and bugs may arise if this is used on an empty square.
+    #[inline]
+    pub fn color_at_unchecked(&self, sq: Square) -> Color {
+        (self.0[sq as usize] & 1).into()
+    }
+
     /// Returns the kind of the piece at the given square, if any.
     #[inline]
     pub fn kind_at(&self, sq: Square) -> Option<PieceKind> {
