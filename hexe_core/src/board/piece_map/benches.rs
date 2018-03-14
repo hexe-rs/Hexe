@@ -27,28 +27,22 @@ fn find_naive_impl(piece: Piece, map: &PieceMap) -> Option<Square> {
     None
 }
 
-fn contains(piece: Piece, map: &PieceMap) -> bool {
-    map.as_bytes().contains(&(piece as u8))
+fn contains_helper<F: Fn(&PieceMap, Piece) -> bool>(b: &mut Bencher, f: F) {
+    let pc  = Piece::BlackKing;
+    let map = piece_map! { Square::H8 => pc };
+    b.iter(|| {
+        black_box(f(black_box(&map), black_box(pc)));
+    });
 }
 
 #[bench]
 fn contains_piece(b: &mut Bencher) {
-    let piece = Piece::BlackKing;
-    let map = piece_map! { Square::H8 => piece };
-
-    b.iter(|| {
-        black_box(black_box(&map).contains(black_box(piece)));
-    });
+    contains_helper(b, |map, pc| map.contains(pc));
 }
 
 #[bench]
 fn contains_piece_naive(b: &mut Bencher) {
-    let piece = Piece::BlackKing;
-    let map = piece_map! { Square::H8 => piece };
-
-    b.iter(|| {
-        black_box(contains(black_box(piece), black_box(&map)));
-    });
+    contains_helper(b, |map, pc| map.as_bytes().contains(&(pc as u8)));
 }
 
 #[bench]
