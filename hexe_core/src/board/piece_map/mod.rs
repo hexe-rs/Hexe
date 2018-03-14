@@ -756,12 +756,10 @@ impl PieceMap {
     ///
     /// # Values
     ///
-    /// - Bytes with values less than 12 refer to a valid [`Piece`] instance.
+    /// - Bytes with values less than 12 refer to a valid `Piece` instance.
     /// - Empty slots have a value of 12.
     ///
     /// You may safely assume that that no values greater than 12 exist.
-    ///
-    /// [`Piece`]: ../enum.Piece.html
     #[inline]
     pub fn as_bytes(&self) -> &[u8; 64] {
         &self.0
