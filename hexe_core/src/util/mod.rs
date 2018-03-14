@@ -1,7 +1,7 @@
 //! Non-public utility traits.
 
-use std::mem;
-use std::ptr;
+use core::mem;
+use core::ptr;
 
 mod bytes;
 mod count;
