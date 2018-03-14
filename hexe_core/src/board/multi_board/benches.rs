@@ -6,6 +6,15 @@ use square::Square;
 use test::{Bencher, black_box};
 
 #[bench]
+fn from_piece_map(b: &mut Bencher) {
+    let map = ::board::PieceMap::STANDARD;
+    b.iter(|| {
+        let board = MultiBoard::from(black_box(&map));
+        black_box(&board);
+    });
+}
+
+#[bench]
 fn remove_all_10(b: &mut Bencher) {
     let squares = [
         Square::B1, Square::C2, Square::H8, Square::A7, Square::A1,

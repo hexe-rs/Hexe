@@ -2,7 +2,7 @@
 
 use core::{hash, ops, mem};
 
-use board::Bitboard;
+use board::{Bitboard, PieceMap};
 use castle::CastleRight;
 use color::Color;
 use piece::{Piece, PieceKind};
@@ -109,6 +109,16 @@ impl AsMut<[Bitboard]> for MultiBoard {
     fn as_mut(&mut self) -> &mut [Bitboard] {
         let array = self as *mut _ as *mut [_; NUM_BOARDS];
         unsafe { &mut *array }
+    }
+}
+
+impl<'a> From<&'a PieceMap> for MultiBoard {
+    fn from(map: &PieceMap) -> MultiBoard {
+        let mut board = MultiBoard::default();
+        for (square, &piece) in map {
+            board.insert_unchecked(square, piece);
+        }
+        board
     }
 }
 
