@@ -209,6 +209,15 @@ impl PieceKind {
         self.into()
     }
 
+    /// Returns whether `self` is a piece kind that can slide across the board.
+    #[inline]
+    pub fn is_slider(self) -> bool {
+        match self {
+            PieceKind::Rook | PieceKind::Bishop | PieceKind::Queen => true,
+            PieceKind::Pawn | PieceKind::Knight | PieceKind::King  => false,
+        }
+    }
+
     /// The kind is a promotion.
     #[inline]
     pub fn is_promotion(&self) -> bool {
