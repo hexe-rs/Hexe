@@ -273,7 +273,7 @@ impl MultiBoard {
         self.bitboard(value).len()
     }
 
-    /// Returns whether the `bits` of `value` are contained in `self`.
+    /// Returns whether `value` is contained at all squares in `bits`.
     ///
     /// # Examples
     ///
@@ -285,19 +285,37 @@ impl MultiBoard {
     ///
     /// let board = MultiBoard::STANDARD;
     ///
-    /// assert!(board.contains(Square::C7, Color::Black));
-    /// assert!(board.contains(Square::H1, Piece::WhiteRook));
-    /// assert!(board.contains(Square::B8, PieceKind::Knight));
-    ///
-    /// assert!(!board.contains(Square::C2, Color::Black));
-    /// assert!(!board.contains(Square::H8, Piece::BlackPawn));
-    /// assert!(!board.contains(Square::B1, PieceKind::Bishop));
+    /// assert!(board.contains(Square::A2, Color::White));
+    /// assert!(board.contains(Square::C8, PieceKind::Bishop));
+    /// assert!(board.contains(Rank::Seven, Piece::BlackPawn));
     /// ```
     #[inline]
     pub fn contains<T, U>(&self, bits: T, value: U) -> bool
         where T: Into<Bitboard>, U: Index
     {
         self.bitboard(value).contains(bits)
+    }
+
+    /// Returns whether `value` is contained at any square in `bits`.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use hexe_core::board::MultiBoard;
+    /// use hexe_core::prelude::*;
+    ///
+    /// let board = MultiBoard::STANDARD;
+    ///
+    /// assert!(board.contains_any(File::B, PieceKind::Knight));
+    /// assert!(board.contains_any(Rank::One, PieceKind::King));
+    /// ```
+    #[inline]
+    pub fn contains_any<T, U>(&self, bits: T, value: U) -> bool
+        where T: Into<Bitboard>, U: Index
+    {
+        !(self.bitboard(value) & bits).is_empty()
     }
 
     /// Inserts `piece` at each square in `bits`, removing any other pieces
