@@ -334,7 +334,7 @@ impl MultiBoard {
     /// should be called instead.
     #[inline]
     pub fn insert_unchecked<T: Into<Bitboard>>(&mut self, bits: T, piece: Piece) {
-        let value = bits.into().0;
+        let value = bits.into();
         self[piece.color()] |= value;
         self[piece.kind() ] |= value;
     }
