@@ -1,7 +1,6 @@
 use super::*;
 use std::fmt;
 use std::sync::Arc;
-use uncon::*;
 
 /// A partial game state representation. Responsible for tracking [`Position`]
 /// history.
@@ -13,11 +12,7 @@ pub struct State {
     pub(super) prev: Option<Arc<State>>,
 
     /// The square used in an en passant capture, if any.
-    ///
-    /// Uses a value of `NO_SQUARE` when empty. This is because `Option<Square>`
-    /// currently uses two bytes instead of one. Should be made `Option<Square>`
-    /// once this PR is in stable: https://github.com/rust-lang/rust/pull/45225.
-    pub(super) en_passant: u8,
+    pub(super) en_passant: Option<Square>,
 
     /// The castle rights for both players.
     pub(super) castle_rights: CastleRights,
@@ -57,9 +52,11 @@ impl Eq for State {}
 impl Default for State {
     #[inline]
     fn default() -> State {
+        #[cfg(test)]
+        assert_eq_size!(u8, Option<Square>);
         State {
             prev: None,
-            en_passant: NO_SQUARE,
+            en_passant: None,
             castle_rights: CastleRights::FULL,
         }
     }
@@ -84,11 +81,8 @@ impl State {
 
     /// Returns the en passant square.
     #[inline]
-    pub fn en_passant(&self) -> Option<&Square> {
-        match self.en_passant {
-            NO_SQUARE => None,
-            ref ep => unsafe { Some(ep.into_unchecked()) }
-        }
+    pub fn en_passant(&self) -> Option<Square> {
+        self.en_passant
     }
 
     /// Returns the castle rights for both players.

@@ -10,15 +10,6 @@ pub use self::state::*;
 #[cfg(all(test, nightly))]
 mod benches;
 
-// The raw value used to represent no square for a space-optimized square.
-//
-// This should be unnecessary once `Option<Square>` is optimized to be a single
-// byte as per https://github.com/rust-lang/rust/pull/45225.
-const NO_SQUARE: u8 = 1 + Square::H8 as u8;
-
-#[cfg(test)]
-const_assert_eq!(no_sq; NO_SQUARE, 64);
-
 /// A representation of the current game state.
 #[derive(Clone)]
 pub struct Position {
@@ -134,7 +125,7 @@ impl Position {
 
     /// Returns the en passant square.
     #[inline]
-    pub fn en_passant(&self) -> Option<&Square> {
+    pub fn en_passant(&self) -> Option<Square> {
         self.state.en_passant()
     }
 
