@@ -52,8 +52,6 @@ impl Eq for State {}
 impl Default for State {
     #[inline]
     fn default() -> State {
-        #[cfg(test)]
-        assert_eq_size!(u8, Option<Square>);
         State {
             prev: None,
             en_passant: None,
