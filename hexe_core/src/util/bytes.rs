@@ -1,7 +1,7 @@
 use core::{mem, ops, u64};
 
 #[cfg(feature = "simd")]
-use simd::u8x16;
+use core::simd::u8x16;
 
 /// A type that represents a sequence of multiple bytes.
 ///

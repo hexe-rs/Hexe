@@ -3,7 +3,7 @@
 use core::{fmt, hash, mem, ops, ptr, str};
 
 #[cfg(feature = "simd")]
-use simd::u8x16;
+use core::simd::u8x16;
 
 use consts::PTR_SIZE;
 use misc::Contained;

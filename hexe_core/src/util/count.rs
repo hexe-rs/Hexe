@@ -1,10 +1,10 @@
 use super::bytes::Bytes;
 
+#[cfg(feature = "simd")]
+use core::simd::u8x16;
+
 #[cfg(not(feature = "simd"))]
 use consts::*;
-
-#[cfg(feature = "simd")]
-use simd::u8x16;
 
 /// A type that can efficiently return the count of a given value within itself.
 pub trait Count<T> {

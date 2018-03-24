@@ -47,7 +47,7 @@ impl PartialEq for MultiBoard {
     fn eq(&self, other: &Self) -> bool {
         #[cfg(feature = "simd")]
         {
-            use simd::u8x16;
+            use core::simd::u8x16;
             const NUM_SIMD: usize = 16;
 
             if self as *const _ == other as *const _ {

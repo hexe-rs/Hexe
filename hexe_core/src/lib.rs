@@ -137,9 +137,6 @@ pub mod square;
 pub mod _shared {
     #[cfg(feature = "serde")]
     pub extern crate serde;
-
-    #[cfg(feature = "simd")]
-    pub extern crate simd;
 }
 
 #[allow(unused_imports)]
