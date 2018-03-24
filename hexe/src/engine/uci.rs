@@ -6,6 +6,7 @@ use std::str;
 
 use core::color::Color;
 use mv::Move;
+use util::MutRef;
 
 const WHITE: usize = Color::White as usize;
 const BLACK: usize = Color::Black as usize;
@@ -39,33 +40,24 @@ impl Default for Limits {
     }
 }
 
-/// A type like Cow with mutability and without the `Clone` restriction.
-///
-/// Whether the Engine is owned or mutably borrowed, there is no cost of getting
-/// a reference to the underlying engine.
-enum UciInner<'a> {
-    Borrowed(&'a mut Engine),
-    Owned(Box<Engine>),
-}
-
 type UciIter<'a> = str::SplitWhitespace<'a>;
 
 /// Runs the engine via the [Universal Chess Interface][uci] (UCI) protocol.
 ///
 /// [uci]: http://wbec-ridderkerk.nl/html/UCIProtocol.html
-pub struct Uci<'a>(UciInner<'a>);
+pub struct Uci<'a>(MutRef<'a, Engine>);
 
 impl<'a> From<&'a mut Engine> for Uci<'a> {
     #[inline]
     fn from(engine: &'a mut Engine) -> Uci<'a> {
-        Uci(UciInner::Borrowed(engine))
+        Uci(MutRef::Borrowed(engine))
     }
 }
 
 impl<'a> From<Box<Engine>> for Uci<'a> {
     #[inline]
     fn from(engine: Box<Engine>) -> Uci<'a> {
-        Uci(UciInner::Owned(engine))
+        Uci(MutRef::Owned(engine))
     }
 }
 
@@ -78,7 +70,7 @@ impl<'a> From<Engine> for Uci<'a> {
 
 impl<'a> Default for Uci<'a> {
     fn default() -> Uci<'a> {
-        Uci(UciInner::Owned(Box::default()))
+        Uci(MutRef::Owned(Box::default()))
     }
 }
 
@@ -87,8 +79,8 @@ impl<'a> Uci<'a> {
     #[inline]
     pub fn engine(&self) -> &Engine {
         match self.0 {
-            UciInner::Borrowed(ref engine) => engine,
-            UciInner::Owned(ref engine) => &**engine,
+            MutRef::Borrowed(ref engine) => engine,
+            MutRef::Owned(ref engine) => &**engine,
         }
     }
 
@@ -97,8 +89,8 @@ impl<'a> Uci<'a> {
     #[inline]
     pub fn engine_mut(&mut self) -> &mut Engine {
         match self.0 {
-            UciInner::Borrowed(ref mut engine) => engine,
-            UciInner::Owned(ref mut engine) => &mut **engine,
+            MutRef::Borrowed(ref mut engine) => engine,
+            MutRef::Owned(ref mut engine) => &mut **engine,
         }
     }
 
