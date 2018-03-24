@@ -93,6 +93,7 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(all(test, nightly), feature(test))]
+#![cfg_attr(feature = "simd", feature(stdsimd))]
 
 // no_std //////////////////////////////////////////////////////////////////////
 #[cfg(feature = "std")]

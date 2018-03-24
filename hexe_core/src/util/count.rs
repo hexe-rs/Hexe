@@ -21,7 +21,7 @@ macro_rules! impl_count {
                 type B = u8x16;
 
                 #[cfg(feature = "simd")]
-                let chunks = (0..($N / 16)).map(|i| u8x16::load(self, i * 16));
+                let chunks = (0..($N / 16)).map(|i| u8x16::load_unaligned(&self[(i * 16)..][..16]));
 
                 #[cfg(not(feature = "simd"))]
                 type B = usize;
@@ -36,7 +36,7 @@ macro_rules! impl_count {
 
                 chunks.into_iter().fold(B::splat(0), |sums, chunk| {
                     sums.increment(chunk.bytes_eq(splat))
-                }).sum()
+                }).sum() as usize
             }
         }
     )+ }

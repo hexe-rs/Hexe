@@ -58,9 +58,12 @@ impl PartialEq for MultiBoard {
             let that = other.bytes();
 
             for i in (0..(NUM_BYTES / NUM_SIMD)).map(|i| i * NUM_SIMD) {
-                let a = u8x16::load(this, i);
-                let b = u8x16::load(that, i);
-                if !a.eq(b).all() {
+                let load = |s: &[u8; NUM_BYTES]| unsafe {
+                    let slice = s.get_unchecked(i..).get_unchecked(..NUM_SIMD);
+                    u8x16::load_unaligned_unchecked(slice)
+                };
+
+                if !load(this).eq(load(that)).all() {
                     return false;
                 }
             }

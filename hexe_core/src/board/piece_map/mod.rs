@@ -79,9 +79,10 @@ impl PartialEq for PieceMap {
             if self as *const _ == other as *const _ {
                 return true;
             }
-            for i in (0..4).map(|i| i * 16) {
-                let this = u8x16::load(&self.0, i);
-                let that = u8x16::load(&other.0, i);
+            let n = u8x16::lanes();
+            for i in (0..(SQUARE_NUM / n)).map(|i| i * n) {
+                let this = u8x16::load_unaligned(&self.0[i..][..n]);
+                let that = u8x16::load_unaligned(&other.0[i..][..n]);
                 if !this.eq(that).all() {
                     return false;
                 }
@@ -494,8 +495,9 @@ impl PieceMap {
         #[cfg(feature = "simd")]
         {
             let empty = u8x16::splat(NONE);
-            for i in 0..4 {
-                let vec = u8x16::load(&self.0, i * 16);
+            let n = u8x16::lanes();
+            for i in (0..(SQUARE_NUM / n)).map(|i| i * n) {
+                let vec = u8x16::load_unaligned(&self.0[i..][..n]);
                 if !vec.eq(empty).all() {
                     return false;
                 }
@@ -796,8 +798,8 @@ impl<'a> Contained<&'a PieceMap> for Piece {
         {
             let pieces = u8x16::splat(self as u8);
 
-            for i in 0..4 {
-                let vec = u8x16::load(&map.0, i * 16);
+            for i in (0..4).map(|i| i * 16) {
+                let vec = u8x16::load_unaligned(&map.0[i..][..16]);
                 if vec.eq(pieces).any() {
                     return true;
                 }

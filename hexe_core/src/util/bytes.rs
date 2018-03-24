@@ -1,7 +1,7 @@
 use core::{mem, ops, u64};
 
 #[cfg(feature = "simd")]
-use core::simd::u8x16;
+use core::simd::{IntoBits, u8x16};
 
 /// A type that represents a sequence of multiple bytes.
 ///
@@ -94,7 +94,7 @@ impl Bytes for u8x16 {
 
     #[inline]
     fn bytes_eq(self, other: Self) -> Self {
-        self.eq(other).to_repr().to_u8()
+        self.eq(other).into_bits()
     }
 
     #[inline]
