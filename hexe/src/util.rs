@@ -1,5 +1,6 @@
 use std::mem;
 use std::ptr;
+use std::ops::{Deref, DerefMut};
 
 /// A type like Cow with mutability and without the `Clone` restriction.
 ///
@@ -9,6 +10,38 @@ use std::ptr;
 pub enum MutRef<'a, T: ?Sized + 'a> {
     Borrowed(&'a mut T),
     Owned(Box<T>),
+}
+
+impl<'a, T> Deref for MutRef<'a, T> {
+    type Target = T;
+
+    #[inline]
+    fn deref(&self) -> &T {
+        match *self {
+            MutRef::Borrowed(ref x) => x,
+            MutRef::Owned(ref x)    => x,
+        }
+    }
+}
+
+impl<'a, T> DerefMut for MutRef<'a, T> {
+    #[inline]
+    fn deref_mut(&mut self) -> &mut T {
+        match *self {
+            MutRef::Borrowed(ref mut x) => x,
+            MutRef::Owned(ref mut x)    => x,
+        }
+    }
+}
+
+impl<'a, T> AsRef<T> for MutRef<'a, T> {
+    #[inline]
+    fn as_ref(&self) -> &T { self }
+}
+
+impl<'a, T> AsMut<T> for MutRef<'a, T> {
+    #[inline]
+    fn as_mut(&mut self) -> &mut T { self }
 }
 
 #[inline]

@@ -77,22 +77,12 @@ impl<'a> Default for Uci<'a> {
 impl<'a> Uci<'a> {
     /// Returns a reference to the underlying engine over which `self` iterates.
     #[inline]
-    pub fn engine(&self) -> &Engine {
-        match self.0 {
-            MutRef::Borrowed(ref engine) => engine,
-            MutRef::Owned(ref engine) => &**engine,
-        }
-    }
+    pub fn engine(&self) -> &Engine { &self.0 }
 
     /// Returns a mutable reference to the underlying engine over which `self`
     /// iterates.
     #[inline]
-    pub fn engine_mut(&mut self) -> &mut Engine {
-        match self.0 {
-            MutRef::Borrowed(ref mut engine) => engine,
-            MutRef::Owned(ref mut engine) => &mut **engine,
-        }
-    }
+    pub fn engine_mut(&mut self) -> &mut Engine { &mut self.0 }
 
     /// Runs the UCI loop, feeding commands from `stdin`.
     ///
