@@ -14,6 +14,9 @@ use uncon::*;
 #[cfg(all(test, nightly))]
 mod benches;
 
+#[cfg(test)]
+mod tests;
+
 mod values {
     use super::*;
 
