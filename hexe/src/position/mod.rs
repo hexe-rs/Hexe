@@ -17,7 +17,7 @@ pub struct Position {
     state: State,
 
     /// A piece map board representation for fast lookups.
-    piece_map: PieceMap,
+    pieces: PieceMap,
 
     /// Bitboards for each color and piece kind.
     board: MultiBoard,
@@ -28,10 +28,10 @@ pub struct Position {
 
 impl PartialEq for Position {
     fn eq(&self, other: &Position) -> bool {
-        // Skip checking `board`; it represents the same data as `piece_map`.
-        self.piece_map == other.piece_map &&
-        self.player    == other.player    &&
-        self.state     == other.state
+        // Skip checking `board`; it represents the same data as `pieces`.
+        self.pieces == other.pieces &&
+        self.player == other.player &&
+        self.state  == other.state
     }
 }
 
@@ -41,7 +41,7 @@ impl Default for Position {
     fn default() -> Position {
         Position {
             state: State::default(),
-            piece_map: PieceMap::STANDARD,
+            pieces: PieceMap::STANDARD,
             board: MultiBoard::STANDARD,
             player: Color::White,
         }
@@ -51,20 +51,14 @@ impl Default for Position {
 impl Position {
     /// Returns the inner piece map.
     #[inline]
-    pub fn piece_map(&self) -> &PieceMap {
-        &self.piece_map
+    pub fn pieces(&self) -> &PieceMap {
+        &self.pieces
     }
 
     /// Returns the inner board.
     #[inline]
     pub fn board(&self) -> &MultiBoard {
         &self.board
-    }
-
-    /// Returns the piece at the square, if any.
-    #[inline]
-    pub fn piece_at(&self, sq: Square) -> Option<&Piece> {
-        self.piece_map.get(sq)
     }
 
     /// Returns whether `self` contains the value.
@@ -126,7 +120,7 @@ impl Position {
 impl<'a> Contained<&'a Position> for Square {
     #[inline]
     fn contained_in(self, pos: &Position) -> bool {
-        pos.piece_map.contains(self)
+        pos.pieces().contains(self)
     }
 }
 
@@ -153,7 +147,7 @@ mod tests {
         let all = pos.board().all_bits();
 
         for square in Square::ALL {
-            if let Some(&piece) = pos.piece_at(square) {
+            if let Some(&piece) = pos.pieces().get(square) {
                 assert!(all.contains(square));
 
                 let board = pos.board();
