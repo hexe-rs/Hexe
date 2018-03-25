@@ -18,6 +18,7 @@ const VEC_CAP: usize = u8::MAX as usize;
 /// - When comparing equality of a `MoveVec` to some `[Move]`, place the vector
 ///   before the slice. This should emit a `memcmp` call which is _much_ faster
 ///   than `[Move] == [Move]`, which will check each move individually.
+#[repr(C)]
 pub struct MoveVec {
     /// The internal inline buffer. Uses u16 for convenience.
     buf: [u16; VEC_CAP],
