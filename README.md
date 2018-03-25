@@ -98,9 +98,6 @@ Hexe is licensed under either of
 
 at your choosing.
 
-> **Note:** This project initially began on 2017-01-04 in a separate repository.
-> This repo is a rewrite and expansion of that one.
-
 [`hexe`]:      https://docs.rs/hexe
 [`hexe_core`]: https://docs.rs/hexe_core
 
