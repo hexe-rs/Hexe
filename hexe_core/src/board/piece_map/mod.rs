@@ -76,13 +76,7 @@ impl PartialEq for PieceMap {
     fn eq(&self, other: &PieceMap) -> bool {
         #[cfg(feature = "simd")]
         {
-            if self as *const _ == other as *const _ {
-                return true;
-            }
-
-            let this = u8x64::load_unaligned(&self.0);
-            let that = u8x64::load_unaligned(&other.0);
-            this == that
+            self as *const _ == other as *const _ || self.simd() == other.simd()
         }
         #[cfg(not(feature = "simd"))]
         {
@@ -239,6 +233,12 @@ impl PieceMap {
             unsafe { ptr::write(&mut map.0[i], val) };
         }
         map
+    }
+
+    #[cfg(feature = "simd")]
+    #[inline]
+    fn simd(&self) -> u8x64 {
+        u8x64::load_unaligned(&self.0)
     }
 
     /// Reverses the square mapping.

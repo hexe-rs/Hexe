@@ -2,6 +2,9 @@
 
 use core::{hash, ops, mem};
 
+#[cfg(feature = "simd")]
+use core::simd::u8x64;
+
 use board::{Bitboard, PieceMap};
 use castle::CastleRight;
 use color::Color;
@@ -47,15 +50,7 @@ impl PartialEq for MultiBoard {
     fn eq(&self, other: &Self) -> bool {
         #[cfg(feature = "simd")]
         {
-            use core::simd::u8x64;
-
-            if self as *const _ == other as *const _ {
-                return true;
-            }
-
-            let this = u8x64::load_unaligned(self.bytes());
-            let that = u8x64::load_unaligned(other.bytes());
-            this == that
+            self as *const _ == other as *const _ || self.simd() == other.simd()
         }
         #[cfg(not(feature = "simd"))]
         {
@@ -155,6 +150,12 @@ impl ops::IndexMut<Color> for MultiBoard {
 impl MultiBoard {
     /// The board for standard chess.
     pub const STANDARD: MultiBoard = values::STANDARD;
+
+    #[cfg(feature = "simd")]
+    #[inline]
+    fn simd(&self) -> u8x64 {
+        u8x64::load_unaligned(self.bytes())
+    }
 
     #[inline]
     fn bytes(&self) -> &[u8; NUM_BYTES] {
