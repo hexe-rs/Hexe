@@ -249,6 +249,14 @@ impl PieceMap {
         unsafe { self.0.simd }
     }
 
+    #[inline]
+    #[cfg(feature = "simd")]
+    fn inner(&self) -> u8x64 { unsafe { self.0.simd } }
+
+    #[inline]
+    #[cfg(not(feature = "simd"))]
+    fn inner(&self) -> &[u8; SQUARE_NUM] { self.as_bytes() }
+
     /// Reverses the square mapping.
     ///
     /// # Examples
@@ -520,13 +528,7 @@ impl PieceMap {
     /// the result if it is used repeatedly.
     #[inline]
     pub fn len(&self) -> usize {
-        #[cfg(feature = "simd")]
-        let inner = self.simd();
-
-        #[cfg(not(feature = "simd"))]
-        let inner = self.as_bytes();
-
-        SQUARE_NUM - inner.count(NONE)
+        SQUARE_NUM - self.inner().count(NONE)
     }
 
     /// Returns the number of occurrences of `piece` in `self`.
@@ -535,13 +537,7 @@ impl PieceMap {
     /// the result if it is used repeatedly.
     #[inline]
     pub fn count(&self, piece: Piece) -> usize {
-        #[cfg(feature = "simd")]
-        let inner = self.simd();
-
-        #[cfg(not(feature = "simd"))]
-        let inner = self.as_bytes();
-
-        inner.count(piece as u8)
+        self.inner().count(piece as u8)
     }
 
     /// Returns whether the map contains the value.
