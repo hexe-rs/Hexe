@@ -16,7 +16,7 @@ travis-ci = { repository = "hexe-rs/Hexe" }
 appveyor  = { repository = "nvzqz/Hexe" }
 
 [dependencies]
-memchr       = { version = "2.0",   default-features = false, features = ["libc"] }
+memchr       = { version = "2.0",   default-features = false }
 uncon        = { version = "1.1.0", default-features = false }
 uncon_derive = { version = "1.1.1", default-features = false }
 
@@ -32,7 +32,7 @@ static_assertions = "0.2"
 version_check = "0.1"
 
 [features]
-default = ["std"]
+default = ["std", "memchr/libc"]
 
 simd = []
 
