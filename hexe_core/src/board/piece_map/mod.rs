@@ -520,7 +520,13 @@ impl PieceMap {
     /// the result if it is used repeatedly.
     #[inline]
     pub fn len(&self) -> usize {
-        SQUARE_NUM - self.as_bytes().count(NONE)
+        #[cfg(feature = "simd")]
+        let n = unsafe { self.0.simd.count(NONE) };
+
+        #[cfg(not(feature = "simd"))]
+        let n = self.as_bytes().count(NONE);
+
+        SQUARE_NUM - n
     }
 
     /// Returns the number of occurrences of `piece` in `self`.
@@ -529,6 +535,10 @@ impl PieceMap {
     /// the result if it is used repeatedly.
     #[inline]
     pub fn count(&self, piece: Piece) -> usize {
+        #[cfg(feature = "simd")]
+        unsafe { self.0.simd.count(piece as u8) }
+
+        #[cfg(not(feature = "simd"))]
         self.as_bytes().count(piece as u8)
     }
 
