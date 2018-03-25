@@ -55,6 +55,12 @@ impl Position {
         &self.piece_map
     }
 
+    /// Returns the inner board.
+    #[inline]
+    pub fn board(&self) -> &MultiBoard {
+        &self.board
+    }
+
     /// Returns the piece at the square, if any.
     #[inline]
     pub fn piece_at(&self, sq: Square) -> Option<&Piece> {
@@ -68,36 +74,6 @@ impl Position {
         value.contained_in(self)
     }
 
-    /// Returns the total number of pieces on the board.
-    #[inline]
-    pub fn total_count(&self) -> usize {
-        self.all_bitboard().len()
-    }
-
-    /// Returns the number of pieces for the retriever.
-    ///
-    /// # Examples
-    ///
-    /// This method can be used for [`Piece`], [`PieceKind`], and [`Color`]:
-    ///
-    /// ```
-    /// # use hexe::position::Position;
-    /// # use hexe::prelude::*;
-    /// let pos = Position::default();
-    ///
-    /// assert_eq!(pos.count(PieceKind::Knight), 4);
-    /// assert_eq!(pos.count(Color::White), 16);
-    /// assert_eq!(pos.count(Piece::BlackPawn), 8);
-    /// ```
-    ///
-    /// [`Piece`]:     ../piece/enum.Piece.html
-    /// [`PieceKind`]: ../piece/enum.PieceKind.html
-    /// [`Color`]:     ../color/enum.Color.html
-    #[inline]
-    pub fn count<T: BitboardRetriever>(&self, retr: T) -> usize {
-        self.bitboard(retr).len()
-    }
-
     /// Returns the current player's color.
     #[inline]
     pub fn player(&self) -> Color {
@@ -107,7 +83,7 @@ impl Position {
     /// Returns the bitboard corresponding to the current player.
     #[inline]
     pub fn player_bitboard(&self) -> Bitboard {
-        self.bitboard(self.player())
+        self.board().bitboard(self.player())
     }
 
     /// Returns the opponent player's color.
@@ -119,7 +95,7 @@ impl Position {
     /// Returns the bitboard corresponding to the opponent player.
     #[inline]
     pub fn opponent_bitboard(&self) -> Bitboard {
-        self.bitboard(self.opponent())
+        self.board().bitboard(self.opponent())
     }
 
     /// Returns the en passant square.
@@ -134,50 +110,16 @@ impl Position {
         self.state.castle_rights()
     }
 
-    /// Returns a bitboard containing squares for where all pieces reside.
-    #[inline]
-    pub fn all_bitboard(&self) -> Bitboard {
-        self.bitboard(Color::White) | self.bitboard(Color::Black)
-    }
-
-    /// Returns the corresponding bitboard for the retriever.
-    ///
-    /// # Examples
-    ///
-    /// This method can be used for [`Piece`], [`PieceKind`], and [`Color`]:
-    ///
-    /// ```
-    /// # use hexe::position::Position;
-    /// # use hexe::prelude::*;
-    /// let pos = Position::default();
-    ///
-    /// let kind  = PieceKind::Knight;
-    /// let color = Color::White;
-    /// let piece = Piece::new(kind, color);
-    ///
-    /// assert_eq!(
-    ///     pos.bitboard(kind) & pos.bitboard(color),
-    ///     pos.bitboard(piece)
-    /// );
-    /// ```
-    ///
-    /// [`Piece`]:     ../piece/enum.Piece.html
-    /// [`PieceKind`]: ../piece/enum.PieceKind.html
-    /// [`Color`]:     ../color/enum.Color.html
-    #[inline]
-    pub fn bitboard<T: BitboardRetriever>(&self, retr: T) -> Bitboard {
-        retr.bitboard(self)
-    }
-
     /// Returns the square where the color's king lies on.
     #[inline]
     pub fn king_square(&self, color: Color) -> Square {
+        let piece = Piece::new(PieceKind::King, color);
+        let board = self.board().bitboard(piece);
+
         // Both colors should *always* have a king
-        debug_assert!(
-            self.contains(Piece::new(PieceKind::King, color)),
-            "No king found for {}", color
-        );
-        unsafe { self.bitboard(color).lsb_unchecked() }
+        debug_assert!(!board.is_empty(), "{:?} not found", piece);
+
+        unsafe { board.lsb_unchecked() }
     }
 }
 
@@ -193,40 +135,13 @@ macro_rules! impl_contained {
         $(impl<'a> Contained<&'a Position> for $t {
             #[inline]
             fn contained_in(self, pos: &Position) -> bool {
-                !pos.bitboard(self).is_empty()
+                !pos.board().bitboard(self).is_empty()
             }
         })+
     }
 }
 
 impl_contained! { Piece, PieceKind, Color }
-
-/// A type whose instances serve to retrieve a `Bitboard` from a `Position`.
-pub trait BitboardRetriever {
-    /// Retrieves the corresponding `Bitboard` for `self` from a `Position`.
-    fn bitboard(self, pos: &Position) -> Bitboard;
-}
-
-impl BitboardRetriever for PieceKind {
-    #[inline]
-    fn bitboard(self, pos: &Position) -> Bitboard {
-        pos.board[self]
-    }
-}
-
-impl BitboardRetriever for Color {
-    #[inline]
-    fn bitboard(self, pos: &Position) -> Bitboard {
-        pos.board[self]
-    }
-}
-
-impl BitboardRetriever for Piece {
-    #[inline]
-    fn bitboard(self, pos: &Position) -> Bitboard {
-        self.kind().bitboard(pos) & self.color().bitboard(pos)
-    }
-}
 
 #[cfg(test)]
 mod tests {
@@ -235,14 +150,16 @@ mod tests {
     #[test]
     fn initial_pieces() {
         let pos = Position::default();
-        let all = pos.all_bitboard();
+        let all = pos.board().all_bits();
 
         for square in Square::ALL {
             if let Some(&piece) = pos.piece_at(square) {
                 assert!(all.contains(square));
-                assert!(pos.bitboard(piece).contains(square));
-                assert!(pos.bitboard(piece.kind()).contains(square));
-                assert!(pos.bitboard(piece.color()).contains(square));
+
+                let board = pos.board();
+                assert!(board.contains(square, piece));
+                assert!(board.contains(square, piece.kind()));
+                assert!(board.contains(square, piece.color()));
             } else {
                 let (a, b) = pos.board.split();
                 for &slice in &[&a[..], &b[..]] {
