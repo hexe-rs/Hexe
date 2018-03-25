@@ -28,8 +28,7 @@ pub struct Position {
 
 impl PartialEq for Position {
     fn eq(&self, other: &Position) -> bool {
-        // We can skip checking `pieces` and `colors` because they represent the
-        // same data as `piece_map`.
+        // Skip checking `board`; it represents the same data as `piece_map`.
         self.piece_map == other.piece_map &&
         self.player    == other.player    &&
         self.state     == other.state
