@@ -84,7 +84,8 @@ impl PartialEq for PieceMap {
     fn eq(&self, other: &PieceMap) -> bool {
         #[cfg(feature = "simd")]
         {
-            self as *const _ == other as *const _ || self.simd() == other.simd()
+            self as *const _ == other as *const _ ||
+            self.as_vector() == other.as_vector()
         }
         #[cfg(not(feature = "simd"))]
         {
@@ -245,13 +246,7 @@ impl PieceMap {
 
     #[cfg(feature = "simd")]
     #[inline]
-    fn simd(&self) -> u8x64 {
-        unsafe { self.0.simd }
-    }
-
-    #[cfg(feature = "simd")]
-    #[inline]
-    fn inner(&self) -> u8x64 { unsafe { self.0.simd } }
+    fn inner(&self) -> &u8x64 { self.as_vector() }
 
     #[cfg(not(feature = "simd"))]
     #[inline]
@@ -791,6 +786,29 @@ impl PieceMap {
     pub unsafe fn as_bytes_mut(&mut self) -> &mut [u8; 64] {
         &mut self.0.array
     }
+
+    /// A reference to the inner SIMD vector for `self`.
+    ///
+    /// Requires enabling the `simd` feature.
+    #[cfg(feature = "simd")]
+    #[inline]
+    pub fn as_vector(&self) -> &u8x64 {
+        unsafe { &self.0.simd }
+    }
+
+    /// A mutable reference to the inner SIMD vector for `self`.
+    ///
+    /// Requires enabling the `simd` feature.
+    ///
+    /// # Safety
+    ///
+    /// See [`PieceMap::as_bytes_mut`](#method.as_bytes_mut) for how to handle
+    /// safely writing to the vector.
+    #[cfg(feature = "simd")]
+    #[inline]
+    pub unsafe fn as_vector_mut(&mut self) -> &mut u8x64 {
+        &mut self.0.simd
+    }
 }
 
 impl<'a> Contained<&'a PieceMap> for Square {
@@ -805,7 +823,7 @@ impl<'a> Contained<&'a PieceMap> for Piece {
     fn contained_in(self, map: &PieceMap) -> bool {
         #[cfg(feature = "simd")]
         {
-            map.simd().eq(u8x64::splat(self as u8)).any()
+            map.as_vector().eq(u8x64::splat(self as u8)).any()
         }
         #[cfg(not(feature = "simd"))]
         {
