@@ -3,7 +3,7 @@
 use core::{fmt, hash, mem, ops, ptr, str};
 
 #[cfg(feature = "simd")]
-use core::simd::u8x16;
+use core::simd::{u8x16, u8x64};
 
 use consts::PTR_SIZE;
 use misc::Contained;
@@ -79,15 +79,10 @@ impl PartialEq for PieceMap {
             if self as *const _ == other as *const _ {
                 return true;
             }
-            let n = u8x16::lanes();
-            for i in (0..(SQUARE_NUM / n)).map(|i| i * n) {
-                let this = u8x16::load_unaligned(&self.0[i..][..n]);
-                let that = u8x16::load_unaligned(&other.0[i..][..n]);
-                if !this.eq(that).all() {
-                    return false;
-                }
-            }
-            true
+
+            let this = u8x64::load_unaligned(&self.0);
+            let that = u8x64::load_unaligned(&other.0);
+            this == that
         }
         #[cfg(not(feature = "simd"))]
         {

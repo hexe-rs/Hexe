@@ -47,27 +47,15 @@ impl PartialEq for MultiBoard {
     fn eq(&self, other: &Self) -> bool {
         #[cfg(feature = "simd")]
         {
-            use core::simd::u8x16;
-            const NUM_SIMD: usize = u8x16::lanes();
+            use core::simd::u8x64;
 
             if self as *const _ == other as *const _ {
                 return true;
             }
 
-            let this = self.bytes();
-            let that = other.bytes();
-
-            for i in (0..(NUM_BYTES / NUM_SIMD)).map(|i| i * NUM_SIMD) {
-                let load = |s: &[u8; NUM_BYTES]| unsafe {
-                    let slice = s.get_unchecked(i..).get_unchecked(..NUM_SIMD);
-                    u8x16::load_unaligned_unchecked(slice)
-                };
-
-                if !load(this).eq(load(that)).all() {
-                    return false;
-                }
-            }
-            true
+            let this = u8x64::load_unaligned(self.bytes());
+            let that = u8x64::load_unaligned(other.bytes());
+            this == that
         }
         #[cfg(not(feature = "simd"))]
         {
