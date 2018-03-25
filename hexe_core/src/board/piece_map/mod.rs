@@ -503,7 +503,7 @@ impl PieceMap {
     pub fn is_empty(&self) -> bool {
         #[cfg(feature = "simd")]
         {
-            self.simd() == u8x64::splat(NONE)
+            *self.as_vector() == u8x64::splat(NONE)
         }
         #[cfg(not(feature = "simd"))]
         {
@@ -823,7 +823,7 @@ impl<'a> Contained<&'a PieceMap> for Piece {
     fn contained_in(self, map: &PieceMap) -> bool {
         #[cfg(feature = "simd")]
         {
-            map.as_vector().eq(u8x64::splat(self as u8)).any()
+            (*map.as_vector()).eq(u8x64::splat(self as u8)).any()
         }
         #[cfg(not(feature = "simd"))]
         {
