@@ -96,15 +96,15 @@ impl MoveVec {
         MoveVec::default()
     }
 
-    /// Creates a new vector with a move repeated `num` times.
+    /// Creates a new vector with a move repeated `len` times.
     ///
-    /// If `num` is greater than the max possible length, the max length will be
+    /// If `len` is greater than the max possible length, the max length will be
     /// used.
     ///
-    /// This is analogous to `vec![mv; num]` but for `MoveVec`.
+    /// This is analogous to `vec![mv; len]` but for `MoveVec`.
     #[inline]
-    pub fn from_elem(mv: Move, num: usize) -> MoveVec {
-        MoveVec::from_init(num, |_| mv)
+    pub fn from_elem(mv: Move, len: usize) -> MoveVec {
+        MoveVec::from_init(len, |_| mv)
     }
 
     /// Creates a new `MoveVec` by instantiating each slot with the provided
