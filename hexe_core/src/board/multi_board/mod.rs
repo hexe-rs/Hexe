@@ -244,6 +244,12 @@ impl MultiBoard {
         value.bitboard(self)
     }
 
+    /// Returns the bits of the royal pieces, King and Queen.
+    #[inline]
+    pub fn royals(&self) -> Bitboard {
+        self.bitboard(PieceKind::Queen) | self.bitboard(PieceKind::King)
+    }
+
     /// Returns the total number of `value` in `self`.
     ///
     /// # Examples
