@@ -57,7 +57,7 @@ macro_rules! impl_iter {
 impl PieceMap {
     #[inline]
     fn find_len(&self, iter: &All<Square>) -> usize {
-        iter.extract(&self.0).iter().fold(iter.len(), |len, &pc| {
+        iter.extract(self.as_bytes()).iter().fold(iter.len(), |len, &pc| {
             len - (pc == NONE) as usize
         })
     }

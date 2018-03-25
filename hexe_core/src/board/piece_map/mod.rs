@@ -64,7 +64,15 @@ const SQUARE_NUM: usize = 64;
 /// [`PieceMap::STANDARD`](#associatedconstant.STANDARD) to get a mapping for
 /// standard chess.
 #[repr(C)]
-pub struct PieceMap([u8; SQUARE_NUM]);
+pub struct PieceMap(Inner);
+
+#[derive(Copy, Clone)]
+#[repr(C)]
+union Inner {
+    #[cfg(feature = "simd")]
+    simd: u8x64,
+    array: [u8; SQUARE_NUM],
+}
 
 impl Clone for PieceMap {
     #[inline]
@@ -80,7 +88,7 @@ impl PartialEq for PieceMap {
         }
         #[cfg(not(feature = "simd"))]
         {
-            self.0[..] == other.0[..]
+            self.as_bytes()[..] == other.as_bytes()[..]
         }
     }
 }
@@ -97,7 +105,7 @@ impl Default for PieceMap {
 impl hash::Hash for PieceMap {
     #[inline]
     fn hash<H: hash::Hasher>(&self, state: &mut H) {
-        state.write(&self.0);
+        state.write(self.as_bytes());
     }
 }
 
@@ -151,10 +159,10 @@ impl Extend<(Square, Piece)> for PieceMap {
 
 impl PieceMap {
     /// An empty piece map.
-    pub const EMPTY: PieceMap = PieceMap([NONE; SQUARE_NUM]);
+    pub const EMPTY: PieceMap = PieceMap(Inner { array: [NONE; SQUARE_NUM] });
 
     /// The piece map for standard chess.
-    pub const STANDARD: PieceMap = PieceMap(tables::STANDARD);
+    pub const STANDARD: PieceMap = PieceMap(Inner { array: tables::STANDARD });
 
     /// Creates an empty piece map.
     #[inline]
@@ -206,7 +214,7 @@ impl PieceMap {
     /// Creates a map with _all_ squares populated by `piece`.
     #[inline]
     pub fn filled(piece: Piece) -> PieceMap {
-        PieceMap([piece as u8; SQUARE_NUM])
+        PieceMap(Inner { array: [piece as u8; SQUARE_NUM] })
     }
 
     /// Creates a new piece map by instantiating each slot with the provided
@@ -230,7 +238,7 @@ impl PieceMap {
         let mut map: PieceMap = unsafe { mem::uninitialized() };
         for i in 0..SQUARE_NUM {
             let val = init(i.into()).map(|p| p as u8).unwrap_or(NONE);
-            unsafe { ptr::write(&mut map.0[i], val) };
+            unsafe { ptr::write(&mut map.0.array[i], val) };
         }
         map
     }
@@ -238,7 +246,7 @@ impl PieceMap {
     #[cfg(feature = "simd")]
     #[inline]
     fn simd(&self) -> u8x64 {
-        u8x64::load_unaligned(&self.0)
+        unsafe { self.0.simd }
     }
 
     /// Reverses the square mapping.
@@ -260,13 +268,13 @@ impl PieceMap {
     /// ```
     #[inline]
     pub fn reverse(&mut self) {
-        self.0.reverse()
+        unsafe { self.0.array.reverse() };
     }
 
     /// Shuffles the map in-place.
     #[cfg(any(test, feature = "rand"))]
     pub fn shuffle<R: ::rand::Rng>(&mut self, rng: &mut R) {
-        rng.shuffle(&mut self.0)
+        rng.shuffle(unsafe { self.as_bytes_mut() });
     }
 
     #[inline]
@@ -329,7 +337,7 @@ impl PieceMap {
     /// Performs a raw replacement.
     #[inline]
     unsafe fn replace(&mut self, sq: Square, pc: u8) -> Option<Piece> {
-        match mem::replace(&mut self.0[sq as usize], pc) {
+        match mem::replace(&mut self.as_bytes_mut()[sq as usize], pc) {
             NONE => None,
             p => Some(p.into_unchecked())
         }
@@ -356,7 +364,8 @@ impl PieceMap {
     /// Takes the piece at the square and moves it.
     #[inline]
     pub fn relocate(&mut self, from: Square, to: Square) {
-        self.0[to as usize] = mem::replace(&mut self.0[from as usize], NONE);
+        let buf = unsafe { self.as_bytes_mut() };
+        buf[to as usize] = mem::replace(&mut buf[from as usize], NONE);
     }
 
     /// Performs a capture of the piece at `to` via the piece at `from`.
@@ -437,7 +446,8 @@ impl PieceMap {
         let (king_sq, start_sq) = VALUES.pairs[right as usize];
         self.remove(king_sq);
 
-        let ptr = &mut self.0[start_sq as usize] as *mut u8 as *mut u32;
+        let buf = unsafe { self.as_bytes_mut() };
+        let ptr = &mut buf[start_sq as usize] as *mut u8 as *mut u32;
         unsafe { *ptr = VALUES.value[right as usize] };
     }
 
@@ -454,7 +464,8 @@ impl PieceMap {
     pub fn retain<F>(&mut self, mut f: F)
         where F: FnMut(Square, &mut Piece) -> bool
     {
-        for (i, slot) in self.0.iter_mut().enumerate() {
+        let iter = unsafe { self.0.array.iter_mut() };
+        for (i, slot) in iter.enumerate() {
             if *slot != NONE && !f(i.into(), unsafe { slot.into_unchecked() }) {
                 *slot = NONE;
             }
@@ -464,7 +475,7 @@ impl PieceMap {
     /// Clears the map, removing all pieces.
     #[inline]
     pub fn clear(&mut self) {
-        self.0 = [NONE; SQUARE_NUM];
+        self.0.array = [NONE; SQUARE_NUM];
     }
 
     /// Removes all pieces from the given file.
@@ -509,7 +520,7 @@ impl PieceMap {
     /// the result if it is used repeatedly.
     #[inline]
     pub fn len(&self) -> usize {
-        SQUARE_NUM - self.0.count(NONE)
+        SQUARE_NUM - self.as_bytes().count(NONE)
     }
 
     /// Returns the number of occurrences of `piece` in `self`.
@@ -518,7 +529,7 @@ impl PieceMap {
     /// the result if it is used repeatedly.
     #[inline]
     pub fn count(&self, piece: Piece) -> usize {
-        self.0.count(piece as u8)
+        self.as_bytes().count(piece as u8)
     }
 
     /// Returns whether the map contains the value.
@@ -554,7 +565,7 @@ impl PieceMap {
     /// Returns the first square for the piece.
     #[inline]
     pub fn find(&self, pc: Piece) -> Option<Square> {
-        ::memchr::memchr(pc as u8, &self.0).map(|index| unsafe {
+        ::memchr::memchr(pc as u8, self.as_bytes()).map(|index| unsafe {
             index.into_unchecked()
         })
     }
@@ -562,7 +573,7 @@ impl PieceMap {
     /// Returns the last square for the piece.
     #[inline]
     pub fn rfind(&self, pc: Piece) -> Option<Square> {
-        ::memchr::memrchr(pc as u8, &self.0).map(|index| unsafe {
+        ::memchr::memrchr(pc as u8, self.as_bytes()).map(|index| unsafe {
             index.into_unchecked()
         })
     }
@@ -577,7 +588,7 @@ impl PieceMap {
     /// Returns a reference to the piece at a square, if any.
     #[inline]
     pub fn get(&self, sq: Square) -> Option<&Piece> {
-        match self.0[sq as usize] {
+        match self.as_bytes()[sq as usize] {
             NONE => None,
             ref p => unsafe { Some(p.into_unchecked()) }
         }
@@ -586,9 +597,11 @@ impl PieceMap {
     /// Returns a mutable reference to the piece at a square, if any.
     #[inline]
     pub fn get_mut(&mut self, sq: Square) -> Option<&mut Piece> {
-        match self.0[sq as usize] {
-            NONE => None,
-            ref mut p => unsafe { Some(p.into_unchecked()) }
+        unsafe {
+            match self.0.array[sq as usize] {
+                NONE => None,
+                ref mut p => Some(p.into_unchecked())
+            }
         }
     }
 
@@ -602,7 +615,7 @@ impl PieceMap {
     /// [ub]: https://en.wikipedia.org/wiki/Undefined_behavior
     #[inline]
     pub unsafe fn get_unchecked(&self, sq: Square) -> &Piece {
-        (&self.0[sq as usize]).into_unchecked()
+        (&self.as_bytes()[sq as usize]).into_unchecked()
     }
 
     /// Returns a mutable reference to the piece at a square without checking.
@@ -615,7 +628,7 @@ impl PieceMap {
     /// [ub]: https://en.wikipedia.org/wiki/Undefined_behavior
     #[inline]
     pub unsafe fn get_unchecked_mut(&mut self, sq: Square) -> &mut Piece {
-        (&mut self.0[sq as usize]).into_unchecked()
+        (&mut self.as_bytes_mut()[sq as usize]).into_unchecked()
     }
 
     /// Returns the color of the piece at the given square, if any.
@@ -632,7 +645,7 @@ impl PieceMap {
     /// However, errors and bugs may arise if this is used on an empty square.
     #[inline]
     pub fn color_at_unchecked(&self, sq: Square) -> Color {
-        (self.0[sq as usize] & 1).into()
+        (self.as_bytes()[sq as usize] & 1).into()
     }
 
     /// Returns the kind of the piece at the given square, if any.
@@ -752,7 +765,7 @@ impl PieceMap {
     /// You may safely assume that that no values greater than 12 exist.
     #[inline]
     pub fn as_bytes(&self) -> &[u8; 64] {
-        &self.0
+        unsafe { &self.0.array }
     }
 
     /// Returns a mutable view into the bytes of the map.
@@ -768,14 +781,14 @@ impl PieceMap {
     /// [ub]: https://en.wikipedia.org/wiki/Undefined_behavior
     #[inline]
     pub unsafe fn as_bytes_mut(&mut self) -> &mut [u8; 64] {
-        &mut self.0
+        &mut self.0.array
     }
 }
 
 impl<'a> Contained<&'a PieceMap> for Square {
     #[inline]
     fn contained_in(self, map: &PieceMap) -> bool {
-        map.0[self as usize] != NONE
+        map.as_bytes()[self as usize] != NONE
     }
 }
 
@@ -803,7 +816,7 @@ pub trait Swap {
 impl Swap for Square {
     #[inline]
     fn swap(i: Square, j: Square, map: &mut PieceMap) {
-        map.0.swap(i as usize, j as usize);
+        unsafe { map.0.array.swap(i as usize, j as usize) };
     }
 }
 
@@ -987,8 +1000,12 @@ mod tests {
                 let range = affected_range(right);
                 let start = ..range.start;
                 let end   = range.end..SQUARE_NUM;
-                assert_eq!(&map.0[start.clone()], &original.0[start]);
-                assert_eq!(&map.0[end.clone()],   &original.0[end]);
+
+                assert_eq!(&map.as_bytes()[start.clone()],
+                           &original.as_bytes()[start]);
+
+                assert_eq!(&map.as_bytes()[end.clone()],
+                           &original.as_bytes()[end]);
             } }
         }
         test! {
