@@ -3,7 +3,7 @@
 use core::{fmt, hash, mem, ops, ptr, str};
 
 #[cfg(feature = "simd")]
-use core::simd::{u8x16, u8x64};
+use core::simd::u8x64;
 
 use consts::PTR_SIZE;
 use misc::Contained;
@@ -489,14 +489,7 @@ impl PieceMap {
     pub fn is_empty(&self) -> bool {
         #[cfg(feature = "simd")]
         {
-            let empty = u8x16::splat(NONE);
-            let n = u8x16::lanes();
-            for i in (0..(SQUARE_NUM / n)).map(|i| i * n) {
-                let vec = u8x16::load_unaligned(&self.0[i..][..n]);
-                if !vec.eq(empty).all() {
-                    return false;
-                }
-            }
+            self.simd() == u8x64::splat(NONE)
         }
         #[cfg(not(feature = "simd"))]
         {
@@ -506,8 +499,8 @@ impl PieceMap {
                     return false;
                 }
             }
+            true
         }
-        true
     }
 
     /// Returns the total number of pieces in `self`.
@@ -791,16 +784,7 @@ impl<'a> Contained<&'a PieceMap> for Piece {
     fn contained_in(self, map: &PieceMap) -> bool {
         #[cfg(feature = "simd")]
         {
-            let pieces = u8x16::splat(self as u8);
-
-            for i in (0..4).map(|i| i * 16) {
-                let vec = u8x16::load_unaligned(&map.0[i..][..16]);
-                if vec.eq(pieces).any() {
-                    return true;
-                }
-            }
-
-            false
+            map.simd().eq(u8x64::splat(self as u8)).any()
         }
         #[cfg(not(feature = "simd"))]
         {
