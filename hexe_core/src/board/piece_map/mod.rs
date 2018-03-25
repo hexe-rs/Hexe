@@ -249,12 +249,12 @@ impl PieceMap {
         unsafe { self.0.simd }
     }
 
-    #[inline]
     #[cfg(feature = "simd")]
+    #[inline]
     fn inner(&self) -> u8x64 { unsafe { self.0.simd } }
 
-    #[inline]
     #[cfg(not(feature = "simd"))]
+    #[inline]
     fn inner(&self) -> &[u8; SQUARE_NUM] { self.as_bytes() }
 
     /// Reverses the square mapping.
