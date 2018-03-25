@@ -23,7 +23,7 @@ rand         = { version = "0.4.1", default-features = false, optional = true }
 serde        = { version = "1.0.0", default-features = false, optional = true }
 
 [dev-dependencies]
-rand = "0.4.1"
+rand              = "0.4.1"
 static_assertions = "0.2"
 
 [build-dependencies]
@@ -31,8 +31,5 @@ version_check = "0.1"
 
 [features]
 default = ["std", "memchr/libc"]
-
-simd = []
-
-# Enables functionality that depends on the standard library
-std = ["memchr/use_std", "uncon/std", "uncon_derive/std"]
+std     = ["memchr/use_std", "uncon/std", "uncon_derive/std"]
+simd    = []
