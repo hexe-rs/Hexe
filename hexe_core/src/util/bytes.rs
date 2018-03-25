@@ -1,8 +1,5 @@
 use core::{mem, ops, u64};
 
-#[cfg(feature = "simd")]
-use core::simd::{IntoBits, u8x16};
-
 /// A type that represents a sequence of multiple bytes.
 ///
 /// Method implementations are taken from the `bytecount` crate.
@@ -84,32 +81,3 @@ macro_rules! impl_bytes {
 }
 
 impl_bytes! { usize, u64, u32 }
-
-#[cfg(feature = "simd")]
-impl Bytes for u8x16 {
-    #[inline]
-    fn splat(byte: u8) -> Self {
-        Self::splat(byte)
-    }
-
-    #[inline]
-    fn bytes_eq(self, other: Self) -> Self {
-        self.eq(other).into_bits()
-    }
-
-    #[inline]
-    fn increment(self, incr: Self) -> Self {
-        // incr on -1
-        self - incr
-    }
-
-    #[inline]
-    fn sum(self) -> usize {
-        (0..16).fold(0, |s, i| s + self.extract(i) as usize)
-    }
-
-    #[inline]
-    fn contains_zero_byte(self) -> bool {
-        self.eq(u8x16::splat(0)).any()
-    }
-}

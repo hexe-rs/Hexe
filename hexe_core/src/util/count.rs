@@ -1,45 +1,37 @@
-use super::bytes::Bytes;
-
-#[cfg(feature = "simd")]
-use core::simd::u8x16;
-
-#[cfg(not(feature = "simd"))]
-use consts::*;
-
 /// A type that can efficiently return the count of a given value within itself.
 pub trait Count<T> {
     /// The number of occurrences of `value` within `self`.
     fn count(self, value: T) -> usize;
 }
 
-macro_rules! impl_count {
-    ($($N:expr)+) => { $(
-        impl<'a> Count<u8> for &'a [u8; $N] {
-            #[inline]
-            fn count(self, needle: u8) -> usize {
-                #[cfg(feature = "simd")]
-                type B = u8x16;
+impl<'a> Count<u8> for &'a [u8; 64] {
+    #[inline]
+    #[cfg(feature = "simd")]
+    fn count(self, needle: u8) -> usize {
+        use core::simd::{FromBits, u8x64};
 
-                #[cfg(feature = "simd")]
-                let chunks = (0..($N / 16)).map(|i| u8x16::load_unaligned(&self[(i * 16)..][..16]));
+        let simd = u8x64::load_unaligned(self);
+        let zero = u8x64::splat(0);
+        let val  = u8x64::splat(needle);
 
-                #[cfg(not(feature = "simd"))]
-                type B = usize;
+        (zero - u8x64::from_bits(simd.eq(val))).sum() as usize
+    }
 
-                #[cfg(not(feature = "simd"))]
-                let chunks: &[usize; $N / PTR_SIZE] = unsafe {
-                    use uncon::*;
-                    self.into_unchecked()
-                };
+    #[inline]
+    #[cfg(not(feature = "simd"))]
+    fn count(self, needle: u8) -> usize {
+        use consts::PTR_SIZE;
+        use util::bytes::Bytes;
 
-                let splat = B::splat(needle);
+        let chunks: &[usize; 64 / PTR_SIZE] = unsafe {
+            use uncon::*;
+            self.into_unchecked()
+        };
 
-                chunks.into_iter().fold(B::splat(0), |sums, chunk| {
-                    sums.increment(chunk.bytes_eq(splat))
-                }).sum() as usize
-            }
-        }
-    )+ }
+        let splat = usize::splat(needle);
+
+        chunks.into_iter().fold(0usize, |sums, chunk| {
+            sums.increment(chunk.bytes_eq(splat))
+        }).sum()
+    }
 }
-
-impl_count! { 64 }
