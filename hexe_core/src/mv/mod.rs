@@ -1,5 +1,7 @@
 //! A chess move.
 
+use uncon::FromUnchecked;
+
 use castle::Right;
 use piece::Promotion as PromotionPiece;
 use square::{Rank, Square};
@@ -35,7 +37,7 @@ macro_rules! base_bits {
 /// [`Promotion`]: ./kind/struct.Promotion.html
 /// [`Castle`]:    ./kind/struct.Castle.html
 /// [`EnPassant`]: ./kind/struct.EnPassant.html
-#[derive(PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(PartialEq, Eq, Clone, Copy, Hash, FromUnchecked)]
 pub struct Move(pub(crate) u16);
 
 impl From<Move> for u16 {
@@ -182,10 +184,20 @@ pub mod kind {
     }
 
     macro_rules! impl_from_move {
-        ($($t:ty),+) => { $(
+        ($($t:ident),+) => { $(
             impl From<$t> for Move {
                 #[inline]
                 fn from(mv: $t) -> Move { mv.0 }
+            }
+
+            impl FromUnchecked<Move> for $t {
+                #[inline]
+                unsafe fn from_unchecked(mv: Move) -> $t { $t(mv) }
+            }
+
+            impl FromUnchecked<u16> for $t {
+                #[inline]
+                unsafe fn from_unchecked(bits: u16) -> $t { $t(Move(bits)) }
             }
 
             impl ops::Deref for $t {
