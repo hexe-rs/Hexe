@@ -28,7 +28,7 @@ macro_rules! base_bits {
 /// A chess piece move that can either be normal, a promotion, a king-rook
 /// castle, or an en passant.
 #[derive(PartialEq, Eq, Clone, Copy, Hash)]
-pub struct Move(u16);
+pub struct Move(pub(crate) u16);
 
 impl Move {
     /// Creates a new `Move` from one square to another.
@@ -133,7 +133,7 @@ pub mod kind {
 
     /// A normal, non-special move.
     #[derive(PartialEq, Eq, Clone, Copy, Hash)]
-    pub struct Normal(Move);
+    pub struct Normal(pub(crate) Move);
 
     impl Normal {
         /// Creates a new normal move from `src` to `dst`.
@@ -154,7 +154,7 @@ pub mod kind {
 
     /// A castling move.
     #[derive(PartialEq, Eq, Clone, Copy, Hash)]
-    pub struct Castle(Move);
+    pub struct Castle(pub(crate) Move);
 
     impl Castle {
         /// Creates a new castle move for `side`.
@@ -174,7 +174,7 @@ pub mod kind {
 
     /// A promotion move.
     #[derive(PartialEq, Eq, Clone, Copy, Hash)]
-    pub struct Promotion(Move);
+    pub struct Promotion(pub(crate) Move);
 
     impl Promotion {
         /// Creates a new promotion move.
@@ -205,7 +205,7 @@ pub mod kind {
 
     /// An en passant move.
     #[derive(PartialEq, Eq, Clone, Copy, Hash)]
-    pub struct EnPassant(Move);
+    pub struct EnPassant(pub(crate) Move);
 
     impl EnPassant {
         /// Creates a new en passant move.
