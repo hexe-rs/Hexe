@@ -277,3 +277,25 @@ pub mod kind {
         }
     }
 }
+
+#[cfg(all(test, nightly))]
+mod benches {
+    use super::*;
+    use test::{Bencher, black_box};
+
+    #[bench]
+    fn en_passant_is_legal_1000(b: &mut Bencher) {
+        use super::kind::EnPassant;
+
+        let mut moves = [EnPassant(Move(0)); 1000];
+        for mv in moves.iter_mut() {
+            *mv = EnPassant::new(::rand::random(), ::rand::random());
+        }
+
+        b.iter(|| {
+            for &mv in moves.iter() {
+                black_box(black_box(mv).is_legal());
+            }
+        });
+    }
+}
