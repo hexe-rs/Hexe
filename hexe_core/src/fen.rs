@@ -91,11 +91,11 @@ impl Fen {
 }
 
 #[cfg(test)]
+#[cfg(feature = "std")]
 mod tests {
     use super::*;
 
     #[test]
-    #[cfg(feature = "std")]
     fn display() {
         let fens = [
             (Fen::STARTING, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"),
