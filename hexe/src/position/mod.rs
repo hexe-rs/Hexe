@@ -74,9 +74,9 @@ impl Position {
     /// use hexe::position::Position;
     ///
     /// let mut moves = MoveVec::new();
-    /// let pos = Position::STANDARD;
+    /// let pos = Position::default();
     ///
-    /// pos.gen(moves).legal();
+    /// pos.gen(&mut moves).legal();
     /// ```
     #[inline]
     pub fn gen<'a, 'b>(&'a self, moves: &'b mut MoveVec) -> MoveGen<'a, 'b> {
