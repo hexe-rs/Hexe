@@ -1,6 +1,6 @@
 //! A chess move.
 
-use castle::Side;
+use castle::Right;
 use piece::Promotion as PromotionPiece;
 use square::Square;
 
@@ -17,7 +17,7 @@ const SRC_MASK:    u16 = 0b111111;
 const DST_MASK:    u16 = SRC_MASK;
 const PROM_MASK:   u16 = 0b11;
 const KIND_MASK:   u16 = PROM_MASK;
-const CASTLE_MASK: u16 = 0b1;
+const CASTLE_MASK: u16 = 0b11;
 
 macro_rules! base_bits {
     ($s1:expr, $s2:expr) => {
@@ -43,10 +43,10 @@ impl Move {
         kind::Promotion::new(src, dst, piece).into()
     }
 
-    /// Creates a new castle move for `side`.
+    /// Creates a new castle move for `right`.
     #[inline]
-    pub fn castle(side: Side) -> Move {
-        kind::Castle::new(side).into()
+    pub fn castle(right: Right) -> Move {
+        kind::Castle::new(right).into()
     }
 
     /// Creates an en passant move from one square to another.
@@ -195,15 +195,15 @@ pub mod kind {
     impl Castle {
         /// Creates a new castle move for `side`.
         #[inline]
-        pub fn new(side: Side) -> Castle {
-            let kind = (MoveKind::Castle as u16) << KIND_SHIFT;
-            let side = (side as u16) << CASTLE_SHIFT;
-            Castle(Move(side | kind))
+        pub fn new(right: Right) -> Castle {
+            let kind  = (MoveKind::Castle as u16) << KIND_SHIFT;
+            let right = (right as u16) << CASTLE_SHIFT;
+            Castle(Move(right | kind))
         }
 
-        /// Returns the castle side for `self`.
+        /// Returns the castle right for `self`.
         #[inline]
-        pub fn side(self) -> Side {
+        pub fn right(self) -> Right {
             (((self.0).0 >> CASTLE_SHIFT) & CASTLE_MASK).into()
         }
     }
