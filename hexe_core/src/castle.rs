@@ -230,6 +230,18 @@ impl From<Right> for char {
     }
 }
 
+impl From<Right> for Piece {
+    #[inline]
+    fn from(right: Right) -> Piece {
+        match right {
+            Right::WhiteKing  => Piece::WhiteKing,
+            Right::WhiteQueen => Piece::WhiteQueen,
+            Right::BlackKing  => Piece::BlackKing,
+            Right::BlackQueen => Piece::BlackQueen,
+        }
+    }
+}
+
 impl Right {
     /// Creates a new castle right for `color` and `side`.
     #[inline]
@@ -302,6 +314,16 @@ pub enum Side {
     King,
     /// Queen castling side (O-O-O).
     Queen,
+}
+
+impl From<Side> for PieceKind {
+    #[inline]
+    fn from(side: Side) -> PieceKind {
+        match side {
+            Side::King  => PieceKind::King,
+            Side::Queen => PieceKind::Queen,
+        }
+    }
 }
 
 #[cfg(any(test, feature = "rand"))]
