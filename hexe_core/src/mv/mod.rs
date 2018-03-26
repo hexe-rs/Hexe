@@ -1,11 +1,11 @@
 //! A chess move.
 
+use castle::CastleSide;
+use piece::Promotion as PromotionPiece;
+use square::Square;
+
 mod vec;
 pub use self::vec::*;
-
-use prelude::*;
-use core::castle::CastleSide;
-use core::piece::Promotion as PromotionPiece;
 
 const SRC_SHIFT:    usize =  0;
 const DST_SHIFT:    usize =  6;
@@ -70,8 +70,8 @@ impl Move {
     /// Basic usage:
     ///
     /// ```
-    /// use hexe::mv::Move;
-    /// use hexe::core::square::Square;
+    /// use hexe_core::mv::Move;
+    /// use hexe_core::square::Square;
     ///
     /// let mv = Move::normal(Square::A1, Square::A7);
     /// mv.matches(
@@ -132,7 +132,7 @@ fn dst(bits: u16) -> Square {
 /// The different underlying kinds of moves.
 pub mod kind {
     use super::*;
-    use std::ops;
+    use core::ops;
 
     macro_rules! impl_from_move {
         ($($t:ty),+) => { $(

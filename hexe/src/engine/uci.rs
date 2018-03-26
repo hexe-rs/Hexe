@@ -8,7 +8,7 @@ use std::str;
 use scoped_threadpool::Scope;
 
 use core::color::Color;
-use mv::Move;
+use core::mv::Move;
 use util::MutRef;
 
 const WHITE: usize = Color::White as usize;

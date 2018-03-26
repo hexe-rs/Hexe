@@ -78,6 +78,7 @@ pub mod color;
 pub mod fen;
 pub mod iter;
 pub mod misc;
+pub mod mv;
 pub mod piece;
 pub mod square;
 

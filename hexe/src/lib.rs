@@ -72,8 +72,6 @@ use core::_shared::*;
 extern crate num_cpus;
 extern crate scoped_threadpool;
 
-#[macro_use]
-extern crate uncon_derive;
 extern crate uncon;
 
 #[cfg(any(test, feature = "rand"))]
@@ -88,7 +86,6 @@ extern crate static_assertions;
 mod util;
 
 pub mod engine;
-pub mod mv;
 pub mod position;
 pub mod prelude;
 pub mod zobrist;

@@ -2,8 +2,10 @@
 
 use super::*;
 use uncon::*;
+use core::{cmp, mem, ops, ptr, u8};
+
+#[cfg(feature = "std")]
 use std::borrow::{Borrow, BorrowMut};
-use std::{cmp, mem, ops, ptr, u8};
 
 const VEC_CAP: usize = u8::MAX as usize;
 
@@ -61,11 +63,13 @@ impl AsMut<[Move]> for MoveVec {
     fn as_mut(&mut self) -> &mut [Move] { self }
 }
 
+#[cfg(feature = "std")]
 impl Borrow<[Move]> for MoveVec {
     #[inline]
     fn borrow(&self) -> &[Move] { self }
 }
 
+#[cfg(feature = "std")]
 impl BorrowMut<[Move]> for MoveVec {
     #[inline]
     fn borrow_mut(&mut self) -> &mut [Move] { self }
@@ -116,9 +120,9 @@ impl MoveVec {
     /// # Examples
     ///
     /// ```
-    /// # use hexe::mv::*;
-    /// # use hexe::prelude::*;
-    /// # use hexe::core::piece::*;
+    /// # use hexe_core::mv::*;
+    /// # use hexe_core::prelude::*;
+    /// # use hexe_core::piece::*;
     /// fn random() -> Move {
     ///     # Move::normal(Square::A1, Square::A2)
     ///     /* ... */
