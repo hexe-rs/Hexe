@@ -70,6 +70,7 @@ pub extern crate hexe_core as core;
 use core::_shared::*;
 
 extern crate num_cpus;
+extern crate scoped_threadpool;
 
 #[macro_use]
 extern crate uncon_derive;

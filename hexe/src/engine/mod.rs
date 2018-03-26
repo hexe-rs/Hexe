@@ -5,11 +5,18 @@
 
 use std::usize;
 
+use scoped_threadpool::Pool;
+
 mod uci;
 pub use self::uci::Uci;
 
 /// An instance of the Hexe chess engine.
 pub struct Engine {
+    pool: Pool,
+    engine: EngineInner,
+}
+
+struct EngineInner {
     options: Options,
 }
 
@@ -23,10 +30,11 @@ impl Engine {
     /// Creates an instance of the engine.
     pub fn new(mut options: Options) -> Engine {
         if options.num_threads == 0 {
-            options.num_threads = ::num_cpus::get();
+            options.num_threads = ::num_cpus::get() as u32;
         }
         Engine {
-            options: options,
+            pool: Pool::new(options.num_threads),
+            engine: EngineInner { options: options },
         }
     }
 
@@ -39,7 +47,7 @@ impl Engine {
 
 /// Chess engine options.
 pub struct Options {
-    num_threads: usize,
+    num_threads: u32,
 }
 
 impl Options {
@@ -49,7 +57,7 @@ impl Options {
     /// of threads will be selected automatically. The default is the number of
     /// logical CPUs.
     #[inline]
-    pub fn num_threads(mut self, num_threads: usize) -> Options {
+    pub fn num_threads(mut self, num_threads: u32) -> Options {
         self.num_threads = num_threads;
         self
     }
@@ -84,10 +92,7 @@ impl Options {
         };
 
         if match_option("threads") {
-            if let Ok(val) = value.parse() {
-                self.num_threads = val;
-            }
-            true
+            panic!("Cannot currently set number of threads");
         } else {
             false
         }
