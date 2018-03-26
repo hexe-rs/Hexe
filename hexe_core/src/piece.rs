@@ -233,6 +233,13 @@ impl PieceKind {
 #[allow(missing_docs)]
 pub enum Promotion { Knight, Bishop, Rook, Queen }
 
+impl fmt::Debug for Promotion {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        fmt::Display::fmt(self.into_str(), f)
+    }
+}
+
 impl Default for Promotion {
     /// Returns the default queen promotion piece.
     #[inline]
@@ -263,6 +270,12 @@ impl Promotion {
             None
         }
     }
+
+    /// Converts `self` into a static string.
+    #[inline]
+    pub fn into_str(self) -> &'static str {
+        KINDS[1..][self as usize]
+    }
 }
 
 #[cfg(test)]
@@ -270,6 +283,15 @@ mod tests {
     use super::*;
 
     static CHARS: [char; 6] = ['P', 'N', 'B', 'R', 'Q', 'K'];
+
+    #[test]
+    fn promotion_string() {
+        use self::Promotion::*;
+
+        for &prom in &[Knight, Bishop, Rook, Queen] {
+            assert_eq!(prom.into_str(), PieceKind::from(prom).into_str());
+        }
+    }
 
     #[test]
     fn piece_kind_char() {
