@@ -33,7 +33,7 @@
 //!
 //! - [Various board representations](https://docs.rs/hexe_core#board-representation)
 //!
-//! - [Dead.](https://docs.rs/hexe_core/0.0.3/hexe_core/castle/struct.CastleRights.html)
+//! - [Dead.](https://docs.rs/hexe_core/0.0.3/hexe_core/castle/struct.Rights.html)
 //!   [Simple.](https://docs.rs/hexe_core/0.0.3/hexe_core/square/enum.Square.html)
 //!   [Primitives.](https://docs.rs/hexe_core/0.0.3/hexe_core/piece/enum.Piece.html)
 //!

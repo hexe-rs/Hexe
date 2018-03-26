@@ -18,7 +18,7 @@ pub struct Fen {
     /// The active color.
     pub color: Color,
     /// The castling rights.
-    pub castling: CastleRights,
+    pub castling: Rights,
     /// The en passant target square.
     pub en_passant: Option<Square>,
     /// The number of halfmoves since the last capture or pawn advance.
@@ -69,7 +69,7 @@ impl Fen {
     pub const STARTING: Fen = Fen {
         pieces: PieceMap::STANDARD,
         color: Color::White,
-        castling: CastleRights::FULL,
+        castling: Rights::FULL,
         en_passant: None,
         halfmoves: 0,
         fullmoves: 1,
@@ -83,7 +83,7 @@ impl Fen {
     pub const EMPTY: Fen = Fen {
         pieces: PieceMap::EMPTY,
         color: Color::White,
-        castling: CastleRights::EMPTY,
+        castling: Rights::EMPTY,
         en_passant: None,
         halfmoves: 0,
         fullmoves: 1,

@@ -3,7 +3,7 @@
 
 // Concrete types
 pub use board::Bitboard;
-pub use castle::{CastleRights, CastleRight};
+pub use castle::{Rights, Right};
 pub use color::Color;
 pub use piece::{Piece, PieceKind};
 pub use square::{Square, File, Rank};

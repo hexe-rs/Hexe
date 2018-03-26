@@ -6,7 +6,7 @@
 //! Castling can only be done under certain conditions.
 //!
 //! For example, a piece can't be moved in a castle if it has been moved
-//! previously. You can use the [`CastleRights`] type to keep track of this
+//! previously. You can use the [`Rights`] type to keep track of this
 //! case:
 //!
 //! - If a king has moved, both castle rights for its color must be cleared
@@ -32,7 +32,7 @@
 //! Notice that the king can only move a maximum of two squares when castling,
 //! regardless of which board side.
 //!
-//! [`CastleRights`]: struct.CastleRights.html
+//! [`Rights`]: struct.Rights.html
 //! [castling]: https://en.wikipedia.org/wiki/Castling
 
 use core::{fmt, ops, str};
@@ -44,7 +44,7 @@ use serde::*;
 const ALL_BITS: u8 = 0b1111;
 const MAX_LEN: usize = 1 + ALL_BITS as usize;
 
-impl_rand!(u8 => CastleRights, CastleRight);
+impl_rand!(u8 => Rights, Right);
 
 /// Castle rights for a chess game.
 ///
@@ -56,38 +56,38 @@ impl_rand!(u8 => CastleRights, CastleRight);
 /// ```
 /// # use hexe_core::prelude::*;
 /// assert_eq!(
-///     CastleRight::WhiteKingside   | CastleRight::WhiteQueenside,
-///     CastleRights::WHITE_KINGSIDE | CastleRights::WHITE_QUEENSIDE
+///     Right::WhiteKing   | Right::WhiteQueen,
+///     Rights::WHITE_KING | Rights::WHITE_QUEEN
 /// );
 /// ```
 ///
 /// [`Bitboard`]: ../board/bitboard/struct.Bitboard.html
 #[derive(PartialEq, Eq, Clone, Copy, Hash, FromUnchecked)]
-pub struct CastleRights(u8);
+pub struct Rights(u8);
 
-impl From<u8> for CastleRights {
+impl From<u8> for Rights {
     #[inline]
-    fn from(inner: u8) -> CastleRights {
-        Self::FULL & CastleRights(inner)
+    fn from(inner: u8) -> Rights {
+        Self::FULL & Rights(inner)
     }
 }
 
-impl From<Color> for CastleRights {
+impl From<Color> for Rights {
     #[inline]
-    fn from(color: Color) -> CastleRights {
+    fn from(color: Color) -> Rights {
         match color {
-            Color::White => Self::WHITE_KINGSIDE | Self::WHITE_QUEENSIDE,
-            Color::Black => Self::BLACK_KINGSIDE | Self::BLACK_QUEENSIDE,
+            Color::White => Self::WHITE_KING | Self::WHITE_QUEEN,
+            Color::Black => Self::BLACK_KING | Self::BLACK_QUEEN,
         }
     }
 }
 
-impl Default for CastleRights {
+impl Default for Rights {
     #[inline]
-    fn default() -> CastleRights { CastleRights::FULL }
+    fn default() -> Rights { Rights::FULL }
 }
 
-impl fmt::Debug for CastleRights {
+impl fmt::Debug for Rights {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         if self.is_empty() {
             fmt::Display::fmt("(empty)", f)
@@ -97,40 +97,40 @@ impl fmt::Debug for CastleRights {
     }
 }
 
-impl fmt::Display for CastleRights {
+impl fmt::Display for Rights {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.map_str(|s| s.fmt(f))
     }
 }
 
-define_from_str_error! { CastleRights;
-    /// The error returned when `CastleRights::from_str` fails.
+define_from_str_error! { Rights;
+    /// The error returned when `Rights::from_str` fails.
     "failed to parse a string as castling rights"
 }
 
 #[cfg(feature = "serde")]
-impl Serialize for CastleRights {
+impl Serialize for Rights {
     fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
         self.map_str(|s| ser.serialize_str(s))
     }
 }
 
-impl str::FromStr for CastleRights {
+impl str::FromStr for Rights {
     type Err = FromStrError;
 
-    fn from_str(s: &str) -> Result<CastleRights, FromStrError> {
+    fn from_str(s: &str) -> Result<Rights, FromStrError> {
         let bytes = s.as_bytes();
-        let mut result = CastleRights::EMPTY;
+        let mut result = Rights::EMPTY;
 
         if bytes.len() == 1 && bytes[0] == b'-' {
             Ok(result)
         } else {
             for &byte in bytes {
                 result |= match byte {
-                    b'K' => CastleRights::WHITE_KINGSIDE,
-                    b'k' => CastleRights::BLACK_KINGSIDE,
-                    b'Q' => CastleRights::WHITE_QUEENSIDE,
-                    b'q' => CastleRights::BLACK_QUEENSIDE,
+                    b'K' => Rights::WHITE_KING,
+                    b'k' => Rights::BLACK_KING,
+                    b'Q' => Rights::WHITE_QUEEN,
+                    b'q' => Rights::BLACK_QUEEN,
                     _ => return Err(FromStrError(())),
                 };
             }
@@ -139,18 +139,18 @@ impl str::FromStr for CastleRights {
     }
 }
 
-impl CastleRights {
+impl Rights {
     /// White kingside.
-    pub const WHITE_KINGSIDE: CastleRights = CastleRights(0b0001);
+    pub const WHITE_KING: Rights = Rights(0b0001);
 
     /// White queenside.
-    pub const WHITE_QUEENSIDE: CastleRights = CastleRights(0b0010);
+    pub const WHITE_QUEEN: Rights = Rights(0b0010);
 
     /// Black kingside.
-    pub const BLACK_KINGSIDE: CastleRights = CastleRights(0b0100);
+    pub const BLACK_KING: Rights = Rights(0b0100);
 
     /// Black queenside.
-    pub const BLACK_QUEENSIDE: CastleRights = CastleRights(0b1000);
+    pub const BLACK_QUEEN: Rights = Rights(0b1000);
 
     /// Extracts a reference to the value within the buffer which the value
     /// indexes.
@@ -188,14 +188,14 @@ impl CastleRights {
     }
 }
 
-impl_bit_set! { CastleRights ALL_BITS => CastleRight }
+impl_bit_set! { Rights ALL_BITS => Right }
 
-impl_composition_ops! { CastleRights => CastleRight }
+impl_composition_ops! { Rights => Right }
 
-impl From<CastleRight> for CastleRights {
+impl From<Right> for Rights {
     #[inline]
-    fn from(right: CastleRight) -> Self {
-        CastleRights(1 << right as usize)
+    fn from(right: Right) -> Self {
+        Rights(1 << right as usize)
     }
 }
 
@@ -203,48 +203,48 @@ impl From<CastleRight> for CastleRights {
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Hash, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
-pub enum CastleRight {
+pub enum Right {
     /// White kingside: E1 to G1.
-    WhiteKingside,
+    WhiteKing,
     /// White queenside: E1 to C1.
-    WhiteQueenside,
+    WhiteQueen,
     /// Black kingside: E8 to G8.
-    BlackKingside,
+    BlackKing,
     /// Black queenside: E8 to C8.
-    BlackQueenside,
+    BlackQueen,
 }
 
-impl ops::Not for CastleSide {
-    type Output = CastleSide;
+impl ops::Not for Side {
+    type Output = Side;
 
     #[inline]
-    fn not(self) -> CastleSide {
+    fn not(self) -> Side {
         (1 - self as u8).into()
     }
 }
 
-impl From<CastleRight> for char {
+impl From<Right> for char {
     #[inline]
-    fn from(right: CastleRight) -> char {
+    fn from(right: Right) -> char {
         b"KQkq"[right as usize] as char
     }
 }
 
-impl CastleRight {
+impl Right {
     /// Creates a new castle right for `color` and `side`.
     #[inline]
-    pub fn new(color: Color, side: CastleSide) -> CastleRight {
+    pub fn new(color: Color, side: Side) -> Right {
         (((color as u8) << 1) | side as u8).into()
     }
 
     /// Returns a castle right from the parsed character.
     #[inline]
-    pub fn from_char(ch: char) -> Option<CastleRight> {
+    pub fn from_char(ch: char) -> Option<Right> {
         match ch {
-            'K' => Some(CastleRight::WhiteKingside),
-            'Q' => Some(CastleRight::WhiteQueenside),
-            'k' => Some(CastleRight::BlackKingside),
-            'q' => Some(CastleRight::BlackQueenside),
+            'K' => Some(Right::WhiteKing),
+            'Q' => Some(Right::WhiteQueen),
+            'k' => Some(Right::BlackKing),
+            'q' => Some(Right::BlackQueen),
             _ => None,
         }
     }
@@ -263,7 +263,7 @@ impl CastleRight {
 
     /// Returns the castle side for `self`.
     #[inline]
-    pub fn side(self) -> CastleSide {
+    pub fn side(self) -> Side {
         (1 & self as u8).into()
     }
 }
@@ -273,23 +273,23 @@ pub mod path {
     use super::*;
 
     /// White kingside path.
-    pub const WHITE_KINGSIDE: Bitboard = Bitboard(0x60);
+    pub const WHITE_KING: Bitboard = Bitboard(0x60);
 
     /// Black kingside path.
-    pub const BLACK_KINGSIDE: Bitboard = Bitboard(WHITE_KINGSIDE.0 << 56);
+    pub const BLACK_KING: Bitboard = Bitboard(WHITE_KING.0 << 56);
 
     /// White queenside path.
-    pub const WHITE_QUEENSIDE: Bitboard = Bitboard(0x0E);
+    pub const WHITE_QUEEN: Bitboard = Bitboard(0x0E);
 
     /// Black queenside path.
-    pub const BLACK_QUEENSIDE: Bitboard = Bitboard(WHITE_QUEENSIDE.0 << 56);
+    pub const BLACK_QUEEN: Bitboard = Bitboard(WHITE_QUEEN.0 << 56);
 
     /// All paths.
     pub static ALL: [Bitboard; 4] = [
-        WHITE_KINGSIDE,
-        WHITE_QUEENSIDE,
-        BLACK_KINGSIDE,
-        BLACK_QUEENSIDE,
+        WHITE_KING,
+        WHITE_QUEEN,
+        BLACK_KING,
+        BLACK_QUEEN,
     ];
 }
 
@@ -297,7 +297,7 @@ pub mod path {
 #[derive(PartialEq, Eq, Clone, Copy, Debug, Hash, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
-pub enum CastleSide {
+pub enum Side {
     /// King castling side (O-O).
     King,
     /// Queen castling side (O-O-O).
@@ -305,13 +305,13 @@ pub enum CastleSide {
 }
 
 #[cfg(any(test, feature = "rand"))]
-impl ::rand::Rand for CastleSide {
+impl ::rand::Rand for Side {
     #[inline]
     fn rand<R: ::rand::Rng>(rng: &mut R) -> Self {
         if bool::rand(rng) {
-            CastleSide::King
+            Side::King
         } else {
-            CastleSide::Queen
+            Side::Queen
         }
     }
 }
@@ -322,9 +322,9 @@ mod tests {
 
     #[test]
     fn castle_right_new() {
-        for &side in &[CastleSide::King, CastleSide::Queen] {
+        for &side in &[Side::King, Side::Queen] {
             for &color in &[Color::White, Color::Black] {
-                let right = CastleRight::new(color, side);
+                let right = Right::new(color, side);
                 assert_eq!(right.side(),  side);
                 assert_eq!(right.color(), color);
             }
@@ -333,37 +333,37 @@ mod tests {
 
     #[test]
     fn castle_right_char() {
-        for right in CastleRights::FULL {
+        for right in Rights::FULL {
             let ch = char::from(right);
-            assert_eq!(Some(right), CastleRight::from_char(ch));
+            assert_eq!(Some(right), Right::from_char(ch));
         }
     }
 
     #[test]
     fn castle_right_path() {
-        fn path(right: CastleRight) -> Bitboard {
-            use self::CastleRight::*;
+        fn path(right: Right) -> Bitboard {
+            use self::Right::*;
             match right {
-                WhiteKingside  => path::WHITE_KINGSIDE,
-                BlackKingside  => path::BLACK_KINGSIDE,
-                WhiteQueenside => path::WHITE_QUEENSIDE,
-                BlackQueenside => path::BLACK_QUEENSIDE,
+                WhiteKing  => path::WHITE_KING,
+                BlackKing  => path::BLACK_KING,
+                WhiteQueen => path::WHITE_QUEEN,
+                BlackQueen => path::BLACK_QUEEN,
             }
         }
-        for right in CastleRights::FULL {
+        for right in Rights::FULL {
             assert_eq!(right.path(), path(right));
         }
     }
 
     #[test]
     fn castle_rights_string() {
-        use self::CastleRight::*;
+        use self::Right::*;
 
         let pairs = [
-            (CastleRights::FULL, "KQkq"),
-            (CastleRights::EMPTY, "-"),
-            (BlackKingside.into(), "k"),
-            (BlackKingside | WhiteQueenside, "Qk"),
+            (Rights::FULL, "KQkq"),
+            (Rights::EMPTY, "-"),
+            (BlackKing.into(), "k"),
+            (BlackKing | WhiteQueen, "Qk"),
         ];
 
         for &(rights, exp) in &pairs {

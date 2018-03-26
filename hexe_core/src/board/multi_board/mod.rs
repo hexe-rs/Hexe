@@ -6,7 +6,7 @@ use core::{hash, ops, mem};
 use core::simd::u8x64;
 
 use board::{Bitboard, PieceMap};
-use castle::CastleRight;
+use castle::Right;
 use color::Color;
 use piece::{Piece, PieceKind};
 use uncon::*;
@@ -447,7 +447,7 @@ impl MultiBoard {
     ///     # board
     /// };
     ///
-    /// board.castle(CastleRight::WhiteQueenside);
+    /// board.castle(Right::WhiteQueen);
     /// assert!(board.contains(Square::C1, Piece::WhiteKing));
     /// assert!(board.contains(Square::D1, Piece::WhiteRook));
     /// ```
@@ -460,14 +460,14 @@ impl MultiBoard {
     ///
     /// ```
     /// use hexe_core::board::MultiBoard;
-    /// use hexe_core::castle::CastleRight;
+    /// use hexe_core::castle::Right;
     ///
     /// let mut board: MultiBoard = {
     ///     /* create board */
     ///     # MultiBoard::STANDARD
     /// };
     ///
-    /// let right = CastleRight::WhiteQueenside;
+    /// let right = Right::WhiteQueen;
     /// let clone = board.clone();
     ///
     /// board.castle(right);
@@ -478,7 +478,7 @@ impl MultiBoard {
     ///
     /// [XOR]: https://en.wikipedia.org/wiki/Exclusive_or
     #[inline]
-    pub fn castle(&mut self, right: CastleRight) {
+    pub fn castle(&mut self, right: Right) {
         // (King, Rook)
         static MASKS: [(u64, u64); 4] = [
             (squares!(E1, G1), squares!(H1, F1)),

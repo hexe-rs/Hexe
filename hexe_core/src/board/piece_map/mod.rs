@@ -439,7 +439,7 @@ impl PieceMap {
     /// Under legal castling circumstances, this method makes it so that squares
     /// involved with castling using `right` are in a correct state post-castle.
     #[inline]
-    pub fn castle(&mut self, right: CastleRight) {
+    pub fn castle(&mut self, right: Right) {
         use piece::Piece::*;
         use square::Square::*;
 

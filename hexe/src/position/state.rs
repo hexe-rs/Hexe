@@ -15,7 +15,7 @@ pub struct State {
     pub(super) en_passant: Option<Square>,
 
     /// The castle rights for both players.
-    pub(super) castle_rights: CastleRights,
+    pub(super) castle_rights: Rights,
 }
 
 impl PartialEq for State {
@@ -55,7 +55,7 @@ impl Default for State {
         State {
             prev: None,
             en_passant: None,
-            castle_rights: CastleRights::FULL,
+            castle_rights: Rights::FULL,
         }
     }
 }
@@ -85,7 +85,7 @@ impl State {
 
     /// Returns the castle rights for both players.
     #[inline]
-    pub fn castle_rights(&self) -> CastleRights {
+    pub fn castle_rights(&self) -> Rights {
         self.castle_rights
     }
 }

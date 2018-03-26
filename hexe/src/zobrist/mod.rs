@@ -2,7 +2,7 @@
 
 use std::{fmt, hash, mem, ptr};
 
-use core::castle::CastleRights;
+use core::castle::Rights;
 use core::square::{File, Square};
 use core::piece::PieceKind;
 
@@ -132,7 +132,7 @@ impl Zobrist {
 
     /// Returns the key for the castle rights.
     #[inline]
-    pub fn castle(&self, rights: CastleRights) -> u64 {
+    pub fn castle(&self, rights: Rights) -> u64 {
         *rights.extract(&self.castle)
     }
 

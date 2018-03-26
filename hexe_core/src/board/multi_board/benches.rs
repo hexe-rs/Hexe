@@ -1,5 +1,5 @@
 use super::MultiBoard;
-use castle::CastleRight;
+use castle::Right;
 use iter::AllIterable;
 use square::Square;
 
@@ -63,7 +63,7 @@ fn eq(b: &mut Bencher) {
 fn castle_all(b: &mut Bencher) {
     b.iter(|| {
         let mut board = MultiBoard::default();
-        for right in CastleRight::ALL {
+        for right in Right::ALL {
             black_box(&mut board).castle(right);
         }
         black_box(&mut board);

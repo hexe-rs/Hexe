@@ -300,7 +300,7 @@ impl Bitboard {
 
     /// Returns whether the path for `right` is empty within `self`.
     #[inline]
-    pub fn path_is_empty(self, right: CastleRight) -> bool {
+    pub fn path_is_empty(self, right: Right) -> bool {
         (self & right.path()).is_empty()
     }
 

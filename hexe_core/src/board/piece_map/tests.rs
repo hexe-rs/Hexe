@@ -136,12 +136,12 @@ fn fen() {
 
 #[test]
 fn castle() {
-    fn affected_range(right: CastleRight) -> ops::Range<usize> {
+    fn affected_range(right: Right) -> ops::Range<usize> {
         match right {
-            CastleRight::WhiteKingside  => 4..8,
-            CastleRight::WhiteQueenside => 0..5,
-            CastleRight::BlackKingside  => 60..64,
-            CastleRight::BlackQueenside => 56..61,
+            Right::WhiteKing  => 4..8,
+            Right::WhiteQueen => 0..5,
+            Right::BlackKing  => 60..64,
+            Right::BlackQueen => 56..61,
         }
     }
 
@@ -156,7 +156,7 @@ fn castle() {
             rook:  $rook:ident;
         ) => { {
             let mut map = original.clone();
-            let right   = CastleRight::$right;
+            let right   = Right::$right;
             let color   = right.color();
             let king    = Piece::new(PieceKind::King, color);
             let rook    = Piece::new(PieceKind::Rook, color);
@@ -178,28 +178,28 @@ fn castle() {
         } }
     }
     test! {
-        right: WhiteQueenside;
+        right: WhiteQueen;
         clear: B1, C1, D1;
         empty: A1, B1, E1;
         king:  C1;
         rook:  D1;
     }
     test! {
-        right: WhiteKingside;
+        right: WhiteKing;
         clear: F1, G1;
         empty: E1, H1;
         king:  G1;
         rook:  F1;
     }
     test! {
-        right: BlackQueenside;
+        right: BlackQueen;
         clear: B8, C8, D8;
         empty: A8, B8, E8;
         king:  C8;
         rook:  D8;
     }
     test! {
-        right: BlackKingside;
+        right: BlackKing;
         clear: F8, G8;
         empty: E8, H8;
         king:  G8;

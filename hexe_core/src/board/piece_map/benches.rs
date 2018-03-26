@@ -3,7 +3,7 @@ use super::{Piece, PieceMap};
 use test::{Bencher, black_box};
 use rand;
 
-use castle::CastleRight;
+use castle::Right;
 use iter::AllIterable;
 use square::Square;
 
@@ -152,7 +152,7 @@ fn fen(b: &mut Bencher) {
 fn castle_all(b: &mut Bencher) {
     b.iter(|| {
         let mut map = PieceMap::EMPTY;
-        for right in CastleRight::ALL {
+        for right in Right::ALL {
             black_box(&mut map).castle(right);
         }
         black_box(&map);

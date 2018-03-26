@@ -1,6 +1,6 @@
 //! A chess move.
 
-use castle::CastleSide;
+use castle::Side;
 use piece::Promotion as PromotionPiece;
 use square::Square;
 
@@ -45,7 +45,7 @@ impl Move {
 
     /// Creates a new castle move for `side`.
     #[inline]
-    pub fn castle(side: CastleSide) -> Move {
+    pub fn castle(side: Side) -> Move {
         kind::Castle::new(side).into()
     }
 
@@ -195,7 +195,7 @@ pub mod kind {
     impl Castle {
         /// Creates a new castle move for `side`.
         #[inline]
-        pub fn new(side: CastleSide) -> Castle {
+        pub fn new(side: Side) -> Castle {
             let kind = (MoveKind::Castle as u16) << KIND_SHIFT;
             let side = (side as u16) << CASTLE_SHIFT;
             Castle(Move(side | kind))
@@ -203,7 +203,7 @@ pub mod kind {
 
         /// Returns the castle side for `self`.
         #[inline]
-        pub fn side(self) -> CastleSide {
+        pub fn side(self) -> Side {
             (((self.0).0 >> CASTLE_SHIFT) & CASTLE_MASK).into()
         }
     }

@@ -100,7 +100,7 @@ impl Position {
 
     /// Returns the castle rights for both players.
     #[inline]
-    pub fn castle_rights(&self) -> CastleRights {
+    pub fn castle_rights(&self) -> Rights {
         self.state.castle_rights()
     }
 
