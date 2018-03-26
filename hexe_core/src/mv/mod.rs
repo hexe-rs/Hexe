@@ -121,7 +121,7 @@ impl Move {
     /// let mv = Move::normal(Square::A1, Square::A7);
     /// mv.matches(
     ///     |n| println!("{:?}", n.src()),
-    ///     |c| println!("{:?}", c.side()),
+    ///     |c| println!("{:?}", c.right()),
     ///     |p| println!("{:?}", p.piece()),
     ///     |e| println!("{:?}", e.dst()),
     /// );
