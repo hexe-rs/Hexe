@@ -361,8 +361,8 @@ mod benches {
         let squares = gen_squares();
         b.iter(|| {
             for &(s1, s2) in squares.iter().map(black_box) {
-                if let Some(ep) = kind::EnPassant::new(s1, s2) {
-                    black_box(ep);
+                if let Some(mv) = kind::EnPassant::new(s1, s2) {
+                    black_box(mv);
                 }
             }
         });
@@ -373,8 +373,8 @@ mod benches {
         let squares = gen_squares();
         b.iter(|| {
             for &(s1, s2) in squares.iter().map(black_box) {
-                if let Some(ep) = kind::Castle::new(s1, s2) {
-                    black_box(ep);
+                if let Some(mv) = kind::Castle::new(s1, s2) {
+                    black_box(mv);
                 }
             }
         });
