@@ -86,6 +86,15 @@ impl Move {
         ((self.0 >> KIND_SHIFT) & KIND_MASK).into()
     }
 
+    /// Returns `self` a castle move if it can be converted into one.
+    #[inline]
+    pub fn to_castle(self) -> Option<kind::Castle> {
+        match self.kind() {
+            MoveKind::Castle => Some(kind::Castle(self)),
+            _ => kind::Castle::new(self.src(), self.dst()),
+        }
+    }
+
     /// Returns `self` as an en passant move if it can be converted into one.
     #[inline]
     pub fn to_en_passant(self) -> Option<kind::EnPassant> {
