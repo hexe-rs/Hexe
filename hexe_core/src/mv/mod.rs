@@ -9,6 +9,7 @@ pub use self::vec::*;
 
 const SRC_SHIFT:    usize =  0;
 const DST_SHIFT:    usize =  6;
+const RANK_SHIFT:   usize =  3;
 const PROM_SHIFT:   usize = 12;
 const KIND_SHIFT:   usize = 14;
 const CASTLE_SHIFT: usize = KIND_SHIFT - 2;
@@ -16,6 +17,8 @@ const CASTLE_SHIFT: usize = KIND_SHIFT - 2;
 const SRC_MASK:    u16 = 0b111111;
 const DST_MASK:    u16 = SRC_MASK;
 const PROM_MASK:   u16 = 0b11;
+const FILE_MASK:   u16 = 0b000111000111;
+const RANK_MASK:   u16 = FILE_MASK << RANK_SHIFT;
 const KIND_MASK:   u16 = PROM_MASK;
 const CASTLE_MASK: u16 = 0b11;
 
@@ -266,11 +269,11 @@ pub mod kind {
                 _ => return false,
             }
 
-            match (src.rank(), dst.rank()) {
-                (Rank::Five, Rank::Six) |
-                (Rank::Four, Rank::Three) => true,
-                _ => false,
-            }
+            const W: u16 = base_bits!(Rank::Five, Rank::Six)   << RANK_SHIFT;
+            const B: u16 = base_bits!(Rank::Four, Rank::Three) << RANK_SHIFT;
+
+            let ranks = u16::from(*self) & RANK_MASK;
+            ranks == W || ranks == B
         }
     }
 }
