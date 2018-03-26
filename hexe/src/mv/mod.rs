@@ -60,6 +60,42 @@ impl Move {
     pub fn kind(self) -> MoveKind {
         ((self.0 >> KIND_SHIFT) & KIND_MASK).into()
     }
+
+    /// Returns the result of the match against `self` over each inner type.
+    /// Because of how `Move` is represented, this is the best way to safely
+    /// match against each variant.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use hexe::mv::Move;
+    /// use hexe::core::square::Square;
+    ///
+    /// let mv = Move::normal(Square::A1, Square::A7);
+    /// mv.matches(
+    ///     |n| println!("{:?}", n.src()),
+    ///     |c| println!("{:?}", c.side()),
+    ///     |p| println!("{:?}", p.piece()),
+    ///     |e| println!("{:?}", e.dst()),
+    /// );
+    /// ```
+    #[inline]
+    pub fn matches<T, A, B, C, D>(self, a: A, b: B, c: C, d: D) -> T
+        where
+            A: FnOnce(kind::Normal) -> T,
+            B: FnOnce(kind::Castle) -> T,
+            C: FnOnce(kind::Promotion) -> T,
+            D: FnOnce(kind::EnPassant) -> T,
+    {
+        match self.kind() {
+            MoveKind::Normal    => a(kind::Normal(self)),
+            MoveKind::Castle    => b(kind::Castle(self)),
+            MoveKind::Promotion => c(kind::Promotion(self)),
+            MoveKind::EnPassant => d(kind::EnPassant(self)),
+        }
+    }
 }
 
 /// A chess piece move kind.
