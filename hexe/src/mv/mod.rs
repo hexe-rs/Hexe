@@ -4,17 +4,20 @@ mod vec;
 pub use self::vec::*;
 
 use prelude::*;
-use core::piece::Promotion;
+use core::castle::CastleSide;
+use core::piece::Promotion as PromotionPiece;
 
-const SRC_SHIFT:  usize =  0;
-const DST_SHIFT:  usize =  6;
-const PROM_SHIFT: usize = 12;
-const KIND_SHIFT: usize = 14;
+const SRC_SHIFT:    usize =  0;
+const DST_SHIFT:    usize =  6;
+const PROM_SHIFT:   usize = 12;
+const KIND_SHIFT:   usize = 14;
+const CASTLE_SHIFT: usize =  0;
 
-const SRC_MASK:  u16 = 0b111111;
-const DST_MASK:  u16 = SRC_MASK;
-const PROM_MASK: u16 = 0b11;
-const KIND_MASK: u16 = PROM_MASK;
+const SRC_MASK:    u16 = 0b111111;
+const DST_MASK:    u16 = SRC_MASK;
+const PROM_MASK:   u16 = 0b11;
+const KIND_MASK:   u16 = PROM_MASK;
+const CASTLE_MASK: u16 = 0b1;
 
 macro_rules! base_bits {
     ($s1:expr, $s2:expr) => {
@@ -22,42 +25,34 @@ macro_rules! base_bits {
     }
 }
 
-/// A chess piece move from a start `Square` to an end `Square` that carries
-/// metadata for promotion and move kind.
-///
-/// - 6 bits for source square
-/// - 6 bits for destination square
-/// - 2 bits for promotion piece kind
-/// - 2 bits for move kind
+/// A chess piece move that can either be normal, a promotion, a king-rook
+/// castle, or an en passant.
 #[derive(PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Move(u16);
 
 impl Move {
-    /// Creates a new `Move` from one square to another with a promotion and
-    /// move kind.
+    /// Creates a new `Move` from one square to another.
     #[inline]
-    pub fn new(from: Square, to: Square, prom: Promotion, kind: MoveKind) -> Move {
-        Move(base_bits!(from, to)
-            | ((prom as u16) << PROM_SHIFT)
-            | ((kind as u16) << KIND_SHIFT))
+    pub fn normal(src: Square, dst: Square) -> Move {
+        kind::Normal::new(src, dst).into()
     }
 
-    /// Returns the source square for `self`.
+    /// Creates a new `Move` from one square to another with a promotion.
     #[inline]
-    pub fn src(self) -> Square {
-        ((self.0 >> SRC_SHIFT) & SRC_MASK).into()
+    pub fn promotion(src: Square, dst: Square, piece: PromotionPiece) -> Move {
+        kind::Promotion::new(src, dst, piece).into()
     }
 
-    /// Returns the destination square for `self`.
+    /// Creates a new castle move for `side`.
     #[inline]
-    pub fn dst(self) -> Square {
-        ((self.0 >> DST_SHIFT) & DST_MASK).into()
+    pub fn castle(side: CastleSide) -> Move {
+        kind::Castle::new(side).into()
     }
 
-    /// Returns the promotion for `self`.
+    /// Creates an en passant move from one square to another.
     #[inline]
-    pub fn prom(self) -> Promotion {
-        ((self.0 >> PROM_SHIFT) & PROM_MASK).into()
+    pub fn en_passant(src: Square, dst: Square) -> Move {
+        kind::EnPassant::new(src, dst).into()
     }
 
     /// Returns the kind for `self`.
@@ -86,4 +81,146 @@ pub enum MoveKind {
     ///
     /// [wiki]: https://en.wikipedia.org/wiki/En_passant
     EnPassant,
+}
+
+#[inline]
+fn src(bits: u16) -> Square {
+    ((bits >> SRC_SHIFT) & SRC_MASK).into()
+}
+
+#[inline]
+fn dst(bits: u16) -> Square {
+    ((bits >> DST_SHIFT) & DST_MASK).into()
+}
+
+/// The different underlying kinds of moves.
+pub mod kind {
+    use super::*;
+    use std::ops;
+
+    macro_rules! impl_from_move {
+        ($($t:ty),+) => { $(
+            impl From<$t> for Move {
+                #[inline]
+                fn from(mv: $t) -> Move { mv.0 }
+            }
+
+            impl ops::Deref for $t {
+                type Target = Move;
+
+                #[inline]
+                fn deref(&self) -> &Move { &self.0 }
+            }
+
+            impl ops::DerefMut for $t {
+                #[inline]
+                fn deref_mut(&mut self) -> &mut Move { &mut self.0 }
+            }
+
+            impl AsRef<Move> for $t {
+                #[inline]
+                fn as_ref(&self) -> &Move { self }
+            }
+
+            impl AsMut<Move> for $t {
+                #[inline]
+                fn as_mut(&mut self) -> &mut Move { self }
+            }
+        )+}
+    }
+
+    impl_from_move! { Normal, Castle, Promotion, EnPassant }
+
+    /// A normal, non-special move.
+    #[derive(PartialEq, Eq, Clone, Copy, Hash)]
+    pub struct Normal(Move);
+
+    impl Normal {
+        /// Creates a new normal move from `src` to `dst`.
+        #[inline]
+        pub fn new(src: Square, dst: Square) -> Normal {
+            let kind = (MoveKind::Normal as u16) << KIND_SHIFT;
+            Normal(Move(base_bits!(src, dst) | kind))
+        }
+
+        /// Returns the source square for `self`.
+        #[inline]
+        pub fn src(self) -> Square { src((self.0).0) }
+
+        /// Returns the destination square for `self`.
+        #[inline]
+        pub fn dst(self) -> Square { dst((self.0).0) }
+    }
+
+    /// A castling move.
+    #[derive(PartialEq, Eq, Clone, Copy, Hash)]
+    pub struct Castle(Move);
+
+    impl Castle {
+        /// Creates a new castle move for `side`.
+        #[inline]
+        pub fn new(side: CastleSide) -> Castle {
+            let kind = (MoveKind::Castle as u16) << KIND_SHIFT;
+            let side = (side as u16) << CASTLE_SHIFT;
+            Castle(Move(side | kind))
+        }
+
+        /// Returns the castle side for `self`.
+        #[inline]
+        pub fn side(self) -> CastleSide {
+            (((self.0).0 >> CASTLE_SHIFT) & CASTLE_MASK).into()
+        }
+    }
+
+    /// A promotion move.
+    #[derive(PartialEq, Eq, Clone, Copy, Hash)]
+    pub struct Promotion(Move);
+
+    impl Promotion {
+        /// Creates a new promotion move.
+        #[inline]
+        pub fn new(src: Square, dst: Square, piece: PromotionPiece) -> Promotion {
+            let kind = MoveKind::Promotion;
+            Promotion(Move(
+                base_bits!(src, dst) |
+                (piece as u16) << PROM_SHIFT |
+                (kind  as u16) << KIND_SHIFT
+            ))
+        }
+
+        /// Returns the source square for `self`.
+        #[inline]
+        pub fn src(self) -> Square { src((self.0).0) }
+
+        /// Returns the destination square for `self`.
+        #[inline]
+        pub fn dst(self) -> Square { dst((self.0).0) }
+
+        /// Returns the promotion piece.
+        #[inline]
+        pub fn piece(self) -> PromotionPiece {
+            (((self.0).0 >> PROM_SHIFT) & PROM_MASK).into()
+        }
+    }
+
+    /// An en passant move.
+    #[derive(PartialEq, Eq, Clone, Copy, Hash)]
+    pub struct EnPassant(Move);
+
+    impl EnPassant {
+        /// Creates a new en passant move.
+        #[inline]
+        pub fn new(src: Square, dst: Square) -> EnPassant {
+            let kind = (MoveKind::EnPassant as u16) << KIND_SHIFT;
+            EnPassant(Move(base_bits!(src, dst) | kind))
+        }
+
+        /// Returns the source square for `self`.
+        #[inline]
+        pub fn src(self) -> Square { src((self.0).0) }
+
+        /// Returns the destination square for `self`.
+        #[inline]
+        pub fn dst(self) -> Square { dst((self.0).0) }
+    }
 }

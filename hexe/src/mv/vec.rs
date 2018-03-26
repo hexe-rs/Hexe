@@ -120,7 +120,7 @@ impl MoveVec {
     /// # use hexe::prelude::*;
     /// # use hexe::core::piece::*;
     /// fn random() -> Move {
-    ///     # Move::new(Square::A1, Square::A2, Promotion::Queen, MoveKind::Normal)
+    ///     # Move::normal(Square::A1, Square::A2)
     ///     /* ... */
     /// }
     ///
