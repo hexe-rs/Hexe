@@ -2,10 +2,14 @@
 
 use core::board::{MultiBoard, PieceMap};
 use core::misc::Contained;
+use core::mv::MoveVec;
 use prelude::*;
 
 mod state;
 pub use self::state::*;
+
+pub mod mv_gen;
+use self::mv_gen::MoveGen;
 
 #[cfg(all(test, nightly))]
 mod benches;
@@ -59,6 +63,24 @@ impl Position {
     #[inline]
     pub fn board(&self) -> &MultiBoard {
         &self.board
+    }
+
+    /// Creates a move generator for this position and `moves`.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use hexe::core::mv::MoveVec;
+    /// use hexe::position::Position;
+    ///
+    /// let mut moves = MoveVec::new();
+    /// let pos = Position::STANDARD;
+    ///
+    /// pos.gen(moves).legal();
+    /// ```
+    #[inline]
+    pub fn gen<'a, 'b>(&'a self, moves: &'b mut MoveVec) -> MoveGen<'a, 'b> {
+        MoveGen { pos: self, buf: moves }
     }
 
     /// Returns whether `self` contains the value.
