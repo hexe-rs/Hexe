@@ -77,6 +77,21 @@ union Inner {
     array: [u8; SQUARE_NUM],
 }
 
+impl FromUnchecked<[u8; SQUARE_NUM]> for PieceMap {
+    #[inline]
+    unsafe fn from_unchecked(array: [u8; SQUARE_NUM]) -> PieceMap {
+        PieceMap(Inner { array: array })
+    }
+}
+
+#[cfg(feature = "simd")]
+impl FromUnchecked<u8x64> for PieceMap {
+    #[inline]
+    unsafe fn from_unchecked(vector: u8x64) -> PieceMap {
+        PieceMap(Inner { simd: vector })
+    }
+}
+
 impl Clone for PieceMap {
     #[inline]
     fn clone(&self) -> PieceMap { PieceMap(self.0) }
