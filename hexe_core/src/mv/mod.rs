@@ -35,6 +35,11 @@ macro_rules! base_bits {
 #[derive(PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Move(pub(crate) u16);
 
+impl From<Move> for u16 {
+    #[inline]
+    fn from(mv: Move) -> u16 { mv.0 }
+}
+
 impl Move {
     /// Creates a new `Move` from one square to another.
     #[inline]
