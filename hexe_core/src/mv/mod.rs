@@ -346,12 +346,7 @@ mod benches {
     use test::{Bencher, black_box};
 
     fn gen_squares() -> [(Square, Square); 1000] {
-        let mut squares = [(Square::A1, Square::A1); 1000];
-        for s in squares.iter_mut() {
-            s.0 = ::rand::random();
-            s.1 = ::rand::random();
-        }
-        squares
+        ::util::rand_pairs()
     }
 
     #[bench]

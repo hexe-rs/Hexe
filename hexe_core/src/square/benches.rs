@@ -1,8 +1,7 @@
-use core::mem;
-use core::ptr;
+use test::{Bencher, black_box};
 
 use super::*;
-use test::{Bencher, black_box};
+use util::rand_pairs;
 
 macro_rules! impl_sliding_benches {
     ($($f:ident)+) => { $(
@@ -19,20 +18,6 @@ macro_rules! impl_sliding_benches {
 }
 
 impl_sliding_benches! { rook_attacks bishop_attacks queen_attacks }
-
-fn rand_pairs<T, U>() -> [(T, U); 1000]
-    where T: ::rand::Rand,
-          U: ::rand::Rand,
-{
-    let mut pairs: [(T, U); 1000] = unsafe { mem::uninitialized() };
-    for &mut (ref mut a, ref mut b) in pairs.iter_mut() {
-        unsafe {
-            ptr::write(a, ::rand::random());
-            ptr::write(b, ::rand::random());
-        }
-    }
-    pairs
-}
 
 #[bench]
 fn iter(b: &mut Bencher) {
