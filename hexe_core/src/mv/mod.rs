@@ -25,8 +25,13 @@ macro_rules! base_bits {
     }
 }
 
-/// A chess piece move that can either be normal, a promotion, a king-rook
-/// castle, or an en passant.
+/// A chess piece move that can either be [`Normal`], [`Promotion`], [`Castle`],
+/// or [`EnPassant`].
+///
+/// [`Normal`]:    ./kind/struct.Normal.html
+/// [`Promotion`]: ./kind/struct.Promotion.html
+/// [`Castle`]:    ./kind/struct.Castle.html
+/// [`EnPassant`]: ./kind/struct.EnPassant.html
 #[derive(PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Move(pub(crate) u16);
 
