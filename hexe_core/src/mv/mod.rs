@@ -59,7 +59,7 @@ impl Move {
     /// Creates a new castle move for `right`.
     #[inline]
     pub fn castle(right: Right) -> Move {
-        kind::Castle::new(right).into()
+        kind::Castle::from(right).into()
     }
 
     /// Creates an en passant move from one square to another.
@@ -199,10 +199,9 @@ pub mod kind {
     #[derive(PartialEq, Eq, Clone, Copy, Hash)]
     pub struct Castle(pub(crate) Move);
 
-    impl Castle {
-        /// Creates a new castle move for `side`.
+    impl From<Right> for Castle {
         #[inline]
-        pub fn new(right: Right) -> Castle {
+        fn from(right: Right) -> Castle {
             static SRC_DST: [u16; 4] = [
                 base_bits!(Square::E1, Square::G1),
                 base_bits!(Square::E1, Square::C1),
@@ -214,7 +213,9 @@ pub mod kind {
             let right = (right as u16) << CASTLE_SHIFT;
             Castle(Move(base | right | kind))
         }
+    }
 
+    impl Castle {
         /// Returns the castle right for `self`.
         #[inline]
         pub fn right(self) -> Right {
