@@ -11,7 +11,7 @@ const SRC_SHIFT:    usize =  0;
 const DST_SHIFT:    usize =  6;
 const PROM_SHIFT:   usize = 12;
 const KIND_SHIFT:   usize = 14;
-const CASTLE_SHIFT: usize =  0;
+const CASTLE_SHIFT: usize = KIND_SHIFT - 2;
 
 const SRC_MASK:    u16 = 0b111111;
 const DST_MASK:    u16 = SRC_MASK;
@@ -53,6 +53,18 @@ impl Move {
     #[inline]
     pub fn en_passant(src: Square, dst: Square) -> Move {
         kind::EnPassant::new(src, dst).into()
+    }
+
+    /// Returns the source square for `self`.
+    #[inline]
+    pub fn src(self) -> Square {
+        ((self.0 >> SRC_SHIFT) & SRC_MASK).into()
+    }
+
+    /// Returns the destination square for `self`.
+    #[inline]
+    pub fn dst(self) -> Square {
+        ((self.0 >> DST_SHIFT) & DST_MASK).into()
     }
 
     /// Returns the kind for `self`.
@@ -119,16 +131,6 @@ pub enum MoveKind {
     EnPassant,
 }
 
-#[inline]
-fn src(bits: u16) -> Square {
-    ((bits >> SRC_SHIFT) & SRC_MASK).into()
-}
-
-#[inline]
-fn dst(bits: u16) -> Square {
-    ((bits >> DST_SHIFT) & DST_MASK).into()
-}
-
 /// The different underlying kinds of moves.
 pub mod kind {
     use super::*;
@@ -178,14 +180,6 @@ pub mod kind {
             let kind = (MoveKind::Normal as u16) << KIND_SHIFT;
             Normal(Move(base_bits!(src, dst) | kind))
         }
-
-        /// Returns the source square for `self`.
-        #[inline]
-        pub fn src(self) -> Square { src((self.0).0) }
-
-        /// Returns the destination square for `self`.
-        #[inline]
-        pub fn dst(self) -> Square { dst((self.0).0) }
     }
 
     /// A castling move.
@@ -196,9 +190,16 @@ pub mod kind {
         /// Creates a new castle move for `side`.
         #[inline]
         pub fn new(right: Right) -> Castle {
+            static SRC_DST: [u16; 4] = [
+                base_bits!(Square::E1, Square::G1),
+                base_bits!(Square::E1, Square::C1),
+                base_bits!(Square::E8, Square::G8),
+                base_bits!(Square::E8, Square::C8),
+            ];
+            let base  = SRC_DST[right as usize];
             let kind  = (MoveKind::Castle as u16) << KIND_SHIFT;
             let right = (right as u16) << CASTLE_SHIFT;
-            Castle(Move(right | kind))
+            Castle(Move(base | right | kind))
         }
 
         /// Returns the castle right for `self`.
@@ -224,14 +225,6 @@ pub mod kind {
             ))
         }
 
-        /// Returns the source square for `self`.
-        #[inline]
-        pub fn src(self) -> Square { src((self.0).0) }
-
-        /// Returns the destination square for `self`.
-        #[inline]
-        pub fn dst(self) -> Square { dst((self.0).0) }
-
         /// Returns the promotion piece.
         #[inline]
         pub fn piece(self) -> PromotionPiece {
@@ -250,13 +243,5 @@ pub mod kind {
             let kind = (MoveKind::EnPassant as u16) << KIND_SHIFT;
             EnPassant(Move(base_bits!(src, dst) | kind))
         }
-
-        /// Returns the source square for `self`.
-        #[inline]
-        pub fn src(self) -> Square { src((self.0).0) }
-
-        /// Returns the destination square for `self`.
-        #[inline]
-        pub fn dst(self) -> Square { dst((self.0).0) }
     }
 }
