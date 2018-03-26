@@ -149,6 +149,20 @@ pub mod kind {
     use super::*;
     use core::ops;
 
+    mod mask {
+        use super::*;
+
+        pub const WHITE_KING:  u16 = base_bits!(Square::E1, Square::G1);
+        pub const WHITE_QUEEN: u16 = base_bits!(Square::E1, Square::C1);
+        pub const BLACK_KING:  u16 = base_bits!(Square::E8, Square::G8);
+        pub const BLACK_QUEEN: u16 = base_bits!(Square::E8, Square::C8);
+
+        pub static ALL_RIGHTS: [u16; 4] = [
+            WHITE_KING, WHITE_QUEEN,
+            BLACK_KING, BLACK_QUEEN,
+        ];
+    }
+
     macro_rules! impl_from_move {
         ($($t:ty),+) => { $(
             impl From<$t> for Move {
@@ -202,13 +216,7 @@ pub mod kind {
     impl From<Right> for Castle {
         #[inline]
         fn from(right: Right) -> Castle {
-            static SRC_DST: [u16; 4] = [
-                base_bits!(Square::E1, Square::G1),
-                base_bits!(Square::E1, Square::C1),
-                base_bits!(Square::E8, Square::G8),
-                base_bits!(Square::E8, Square::C8),
-            ];
-            let base  = SRC_DST[right as usize];
+            let base  = mask::ALL_RIGHTS[right as usize];
             let kind  = (MoveKind::Castle as u16) << KIND_SHIFT;
             let right = (right as u16) << CASTLE_SHIFT;
             Castle(Move(base | right | kind))
@@ -216,6 +224,24 @@ pub mod kind {
     }
 
     impl Castle {
+        /// Attempts to create a new castle move for the given squares.
+        #[inline]
+        pub fn new(src: Square, dst: Square) -> Option<Castle> {
+            let base = base_bits!(src, dst);
+            let kind = (MoveKind::Castle as u16) << KIND_SHIFT;
+
+            let right = match base {
+                mask::WHITE_KING  => Right::WhiteKing,
+                mask::WHITE_QUEEN => Right::WhiteQueen,
+                mask::BLACK_KING  => Right::BlackKing,
+                mask::BLACK_QUEEN => Right::BlackQueen,
+                _ => return None,
+            };
+            let right = (right as u16) << CASTLE_SHIFT;
+
+            Some(Castle(Move(base | right | kind)))
+        }
+
         /// Returns the castle right for `self`.
         #[inline]
         pub fn right(self) -> Right {
@@ -291,19 +317,33 @@ mod benches {
     use super::*;
     use test::{Bencher, black_box};
 
-    #[bench]
-    fn en_passant_new_1000(b: &mut Bencher) {
-        use super::kind::EnPassant;
-
+    fn gen_squares() -> [(Square, Square); 1000] {
         let mut squares = [(Square::A1, Square::A1); 1000];
         for s in squares.iter_mut() {
             s.0 = ::rand::random();
             s.1 = ::rand::random();
         }
+        squares
+    }
 
+    #[bench]
+    fn en_passant_new_1000(b: &mut Bencher) {
+        let squares = gen_squares();
         b.iter(|| {
             for &(s1, s2) in squares.iter().map(black_box) {
-                if let Some(ep) = EnPassant::new(s1, s2) {
+                if let Some(ep) = kind::EnPassant::new(s1, s2) {
+                    black_box(ep);
+                }
+            }
+        });
+    }
+
+    #[bench]
+    fn castle_new_1000(b: &mut Bencher) {
+        let squares = gen_squares();
+        b.iter(|| {
+            for &(s1, s2) in squares.iter().map(black_box) {
+                if let Some(ep) = kind::Castle::new(s1, s2) {
                     black_box(ep);
                 }
             }
