@@ -69,6 +69,7 @@ pub trait AllIterable: Sized {
     fn __range(&Self::__Iter) -> Range<usize>;
 }
 
+impl_iterable!(::castle::CastleSide,  u8, 2);
 impl_iterable!(::castle::CastleRight, u8, 4);
 impl_iterable!(::color::Color,        u8, 2);
 impl_iterable!(::piece::Piece,        u8, 12);
