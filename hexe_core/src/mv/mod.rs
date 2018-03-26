@@ -86,6 +86,15 @@ impl Move {
         ((self.0 >> KIND_SHIFT) & KIND_MASK).into()
     }
 
+    /// Returns `self` as an en passant move if it can be converted into one.
+    #[inline]
+    pub fn to_en_passant(self) -> Option<kind::EnPassant> {
+        match self.kind() {
+            MoveKind::EnPassant => Some(kind::EnPassant(self)),
+            _ => kind::EnPassant::new(self.src(), self.dst()),
+        }
+    }
+
     /// Returns the result of the match against `self` over each inner type.
     /// Because of how `Move` is represented, this is the best way to safely
     /// match against each variant.
