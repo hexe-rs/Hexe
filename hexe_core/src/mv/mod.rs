@@ -64,8 +64,8 @@ impl Move {
 
     /// Creates an en passant move from one square to another.
     #[inline]
-    pub fn en_passant(src: Square, dst: Square) -> Move {
-        kind::EnPassant::new(src, dst).into()
+    pub fn en_passant(src: Square, dst: Square) -> Option<Move> {
+        kind::EnPassant::new(src, dst).map(Into::into)
     }
 
     /// Returns the source square for `self`.
@@ -252,7 +252,14 @@ pub mod kind {
     impl EnPassant {
         /// Creates a new en passant move.
         #[inline]
-        pub fn new(src: Square, dst: Square) -> EnPassant {
+        pub fn new(src: Square, dst: Square) -> Option<EnPassant> {
+            let val = unsafe { EnPassant::new_unchecked(src, dst) };
+            if val.is_legal() { Some(val) } else { None }
+        }
+
+        /// Creates a new en passant move without checking whether it is legal.
+        #[inline]
+        pub unsafe fn new_unchecked(src: Square, dst: Square) -> EnPassant {
             let kind = (MoveKind::EnPassant as u16) << KIND_SHIFT;
             EnPassant(Move(base_bits!(src, dst) | kind))
         }
@@ -260,7 +267,7 @@ pub mod kind {
         /// Returns whether the en passant is legal and is acting on the correct
         /// squares.
         #[inline]
-        pub fn is_legal(self) -> bool {
+        fn is_legal(self) -> bool {
             let src = self.src();
             let dst = self.dst();
 
@@ -284,17 +291,20 @@ mod benches {
     use test::{Bencher, black_box};
 
     #[bench]
-    fn en_passant_is_legal_1000(b: &mut Bencher) {
+    fn en_passant_new_1000(b: &mut Bencher) {
         use super::kind::EnPassant;
 
-        let mut moves = [EnPassant(Move(0)); 1000];
-        for mv in moves.iter_mut() {
-            *mv = EnPassant::new(::rand::random(), ::rand::random());
+        let mut squares = [(Square::A1, Square::A1); 1000];
+        for s in squares.iter_mut() {
+            s.0 = ::rand::random();
+            s.1 = ::rand::random();
         }
 
         b.iter(|| {
-            for &mv in moves.iter() {
-                black_box(black_box(mv).is_legal());
+            for &(s1, s2) in squares.iter().map(black_box) {
+                if let Some(ep) = EnPassant::new(s1, s2) {
+                    black_box(ep);
+                }
             }
         });
     }
