@@ -2,6 +2,7 @@
 
 use uncon::FromUnchecked;
 
+use color::Color;
 use castle::Right;
 use piece::Promotion as PromotionPiece;
 use square::{Rank, Square};
@@ -29,6 +30,9 @@ macro_rules! base_bits {
         (($s1 as u16) << SRC_SHIFT) | (($s2 as u16) << DST_SHIFT)
     }
 }
+
+const W_EP: u16 = base_bits!(Rank::Five, Rank::Six)   << RANK_SHIFT;
+const B_EP: u16 = base_bits!(Rank::Four, Rank::Three) << RANK_SHIFT;
 
 /// A chess piece move that can either be [`Normal`], [`Promotion`], [`Castle`],
 /// or [`EnPassant`].
@@ -325,19 +329,13 @@ pub mod kind {
         /// squares.
         #[inline]
         fn is_legal(self) -> bool {
-            let src = self.src();
-            let dst = self.dst();
-
-            match (src.file() as i8) - (dst.file() as i8) {
-                1 | -1 => (),
-                _ => return false,
-            }
-
-            const W: u16 = base_bits!(Rank::Five, Rank::Six)   << RANK_SHIFT;
-            const B: u16 = base_bits!(Rank::Four, Rank::Three) << RANK_SHIFT;
-
             let ranks = u16::from(*self) & RANK_MASK;
-            ranks == W || ranks == B
+            let color = match ranks {
+                W_EP => Color::White,
+                B_EP => Color::Black,
+                _ => return false,
+            };
+            self.src().pawn_attacks(color).contains(self.dst())
         }
     }
 }
