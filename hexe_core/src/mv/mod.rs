@@ -2,7 +2,7 @@
 
 use castle::Right;
 use piece::Promotion as PromotionPiece;
-use square::Square;
+use square::{Rank, Square};
 
 mod vec;
 pub use self::vec::*;
@@ -247,6 +247,25 @@ pub mod kind {
         pub fn new(src: Square, dst: Square) -> EnPassant {
             let kind = (MoveKind::EnPassant as u16) << KIND_SHIFT;
             EnPassant(Move(base_bits!(src, dst) | kind))
+        }
+
+        /// Returns whether the en passant is legal and is acting on the correct
+        /// squares.
+        #[inline]
+        pub fn is_legal(self) -> bool {
+            let src = self.src();
+            let dst = self.dst();
+
+            match (src.file() as i8) - (dst.file() as i8) {
+                1 | -1 => (),
+                _ => return false,
+            }
+
+            match (src.rank(), dst.rank()) {
+                (Rank::Five, Rank::Six) |
+                (Rank::Four, Rank::Three) => true,
+                _ => false,
+            }
         }
     }
 }
