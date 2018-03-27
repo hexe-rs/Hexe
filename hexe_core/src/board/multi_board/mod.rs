@@ -9,6 +9,7 @@ use board::{Bitboard, PieceMap};
 use castle::Right;
 use color::Color;
 use piece::{Piece, PieceKind};
+use square::Square;
 use uncon::*;
 
 #[cfg(all(test, nightly))]
@@ -251,6 +252,32 @@ impl MultiBoard {
     #[inline]
     pub fn royals(&self) -> Bitboard {
         self.bitboard(PieceKind::Queen) | self.bitboard(PieceKind::King)
+    }
+
+    /// Returns the first square that `value` appears at, if any.
+    #[inline]
+    pub fn first<T: Index>(&self, value: T) -> Option<Square> {
+        self.bitboard(value).lsb()
+    }
+
+    /// Returns the first square that `value` may appear at, without checking
+    /// whether it exists in `self`.
+    #[inline]
+    pub unsafe fn first_unchecked<T: Index>(&self, value: T) -> Square {
+        self.bitboard(value).lsb_unchecked()
+    }
+
+    /// Returns the last square that `value` appears at, if any.
+    #[inline]
+    pub fn last<T: Index>(&self, value: T) -> Option<Square> {
+        self.bitboard(value).msb()
+    }
+
+    /// Returns the last square that `value` may appear at, without checking
+    /// whether it exists in `self`.
+    #[inline]
+    pub unsafe fn last_unchecked<T: Index>(&self, value: T) -> Square {
+        self.bitboard(value).msb_unchecked()
     }
 
     /// Returns the total number of `value` in `self`.
