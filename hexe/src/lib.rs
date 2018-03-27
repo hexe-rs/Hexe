@@ -31,7 +31,7 @@
 //!
 //! ## What `hexe_core` Provides
 //!
-//! - [Various board representations](https://docs.rs/hexe_core#board-representation)
+//! - [Various board representations](https://docs.rs/hexe_core/0.0.3/hexe_core/board/)
 //!
 //! - [Dead.](https://docs.rs/hexe_core/0.0.3/hexe_core/castle/struct.Rights.html)
 //!   [Simple.](https://docs.rs/hexe_core/0.0.3/hexe_core/square/enum.Square.html)
