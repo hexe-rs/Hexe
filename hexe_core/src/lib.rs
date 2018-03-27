@@ -1,4 +1,6 @@
-//! This crate defines the **core** building blocks for the Hexe chess engine.
+//! This crate defines the **core** building blocks for [the Hexe chess
+//! engine][hexe].
+//!
 //!
 //! # Usage
 //!
@@ -17,6 +19,7 @@
 //! # fn main() {}
 //! ```
 //!
+//! [hexe]: https://docs.rs/hexe/0.0.3/hexe/
 //! [crate]: https://crates.io/crates/hexe_core
 
 #![doc(html_logo_url = "https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png")]
