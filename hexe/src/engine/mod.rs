@@ -11,6 +11,20 @@ mod uci;
 pub use self::uci::Uci;
 
 /// An instance of the Hexe chess engine.
+///
+/// # Examples
+///
+/// Basic usage:
+///
+/// ```
+/// use hexe::engine::Engine;
+///
+/// let mut engine = Engine::builder()
+///                         .num_threads(4)
+///                         .build();
+/// # return;
+/// engine.uci().start();
+/// ```
 pub struct Engine {
     pool: Pool,
     engine: EngineInner,
@@ -21,21 +35,21 @@ struct EngineInner {
 }
 
 impl Default for Engine {
-    fn default() -> Engine {
-        Engine::new(Options::default())
-    }
+    #[inline]
+    fn default() -> Engine { Engine::new() }
 }
 
 impl Engine {
-    /// Creates an instance of the engine.
-    pub fn new(mut options: Options) -> Engine {
-        if options.num_threads == 0 {
-            options.num_threads = ::num_cpus::get() as u32;
-        }
-        Engine {
-            pool: Pool::new(options.num_threads),
-            engine: EngineInner { options: options },
-        }
+    /// Creates a new builder for setting engine options.
+    #[inline]
+    pub fn builder() -> EngineBuilder {
+        EngineBuilder { num_threads: 0 }
+    }
+
+    /// Creates an instance of the engine with the default options applied.
+    #[inline]
+    pub fn new() -> Engine {
+        Engine::builder().build()
     }
 
     /// Creates a Universal Chess Interface for this engine.
@@ -45,30 +59,41 @@ impl Engine {
     }
 }
 
-/// Chess engine options.
-pub struct Options {
+/// A type that can be used to build an [`Engine`](struct.Engine.html) instance.
+#[derive(Copy, Clone, Debug)]
+pub struct EngineBuilder {
     num_threads: u32,
 }
 
-impl Options {
+impl EngineBuilder {
+    /// Builds a new [`Engine`](struct.Engine.html) with the options of `self`.
+    pub fn build(self) -> Engine {
+        let mut num_threads = self.num_threads;
+        if num_threads == 0 {
+            num_threads = ::num_cpus::get() as u32;
+        }
+        let options = Options { num_threads };
+        Engine {
+            pool: Pool::new(num_threads),
+            engine: EngineInner { options },
+        }
+    }
+
     /// Set the number of threads to be used by the engine.
     ///
-    /// If `num_threads` is 0, or you do not call this function, then the number
-    /// of threads will be selected automatically. The default is the number of
+    /// If `n` is 0, or you do not call this function, then the number of
+    /// threads will be selected automatically. The default is the number of
     /// logical CPUs.
     #[inline]
-    pub fn num_threads(mut self, num_threads: u32) -> Options {
-        self.num_threads = num_threads;
+    pub fn num_threads(mut self, n: u32) -> EngineBuilder {
+        self.num_threads = n;
         self
     }
 }
 
-impl Default for Options {
-    fn default() -> Options {
-        Options {
-            num_threads: 0,
-        }
-    }
+/// Chess engine options.
+struct Options {
+    num_threads: u32,
 }
 
 impl Options {
