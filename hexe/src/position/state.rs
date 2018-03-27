@@ -51,13 +51,7 @@ impl Eq for State {}
 
 impl Default for State {
     #[inline]
-    fn default() -> State {
-        State {
-            prev: None,
-            en_passant: None,
-            castle_rights: Rights::FULL,
-        }
-    }
+    fn default() -> State { State::STANDARD }
 }
 
 impl fmt::Debug for State {
@@ -71,6 +65,12 @@ impl fmt::Debug for State {
 }
 
 impl State {
+    pub(crate) const STANDARD: State = State {
+        prev: None,
+        en_passant: None,
+        castle_rights: Rights::FULL,
+    };
+
     /// Returns the previous state.
     #[inline]
     pub fn prev(&self) -> Option<&State> {

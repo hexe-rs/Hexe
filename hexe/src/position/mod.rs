@@ -42,13 +42,15 @@ impl PartialEq for Position {
 impl Eq for Position {}
 
 impl Default for Position {
+    #[inline]
     fn default() -> Position {
-        Position {
-            state: State::default(),
+        const STANDARD: Position = Position {
+            state: State::STANDARD,
             pieces: PieceMap::STANDARD,
             board: MultiBoard::STANDARD,
             player: Color::White,
-        }
+        };
+        STANDARD
     }
 }
 
