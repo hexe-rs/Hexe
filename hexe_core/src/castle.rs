@@ -1,4 +1,4 @@
-//! Castling rights for two players of a chess game.
+//! Functionality dealing with castling in chess.
 //!
 //! # What is Castling?
 //!
