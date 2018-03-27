@@ -25,9 +25,8 @@ impl PartialEq for State {
         let mut that = other;
 
         loop {
-            let eq = this.castle_rights == that.castle_rights &&
-                     this.en_passant    == that.en_passant;
-            if eq {
+            if this.castle_rights == that.castle_rights
+            && this.en_passant    == that.en_passant {
                 match (&this.prev, &that.prev) {
                     (&Some(ref a), &Some(ref b)) => {
                         // Short circuit if same history
