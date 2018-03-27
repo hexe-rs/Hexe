@@ -15,7 +15,7 @@ pub struct State {
     pub(super) en_passant: Option<Square>,
 
     /// The castle rights for both players.
-    pub(super) castle_rights: Rights,
+    pub(super) rights: Rights,
 }
 
 impl PartialEq for State {
@@ -25,8 +25,8 @@ impl PartialEq for State {
         let mut that = other;
 
         loop {
-            if this.castle_rights == that.castle_rights
-            && this.en_passant    == that.en_passant {
+            if this.rights     == that.rights
+            && this.en_passant == that.en_passant {
                 match (&this.prev, &that.prev) {
                     (&Some(ref a), &Some(ref b)) => {
                         // Short circuit if same history
@@ -56,9 +56,9 @@ impl Default for State {
 impl fmt::Debug for State {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_struct("State")
-            .field("prev",          &self.prev())
-            .field("en_passant",    &self.en_passant())
-            .field("castle_rights", &self.castle_rights())
+            .field("prev",       &self.prev())
+            .field("en_passant", &self.en_passant())
+            .field("rights",     &self.rights())
             .finish()
     }
 }
@@ -67,7 +67,7 @@ impl State {
     pub(crate) const STANDARD: State = State {
         prev: None,
         en_passant: None,
-        castle_rights: Rights::FULL,
+        rights: Rights::FULL,
     };
 
     /// Returns the previous state.
@@ -84,7 +84,7 @@ impl State {
 
     /// Returns the castle rights for both players.
     #[inline]
-    pub fn castle_rights(&self) -> Rights {
-        self.castle_rights
+    pub fn rights(&self) -> Rights {
+        self.rights
     }
 }

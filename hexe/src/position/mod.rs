@@ -124,8 +124,8 @@ impl Position {
 
     /// Returns the castle rights for both players.
     #[inline]
-    pub fn castle_rights(&self) -> Rights {
-        self.state.castle_rights()
+    pub fn rights(&self) -> Rights {
+        self.state.rights()
     }
 
     /// Returns the square where the color's king lies on.
