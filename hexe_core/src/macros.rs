@@ -129,6 +129,12 @@ macro_rules! impl_bit_set {
                 other.contained_in(self)
             }
 
+            /// Returns whether `self` intersects with `other`.
+            #[inline]
+            pub fn intersects<T: Into<Self>>(self, other: T) -> bool {
+                !(self & other).is_empty()
+            }
+
             /// Returns the number of bits set in `self`.
             #[inline]
             pub fn len(&self) -> usize {
