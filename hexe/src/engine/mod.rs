@@ -71,10 +71,10 @@ pub struct EngineBuilder {
 impl EngineBuilder {
     /// Builds a new [`Engine`](struct.Engine.html) with the options of `self`.
     pub fn build(self) -> Engine {
-        let mut num_threads = self.num_threads;
-        if num_threads == 0 {
-            num_threads = ::num_cpus::get() as u32;
-        }
+        let num_threads = match self.num_threads {
+            0 => ::num_cpus::get() as u32,
+            n => n,
+        };
         Engine {
             pool: Pool::new(num_threads),
             engine: EngineInner {
