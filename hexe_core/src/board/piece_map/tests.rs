@@ -1,4 +1,5 @@
 use super::*;
+use prelude::*;
 
 /// Asserts at compile-time that the piece is less than NONE.
 macro_rules! assert_valid_none {
@@ -88,6 +89,15 @@ fn is_empty() {
 
     map = PieceMap::filled(Piece::BlackBishop);
     assert!(!map.is_empty());
+}
+
+#[test]
+fn kind_at() {
+    let map = PieceMap::STANDARD;
+    for sq in Square::ALL {
+        let kind = map.get(sq).map(|p| p.kind());
+        assert_eq!(map.kind_at(sq), kind);
+    }
 }
 
 #[test]

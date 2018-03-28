@@ -672,7 +672,11 @@ impl PieceMap {
     /// Returns the kind of the piece at the given square, if any.
     #[inline]
     pub fn kind_at(&self, sq: Square) -> Option<PieceKind> {
-        self.get(sq).map(|p| p.kind())
+        const NO_PIECE: u8 = NONE >> 1;
+        match self.as_bytes()[sq as usize] >> 1 {
+            NO_PIECE => None,
+            pc => unsafe { Some(mem::transmute(pc)) },
+        }
     }
 
     /// Returns the result of applying a function to a mutable string
