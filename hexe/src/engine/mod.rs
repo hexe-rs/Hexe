@@ -7,6 +7,8 @@ use std::usize;
 
 use scoped_threadpool::Pool;
 
+use position::Position;
+
 mod uci;
 pub use self::uci::Uci;
 
@@ -31,6 +33,7 @@ pub struct Engine {
 }
 
 struct EngineInner {
+    position: Position,
     options: Options,
 }
 
@@ -72,10 +75,12 @@ impl EngineBuilder {
         if num_threads == 0 {
             num_threads = ::num_cpus::get() as u32;
         }
-        let options = Options { num_threads };
         Engine {
             pool: Pool::new(num_threads),
-            engine: EngineInner { options },
+            engine: EngineInner {
+                position: Position::default(),
+                options: Options { num_threads },
+            },
         }
     }
 
