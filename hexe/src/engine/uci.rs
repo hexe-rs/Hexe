@@ -64,13 +64,6 @@ impl<'a> From<Box<Engine>> for Uci<'a> {
     }
 }
 
-impl<'a> From<Engine> for Uci<'a> {
-    #[inline]
-    fn from(engine: Engine) -> Uci<'a> {
-        Box::new(engine).into()
-    }
-}
-
 impl<'a> Default for Uci<'a> {
     fn default() -> Uci<'a> {
         Uci(MutRef::Owned(Box::default()))
