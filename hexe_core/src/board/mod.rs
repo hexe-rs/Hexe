@@ -2,16 +2,16 @@
 //!
 //! ## Board Representation
 //!
-//! There are two primary chess board representations provided. Both have
-//! various advantages and disadvantages, which are outlined below:
+//! There are three chess board representations provided. They each have various
+//! advantages and disadvantages, which are outlined below:
 //!
-//! ### [`Bitboard`](bitboard/struct.Bitboard.html)
+//! ### [`Bitboard`]
 //!
-//! **Mapping:** bit-to-square
+//! **Mapping:** bit-to-[`Square`]
 //!
 //! **Advantages:**
 //!
-//! - Throughput—excellent for performing parallel operations on the board
+//! - Throughput—excellent for performing parallel operations on the board:
 //!
 //!     - Checking whether a file is empty
 //!
@@ -19,22 +19,48 @@
 //!
 //! **Disadvantages:**
 //!
-//! - Size—larger overall memory cost
+//! - Size—larger overall memory cost:
 //!
 //!     - A common compact way of representing all pieces with bitboards is to
-//!       have 6 × [`PieceKind`](../piece/enum.PieceKind.html) bitboards and 2 ×
-//!       [`Color`](color/enum.Color.html) bitboards. This results in
-//!       (2 + 6) × 8 = 64 bytes used to represent all pieces.
+//!       have 6 × [`PieceKind`] bitboards and 2 × [`Color`] bitboards. This
+//!       results in (2 + 6) × 8 = 64 bytes used to represent all pieces.
+//!
+//!       This is how [`MultiBoard`] works.
 //!
 //!     - Using 12 × [`Piece`](../piece/enum.Piece.html) bitboards is another
 //!       representation of the entire chess board. This results in 12 × 8 = 96
 //!       bytes used to represent all pieces.
 //!
-//!     - Operations are often done using 64-bit (8 byte) integers
+//!     - Operations are often done using 64-bit (8 byte) integers.
 //!
-//! ### [`PieceMap`](piece_map/struct.PieceMap.html)
+//! ### [`MultiBoard`]
 //!
-//! **Mapping:** byte-to-square
+//! **Mapping:** [`Color`]/[`Piece`]/[`PieceKind`] to [`Bitboard`]
+//!
+//! **Advantages:**
+//!
+//! - Lookup—_very fast_ square retrieval:
+//!
+//!   ```
+//!   # use hexe_core::board::MultiBoard;
+//!   # use hexe_core::prelude::*;
+//!   let board = MultiBoard::STANDARD;
+//!
+//!   let king = board.first(Piece::WhiteKing);
+//!   println!("White king found at {}", king);
+//!
+//!   for sq in board.bitboard(Color::White) {
+//!       println!("A white piece at {}", sq);
+//!   }
+//!   ```
+//!
+//! **Disadvantages:**
+//!
+//! - Checking—slow to find the piece at a square
+//!
+//! ### [`PieceMap`]
+//!
+//! **Mapping:** [`Piece`] to [`Square`]
 //!
 //! **Advantages:**
 //!
@@ -51,6 +77,15 @@
 //! - Size—larger upfront memory cost
 //!
 //!     - Uses exactly 64 bytes for each square on the board and its piece
+//!
+//! [`Bitboard`]: bitboard/struct.Bitboard.html
+//! [`MultiBoard`]: multi_board/struct.MultiBoard.html
+//! [`PieceMap`]: piece_map/struct.PieceMap.html
+//!
+//! [`Color`]: ../color/enum.Color.html
+//! [`Piece`]: ../piece/enum.Piece.html
+//! [`PieceKind`]: ../piece/enum.PieceKind.html
+//! [`Square`]: ../square/enum.Square.html
 
 pub mod bitboard;
 pub mod multi_board;
