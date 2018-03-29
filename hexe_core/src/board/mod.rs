@@ -46,7 +46,7 @@
 //!   # use hexe_core::prelude::*;
 //!   let board = MultiBoard::STANDARD;
 //!
-//!   let king = board.first(Piece::WhiteKing);
+//!   let king = board.first(Piece::WhiteKing).unwrap();
 //!   println!("White king found at {}", king);
 //!
 //!   for sq in board.bitboard(Color::White) {
