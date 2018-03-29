@@ -301,13 +301,15 @@ pub mod kind {
         pub fn new(file: File, color: Color, piece: PromotionPiece) -> Promotion {
             const WHITE: u16 = base_bits!(Rank::Seven, Rank::Eight) << RANK_SHIFT;
             const BLACK: u16 = base_bits!(Rank::Two,   Rank::One)   << RANK_SHIFT;
-            static RANK: [u16; 2] = [WHITE, BLACK];
+            const KIND:  u16 = (MoveKind::Promotion as u16) << KIND_SHIFT;
 
-            let rank = RANK[color as usize];
             let file = FILE_LO * file as u16;
-            let kind = (MoveKind::Promotion as u16) << KIND_SHIFT;
+            let rank = match color {
+                Color::White => WHITE,
+                Color::Black => BLACK,
+            };
 
-            Promotion(Move(file | rank | kind | (piece as u16) << PROM_SHIFT))
+            Promotion(Move(file | rank | KIND | (piece as u16) << PROM_SHIFT))
         }
 
         /// Returns the color of the moving piece.
