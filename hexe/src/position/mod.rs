@@ -8,8 +8,8 @@ use prelude::*;
 mod state;
 pub use self::state::*;
 
-pub mod mv_gen;
-use self::mv_gen::MoveGen;
+mod mv_gen;
+pub use self::mv_gen::*;
 
 #[cfg(all(test, nightly))]
 mod benches;
