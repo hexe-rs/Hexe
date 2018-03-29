@@ -203,6 +203,16 @@ impl MoveVec {
         }
     }
 
+    /// Removes the last `n` moves from the vector.
+    #[inline]
+    pub fn remove_last(&mut self, n: usize) {
+        if n < self.len as usize {
+            self.len -= n as u8;
+        } else {
+            self.len = 0;
+        }
+    }
+
     /// Shortens the vector, keeping the first `len` moves.
     ///
     /// If `len` is greater than the current length, this has no effect.
