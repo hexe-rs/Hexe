@@ -57,6 +57,9 @@ pub use self::carry_rippler::*;
 mod dir;
 pub use self::dir::*;
 
+#[cfg(all(test, nightly))]
+mod benches;
+
 use core::{fmt, ops, str};
 use prelude::*;
 use util::Bytes;
