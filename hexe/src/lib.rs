@@ -52,6 +52,7 @@
 // Clippy
 #![allow(redundant_field_names)]
 #![allow(unreadable_literal)]
+#![allow(zero_prefixed_literal)]
 
 // Attributes //////////////////////////////////////////////////////////////////
 

@@ -38,6 +38,7 @@
 #![allow(suspicious_arithmetic_impl)]
 #![allow(unreadable_literal)]
 #![allow(verbose_bit_mask)]
+#![allow(zero_prefixed_literal)]
 #![deny(bool_comparison)]
 
 // Attributes //////////////////////////////////////////////////////////////////
