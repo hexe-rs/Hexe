@@ -10,20 +10,19 @@ use square::{File, Rank, Square};
 mod vec;
 pub use self::vec::*;
 
-const SRC_SHIFT:    usize =  0;
-const DST_SHIFT:    usize =  6;
-const RANK_SHIFT:   usize =  3;
-const PROM_SHIFT:   usize = 12;
-const KIND_SHIFT:   usize = 14;
-const CASTLE_SHIFT: usize = KIND_SHIFT - 2;
+const SRC_SHIFT:  usize =  0;
+const DST_SHIFT:  usize =  6;
+const RANK_SHIFT: usize =  3;
+const META_SHIFT: usize = 12;
+const KIND_SHIFT: usize = 14;
 
-const SRC_MASK:    u16 = 0b111111;
-const DST_MASK:    u16 = SRC_MASK;
-const PROM_MASK:   u16 = 0b11;
-const FILE_MASK:   u16 = 0b000111000111;
-const RANK_MASK:   u16 = FILE_MASK << RANK_SHIFT;
-const KIND_MASK:   u16 = PROM_MASK;
-const CASTLE_MASK: u16 = 0b11;
+const SRC_MASK:  u16 = 0b111111;
+const DST_MASK:  u16 = SRC_MASK;
+const META_MASK: u16 = 0b11;
+const KIND_MASK: u16 = META_MASK;
+
+const FILE_MASK: u16 = 0b000111000111;
+const RANK_MASK: u16 = FILE_MASK << RANK_SHIFT;
 
 const LO_MASK: u16 = 0b111;
 const FILE_LO: u16 = FILE_MASK / LO_MASK;
@@ -260,7 +259,7 @@ pub mod kind {
         fn from(right: Right) -> Castle {
             let base  = mask::ALL_RIGHTS[right as usize];
             let kind  = (MoveKind::Castle as u16) << KIND_SHIFT;
-            let right = (right as u16) << CASTLE_SHIFT;
+            let right = (right as u16) << META_SHIFT;
             Castle(Move(base | right | kind))
         }
     }
@@ -283,7 +282,7 @@ pub mod kind {
                 mask::BLACK_QUEEN => Right::BlackQueen,
                 _ => return None,
             };
-            let right = (right as u16) << CASTLE_SHIFT;
+            let right = (right as u16) << META_SHIFT;
 
             Some(Castle(Move(base | right | kind)))
         }
@@ -291,7 +290,7 @@ pub mod kind {
         /// Returns the castle right for `self`.
         #[inline]
         pub fn right(self) -> Right {
-            (((self.0).0 >> CASTLE_SHIFT) & CASTLE_MASK).into()
+            (((self.0).0 >> META_SHIFT) & META_MASK).into()
         }
     }
 
@@ -313,7 +312,7 @@ pub mod kind {
                 Color::Black => BLACK,
             };
 
-            Promotion(Move(file | rank | KIND | (piece as u16) << PROM_SHIFT))
+            Promotion(Move(file | rank | KIND | (piece as u16) << META_SHIFT))
         }
 
         /// Returns the color of the moving piece.
@@ -327,7 +326,7 @@ pub mod kind {
         /// Returns the promotion piece.
         #[inline]
         pub fn piece(self) -> PromotionPiece {
-            (((self.0).0 >> PROM_SHIFT) & PROM_MASK).into()
+            (((self.0).0 >> META_SHIFT) & META_MASK).into()
         }
     }
 
