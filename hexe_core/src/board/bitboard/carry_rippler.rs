@@ -3,7 +3,7 @@ use core::{fmt, u64};
 
 /// An iterator over all subsets of a [`Bitboard`].
 ///
-/// The original implementation can be found [here][impl].
+/// A reference implementation can be found [here][impl].
 ///
 /// # Examples
 ///
