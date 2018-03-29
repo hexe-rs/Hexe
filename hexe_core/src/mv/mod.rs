@@ -9,6 +9,12 @@ use castle::Right;
 use piece;
 use square::{File, Rank, Square};
 
+#[cfg(test)]
+mod tests;
+
+#[cfg(all(test, nightly))]
+mod benches;
+
 mod vec;
 pub use self::vec::*;
 
@@ -489,70 +495,5 @@ pub mod kind {
             };
             self.src().pawn_attacks(color).contains(self.dst())
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn promotion() {
-        use prelude::*;
-
-        for file in File::ALL {
-            for color in Color::ALL {
-                for piece in piece::Promotion::ALL {
-                    let mv = kind::Promotion::new(file, color, piece);
-                    assert_eq!(file, mv.src().file());
-                    assert_eq!(file, mv.dst().file());
-                    assert_eq!(piece, mv.piece());
-                    match color {
-                        Color::White => {
-                            assert_eq!(Rank::Seven, mv.src().rank());
-                            assert_eq!(Rank::Eight, mv.dst().rank());
-                        },
-                        Color::Black => {
-                            assert_eq!(Rank::Two, mv.src().rank());
-                            assert_eq!(Rank::One, mv.dst().rank());
-                        },
-                    }
-                }
-            }
-        }
-    }
-}
-
-#[cfg(all(test, nightly))]
-mod benches {
-    use super::*;
-    use test::{Bencher, black_box};
-
-    fn gen_squares() -> [(Square, Square); 1000] {
-        ::util::rand_pairs()
-    }
-
-    #[bench]
-    fn en_passant_try_new_1000(b: &mut Bencher) {
-        let squares = gen_squares();
-        b.iter(|| {
-            for &(s1, s2) in squares.iter().map(black_box) {
-                if let Some(mv) = kind::EnPassant::try_new(s1, s2) {
-                    black_box(mv);
-                }
-            }
-        });
-    }
-
-    #[bench]
-    fn castle_try_new_1000(b: &mut Bencher) {
-        let squares = gen_squares();
-        b.iter(|| {
-            for &(s1, s2) in squares.iter().map(black_box) {
-                if let Some(mv) = kind::Castle::try_new(s1, s2) {
-                    black_box(mv);
-                }
-            }
-        });
     }
 }
