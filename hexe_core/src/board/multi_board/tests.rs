@@ -18,21 +18,19 @@ fn is_attacked() {
         }
     }
 
-    for sq in Square::ALL.take(40) {
-        test(false, sq, Color::White);
+    macro_rules! iter {
+        ($color:expr, $iter:expr) => {
+            for sq in $iter.take(40) {
+                test(false, sq, $color);
+            }
+            for sq in $iter.skip(8).take(16) {
+                test(true, sq, !$color);
+            }
+        }
     }
 
-    for sq in Square::ALL.skip(8).take(16) {
-        test(true, sq, Color::Black);
-    }
-
-    for sq in Square::ALL.rev().take(40) {
-        test(false, sq, Color::Black);
-    }
-
-    for sq in Square::ALL.rev().skip(8).take(16) {
-        test(true, sq, Color::White);
-    }
+    iter!(Color::White, Square::ALL);
+    iter!(Color::Black, Square::ALL.rev());
 }
 
 #[test]
