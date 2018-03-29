@@ -319,7 +319,7 @@ pub mod kind {
         /// Returns the color of the moving piece.
         #[inline]
         pub fn color(self) -> Color {
-            // src rank begins with 0 for white and 1 for black
+            // src rank is even for white and odd for black
             let inner = u16::from(self);
             ((inner >> RANK_SHIFT) & 1).into()
         }
@@ -355,6 +355,14 @@ pub mod kind {
         pub fn capture(self) -> Square {
             Square::new(self.dst().file(),
                         self.src().rank())
+        }
+
+        /// Returns the color of the moving piece.
+        #[inline]
+        pub fn color(self) -> Color {
+            // src rank is even for white and odd for black
+            let inner = u16::from(self);
+            ((inner >> RANK_SHIFT) & 1).into()
         }
 
         /// Returns whether the en passant is legal and is acting on the correct
