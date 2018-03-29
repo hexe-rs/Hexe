@@ -6,7 +6,7 @@ use uncon::FromUnchecked;
 
 use color::Color;
 use castle::Right;
-use piece::Promotion as PromotionPiece;
+use piece;
 use square::{File, Rank, Square};
 
 mod vec;
@@ -86,7 +86,7 @@ impl Move {
 
     /// Creates a new promotion move for `color` at `file`.
     #[inline]
-    pub fn promotion(file: File, color: Color, piece: PromotionPiece) -> Move {
+    pub fn promotion(file: File, color: Color, piece: piece::Promotion) -> Move {
         kind::Promotion::new(file, color, piece).into()
     }
 
@@ -385,7 +385,7 @@ pub mod kind {
     impl Promotion {
         /// Creates a new promotion move.
         #[inline]
-        pub fn new(file: File, color: Color, piece: PromotionPiece) -> Promotion {
+        pub fn new(file: File, color: Color, piece: piece::Promotion) -> Promotion {
             const WHITE: u16 = base!(Rank::Seven, Rank::Eight) << RANK_SHIFT;
             const BLACK: u16 = base!(Rank::Two,   Rank::One)   << RANK_SHIFT;
 
@@ -401,7 +401,7 @@ pub mod kind {
         /// Creates a promotion move using `Queen` as its piece.
         #[inline]
         pub fn queen(file: File, color: Color) -> Promotion {
-            Promotion::new(file, color, PromotionPiece::Queen)
+            Promotion::new(file, color, piece::Promotion::Queen)
         }
 
         /// Returns the color of the moving piece.
@@ -414,7 +414,7 @@ pub mod kind {
 
         /// Returns the promotion piece.
         #[inline]
-        pub fn piece(self) -> PromotionPiece {
+        pub fn piece(self) -> piece::Promotion {
             (((self.0).0 >> META_SHIFT) & META_MASK).into()
         }
     }
@@ -486,7 +486,7 @@ mod tests {
 
         for file in File::ALL {
             for color in Color::ALL {
-                for piece in PromotionPiece::ALL {
+                for piece in piece::Promotion::ALL {
                     let mv = kind::Promotion::new(file, color, piece);
                     assert_eq!(file, mv.src().file());
                     assert_eq!(file, mv.dst().file());
