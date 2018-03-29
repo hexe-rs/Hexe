@@ -320,6 +320,10 @@ pub mod kind {
         pub fn new(src: Square, dst: Square) -> Normal {
             Normal(Move(base!(src, dst) | kind!(Normal)))
         }
+
+        /// Returns the kind for `self`.
+        #[inline]
+        pub fn kind(self) -> MoveKind { MoveKind::Normal }
     }
 
     /// A castling move.
@@ -362,6 +366,10 @@ pub mod kind {
             Some(Castle(Move(base | meta!(right) | kind!(Castle))))
         }
 
+        /// Returns the kind for `self`.
+        #[inline]
+        pub fn kind(self) -> MoveKind { MoveKind::Castle }
+
         /// Returns the castle right for `self`.
         #[inline]
         pub fn right(self) -> Right {
@@ -397,6 +405,10 @@ pub mod kind {
 
             Promotion(Move(file | rank | kind!(Promotion) | meta!(piece)))
         }
+
+        /// Returns the kind for `self`.
+        #[inline]
+        pub fn kind(self) -> MoveKind { MoveKind::Promotion }
 
         /// Creates a promotion move using `Queen` as its piece.
         #[inline]
@@ -445,6 +457,10 @@ pub mod kind {
             let kind = (MoveKind::EnPassant as u16) << KIND_SHIFT;
             EnPassant(Move(base!(src, dst) | kind))
         }
+
+        /// Returns the kind for `self`.
+        #[inline]
+        pub fn kind(self) -> MoveKind { MoveKind::EnPassant }
 
         /// Returns the square of the captured piece.
         #[inline]
