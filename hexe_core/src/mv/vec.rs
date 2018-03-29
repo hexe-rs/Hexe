@@ -7,7 +7,7 @@ use core::{cmp, mem, ops, ptr, u8};
 #[cfg(feature = "std")]
 use std::borrow::{Borrow, BorrowMut};
 
-const VEC_CAP: usize = u8::MAX as usize;
+const VEC_CAP: usize = MoveVec::MAX_LEN;
 
 /// An inline vector of moves ideal for move generation.
 ///
@@ -94,6 +94,9 @@ impl ops::DerefMut for MoveVec {
 }
 
 impl MoveVec {
+    /// The maximum length of a vector.
+    pub const MAX_LEN: usize = u8::MAX as usize;
+
     /// Creates a new empty vector.
     #[inline]
     pub fn new() -> MoveVec {
@@ -152,6 +155,9 @@ impl MoveVec {
     pub fn is_empty(&self) -> bool { self.len == 0 }
 
     /// Returns the internal fixed capacity of the vector.
+    ///
+    /// This is the same value as
+    /// [`MoveVec::MAX_LEN`](#associatedconstant.MAX_LEN).
     #[inline]
     pub fn capacity(&self) -> usize { VEC_CAP }
 
