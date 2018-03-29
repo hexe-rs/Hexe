@@ -350,6 +350,13 @@ pub mod kind {
             EnPassant(Move(base_bits!(src, dst) | kind))
         }
 
+        /// Returns the square of the captured piece.
+        #[inline]
+        pub fn capture(self) -> Square {
+            Square::new(self.dst().file(),
+                        self.src().rank())
+        }
+
         /// Returns whether the en passant is legal and is acting on the correct
         /// squares.
         #[inline]
