@@ -18,6 +18,20 @@ mod benches;
 mod vec;
 pub use self::vec::*;
 
+macro_rules! base {
+    ($s1:expr, $s2:expr) => {
+        (($s1 as u16) << SRC_SHIFT) | (($s2 as u16) << DST_SHIFT)
+    }
+}
+
+macro_rules! kind {
+    ($k:ident) => { (MoveKind::$k as u16) << KIND_SHIFT };
+}
+
+macro_rules! meta {
+    ($m:expr) => { ($m as u16) << META_SHIFT };
+}
+
 const SRC_SHIFT:  usize =  0;
 const DST_SHIFT:  usize =  6;
 const RANK_SHIFT: usize =  3;
@@ -34,23 +48,6 @@ const RANK_MASK: u16 = FILE_MASK << RANK_SHIFT;
 
 const LO_MASK: u16 = 0b111;
 const FILE_LO: u16 = FILE_MASK / LO_MASK;
-
-macro_rules! base {
-    ($s1:expr, $s2:expr) => {
-        (($s1 as u16) << SRC_SHIFT) | (($s2 as u16) << DST_SHIFT)
-    }
-}
-
-macro_rules! kind {
-    ($k:ident) => { (MoveKind::$k as u16) << KIND_SHIFT };
-}
-
-macro_rules! meta {
-    ($m:expr) => { ($m as u16) << META_SHIFT };
-}
-
-const W_EP: u16 = base!(Rank::Five, Rank::Six)   << RANK_SHIFT;
-const B_EP: u16 = base!(Rank::Four, Rank::Three) << RANK_SHIFT;
 
 /// A chess piece move from one square to another.
 ///
@@ -259,15 +256,12 @@ pub mod kind {
     mod mask {
         use super::*;
 
-        pub const WHITE_KING:  u16 = base!(Square::E1, Square::G1);
-        pub const WHITE_QUEEN: u16 = base!(Square::E1, Square::C1);
-        pub const BLACK_KING:  u16 = base!(Square::E8, Square::G8);
-        pub const BLACK_QUEEN: u16 = base!(Square::E8, Square::C8);
+        pub const WK:  u16 = base!(Square::E1, Square::G1);
+        pub const WQ: u16 = base!(Square::E1, Square::C1);
+        pub const BK:  u16 = base!(Square::E8, Square::G8);
+        pub const BQ: u16 = base!(Square::E8, Square::C8);
 
-        pub static ALL_RIGHTS: [u16; 4] = [
-            WHITE_KING, WHITE_QUEEN,
-            BLACK_KING, BLACK_QUEEN,
-        ];
+        pub static ALL_RIGHTS: [u16; 4] = [BK, WQ, BK, WQ];
     }
 
     macro_rules! impl_from_move {
@@ -363,10 +357,10 @@ pub mod kind {
         pub fn try_new(src: Square, dst: Square) -> Option<Castle> {
             let base  = base!(src, dst);
             let right = match base {
-                mask::WHITE_KING  => Right::WhiteKing,
-                mask::WHITE_QUEEN => Right::WhiteQueen,
-                mask::BLACK_KING  => Right::BlackKing,
-                mask::BLACK_QUEEN => Right::BlackQueen,
+                mask::WK => Right::WhiteKing,
+                mask::WQ => Right::WhiteQueen,
+                mask::BK => Right::BlackKing,
+                mask::BQ => Right::BlackQueen,
                 _ => return None,
             };
             Some(Castle(Move(base | meta!(right) | kind!(Castle))))
@@ -487,12 +481,16 @@ pub mod kind {
         /// squares.
         #[inline]
         fn is_legal(self) -> bool {
+            pub const W_EP: u16 = base!(Rank::Five, Rank::Six)   << RANK_SHIFT;
+            pub const B_EP: u16 = base!(Rank::Four, Rank::Three) << RANK_SHIFT;
+
             let ranks = u16::from(self) & RANK_MASK;
             let color = match ranks {
                 W_EP => Color::White,
                 B_EP => Color::Black,
                 _ => return false,
             };
+
             self.src().pawn_attacks(color).contains(self.dst())
         }
     }
