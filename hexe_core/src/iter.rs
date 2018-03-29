@@ -57,16 +57,16 @@ pub trait AllIterable: Sized {
     const ALL: All<Self>;
 
     #[doc(hidden)]
-    fn __next(&mut Self::__Iter) -> Option<Self>;
+    fn __next(_: &mut Self::__Iter) -> Option<Self>;
 
     #[doc(hidden)]
-    fn __next_back(&mut Self::__Iter) -> Option<Self>;
+    fn __next_back(_: &mut Self::__Iter) -> Option<Self>;
 
     #[doc(hidden)]
-    fn __len(&Self::__Iter) -> usize;
+    fn __len(_: &Self::__Iter) -> usize;
 
     #[doc(hidden)]
-    fn __range(&Self::__Iter) -> Range<usize>;
+    fn __range(_: &Self::__Iter) -> Range<usize>;
 }
 
 impl_iterable!(::castle::Side,     u8, 2);
