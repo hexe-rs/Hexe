@@ -1,5 +1,7 @@
 //! A chess move.
 
+use core::fmt;
+
 use uncon::FromUnchecked;
 
 use color::Color;
@@ -49,6 +51,18 @@ pub struct Move(pub(crate) u16);
 impl From<Move> for u16 {
     #[inline]
     fn from(mv: Move) -> u16 { mv.0 }
+}
+
+impl fmt::Debug for Move {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self.kind() {
+            MoveKind::Normal    => kind::Normal(*self).fmt(f),
+            MoveKind::Castle    => kind::Castle(*self).fmt(f),
+            MoveKind::Promotion => kind::Promotion(*self).fmt(f),
+            MoveKind::EnPassant => kind::EnPassant(*self).fmt(f),
+        }
+    }
 }
 
 impl Move {
@@ -241,6 +255,14 @@ pub mod kind {
     #[derive(PartialEq, Eq, Clone, Copy, Hash)]
     pub struct Normal(pub(crate) Move);
 
+    impl fmt::Debug for Normal {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            f.debug_struct("Normal").field("src", &self.src())
+                                    .field("dst", &self.dst())
+                                    .finish()
+        }
+    }
+
     impl Normal {
         /// Creates a new normal move from `src` to `dst`.
         #[inline]
@@ -253,6 +275,15 @@ pub mod kind {
     /// A castling move.
     #[derive(PartialEq, Eq, Clone, Copy, Hash)]
     pub struct Castle(pub(crate) Move);
+
+    impl fmt::Debug for Castle {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            f.debug_struct("Castle").field("src", &self.src())
+                                    .field("dst", &self.dst())
+                                    .field("right", &self.right())
+                                    .finish()
+        }
+    }
 
     impl From<Right> for Castle {
         #[inline]
@@ -298,6 +329,15 @@ pub mod kind {
     #[derive(PartialEq, Eq, Clone, Copy, Hash)]
     pub struct Promotion(pub(crate) Move);
 
+    impl fmt::Debug for Promotion {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            f.debug_struct("Promotion").field("src", &self.src())
+                                       .field("dst", &self.dst())
+                                       .field("piece", &self.piece())
+                                       .finish()
+        }
+    }
+
     impl Promotion {
         /// Creates a new promotion move.
         #[inline]
@@ -333,6 +373,14 @@ pub mod kind {
     /// An en passant move.
     #[derive(PartialEq, Eq, Clone, Copy, Hash)]
     pub struct EnPassant(pub(crate) Move);
+
+    impl fmt::Debug for EnPassant {
+        fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+            f.debug_struct("EnPassant").field("src", &self.src())
+                                       .field("dst", &self.dst())
+                                       .finish()
+        }
+    }
 
     impl EnPassant {
         /// Attempts to create a new en passant move.
