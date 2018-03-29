@@ -41,6 +41,8 @@ use prelude::*;
 #[cfg(feature = "serde")]
 use serde::*;
 
+use iter::All;
+
 const ALL_BITS: u8 = 0b1111;
 const MAX_LEN: usize = 1 + ALL_BITS as usize;
 
@@ -265,6 +267,19 @@ impl Right {
     #[inline]
     pub fn path(self) -> Bitboard {
         path::ALL[self as usize]
+    }
+
+    /// Returns an efficient iterator over each square in the path between the
+    /// rook and king for `self`.
+    #[inline]
+    pub fn path_iter(self) -> All<Square> {
+        static ITERS: [All<Square>; 4] = [
+            All { iter: 05..07 },
+            All { iter: 01..04 },
+            All { iter: 61..63 },
+            All { iter: 57..60 },
+        ];
+        ITERS[self as usize].clone()
     }
 
     /// Returns the color for `self`.

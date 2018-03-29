@@ -81,7 +81,7 @@ impl_iterable!(::square::Square,   u8, 64);
 /// An iterator over all instances of `T`.
 #[derive(Clone, PartialEq, Eq)]
 pub struct All<T: AllIterable> {
-    iter: T::__Iter,
+    pub(crate) iter: T::__Iter,
 }
 
 impl<T: AllIterable> Default for All<T> {
