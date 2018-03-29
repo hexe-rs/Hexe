@@ -29,14 +29,22 @@ const RANK_MASK: u16 = FILE_MASK << RANK_SHIFT;
 const LO_MASK: u16 = 0b111;
 const FILE_LO: u16 = FILE_MASK / LO_MASK;
 
-macro_rules! base_bits {
+macro_rules! base {
     ($s1:expr, $s2:expr) => {
         (($s1 as u16) << SRC_SHIFT) | (($s2 as u16) << DST_SHIFT)
     }
 }
 
-const W_EP: u16 = base_bits!(Rank::Five, Rank::Six)   << RANK_SHIFT;
-const B_EP: u16 = base_bits!(Rank::Four, Rank::Three) << RANK_SHIFT;
+macro_rules! kind {
+    ($k:ident) => { (MoveKind::$k as u16) << KIND_SHIFT };
+}
+
+macro_rules! meta {
+    ($m:expr) => { ($m as u16) << META_SHIFT };
+}
+
+const W_EP: u16 = base!(Rank::Five, Rank::Six)   << RANK_SHIFT;
+const B_EP: u16 = base!(Rank::Four, Rank::Three) << RANK_SHIFT;
 
 /// A chess piece move from one square to another.
 ///
@@ -201,10 +209,10 @@ pub mod kind {
     mod mask {
         use super::*;
 
-        pub const WHITE_KING:  u16 = base_bits!(Square::E1, Square::G1);
-        pub const WHITE_QUEEN: u16 = base_bits!(Square::E1, Square::C1);
-        pub const BLACK_KING:  u16 = base_bits!(Square::E8, Square::G8);
-        pub const BLACK_QUEEN: u16 = base_bits!(Square::E8, Square::C8);
+        pub const WHITE_KING:  u16 = base!(Square::E1, Square::G1);
+        pub const WHITE_QUEEN: u16 = base!(Square::E1, Square::C1);
+        pub const BLACK_KING:  u16 = base!(Square::E8, Square::G8);
+        pub const BLACK_QUEEN: u16 = base!(Square::E8, Square::C8);
 
         pub static ALL_RIGHTS: [u16; 4] = [
             WHITE_KING, WHITE_QUEEN,
@@ -266,8 +274,7 @@ pub mod kind {
         /// Creates a new normal move from `src` to `dst`.
         #[inline]
         pub fn new(src: Square, dst: Square) -> Normal {
-            let kind = (MoveKind::Normal as u16) << KIND_SHIFT;
-            Normal(Move(base_bits!(src, dst) | kind))
+            Normal(Move(base!(src, dst) | kind!(Normal)))
         }
     }
 
@@ -287,10 +294,8 @@ pub mod kind {
     impl From<Right> for Castle {
         #[inline]
         fn from(right: Right) -> Castle {
-            let base  = mask::ALL_RIGHTS[right as usize];
-            let kind  = (MoveKind::Castle as u16) << KIND_SHIFT;
-            let right = (right as u16) << META_SHIFT;
-            Castle(Move(base | right | kind))
+            let base = mask::ALL_RIGHTS[right as usize];
+            Castle(Move(base | meta!(right) | kind!(Castle)))
         }
     }
 
@@ -302,9 +307,7 @@ pub mod kind {
         /// Attempts to create a new castle move for the given squares.
         #[inline]
         pub fn try_new(src: Square, dst: Square) -> Option<Castle> {
-            let base = base_bits!(src, dst);
-            let kind = (MoveKind::Castle as u16) << KIND_SHIFT;
-
+            let base  = base!(src, dst);
             let right = match base {
                 mask::WHITE_KING  => Right::WhiteKing,
                 mask::WHITE_QUEEN => Right::WhiteQueen,
@@ -312,9 +315,7 @@ pub mod kind {
                 mask::BLACK_QUEEN => Right::BlackQueen,
                 _ => return None,
             };
-            let right = (right as u16) << META_SHIFT;
-
-            Some(Castle(Move(base | right | kind)))
+            Some(Castle(Move(base | meta!(right) | kind!(Castle))))
         }
 
         /// Returns the castle right for `self`.
@@ -341,9 +342,8 @@ pub mod kind {
         /// Creates a new promotion move.
         #[inline]
         pub fn new(file: File, color: Color, piece: PromotionPiece) -> Promotion {
-            const WHITE: u16 = base_bits!(Rank::Seven, Rank::Eight) << RANK_SHIFT;
-            const BLACK: u16 = base_bits!(Rank::Two,   Rank::One)   << RANK_SHIFT;
-            const KIND:  u16 = (MoveKind::Promotion as u16) << KIND_SHIFT;
+            const WHITE: u16 = base!(Rank::Seven, Rank::Eight) << RANK_SHIFT;
+            const BLACK: u16 = base!(Rank::Two,   Rank::One)   << RANK_SHIFT;
 
             let file = FILE_LO * file as u16;
             let rank = match color {
@@ -351,7 +351,7 @@ pub mod kind {
                 Color::Black => BLACK,
             };
 
-            Promotion(Move(file | rank | KIND | (piece as u16) << META_SHIFT))
+            Promotion(Move(file | rank | kind!(Promotion) | meta!(piece)))
         }
 
         /// Creates a promotion move using `Queen` as its piece.
@@ -399,7 +399,7 @@ pub mod kind {
         #[inline]
         pub unsafe fn new_unchecked(src: Square, dst: Square) -> EnPassant {
             let kind = (MoveKind::EnPassant as u16) << KIND_SHIFT;
-            EnPassant(Move(base_bits!(src, dst) | kind))
+            EnPassant(Move(base!(src, dst) | kind))
         }
 
         /// Returns the square of the captured piece.
