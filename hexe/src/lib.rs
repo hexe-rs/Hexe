@@ -8,7 +8,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! hexe = "0.0.3"
+//! hexe = "0.0.4"
 //! ```
 //!
 //! and this to your crate root:
@@ -31,11 +31,11 @@
 //!
 //! ## What `hexe_core` Provides
 //!
-//! - [Various board representations](https://docs.rs/hexe_core/0.0.3/hexe_core/board/)
+//! - [Various board representations](https://docs.rs/hexe_core/0.0.4/hexe_core/board/)
 //!
-//! - [Dead.](https://docs.rs/hexe_core/0.0.3/hexe_core/castle/struct.Rights.html)
-//!   [Simple.](https://docs.rs/hexe_core/0.0.3/hexe_core/square/enum.Square.html)
-//!   [Primitives.](https://docs.rs/hexe_core/0.0.3/hexe_core/piece/enum.Piece.html)
+//! - [Dead.](https://docs.rs/hexe_core/0.0.4/hexe_core/castle/struct.Rights.html)
+//!   [Simple.](https://docs.rs/hexe_core/0.0.4/hexe_core/square/enum.Square.html)
+//!   [Primitives.](https://docs.rs/hexe_core/0.0.4/hexe_core/piece/enum.Piece.html)
 //!
 //! [crate]: https://crates.io/crates/hexe
 //! [`hexe_core`]: https://docs.rs/hexe_core

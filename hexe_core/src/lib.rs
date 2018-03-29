@@ -9,7 +9,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! hexe_core = "0.0.3"
+//! hexe_core = "0.0.4"
 //! ```
 //!
 //! and this to your crate root:
@@ -19,7 +19,7 @@
 //! # fn main() {}
 //! ```
 //!
-//! [hexe]: https://docs.rs/hexe/0.0.3/hexe/
+//! [hexe]: https://docs.rs/hexe/0.0.4/hexe/
 //! [crate]: https://crates.io/crates/hexe_core
 
 #![doc(html_logo_url = "https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png")]
