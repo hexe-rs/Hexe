@@ -72,6 +72,12 @@ impl CarryRippler {
     pub fn is_empty(&self) -> bool {
         !self.is_first && self.sub == 0
     }
+
+    /// Returns whether a call to `next` will return the first value.
+    #[inline]
+    pub fn is_first(&self) -> bool {
+        self.is_first
+    }
 }
 
 impl Iterator for CarryRippler {
