@@ -40,7 +40,12 @@ impl Eq for MoveVec {}
 impl Clone for MoveVec {
     #[inline]
     fn clone(&self) -> MoveVec {
-        MoveVec { buf: self.buf, len: self.len }
+        unsafe { ptr::read(self) }
+    }
+
+    #[inline]
+    fn clone_from(&mut self, source: &Self) {
+        unsafe { ptr::copy_nonoverlapping(source, self, 1) };
     }
 }
 
