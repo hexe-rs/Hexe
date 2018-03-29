@@ -6,7 +6,7 @@ pub use board::Bitboard;
 pub use castle::{Rights, Right};
 pub use color::Color;
 pub use mv::Move;
-pub use piece::{Piece, PieceKind};
+pub use piece::{Piece, PieceKind, Promotion};
 pub use square::{Square, File, Rank};
 
 // Abstract types (traits)
