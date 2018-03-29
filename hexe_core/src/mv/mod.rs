@@ -5,7 +5,7 @@ use uncon::FromUnchecked;
 use color::Color;
 use castle::Right;
 use piece::Promotion as PromotionPiece;
-use square::{Rank, Square};
+use square::{File, Rank, Square};
 
 mod vec;
 pub use self::vec::*;
@@ -24,6 +24,9 @@ const FILE_MASK:   u16 = 0b000111000111;
 const RANK_MASK:   u16 = FILE_MASK << RANK_SHIFT;
 const KIND_MASK:   u16 = PROM_MASK;
 const CASTLE_MASK: u16 = 0b11;
+
+const LO_MASK: u16 = 0b111;
+const FILE_LO: u16 = FILE_MASK / LO_MASK;
 
 macro_rules! base_bits {
     ($s1:expr, $s2:expr) => {
@@ -56,10 +59,10 @@ impl Move {
         kind::Normal::new(src, dst).into()
     }
 
-    /// Creates a new `Move` from one square to another with a promotion.
+    /// Creates a new promotion move for `color` at `file`.
     #[inline]
-    pub fn promotion(src: Square, dst: Square, piece: PromotionPiece) -> Move {
-        kind::Promotion::new(src, dst, piece).into()
+    pub fn promotion(file: File, color: Color, piece: PromotionPiece) -> Move {
+        kind::Promotion::new(file, color, piece).into()
     }
 
     /// Creates a new castle move for `right`.
@@ -290,13 +293,24 @@ pub mod kind {
     impl Promotion {
         /// Creates a new promotion move.
         #[inline]
-        pub fn new(src: Square, dst: Square, piece: PromotionPiece) -> Promotion {
-            let kind = MoveKind::Promotion;
-            Promotion(Move(
-                base_bits!(src, dst) |
-                (piece as u16) << PROM_SHIFT |
-                (kind  as u16) << KIND_SHIFT
-            ))
+        pub fn new(file: File, color: Color, piece: PromotionPiece) -> Promotion {
+            const WHITE: u16 = base_bits!(Rank::Seven, Rank::Eight) << RANK_SHIFT;
+            const BLACK: u16 = base_bits!(Rank::Two,   Rank::One)   << RANK_SHIFT;
+            static RANK: [u16; 2] = [WHITE, BLACK];
+
+            let rank = RANK[color as usize];
+            let file = FILE_LO * file as u16;
+            let kind = (MoveKind::Promotion as u16) << KIND_SHIFT;
+
+            Promotion(Move(file | rank | kind | (piece as u16) << PROM_SHIFT))
+        }
+
+        /// Returns the color of the moving piece.
+        #[inline]
+        pub fn color(self) -> Color {
+            // src rank begins with 0 for white and 1 for black
+            let inner = u16::from(*self);
+            ((inner >> RANK_SHIFT) & 1).into()
         }
 
         /// Returns the promotion piece.
@@ -336,6 +350,37 @@ pub mod kind {
                 _ => return false,
             };
             self.src().pawn_attacks(color).contains(self.dst())
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn promotion() {
+        use prelude::*;
+
+        for file in File::ALL {
+            for color in Color::ALL {
+                for piece in PromotionPiece::ALL {
+                    let mv = kind::Promotion::new(file, color, piece);
+                    assert_eq!(file, mv.src().file());
+                    assert_eq!(file, mv.dst().file());
+                    assert_eq!(piece, mv.piece());
+                    match color {
+                        Color::White => {
+                            assert_eq!(Rank::Seven, mv.src().rank());
+                            assert_eq!(Rank::Eight, mv.dst().rank());
+                        },
+                        Color::Black => {
+                            assert_eq!(Rank::Two, mv.src().rank());
+                            assert_eq!(Rank::One, mv.dst().rank());
+                        },
+                    }
+                }
+            }
         }
     }
 }
