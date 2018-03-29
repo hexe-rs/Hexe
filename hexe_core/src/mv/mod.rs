@@ -74,7 +74,7 @@ impl Move {
     /// Creates an en passant move from one square to another.
     #[inline]
     pub fn en_passant(src: Square, dst: Square) -> Option<Move> {
-        kind::EnPassant::new(src, dst).map(Into::into)
+        kind::EnPassant::try_new(src, dst).map(Into::into)
     }
 
     /// Returns the source square for `self`.
@@ -100,7 +100,7 @@ impl Move {
     pub fn to_castle(self) -> Option<kind::Castle> {
         match self.kind() {
             MoveKind::Castle => Some(kind::Castle(self)),
-            _ => kind::Castle::new(self.src(), self.dst()),
+            _ => kind::Castle::try_new(self.src(), self.dst()),
         }
     }
 
@@ -109,7 +109,7 @@ impl Move {
     pub fn to_en_passant(self) -> Option<kind::EnPassant> {
         match self.kind() {
             MoveKind::EnPassant => Some(kind::EnPassant(self)),
-            _ => kind::EnPassant::new(self.src(), self.dst()),
+            _ => kind::EnPassant::try_new(self.src(), self.dst()),
         }
     }
 
@@ -266,9 +266,13 @@ pub mod kind {
     }
 
     impl Castle {
+        /// Creates a new instance for the castle right.
+        #[inline]
+        pub fn new(right: Right) -> Castle { right.into() }
+
         /// Attempts to create a new castle move for the given squares.
         #[inline]
-        pub fn new(src: Square, dst: Square) -> Option<Castle> {
+        pub fn try_new(src: Square, dst: Square) -> Option<Castle> {
             let base = base_bits!(src, dst);
             let kind = (MoveKind::Castle as u16) << KIND_SHIFT;
 
@@ -332,9 +336,9 @@ pub mod kind {
     pub struct EnPassant(pub(crate) Move);
 
     impl EnPassant {
-        /// Creates a new en passant move.
+        /// Attempts to create a new en passant move.
         #[inline]
-        pub fn new(src: Square, dst: Square) -> Option<EnPassant> {
+        pub fn try_new(src: Square, dst: Square) -> Option<EnPassant> {
             let val = unsafe { EnPassant::new_unchecked(src, dst) };
             if val.is_legal() { Some(val) } else { None }
         }
@@ -402,11 +406,11 @@ mod benches {
     }
 
     #[bench]
-    fn en_passant_new_1000(b: &mut Bencher) {
+    fn en_passant_try_new_1000(b: &mut Bencher) {
         let squares = gen_squares();
         b.iter(|| {
             for &(s1, s2) in squares.iter().map(black_box) {
-                if let Some(mv) = kind::EnPassant::new(s1, s2) {
+                if let Some(mv) = kind::EnPassant::try_new(s1, s2) {
                     black_box(mv);
                 }
             }
@@ -414,11 +418,11 @@ mod benches {
     }
 
     #[bench]
-    fn castle_new_1000(b: &mut Bencher) {
+    fn castle_try_new_1000(b: &mut Bencher) {
         let squares = gen_squares();
         b.iter(|| {
             for &(s1, s2) in squares.iter().map(black_box) {
-                if let Some(mv) = kind::Castle::new(s1, s2) {
+                if let Some(mv) = kind::Castle::try_new(s1, s2) {
                     black_box(mv);
                 }
             }
