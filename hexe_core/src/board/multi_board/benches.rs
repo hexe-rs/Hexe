@@ -1,9 +1,34 @@
 use super::MultiBoard;
 use castle::Right;
+use color::Color;
 use iter::AllIterable;
 use square::Square;
 
 use test::{Bencher, black_box};
+
+#[inline(always)]
+fn is_attacked(board: &MultiBoard, b: &mut Bencher) {
+    let board = black_box(board);
+    let color = Color::White;
+    b.iter(|| {
+        for sq in Square::ALL.map(black_box) {
+            let board = black_box(board);
+            let color = black_box(color);
+            let value = board.is_attacked(sq, color);
+            black_box(value);
+        }
+    });
+}
+
+#[bench]
+fn is_attacked_empty_64(b: &mut Bencher) {
+    is_attacked(&MultiBoard::default(), b);
+}
+
+#[bench]
+fn is_attacked_standard_64(b: &mut Bencher) {
+    is_attacked(&MultiBoard::STANDARD, b);
+}
 
 #[bench]
 fn from_piece_map(b: &mut Bencher) {

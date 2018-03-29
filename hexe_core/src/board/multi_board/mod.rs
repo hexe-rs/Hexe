@@ -435,6 +435,36 @@ impl MultiBoard {
         unsafe { (&mut *colors, &mut *pieces) }
     }
 
+    /// Returns whether the square for `player` is being attacked.
+    ///
+    /// This method _does not_ check whether a piece for `player` actually
+    /// exists at `sq`. To check for that, call `board.contains(sq, player)`.
+    pub fn is_attacked(&self, sq: Square, player: Color) -> bool {
+        macro_rules! check {
+            ($e:expr) => { if $e { return true } };
+        }
+
+        let opp = self.bitboard(!player);
+        let all = opp | self.bitboard(player);
+
+        let pawns = opp & self.bitboard(PieceKind::Pawn);
+        check!(pawns.intersects(sq.pawn_attacks(player)));
+
+        let knights = opp & self.bitboard(PieceKind::Knight);
+        check!(knights.intersects(sq.knight_attacks()));
+
+        let kings = opp & (self.bitboard(PieceKind::King));
+        check!(kings.intersects(sq.king_attacks()));
+
+        let queens = self.bitboard(PieceKind::Queen);
+
+        let bishops = opp & (self.bitboard(PieceKind::Bishop) | queens);
+        check!(bishops.intersects(sq.bishop_attacks(all)));
+
+        let rooks = opp & (self.bitboard(PieceKind::Rook) | queens);
+        rooks.intersects(sq.rook_attacks(all))
+    }
+
     /// Performs a **blind** castle of the pieces for the castling right.
     ///
     /// # Invariants
