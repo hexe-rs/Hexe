@@ -38,8 +38,17 @@ macro_rules! base_bits {
 const W_EP: u16 = base_bits!(Rank::Five, Rank::Six)   << RANK_SHIFT;
 const B_EP: u16 = base_bits!(Rank::Four, Rank::Three) << RANK_SHIFT;
 
-/// A chess piece move that can either be [`Normal`], [`Promotion`], [`Castle`],
-/// or [`EnPassant`].
+/// A chess piece move from one square to another.
+///
+/// Each instance has the following memory layout:
+///
+/// - Source **[6 bits]**
+///
+/// - Destination **[6 bits]**
+///
+/// - Meta **[2 bits]** (optional)
+///
+/// - Kind **[2 bits]** ([`Normal`], [`Promotion`], [`Castle`], [`EnPassant`])
 ///
 /// [`Normal`]:    ./kind/struct.Normal.html
 /// [`Promotion`]: ./kind/struct.Promotion.html
