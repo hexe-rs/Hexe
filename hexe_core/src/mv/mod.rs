@@ -197,6 +197,11 @@ pub mod kind {
                 fn from(mv: $t) -> Move { mv.0 }
             }
 
+            impl From<$t> for u16 {
+                #[inline]
+                fn from(mv: $t) -> u16 { (mv.0).0 }
+            }
+
             impl FromUnchecked<Move> for $t {
                 #[inline]
                 unsafe fn from_unchecked(mv: Move) -> $t { $t(mv) }
@@ -309,7 +314,7 @@ pub mod kind {
         #[inline]
         pub fn color(self) -> Color {
             // src rank begins with 0 for white and 1 for black
-            let inner = u16::from(*self);
+            let inner = u16::from(self);
             ((inner >> RANK_SHIFT) & 1).into()
         }
 
@@ -343,7 +348,7 @@ pub mod kind {
         /// squares.
         #[inline]
         fn is_legal(self) -> bool {
-            let ranks = u16::from(*self) & RANK_MASK;
+            let ranks = u16::from(self) & RANK_MASK;
             let color = match ranks {
                 W_EP => Color::White,
                 B_EP => Color::Black,
