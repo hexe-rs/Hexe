@@ -546,6 +546,21 @@ impl File {
 pub enum Rank { One, Two, Three, Four, Five, Six, Seven, Eight }
 
 impl Rank {
+    /// Returns the first rank for `color`.
+    #[inline]
+    pub fn first(color: Color) -> Rank {
+        match color {
+            Color::White => Rank::One,
+            Color::Black => Rank::Eight,
+        }
+    }
+
+    /// Returns the last rank for `color`.
+    #[inline]
+    pub fn last(color: Color) -> Rank {
+        Rank::first(!color)
+    }
+
     /// Returns a rank from the parsed character.
     #[inline]
     pub fn from_char(ch: char) -> Option<Rank> {
