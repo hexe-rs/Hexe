@@ -73,12 +73,7 @@ impl From<Move> for u16 {
 impl fmt::Debug for Move {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self.kind() {
-            MoveKind::Normal    => kind::Normal(*self).fmt(f),
-            MoveKind::Castle    => kind::Castle(*self).fmt(f),
-            MoveKind::Promotion => kind::Promotion(*self).fmt(f),
-            MoveKind::EnPassant => kind::EnPassant(*self).fmt(f),
-        }
+        self.matches().fmt(f)
     }
 }
 
@@ -143,39 +138,32 @@ impl Move {
         }
     }
 
-    /// Returns the result of the match against `self` over each inner type.
-    /// Because of how `Move` is represented, this is the best way to safely
-    /// match against each variant.
+    /// Returns a `match`-able type that represents the inner variant of `self`.
     ///
     /// # Examples
     ///
     /// Basic usage:
     ///
     /// ```
-    /// use hexe_core::mv::Move;
+    /// use hexe_core::mv::{Move, Matches};
     /// use hexe_core::square::Square;
     ///
     /// let mv = Move::normal(Square::A1, Square::A7);
-    /// mv.matches(
-    ///     |n| println!("{:?}", n.src()),
-    ///     |c| println!("{:?}", c.right()),
-    ///     |p| println!("{:?}", p.piece()),
-    ///     |e| println!("{:?}", e.dst()),
-    /// );
+    ///
+    /// match mv.matches() {
+    ///     Matches::Normal(mv)    => println!("{:?}", mv.src()),
+    ///     Matches::Castle(mv)    => println!("{:?}", mv.right()),
+    ///     Matches::Promotion(mv) => println!("{:?}", mv.piece()),
+    ///     Matches::EnPassant(mv) => println!("{:?}", mv.capture()),
+    /// }
     /// ```
     #[inline]
-    pub fn matches<T, A, B, C, D>(self, a: A, b: B, c: C, d: D) -> T
-        where
-            A: FnOnce(kind::Normal) -> T,
-            B: FnOnce(kind::Castle) -> T,
-            C: FnOnce(kind::Promotion) -> T,
-            D: FnOnce(kind::EnPassant) -> T,
-    {
+    pub fn matches(self) -> Matches {
         match self.kind() {
-            MoveKind::Normal    => a(kind::Normal(self)),
-            MoveKind::Castle    => b(kind::Castle(self)),
-            MoveKind::Promotion => c(kind::Promotion(self)),
-            MoveKind::EnPassant => d(kind::EnPassant(self)),
+            MoveKind::Normal    => kind::Normal(self).into(),
+            MoveKind::Castle    => kind::Castle(self).into(),
+            MoveKind::Promotion => kind::Promotion(self).into(),
+            MoveKind::EnPassant => kind::EnPassant(self).into(),
         }
     }
 }
@@ -187,18 +175,74 @@ impl Move {
 pub enum MoveKind {
     /// Normal move.
     Normal,
-    /// [Castling][wiki] move.
-    ///
-    /// [wiki]: https://en.wikipedia.org/wiki/Castling
+    /// [Castling](https://en.wikipedia.org/wiki/Castling) move.
     Castle,
-    /// [Promotion][wiki] move.
-    ///
-    /// [wiki]: https://en.wikipedia.org/wiki/Promotion_(chess)
+    /// [Promotion](https://en.wikipedia.org/wiki/Promotion_(chess)) move.
     Promotion,
-    /// [En passant][wiki] move.
-    ///
-    /// [wiki]: https://en.wikipedia.org/wiki/En_passant
+    /// [En passant](https://en.wikipedia.org/wiki/En_passant) move.
     EnPassant,
+}
+
+/// A `match`-able inner representation `Move`.
+#[derive(Copy, Clone)]
+pub enum Matches {
+    /// Normal move.
+    Normal(kind::Normal),
+    /// [Castling](https://en.wikipedia.org/wiki/Castling) move.
+    Castle(kind::Castle),
+    /// [Promotion](https://en.wikipedia.org/wiki/Promotion_(chess)) move.
+    Promotion(kind::Promotion),
+    /// [En passant](https://en.wikipedia.org/wiki/En_passant) move.
+    EnPassant(kind::EnPassant),
+}
+
+impl From<Move> for Matches {
+    #[inline]
+    fn from(mv: Move) -> Matches { mv.matches() }
+}
+
+macro_rules! impl_matches {
+    ($($k:ident, $m:ident, $d:expr;)+) => {
+        impl Matches {
+            $(
+                #[doc = $d]
+                pub fn $m(self) -> Option<kind::$k> {
+                    if let Matches::$k(mv) = self { Some(mv) } else { None }
+                }
+            )+
+        }
+    };
+    ($($k:ident, $m:ident;)+) => {
+        $(
+            impl From<kind::$k> for Matches {
+                #[inline]
+                fn from(mv: kind::$k) -> Matches { Matches::$k(mv) }
+            }
+        )+
+
+        impl_matches! { $(
+            $k, $m, concat!("Returns the inner `", stringify!($k), "` match.");
+        )+ }
+    };
+}
+
+impl_matches! {
+    Normal,    normal;
+    Castle,    castle;
+    Promotion, promotion;
+    EnPassant, en_passant;
+}
+
+impl fmt::Debug for Matches {
+    #[inline]
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match self {
+            Matches::Normal(mv)    => mv.fmt(f),
+            Matches::Castle(mv)    => mv.fmt(f),
+            Matches::Promotion(mv) => mv.fmt(f),
+            Matches::EnPassant(mv) => mv.fmt(f),
+        }
+    }
 }
 
 /// The different underlying kinds of moves.
