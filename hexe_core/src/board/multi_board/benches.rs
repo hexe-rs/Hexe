@@ -21,7 +21,7 @@ fn is_attacked(board: &MultiBoard, b: &mut Bencher) {
 }
 
 #[bench]
-fn is_attacked_empty_64(b: &mut Bencher) {
+fn is_attacked_worst_case_64(b: &mut Bencher) {
     is_attacked(&MultiBoard::default(), b);
 }
 
