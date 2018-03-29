@@ -3,9 +3,7 @@
 use super::*;
 use uncon::*;
 use core::{cmp, mem, ops, ptr, u8};
-
-#[cfg(feature = "std")]
-use std::borrow::{Borrow, BorrowMut};
+use core::borrow::{Borrow, BorrowMut};
 
 const VEC_CAP: usize = MoveVec::MAX_LEN;
 
@@ -63,13 +61,11 @@ impl AsMut<[Move]> for MoveVec {
     fn as_mut(&mut self) -> &mut [Move] { self }
 }
 
-#[cfg(feature = "std")]
 impl Borrow<[Move]> for MoveVec {
     #[inline]
     fn borrow(&self) -> &[Move] { self }
 }
 
-#[cfg(feature = "std")]
 impl BorrowMut<[Move]> for MoveVec {
     #[inline]
     fn borrow_mut(&mut self) -> &mut [Move] { self }
