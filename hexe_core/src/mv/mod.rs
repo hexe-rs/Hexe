@@ -345,6 +345,12 @@ pub mod kind {
             Promotion(Move(file | rank | KIND | (piece as u16) << META_SHIFT))
         }
 
+        /// Creates a promotion move using `Queen` as its piece.
+        #[inline]
+        pub fn queen(file: File, color: Color) -> Promotion {
+            Promotion::new(file, color, PromotionPiece::Queen)
+        }
+
         /// Returns the color of the moving piece.
         #[inline]
         pub fn color(self) -> Color {
