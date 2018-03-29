@@ -232,19 +232,9 @@ pub mod kind {
                 fn deref(&self) -> &Move { &self.0 }
             }
 
-            impl ops::DerefMut for $t {
-                #[inline]
-                fn deref_mut(&mut self) -> &mut Move { &mut self.0 }
-            }
-
             impl AsRef<Move> for $t {
                 #[inline]
                 fn as_ref(&self) -> &Move { self }
-            }
-
-            impl AsMut<Move> for $t {
-                #[inline]
-                fn as_mut(&mut self) -> &mut Move { self }
             }
         )+}
     }
