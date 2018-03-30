@@ -669,9 +669,9 @@ impl PieceMap {
         (self.as_bytes()[sq as usize] & 1).into()
     }
 
-    /// Returns the kind of the piece at the given square, if any.
+    /// Returns the role of the piece at the given square, if any.
     #[inline]
-    pub fn kind_at(&self, sq: Square) -> Option<PieceKind> {
+    pub fn role_at(&self, sq: Square) -> Option<Role> {
         const NO_PIECE: u8 = NONE >> 1;
         match self.as_bytes()[sq as usize] >> 1 {
             NO_PIECE => None,

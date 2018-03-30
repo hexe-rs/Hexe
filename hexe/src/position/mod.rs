@@ -23,7 +23,7 @@ pub struct Position {
     /// A piece map board representation for fast lookups.
     pieces: PieceMap,
 
-    /// Bitboards for each color and piece kind.
+    /// Bitboards for each color and piece role.
     board: MultiBoard,
 
     /// The color for the player whose turn it is.
@@ -131,7 +131,7 @@ impl Position {
     /// Returns the square where the color's king lies on.
     #[inline]
     pub fn king_square(&self, color: Color) -> Square {
-        let piece = Piece::new(PieceKind::King, color);
+        let piece = Piece::new(Role::King, color);
         let board = self.board().bitboard(piece);
 
         // Both colors should *always* have a king
@@ -159,7 +159,7 @@ macro_rules! impl_contained {
     }
 }
 
-impl_contained! { Piece, PieceKind, Color }
+impl_contained! { Piece, Role, Color }
 
 #[cfg(test)]
 mod tests {
@@ -176,7 +176,7 @@ mod tests {
 
                 let board = pos.board();
                 assert!(board.contains(square, piece));
-                assert!(board.contains(square, piece.kind()));
+                assert!(board.contains(square, piece.role()));
                 assert!(board.contains(square, piece.color()));
             } else {
                 let (a, b) = pos.board.split();

@@ -92,11 +92,11 @@ fn is_empty() {
 }
 
 #[test]
-fn kind_at() {
+fn role_at() {
     let map = PieceMap::STANDARD;
     for sq in Square::ALL {
-        let kind = map.get(sq).map(|p| p.kind());
-        assert_eq!(map.kind_at(sq), kind);
+        let role = map.get(sq).map(|p| p.role());
+        assert_eq!(map.role_at(sq), role);
     }
 }
 
@@ -168,8 +168,8 @@ fn castle() {
             let mut map = original.clone();
             let right   = Right::$right;
             let color   = right.color();
-            let king    = Piece::new(PieceKind::King, color);
-            let rook    = Piece::new(PieceKind::Rook, color);
+            let king    = Piece::new(Role::King, color);
+            let rook    = Piece::new(Role::Rook, color);
             $(map.remove(Square::$cs);)+
             map.castle(right);
             $(assert!(!map.contains(Square::$es));)+

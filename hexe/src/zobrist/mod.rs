@@ -4,7 +4,7 @@ use std::{fmt, hash, mem, ptr};
 
 use core::castle::Rights;
 use core::square::{File, Square};
-use core::piece::PieceKind;
+use core::piece::Role;
 
 mod tables;
 
@@ -124,10 +124,10 @@ impl ::rand::Rand for Zobrist {
 }
 
 impl Zobrist {
-    /// Returns the key for the piece kind at a square.
+    /// Returns the key for the piece role at a square.
     #[inline]
-    pub fn piece(&self, kind: PieceKind, square: Square) -> u64 {
-        self.pieces[kind as usize][square as usize]
+    pub fn piece(&self, role: Role, square: Square) -> u64 {
+        self.pieces[role as usize][square as usize]
     }
 
     /// Returns the key for the castle rights.

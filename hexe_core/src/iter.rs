@@ -73,7 +73,7 @@ impl_iterable!(::castle::Side,     u8, 2);
 impl_iterable!(::castle::Right,    u8, 4);
 impl_iterable!(::color::Color,     u8, 2);
 impl_iterable!(::piece::Piece,     u8, 12);
-impl_iterable!(::piece::PieceKind, u8, 6);
+impl_iterable!(::piece::Role,      u8, 6);
 impl_iterable!(::piece::Promotion, u8, 4);
 impl_iterable!(::square::File,     u8, 8);
 impl_iterable!(::square::Rank,     u8, 8);

@@ -8,7 +8,7 @@ use core::simd::u8x64;
 use board::{Bitboard, PieceMap};
 use castle::Right;
 use color::Color;
-use piece::{Piece, PieceKind};
+use piece::{Piece, Role};
 use square::Square;
 use uncon::*;
 
@@ -119,19 +119,19 @@ impl hash::Hash for MultiBoard {
     }
 }
 
-impl ops::Index<PieceKind> for MultiBoard {
+impl ops::Index<Role> for MultiBoard {
     type Output = Bitboard;
 
     #[inline]
-    fn index(&self, kind: PieceKind) -> &Bitboard {
-        Bitboard::convert_ref(&self.pieces[kind as usize])
+    fn index(&self, role: Role) -> &Bitboard {
+        Bitboard::convert_ref(&self.pieces[role as usize])
     }
 }
 
-impl ops::IndexMut<PieceKind> for MultiBoard {
+impl ops::IndexMut<Role> for MultiBoard {
     #[inline]
-    fn index_mut(&mut self, kind: PieceKind) -> &mut Bitboard {
-        Bitboard::convert_mut(&mut self.pieces[kind as usize])
+    fn index_mut(&mut self, role: Role) -> &mut Bitboard {
+        Bitboard::convert_mut(&mut self.pieces[role as usize])
     }
 }
 
@@ -251,7 +251,7 @@ impl MultiBoard {
     /// Returns the bits of the royal pieces, King and Queen.
     #[inline]
     pub fn royals(&self) -> Bitboard {
-        self.bitboard(PieceKind::Queen) | self.bitboard(PieceKind::King)
+        self.bitboard(Role::Queen) | self.bitboard(Role::King)
     }
 
     /// Returns the first square that `value` appears at, if any.
@@ -294,7 +294,7 @@ impl MultiBoard {
     ///
     /// assert_eq!(board.count(Color::Black), 16);
     /// assert_eq!(board.count(Piece::WhiteRook), 2);
-    /// assert_eq!(board.count(PieceKind::Queen), 2);
+    /// assert_eq!(board.count(Role::Queen), 2);
     /// ```
     #[inline]
     pub fn count<T: Index>(&self, value: T) -> usize {
@@ -314,7 +314,7 @@ impl MultiBoard {
     /// let board = MultiBoard::STANDARD;
     ///
     /// assert!(board.contains(Square::A2, Color::White));
-    /// assert!(board.contains(Square::C8, PieceKind::Bishop));
+    /// assert!(board.contains(Square::C8, Role::Bishop));
     /// assert!(board.contains(Rank::Seven, Piece::BlackPawn));
     /// ```
     #[inline]
@@ -336,8 +336,8 @@ impl MultiBoard {
     ///
     /// let board = MultiBoard::STANDARD;
     ///
-    /// assert!(board.contains_any(File::B, PieceKind::Knight));
-    /// assert!(board.contains_any(Rank::One, PieceKind::King));
+    /// assert!(board.contains_any(File::B, Role::Knight));
+    /// assert!(board.contains_any(Rank::One, Role::King));
     /// ```
     #[inline]
     pub fn contains_any<T, U>(&self, bits: T, value: U) -> bool
@@ -364,7 +364,7 @@ impl MultiBoard {
     pub fn insert_unchecked<T: Into<Bitboard>>(&mut self, bits: T, piece: Piece) {
         let value = bits.into();
         self[piece.color()] |= value;
-        self[piece.kind() ] |= value;
+        self[piece.role() ] |= value;
     }
 
     /// Removes each piece at `bits` for `value`.
@@ -418,7 +418,7 @@ impl MultiBoard {
     }
 
     /// Returns references to the underlying bitboards for `Color` and
-    /// `PieceKind`, respectively.
+    /// `Role`, respectively.
     #[inline]
     pub fn split(&self) -> (&[Bitboard; NUM_COLORS], &[Bitboard; NUM_PIECES]) {
         let colors = &self.colors as *const _ as *const _;
@@ -427,7 +427,7 @@ impl MultiBoard {
     }
 
     /// Returns mutable references to the underlying bitboards for `Color` and
-    /// `PieceKind`, respectively.
+    /// `Role`, respectively.
     #[inline]
     pub fn split_mut(&mut self) -> (&mut [Bitboard; NUM_COLORS], &mut [Bitboard; NUM_PIECES]) {
         let colors = &mut self.colors as *mut _ as *mut _;
@@ -447,21 +447,21 @@ impl MultiBoard {
         let opp = self.bitboard(!player);
         let all = opp | self.bitboard(player);
 
-        let pawns = opp & self.bitboard(PieceKind::Pawn);
+        let pawns = opp & self.bitboard(Role::Pawn);
         check!(pawns.intersects(sq.pawn_attacks(player)));
 
-        let knights = opp & self.bitboard(PieceKind::Knight);
+        let knights = opp & self.bitboard(Role::Knight);
         check!(knights.intersects(sq.knight_attacks()));
 
-        let kings = opp & (self.bitboard(PieceKind::King));
+        let kings = opp & (self.bitboard(Role::King));
         check!(kings.intersects(sq.king_attacks()));
 
-        let queens = self.bitboard(PieceKind::Queen);
+        let queens = self.bitboard(Role::Queen);
 
-        let bishops = opp & (self.bitboard(PieceKind::Bishop) | queens);
+        let bishops = opp & (self.bitboard(Role::Bishop) | queens);
         check!(bishops.intersects(sq.bishop_attacks(all)));
 
-        let rooks = opp & (self.bitboard(PieceKind::Rook) | queens);
+        let rooks = opp & (self.bitboard(Role::Rook) | queens);
         rooks.intersects(sq.rook_attacks(all))
     }
 
@@ -546,8 +546,8 @@ impl MultiBoard {
 
         let (king, rook) = MASKS[right as usize];
         self[right.color()]   ^= king | rook;
-        self[PieceKind::King] ^= king;
-        self[PieceKind::Rook] ^= rook;
+        self[Role::King] ^= king;
+        self[Role::Rook] ^= rook;
     }
 }
 
@@ -588,12 +588,12 @@ impl Index for Color {
 impl Index for Piece {
     #[inline]
     fn bitboard(self, board: &MultiBoard) -> Bitboard {
-        self.color().bitboard(board) & self.kind().bitboard(board)
+        self.color().bitboard(board) & self.role().bitboard(board)
     }
 
     #[inline]
     fn remove<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
-        let value = board[self.color()] | board[self.kind()];
+        let value = board[self.color()] | board[self.role()];
         self.remove_unchecked(value & bits.into(), board);
     }
 
@@ -601,11 +601,11 @@ impl Index for Piece {
     fn remove_unchecked<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
         let value = !bits.into().0;
         board[self.color()] &= value;
-        board[self.kind() ] &= value;
+        board[self.role() ] &= value;
     }
 }
 
-impl Index for PieceKind {
+impl Index for Role {
     #[inline]
     fn bitboard(self, board: &MultiBoard) -> Bitboard {
         board[self]

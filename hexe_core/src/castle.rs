@@ -331,12 +331,12 @@ pub enum Side {
     Queen,
 }
 
-impl From<Side> for PieceKind {
+impl From<Side> for Role {
     #[inline]
-    fn from(side: Side) -> PieceKind {
+    fn from(side: Side) -> Role {
         match side {
-            Side::King  => PieceKind::King,
-            Side::Queen => PieceKind::Queen,
+            Side::King  => Role::King,
+            Side::Queen => Role::Queen,
         }
     }
 }

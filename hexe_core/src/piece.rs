@@ -7,9 +7,9 @@ use uncon::*;
 #[cfg(feature = "serde")]
 use serde::*;
 
-impl_rand!(u8 => Piece, PieceKind, Promotion);
+impl_rand!(u8 => Piece, Role, Promotion);
 
-/// A chess piece with a kind and color.
+/// A chess piece with a role and color.
 #[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
@@ -40,15 +40,15 @@ impl From<Piece> for char {
 
 impl fmt::Debug for Piece {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "{}{}", self.color().into_str(), self.kind().into_str())
+        write!(f, "{}{}", self.color().into_str(), self.role().into_str())
     }
 }
 
 impl Piece {
-    /// Creates a new `Piece` with a `PieceKind` and `Color`.
+    /// Creates a new `Piece` with a `Role` and `Color`.
     #[inline]
-    pub fn new(kind: PieceKind, color: Color) -> Piece {
-        unsafe { Piece::from_unchecked((kind as u8) << 1 | color as u8) }
+    pub fn new(role: Role, color: Color) -> Piece {
+        unsafe { Piece::from_unchecked((role as u8) << 1 | color as u8) }
     }
 
     /// Returns a piece from the parsed character.
@@ -67,10 +67,10 @@ impl Piece {
         Some(pc)
     }
 
-    /// Returns the `PieceKind` for the `Piece`.
+    /// Returns the `Role` for the `Piece`.
     #[inline]
-    pub fn kind(self) -> PieceKind {
-        unsafe { PieceKind::from_unchecked((self as u8) >> 1) }
+    pub fn role(self) -> Role {
+        unsafe { Role::from_unchecked((self as u8) >> 1) }
     }
 
     /// Returns the `Color` for the `Piece`.
@@ -86,12 +86,12 @@ impl Piece {
     }
 }
 
-/// A chess piece kind.
+/// A chess piece role.
 #[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 #[allow(missing_docs)]
-pub enum PieceKind {
+pub enum Role {
     Pawn,
     Knight,
     Bishop,
@@ -100,68 +100,68 @@ pub enum PieceKind {
     King,
 }
 
-static KINDS: [&str; 6] = ["Pawn", "Knight", "Bishop", "Rook", "Queen", "King"];
+static ROLES: [&str; 6] = ["Pawn", "Knight", "Bishop", "Rook", "Queen", "King"];
 
-impl fmt::Debug for PieceKind {
+impl fmt::Debug for Role {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Display::fmt(self, f)
     }
 }
 
-impl fmt::Display for PieceKind {
+impl fmt::Display for Role {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.into_str().fmt(f)
     }
 }
 
-impl From<PieceKind> for char {
+impl From<Role> for char {
     #[inline]
-    fn from(pk: PieceKind) -> char {
-        PIECE_CHARS_ASCII[(pk as usize) << 1] as char
+    fn from(role: Role) -> char {
+        PIECE_CHARS_ASCII[(role as usize) << 1] as char
     }
 }
 
-impl From<Promotion> for PieceKind {
+impl From<Promotion> for Role {
     #[inline]
-    fn from(promotion: Promotion) -> PieceKind {
-        unsafe { PieceKind::from_unchecked((promotion as u8) + 1) }
+    fn from(promotion: Promotion) -> Role {
+        unsafe { Role::from_unchecked((promotion as u8) + 1) }
     }
 }
 
-define_from_str_error! { PieceKind;
-    /// The error returned when `PieceKind::from_str` fails.
-    "failed to parse a string as a piece kind"
+define_from_str_error! { Role;
+    /// The error returned when `Role::from_str` fails.
+    "failed to parse a string as a piece role"
 }
 
-impl str::FromStr for PieceKind {
+impl str::FromStr for Role {
     type Err = FromStrError;
 
-    fn from_str(s: &str) -> Result<PieceKind, FromStrError> {
+    fn from_str(s: &str) -> Result<Role, FromStrError> {
         const ERR: FromStrError = FromStrError(());
         const LOW: u8 = 32;
         let bytes = s.as_bytes();
 
-        let (kind, exp, rem): (_, &[_], _) = match bytes.len() {
-            1 => return PieceKind::from_char(bytes[0] as char).ok_or(ERR),
+        let (role, exp, rem): (_, &[_], _) = match bytes.len() {
+            1 => return Role::from_char(bytes[0] as char).ok_or(ERR),
             4 => {
-                let kind = match bytes[0] | LOW {
-                    b'p' => PieceKind::Pawn,
-                    b'r' => PieceKind::Rook,
-                    b'k' => PieceKind::King,
+                let role = match bytes[0] | LOW {
+                    b'p' => Role::Pawn,
+                    b'r' => Role::Rook,
+                    b'k' => Role::King,
                     _ => return Err(ERR),
                 };
-                (kind, &kind.into_str().as_bytes()[1..], &bytes[1..])
+                (role, &role.into_str().as_bytes()[1..], &bytes[1..])
             },
-            5 => (PieceKind::Queen, b"queen", bytes),
+            5 => (Role::Queen, b"queen", bytes),
             6 => {
-                let kind = match bytes[0] | LOW {
-                    b'k' => PieceKind::Knight,
-                    b'b' => PieceKind::Bishop,
+                let role = match bytes[0] | LOW {
+                    b'k' => Role::Knight,
+                    b'b' => Role::Bishop,
                     _ => return Err(ERR),
                 };
-                (kind, &kind.into_str().as_bytes()[1..], &bytes[1..])
+                (role, &role.into_str().as_bytes()[1..], &bytes[1..])
             },
             _ => return Err(ERR),
         };
@@ -171,21 +171,21 @@ impl str::FromStr for PieceKind {
                 return Err(ERR);
             }
         }
-        Ok(kind)
+        Ok(role)
     }
 }
 
 #[cfg(feature = "serde")]
-impl Serialize for PieceKind {
+impl Serialize for Role {
     fn serialize<S: Serializer>(&self, ser: S) -> Result<S::Ok, S::Error> {
         ser.serialize_str(self.into_str())
     }
 }
 
-impl PieceKind {
-    /// Returns a piece kind from the parsed character.
-    pub fn from_char(ch: char) -> Option<PieceKind> {
-        use self::PieceKind::*;
+impl Role {
+    /// Returns a piece role from the parsed character.
+    pub fn from_char(ch: char) -> Option<Role> {
+        use self::Role::*;
         match 32 | ch as u8 {
             b'p' => Some(Pawn),
             b'n' => Some(Knight),
@@ -200,7 +200,7 @@ impl PieceKind {
     /// Converts `self` into a static string.
     #[inline]
     pub fn into_str(self) -> &'static str {
-        KINDS[self as usize]
+        ROLES[self as usize]
     }
 
     /// Converts `self` into a character.
@@ -209,24 +209,24 @@ impl PieceKind {
         self.into()
     }
 
-    /// Returns whether `self` is a piece kind that can slide across the board.
+    /// Returns whether `self` is a piece role that can slide across the board.
     #[inline]
     pub fn is_slider(self) -> bool {
         match self {
-            PieceKind::Rook | PieceKind::Bishop | PieceKind::Queen => true,
-            PieceKind::Pawn | PieceKind::Knight | PieceKind::King  => false,
+            Role::Rook | Role::Bishop | Role::Queen => true,
+            Role::Pawn | Role::Knight | Role::King  => false,
         }
     }
 
-    /// The kind is a promotion.
+    /// The role is a promotion.
     #[inline]
     pub fn is_promotion(&self) -> bool {
         // Pawn wraps around to 0xFF
-        (*self as u8).wrapping_sub(1) < PieceKind::Queen as u8
+        (*self as u8).wrapping_sub(1) < Role::Queen as u8
     }
 }
 
-/// A promotion piece kind.
+/// A promotion piece role.
 #[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
@@ -246,26 +246,26 @@ impl Default for Promotion {
     fn default() -> Promotion { Promotion::Queen }
 }
 
-impl FromUnchecked<PieceKind> for Promotion {
+impl FromUnchecked<Role> for Promotion {
     #[inline]
-    unsafe fn from_unchecked(pk: PieceKind) -> Promotion {
-        Promotion::from_unchecked((pk as u8) - 1)
+    unsafe fn from_unchecked(role: Role) -> Promotion {
+        Promotion::from_unchecked((role as u8) - 1)
     }
 }
 
 impl From<Promotion> for char {
     #[inline]
     fn from(prom: Promotion) -> char {
-        PieceKind::from(prom).into()
+        Role::from(prom).into()
     }
 }
 
 impl Promotion {
-    /// Returns a promotion for the piece kind, if possible.
+    /// Returns a promotion for the piece role, if possible.
     #[inline]
-    pub fn from_kind(pk: PieceKind) -> Option<Promotion> {
-        if pk.is_promotion() {
-            unsafe { Some(pk.into_unchecked()) }
+    pub fn from_role(role: Role) -> Option<Promotion> {
+        if role.is_promotion() {
+            unsafe { Some(role.into_unchecked()) }
         } else {
             None
         }
@@ -274,7 +274,7 @@ impl Promotion {
     /// Converts `self` into a static string.
     #[inline]
     pub fn into_str(self) -> &'static str {
-        KINDS[1..][self as usize]
+        ROLES[1..][self as usize]
     }
 }
 
@@ -289,30 +289,30 @@ mod tests {
         use self::Promotion::*;
 
         for &prom in &[Knight, Bishop, Rook, Queen] {
-            assert_eq!(prom.into_str(), PieceKind::from(prom).into_str());
+            assert_eq!(prom.into_str(), Role::from(prom).into_str());
         }
     }
 
     #[test]
-    fn piece_kind_char() {
+    fn piece_role_char() {
         for (i, &ch) in CHARS.iter().enumerate() {
-            let pk = PieceKind::from(i);
-            assert_eq!(pk.into_char(), ch);
+            let role = Role::from(i);
+            assert_eq!(role.into_char(), ch);
         }
     }
 
     #[test]
-    fn piece_kind_from_str() {
-        for pk in (0..6u8).map(PieceKind::from) {
+    fn piece_role_from_str() {
+        for role in (0..6u8).map(Role::from) {
             assert_eq!(
-                Some(pk),
-                pk.into_str().parse().ok()
+                Some(role),
+                role.into_str().parse().ok()
             );
         }
 
         for (i, ch) in CHARS.iter().enumerate() {
             assert_eq!(
-                Some(PieceKind::from(i)),
+                Some(Role::from(i)),
                 ch.encode_utf8(&mut [0; 1]).parse().ok()
             );
         }

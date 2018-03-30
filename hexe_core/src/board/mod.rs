@@ -22,7 +22,7 @@
 //! - Size—larger overall memory cost:
 //!
 //!     - A common compact way of representing all pieces with bitboards is to
-//!       have 6 × [`PieceKind`] bitboards and 2 × [`Color`] bitboards. This
+//!       have 6 × [`Role`] bitboards and 2 × [`Color`] bitboards. This
 //!       results in (2 + 6) × 8 = 64 bytes used to represent all pieces.
 //!
 //!       This is how [`MultiBoard`] works.
@@ -35,7 +35,7 @@
 //!
 //! ### [`MultiBoard`]
 //!
-//! **Mapping:** [`Color`]/[`Piece`]/[`PieceKind`] to [`Bitboard`]
+//! **Mapping:** [`Color`]/[`Piece`]/[`Role`] to [`Bitboard`]
 //!
 //! **Advantages:**
 //!
@@ -84,7 +84,7 @@
 //!
 //! [`Color`]: ../color/enum.Color.html
 //! [`Piece`]: ../piece/enum.Piece.html
-//! [`PieceKind`]: ../piece/enum.PieceKind.html
+//! [`Role`]: ../piece/enum.Role.html
 //! [`Square`]: ../square/enum.Square.html
 
 pub mod bitboard;
