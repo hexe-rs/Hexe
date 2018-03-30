@@ -260,8 +260,6 @@ pub mod kind {
         pub const WQ: u16 = base!(Square::E1, Square::C1);
         pub const BK: u16 = base!(Square::E8, Square::G8);
         pub const BQ: u16 = base!(Square::E8, Square::C8);
-
-        pub static ALL_RIGHTS: [u16; 4] = [BK, WQ, BK, WQ];
     }
 
     macro_rules! impl_from_move {
@@ -342,8 +340,13 @@ pub mod kind {
     impl From<Right> for Castle {
         #[inline]
         fn from(right: Right) -> Castle {
-            let base = mask::ALL_RIGHTS[right as usize];
-            Castle(Move(base | meta!(right) | kind!(Castle)))
+            static ALL: [u16; 4] = [
+                mask::WK | kind!(Castle) | meta!(Right::WhiteKing),
+                mask::WQ | kind!(Castle) | meta!(Right::WhiteQueen),
+                mask::BK | kind!(Castle) | meta!(Right::BlackKing),
+                mask::BQ | kind!(Castle) | meta!(Right::BlackQueen),
+            ];
+            Castle(Move(ALL[right as usize]))
         }
     }
 

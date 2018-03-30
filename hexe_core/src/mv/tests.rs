@@ -1,6 +1,24 @@
 use super::*;
 
 #[test]
+fn castle() {
+    use prelude::*;
+
+    for right in Right::ALL {
+        let (src, dst) = match right {
+            Right::WhiteKing  => (Square::E1, Square::G1),
+            Right::WhiteQueen => (Square::E1, Square::C1),
+            Right::BlackKing  => (Square::E8, Square::G8),
+            Right::BlackQueen => (Square::E8, Square::C8),
+        };
+        let mv = kind::Castle::new(right);
+        assert_eq!(mv.right(), right, "{:?}", mv);
+        assert_eq!(mv.src(),   src,   "{:?}", mv);
+        assert_eq!(mv.dst(),   dst,   "{:?}", mv);
+    }
+}
+
+#[test]
 fn promotion() {
     use prelude::*;
 
