@@ -239,7 +239,7 @@ impl_matches! {
 impl fmt::Debug for Matches {
     #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match self {
+        match *self {
             Matches::Normal(mv)    => mv.fmt(f),
             Matches::Castle(mv)    => mv.fmt(f),
             Matches::Promotion(mv) => mv.fmt(f),
