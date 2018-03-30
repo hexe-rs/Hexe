@@ -123,6 +123,11 @@ impl Move {
         ((self.0 >> KIND_SHIFT) & KIND_MASK).into()
     }
 
+    #[inline]
+    fn meta(self) -> u16 {
+        (self.0 >> META_SHIFT) & META_MASK
+    }
+
     /// Returns `self` a castle move if it can be converted into one.
     #[inline]
     pub fn to_castle(self) -> Option<kind::Castle> {
@@ -371,9 +376,7 @@ pub mod kind {
 
         /// Returns the castle right for `self`.
         #[inline]
-        pub fn right(self) -> Right {
-            (((self.0).0 >> META_SHIFT) & META_MASK).into()
-        }
+        pub fn right(self) -> Right { self.meta().into() }
     }
 
     /// A promotion move.
@@ -425,9 +428,7 @@ pub mod kind {
 
         /// Returns the promotion piece.
         #[inline]
-        pub fn piece(self) -> piece::Promotion {
-            (((self.0).0 >> META_SHIFT) & META_MASK).into()
-        }
+        pub fn piece(self) -> piece::Promotion { self.meta().into() }
     }
 
     /// An en passant move.
