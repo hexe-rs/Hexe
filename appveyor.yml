@@ -2,9 +2,9 @@ environment:
   matrix:
     # Minimum version
     - TARGET:  "x86_64-pc-windows-gnu"
-      CHANNEL: "1.20.0"
+      CHANNEL: "1.23.0"
     - TARGET:  "x86_64-pc-windows-msvc"
-      CHANNEL: "1.20.0"
+      CHANNEL: "1.23.0"
     # Stable channel
     - TARGET:  "x86_64-pc-windows-gnu"
       CHANNEL: "stable"
