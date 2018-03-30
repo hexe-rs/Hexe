@@ -253,14 +253,10 @@ pub mod kind {
     use super::*;
     use core::ops;
 
-    mod mask {
-        use super::*;
-
-        pub const WK: u16 = base!(Square::E1, Square::G1);
-        pub const WQ: u16 = base!(Square::E1, Square::C1);
-        pub const BK: u16 = base!(Square::E8, Square::G8);
-        pub const BQ: u16 = base!(Square::E8, Square::C8);
-    }
+    const WK: u16 = base!(Square::E1, Square::G1);
+    const WQ: u16 = base!(Square::E1, Square::C1);
+    const BK: u16 = base!(Square::E8, Square::G8);
+    const BQ: u16 = base!(Square::E8, Square::C8);
 
     macro_rules! impl_from_move {
         ($($t:ident),+) => { $(
@@ -341,10 +337,10 @@ pub mod kind {
         #[inline]
         fn from(right: Right) -> Castle {
             static ALL: [u16; 4] = [
-                mask::WK | kind!(Castle) | meta!(Right::WhiteKing),
-                mask::WQ | kind!(Castle) | meta!(Right::WhiteQueen),
-                mask::BK | kind!(Castle) | meta!(Right::BlackKing),
-                mask::BQ | kind!(Castle) | meta!(Right::BlackQueen),
+                WK | kind!(Castle) | meta!(Right::WhiteKing),
+                WQ | kind!(Castle) | meta!(Right::WhiteQueen),
+                BK | kind!(Castle) | meta!(Right::BlackKing),
+                BQ | kind!(Castle) | meta!(Right::BlackQueen),
             ];
             Castle(Move(ALL[right as usize]))
         }
@@ -360,10 +356,10 @@ pub mod kind {
         pub fn try_new(src: Square, dst: Square) -> Option<Castle> {
             let base  = base!(src, dst);
             let right = match base {
-                mask::WK => Right::WhiteKing,
-                mask::WQ => Right::WhiteQueen,
-                mask::BK => Right::BlackKing,
-                mask::BQ => Right::BlackQueen,
+                WK => Right::WhiteKing,
+                WQ => Right::WhiteQueen,
+                BK => Right::BlackKing,
+                BQ => Right::BlackQueen,
                 _ => return None,
             };
             Some(Castle(Move(base | meta!(right) | kind!(Castle))))
