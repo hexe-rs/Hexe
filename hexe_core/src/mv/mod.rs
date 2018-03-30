@@ -38,6 +38,7 @@ const RANK_SHIFT: usize =  3;
 const META_SHIFT: usize = 12;
 const KIND_SHIFT: usize = 14;
 
+const SQ_MASK:   u16 = SRC_MASK | (DST_MASK << DST_SHIFT);
 const SRC_MASK:  u16 = 0b111111;
 const DST_MASK:  u16 = SRC_MASK;
 const META_MASK: u16 = 0b11;
@@ -103,6 +104,12 @@ impl Move {
     #[inline]
     pub fn en_passant(src: Square, dst: Square) -> Option<Move> {
         kind::EnPassant::try_new(src, dst).map(Into::into)
+    }
+
+    /// Returns whether the squares of `self` equal the squares of `other`.
+    #[inline]
+    pub fn squares_eq<T: Into<Move>>(self, other: T) -> bool {
+        u16::from(self) & SQ_MASK == u16::from(other.into()) & SQ_MASK
     }
 
     /// Returns the source square for `self`.
