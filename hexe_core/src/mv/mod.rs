@@ -358,6 +358,11 @@ pub mod kind {
         }
     }
 
+    impl From<Right> for Move {
+        #[inline]
+        fn from(right: Right) -> Move { Castle::from(right).into() }
+    }
+
     impl Castle {
         /// Creates a new instance for the castle right.
         #[inline]
