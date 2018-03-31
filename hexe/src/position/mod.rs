@@ -2,7 +2,7 @@
 
 use core::board::{MultiBoard, PieceMap};
 use core::misc::Contained;
-use core::mv::MoveVec;
+use core::mv::{self, MoveVec};
 use prelude::*;
 
 mod state;
@@ -83,6 +83,43 @@ impl Position {
     #[inline]
     pub fn gen<'a, 'b>(&'a self, moves: &'b mut MoveVec) -> MoveGen<'a, 'b> {
         MoveGen { pos: self, buf: moves }
+    }
+
+    /// Returns whether the move is legal for this position.
+    pub fn is_legal(&self, mv: Move) -> bool {
+        use self::mv::Matches;
+
+        let src = mv.src();
+        let dst = mv.dst();
+
+        let player  = self.player();
+        let king    = self.king_square(player);
+        let board   = self.board();
+        let checked = board.is_attacked(king, player);
+
+        match mv.matches() {
+            Matches::Castle(mv) => {
+                // Cannot castle out of check
+                if checked {
+                    return false;
+                }
+
+                let right = mv.right();
+                if player != right.color() || !self.rights().contains(right) {
+                    return false;
+                }
+
+                // Cannot castle through or into check
+                for sq in right.path_iter() {
+                    if board.is_attacked(sq, player) {
+                        return false;
+                    }
+                }
+
+                true
+            },
+            _ => unimplemented!(),
+        }
     }
 
     /// Returns whether `self` contains the value.
