@@ -371,15 +371,19 @@ pub mod kind {
         /// Attempts to create a new castle move for the given squares.
         #[inline]
         pub fn try_new(src: Square, dst: Square) -> Option<Castle> {
-            let base  = base!(src, dst);
-            let right = match base {
-                WK => Right::WhiteKing,
-                WQ => Right::WhiteQueen,
-                BK => Right::BlackKing,
-                BQ => Right::BlackQueen,
-                _ => return None,
-            };
-            Some(Castle(Move(base | meta!(right) | kind!(Castle))))
+            match src {
+                Square::E1 => match dst {
+                    Square::G1 => Some(Right::WhiteKing.into()),
+                    Square::C1 => Some(Right::WhiteQueen.into()),
+                    _ => None,
+                },
+                Square::E8 => match dst {
+                    Square::G8 => Some(Right::BlackKing.into()),
+                    Square::C8 => Some(Right::BlackQueen.into()),
+                    _ => None,
+                },
+                _ => None,
+            }
         }
 
         /// Returns the kind for `self`.
