@@ -25,7 +25,7 @@ macro_rules! base {
 }
 
 macro_rules! kind {
-    ($k:ident) => { (MoveKind::$k as u16) << KIND_SHIFT };
+    ($k:ident) => { (Kind::$k as u16) << KIND_SHIFT };
 }
 
 macro_rules! meta {
@@ -126,7 +126,7 @@ impl Move {
 
     /// Returns the kind for `self`.
     #[inline]
-    pub fn kind(self) -> MoveKind {
+    pub fn kind(self) -> Kind {
         ((self.0 >> KIND_SHIFT) & KIND_MASK).into()
     }
 
@@ -139,7 +139,7 @@ impl Move {
     #[inline]
     pub fn to_castle(self) -> Option<kind::Castle> {
         match self.kind() {
-            MoveKind::Castle => Some(kind::Castle(self)),
+            Kind::Castle => Some(kind::Castle(self)),
             _ => kind::Castle::try_new(self.src(), self.dst()),
         }
     }
@@ -148,7 +148,7 @@ impl Move {
     #[inline]
     pub fn to_en_passant(self) -> Option<kind::EnPassant> {
         match self.kind() {
-            MoveKind::EnPassant => Some(kind::EnPassant(self)),
+            Kind::EnPassant => Some(kind::EnPassant(self)),
             _ => kind::EnPassant::try_new(self.src(), self.dst()),
         }
     }
@@ -175,10 +175,10 @@ impl Move {
     #[inline]
     pub fn matches(self) -> Matches {
         match self.kind() {
-            MoveKind::Normal    => kind::Normal(self).into(),
-            MoveKind::Castle    => kind::Castle(self).into(),
-            MoveKind::Promotion => kind::Promotion(self).into(),
-            MoveKind::EnPassant => kind::EnPassant(self).into(),
+            Kind::Normal    => kind::Normal(self).into(),
+            Kind::Castle    => kind::Castle(self).into(),
+            Kind::Promotion => kind::Promotion(self).into(),
+            Kind::EnPassant => kind::EnPassant(self).into(),
         }
     }
 }
@@ -187,7 +187,7 @@ impl Move {
 #[derive(PartialEq, Eq, Clone, Copy, Hash, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
-pub enum MoveKind {
+pub enum Kind {
     /// Normal move.
     Normal,
     /// [Castling](https://en.wikipedia.org/wiki/Castling) move.
@@ -329,7 +329,7 @@ pub mod kind {
 
         /// Returns the kind for `self`.
         #[inline]
-        pub fn kind(self) -> MoveKind { MoveKind::Normal }
+        pub fn kind(self) -> Kind { Kind::Normal }
     }
 
     /// A castling move.
@@ -379,7 +379,7 @@ pub mod kind {
 
         /// Returns the kind for `self`.
         #[inline]
-        pub fn kind(self) -> MoveKind { MoveKind::Castle }
+        pub fn kind(self) -> Kind { Kind::Castle }
 
         /// Returns the castle right for `self`.
         #[inline]
@@ -417,7 +417,7 @@ pub mod kind {
 
         /// Returns the kind for `self`.
         #[inline]
-        pub fn kind(self) -> MoveKind { MoveKind::Promotion }
+        pub fn kind(self) -> Kind { Kind::Promotion }
 
         /// Creates a promotion move using `Queen` as its piece.
         #[inline]
@@ -461,13 +461,13 @@ pub mod kind {
         /// Creates a new en passant move without checking whether it is legal.
         #[inline]
         pub unsafe fn new_unchecked(src: Square, dst: Square) -> EnPassant {
-            let kind = (MoveKind::EnPassant as u16) << KIND_SHIFT;
+            let kind = (Kind::EnPassant as u16) << KIND_SHIFT;
             EnPassant(Move(base!(src, dst) | kind))
         }
 
         /// Returns the kind for `self`.
         #[inline]
-        pub fn kind(self) -> MoveKind { MoveKind::EnPassant }
+        pub fn kind(self) -> Kind { Kind::EnPassant }
 
         /// Returns the square of the captured piece.
         #[inline]
