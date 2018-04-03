@@ -11,6 +11,9 @@ mod private {
     pub trait Iterable: Sized {
         type Raw: Copy + Ord + Sized;
 
+        const MIN: Self::Raw;
+        const MAX: Self::Raw;
+
         fn raw(self) -> Self::Raw;
 
         fn next(_: &mut Iter<Self>) -> Option<Self>;
@@ -29,6 +32,9 @@ macro_rules! impl_iterable {
     ($t:ty, $raw:ty, $max:expr) => {
         impl Iterable for $t {
             type Raw = $raw;
+
+            const MIN: $raw = 0;
+            const MAX: $raw = $max;
 
             #[inline]
             fn raw(self) -> Self::Raw { self as _ }
@@ -54,10 +60,6 @@ macro_rules! impl_iterable {
                 let end   = iter.end   as usize;
                 ops::Range { start, end }
             }
-        }
-
-        impl AllIterable for $t {
-            const ALL: Range<Self> = Range { iter: 0..($max as $raw) };
         }
 
         impl<T> ::misc::Extract<[T; $max]> for $t {
@@ -105,6 +107,10 @@ impl<'a, T: Iterable> Contained<&'a Range<T>> for T {
 pub trait AllIterable: Iterable {
     /// An iterator over all instances of this type.
     const ALL: Range<Self>;
+}
+
+impl<T: Iterable> AllIterable for T {
+    const ALL: Range<Self> = Range { iter: T::MIN..T::MAX };
 }
 
 impl_iterable!(::castle::Side,     u8, 2);
