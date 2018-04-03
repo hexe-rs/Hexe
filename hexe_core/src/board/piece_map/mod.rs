@@ -572,7 +572,6 @@ impl PieceMap {
     /// assert!(map.contains(pc));
     /// ```
     #[inline]
-    #[allow(needless_lifetimes)]
     pub fn contains<'a, T: Contained<&'a Self>>(&'a self, value: T) -> bool {
         value.contained_in(self)
     }

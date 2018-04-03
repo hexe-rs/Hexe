@@ -35,6 +35,7 @@
 #![allow(cast_lossless)]
 #![allow(explicit_into_iter_loop)]
 #![allow(inline_always)]
+#![allow(needless_lifetimes)]
 #![allow(redundant_field_names)]
 #![allow(suspicious_arithmetic_impl)]
 #![allow(unreadable_literal)]

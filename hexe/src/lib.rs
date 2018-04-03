@@ -51,6 +51,7 @@
 #![deny(missing_docs)]
 
 // Clippy
+#![allow(needless_lifetimes)]
 #![allow(redundant_field_names)]
 #![allow(unreadable_literal)]
 #![allow(zero_prefixed_literal)]
