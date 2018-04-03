@@ -22,6 +22,7 @@
 //! [hexe]: https://docs.rs/hexe/0.0.4/hexe/
 //! [crate]: https://crates.io/crates/hexe_core
 
+#![doc(html_root_url = "https://docs.rs/hexe_core/0.0.4")]
 #![doc(html_logo_url = "https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png")]
 
 // Lints ///////////////////////////////////////////////////////////////////////

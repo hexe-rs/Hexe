@@ -41,6 +41,7 @@
 //! [`hexe_core`]: https://docs.rs/hexe_core
 //! [`prelude`]: prelude/index.html
 
+#![doc(html_root_url = "https://docs.rs/hexe/0.0.4")]
 #![doc(html_logo_url = "https://raw.githubusercontent.com/hexe-rs/Hexe/assets/Icon.png")]
 
 // Lints ///////////////////////////////////////////////////////////////////////
