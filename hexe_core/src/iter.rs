@@ -9,15 +9,17 @@ mod private {
     use super::*;
 
     pub trait Iterable: Sized {
-        type Iter: Sized;
+        type Raw: Copy + Ord + Sized;
 
-        fn next(_: &mut Self::Iter) -> Option<Self>;
+        fn raw(self) -> Self::Raw;
 
-        fn next_back(_: &mut Self::Iter) -> Option<Self>;
+        fn next(_: &mut Iter<Self>) -> Option<Self>;
 
-        fn len(_: &Self::Iter) -> usize;
+        fn next_back(_: &mut Iter<Self>) -> Option<Self>;
 
-        fn indices(_: &Self::Iter) -> ops::Range<usize>;
+        fn len(_: &Iter<Self>) -> usize;
+
+        fn indices(_: &Iter<Self>) -> ops::Range<usize>;
     }
 }
 
@@ -26,25 +28,28 @@ use self::private::Iterable;
 macro_rules! impl_iterable {
     ($t:ty, $raw:ty, $max:expr) => {
         impl Iterable for $t {
-            type Iter = ops::Range<$raw>;
+            type Raw = $raw;
 
             #[inline]
-            fn next(iter: &mut Self::Iter) -> Option<Self> {
+            fn raw(self) -> Self::Raw { self as _ }
+
+            #[inline]
+            fn next(iter: &mut Iter<Self>) -> Option<Self> {
                 iter.next().map(|n| unsafe { n.into_unchecked() })
             }
 
             #[inline]
-            fn next_back(iter: &mut Self::Iter) -> Option<Self> {
+            fn next_back(iter: &mut Iter<Self>) -> Option<Self> {
                 iter.next_back().map(|n| unsafe { n.into_unchecked() })
             }
 
             #[inline]
-            fn len(iter: &Self::Iter) -> usize {
+            fn len(iter: &Iter<Self>) -> usize {
                 iter.len()
             }
 
             #[inline]
-            fn indices(iter: &Self::Iter) -> ops::Range<usize> {
+            fn indices(iter: &Iter<Self>) -> ops::Range<usize> {
                 let start = iter.start as usize;
                 let end   = iter.end   as usize;
                 ops::Range { start, end }
@@ -53,14 +58,6 @@ macro_rules! impl_iterable {
 
         impl AllIterable for $t {
             const ALL: Range<Self> = Range { iter: 0..($max as $raw) };
-        }
-
-        impl<'a> Contained<&'a Range<$t>> for $t {
-            #[inline]
-            fn contained_in(self, all: &'a Range<Self>) -> bool {
-                let value = self as $raw;
-                (all.iter.start <= value) && (value < all.iter.end)
-            }
         }
 
         impl<T> ::misc::Extract<[T; $max]> for $t {
@@ -93,6 +90,16 @@ macro_rules! impl_iterable {
     }
 }
 
+type Iter<I> = ops::Range<<I as Iterable>::Raw>;
+
+impl<'a, T: Iterable> Contained<&'a Range<T>> for T {
+    #[inline]
+    fn contained_in(self, all: &'a Range<T>) -> bool {
+        let value = self.raw();
+        (all.iter.start <= value) && (value < all.iter.end)
+    }
+}
+
 /// A type whose instances can all be efficiently iterated over via
 /// [`Range`](struct.Range.html).
 pub trait AllIterable: Iterable {
@@ -118,7 +125,7 @@ impl_iterable!(::square::Square,   u8, 64);
 /// [`Range`]: https://doc.rust-lang.org/std/ops/struct.Range.html
 #[derive(Clone, PartialEq, Eq)]
 pub struct Range<T: Iterable> {
-    pub(crate) iter: T::Iter,
+    pub(crate) iter: Iter<T>,
 }
 
 impl<T: AllIterable> Default for Range<T> {
