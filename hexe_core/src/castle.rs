@@ -394,7 +394,9 @@ mod tests {
             }
         }
         for right in Rights::FULL {
-            assert_eq!(right.path(), path(right));
+            let p = right.path();
+            assert_eq!(p, path(right));
+            assert_eq!(p, right.path_iter().collect::<Bitboard>())
         }
     }
 
