@@ -26,29 +26,24 @@ use self::private::Iterable;
 macro_rules! impl_iterable {
     ($t:ty, $raw:ty, $max:expr) => {
         impl Iterable for $t {
-            #[doc(hidden)]
             type Iter = ops::Range<$raw>;
 
             #[inline]
-            #[doc(hidden)]
             fn next(iter: &mut Self::Iter) -> Option<Self> {
                 iter.next().map(|n| unsafe { n.into_unchecked() })
             }
 
             #[inline]
-            #[doc(hidden)]
             fn next_back(iter: &mut Self::Iter) -> Option<Self> {
                 iter.next_back().map(|n| unsafe { n.into_unchecked() })
             }
 
             #[inline]
-            #[doc(hidden)]
             fn len(iter: &Self::Iter) -> usize {
                 iter.len()
             }
 
             #[inline]
-            #[doc(hidden)]
             fn indices(iter: &Self::Iter) -> ops::Range<usize> {
                 let start = iter.start as usize;
                 let end   = iter.end   as usize;
