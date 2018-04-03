@@ -142,6 +142,12 @@ impl str::FromStr for Rights {
 }
 
 impl Rights {
+    /// Rights for white player.
+    pub const WHITE: Rights = Rights(0b0011);
+
+    /// Rights for black player.
+    pub const BLACK: Rights = Rights(0b1100);
+
     /// White kingside.
     pub const WHITE_KING: Rights = Rights(0b0001);
 
