@@ -9,7 +9,7 @@ mod private {
     use super::*;
 
     pub trait Iterable: Sized {
-        type Raw: Copy + Ord + Sized + From<u8> + ops::Add<Output=Self::Raw>;
+        type Raw: Copy + Ord + Sized + From<u8> + Into<usize> + ops::Add<Output=Self::Raw>;
 
         const MIN: Self::Raw;
         const MAX: Self::Raw;
@@ -19,8 +19,6 @@ mod private {
         fn next(_: &mut Iter<Self>) -> Option<Self>;
 
         fn next_back(_: &mut Iter<Self>) -> Option<Self>;
-
-        fn len(_: &Iter<Self>) -> usize;
 
         fn indices(_: &Iter<Self>) -> ops::Range<usize>;
     }
@@ -47,11 +45,6 @@ macro_rules! impl_iterable {
             #[inline]
             fn next_back(iter: &mut Iter<Self>) -> Option<Self> {
                 iter.next_back().map(|n| unsafe { n.into_unchecked() })
-            }
-
-            #[inline]
-            fn len(iter: &Iter<Self>) -> usize {
-                iter.len()
             }
 
             #[inline]
@@ -165,7 +158,11 @@ impl<T: Iterable> DoubleEndedIterator for Range<T> {
 
 impl<T: Iterable> ExactSizeIterator for Range<T> {
     #[inline]
-    fn len(&self) -> usize { T::len(&self.iter) }
+    fn len(&self) -> usize {
+       let start: usize = self.iter.start.into();
+       let end:   usize = self.iter.end.into();
+       end - start
+    }
 }
 
 impl<T: Iterable> Range<T> {
