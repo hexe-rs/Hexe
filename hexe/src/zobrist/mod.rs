@@ -3,8 +3,9 @@
 use std::{fmt, hash, mem, ptr};
 
 use core::castle::Rights;
-use core::square::{File, Square};
+use core::misc::Extract;
 use core::piece::Role;
+use core::square::{File, Square};
 
 mod tables;
 
