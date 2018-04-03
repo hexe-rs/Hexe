@@ -1,46 +1,68 @@
 //! Iterators over types.
 
-use core::ops::Range;
+use core::ops;
 
 use misc::Contained;
 use uncon::*;
 
+mod private {
+    use super::*;
+
+    pub trait Iterable: Sized {
+        type Iter: Sized;
+
+        fn next(_: &mut Self::Iter) -> Option<Self>;
+
+        fn next_back(_: &mut Self::Iter) -> Option<Self>;
+
+        fn len(_: &Self::Iter) -> usize;
+
+        fn indices(_: &Self::Iter) -> ops::Range<usize>;
+    }
+}
+
+use self::private::Iterable;
+
 macro_rules! impl_iterable {
     ($t:ty, $raw:ty, $max:expr) => {
-        impl AllIterable for $t {
+        impl Iterable for $t {
             #[doc(hidden)]
-            type __Iter = Range<$raw>;
-
-            const ALL: All<Self> = All { iter: 0..($max as $raw) };
+            type Iter = ops::Range<$raw>;
 
             #[inline]
             #[doc(hidden)]
-            fn __next(iter: &mut Self::__Iter) -> Option<Self> {
+            fn next(iter: &mut Self::Iter) -> Option<Self> {
                 iter.next().map(|n| unsafe { n.into_unchecked() })
             }
 
             #[inline]
             #[doc(hidden)]
-            fn __next_back(iter: &mut Self::__Iter) -> Option<Self> {
+            fn next_back(iter: &mut Self::Iter) -> Option<Self> {
                 iter.next_back().map(|n| unsafe { n.into_unchecked() })
             }
 
             #[inline]
             #[doc(hidden)]
-            fn __len(iter: &Self::__Iter) -> usize {
+            fn len(iter: &Self::Iter) -> usize {
                 iter.len()
             }
 
             #[inline]
             #[doc(hidden)]
-            fn __range(iter: &Self::__Iter) -> Range<usize> {
-                Range { start: iter.start as usize, end: iter.end as usize }
+            fn indices(iter: &Self::Iter) -> ops::Range<usize> {
+                let start = iter.start as usize;
+                let end   = iter.end   as usize;
+                ops::Range { start, end }
             }
         }
 
-        impl<'a> Contained<&'a All<$t>> for $t {
+        impl AllIterable for $t {
+            const ALL: Range<Self> = Range { iter: 0..($max as $raw) };
+        }
+
+        impl<'a> Contained<&'a Range<$t>> for $t {
             #[inline]
-            fn contained_in(self, all: &'a All<Self>) -> bool {
+            fn contained_in(self, all: &'a Range<Self>) -> bool {
                 let value = self as $raw;
                 (all.iter.start <= value) && (value < all.iter.end)
             }
@@ -60,7 +82,7 @@ macro_rules! impl_iterable {
             }
         }
 
-        impl<'all, T> ::misc::Extract<[T; $max]> for &'all All<$t> {
+        impl<'r, T> ::misc::Extract<[T; $max]> for &'r Range<$t> {
             type Output = [T];
 
             #[inline]
@@ -76,25 +98,11 @@ macro_rules! impl_iterable {
     }
 }
 
-/// A type whose instances can be iterated over via `hexe_core::iter::All`.
-pub trait AllIterable: Sized {
-    #[doc(hidden)]
-    type __Iter: Sized;
-
+/// A type whose instances can all be efficiently iterated over via
+/// [`Range`](struct.Range.html).
+pub trait AllIterable: Iterable {
     /// An iterator over all instances of this type.
-    const ALL: All<Self>;
-
-    #[doc(hidden)]
-    fn __next(_: &mut Self::__Iter) -> Option<Self>;
-
-    #[doc(hidden)]
-    fn __next_back(_: &mut Self::__Iter) -> Option<Self>;
-
-    #[doc(hidden)]
-    fn __len(_: &Self::__Iter) -> usize;
-
-    #[doc(hidden)]
-    fn __range(_: &Self::__Iter) -> Range<usize>;
+    const ALL: Range<Self>;
 }
 
 impl_iterable!(::castle::Side,     u8, 2);
@@ -107,22 +115,27 @@ impl_iterable!(::square::File,     u8, 8);
 impl_iterable!(::square::Rank,     u8, 8);
 impl_iterable!(::square::Square,   u8, 64);
 
-/// An iterator over all instances of `T`.
+/// An efficient iterator over instances of `T`.
+///
+/// Unlike the standard library's [`Range`], the start and end values are
+/// guaranteed to _always_ be in order.
+///
+/// [`Range`]: https://doc.rust-lang.org/std/ops/struct.Range.html
 #[derive(Clone, PartialEq, Eq)]
-pub struct All<T: AllIterable> {
-    pub(crate) iter: T::__Iter,
+pub struct Range<T: Iterable> {
+    pub(crate) iter: T::Iter,
 }
 
-impl<T: AllIterable> Default for All<T> {
+impl<T: AllIterable> Default for Range<T> {
     #[inline]
     fn default() -> Self { T::ALL }
 }
 
-impl<T: AllIterable> Iterator for All<T> {
+impl<T: Iterable> Iterator for Range<T> {
     type Item = T;
 
     #[inline]
-    fn next(&mut self) -> Option<T> { T::__next(&mut self.iter) }
+    fn next(&mut self) -> Option<T> { T::next(&mut self.iter) }
 
     #[inline]
     fn last(mut self) -> Option<T> { self.next_back() }
@@ -137,17 +150,17 @@ impl<T: AllIterable> Iterator for All<T> {
     }
 }
 
-impl<T: AllIterable> DoubleEndedIterator for All<T> {
+impl<T: Iterable> DoubleEndedIterator for Range<T> {
     #[inline]
-    fn next_back(&mut self) -> Option<T> { T::__next_back(&mut self.iter) }
+    fn next_back(&mut self) -> Option<T> { T::next_back(&mut self.iter) }
 }
 
-impl<T: AllIterable> ExactSizeIterator for All<T> {
+impl<T: Iterable> ExactSizeIterator for Range<T> {
     #[inline]
-    fn len(&self) -> usize { T::__len(&self.iter) }
+    fn len(&self) -> usize { T::len(&self.iter) }
 }
 
-impl<T: AllIterable> All<T> {
+impl<T: Iterable> Range<T> {
     /// Returns whether `self` contains `item`.
     #[inline]
     pub fn contains<'a>(&'a self, item: T) -> bool
@@ -158,8 +171,8 @@ impl<T: AllIterable> All<T> {
 
     /// Returns the range of indices over which `self` iterates.
     #[inline]
-    pub fn indices(&self) -> Range<usize> {
-        T::__range(&self.iter)
+    pub fn indices(&self) -> ops::Range<usize> {
+        T::indices(&self.iter)
     }
 
     /// Returns whether `self` is empty.

@@ -1,6 +1,7 @@
-use super::super::super::iter::All;
-use super::*;
 use core::mem;
+
+use super::*;
+use iter;
 
 macro_rules! iter {
     ($next:ident) => {
@@ -56,7 +57,7 @@ macro_rules! impl_iter {
 
 impl PieceMap {
     #[inline]
-    fn find_len(&self, iter: &All<Square>) -> usize {
+    fn find_len(&self, iter: &iter::Range<Square>) -> usize {
         iter.extract(self.as_bytes()).iter().fold(iter.len(), |len, &pc| {
             len - (pc == NONE) as usize
         })
@@ -87,7 +88,7 @@ impl<'a> IntoIterator for &'a mut PieceMap {
 #[derive(Clone)]
 pub struct Iter<'a> {
     map: &'a PieceMap,
-    iter: All<Square>,
+    iter: iter::Range<Square>,
 }
 
 #[cfg(test)]
@@ -118,7 +119,7 @@ impl<'a> fmt::Debug for Iter<'a> {
 /// A mutable [`PieceMap`](struct.PieceMap.html) iterator.
 pub struct IterMut<'a> {
     map: &'a mut PieceMap,
-    iter: All<Square>,
+    iter: iter::Range<Square>,
 }
 
 #[cfg(test)]

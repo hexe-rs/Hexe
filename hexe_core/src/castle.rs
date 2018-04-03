@@ -41,7 +41,7 @@ use prelude::*;
 #[cfg(feature = "serde")]
 use serde::*;
 
-use iter::All;
+use iter;
 
 const ALL_BITS: u8 = 0b1111;
 const MAX_LEN: usize = 1 + ALL_BITS as usize;
@@ -278,12 +278,12 @@ impl Right {
     /// Returns an efficient iterator over each square in the path between the
     /// rook and king for `self`.
     #[inline]
-    pub fn path_iter(self) -> All<Square> {
-        static ITERS: [All<Square>; 4] = [
-            All { iter: 05..07 },
-            All { iter: 01..04 },
-            All { iter: 61..63 },
-            All { iter: 57..60 },
+    pub fn path_iter(self) -> iter::Range<Square> {
+        static ITERS: [iter::Range<Square>; 4] = [
+            iter::Range { iter: 05..07 },
+            iter::Range { iter: 01..04 },
+            iter::Range { iter: 61..63 },
+            iter::Range { iter: 57..60 },
         ];
         ITERS[self as usize].clone()
     }
