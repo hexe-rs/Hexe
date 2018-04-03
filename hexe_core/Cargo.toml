@@ -1,6 +1,6 @@
 [package]
 name = "hexe_core"
-version = "0.0.4"
+version = "0.0.5"
 authors = ["Nikolai Vazquez"]
 license = "MIT/Apache-2.0"
 readme = "README.md"
