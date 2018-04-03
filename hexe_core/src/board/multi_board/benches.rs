@@ -1,7 +1,7 @@
 use super::MultiBoard;
 use castle::Right;
 use color::Color;
-use iter::AllIterable;
+use iter::All;
 use square::Square;
 
 use test::{Bencher, black_box};

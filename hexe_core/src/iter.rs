@@ -104,12 +104,12 @@ impl<'a, T: Iterable> Contained<&'a Range<T>> for T {
 
 /// A type whose instances can all be efficiently iterated over via
 /// [`Range`](struct.Range.html).
-pub trait AllIterable: Iterable {
+pub trait All: Iterable {
     /// An iterator over all instances of this type.
     const ALL: Range<Self>;
 }
 
-impl<T: Iterable> AllIterable for T {
+impl<T: Iterable> All for T {
     const ALL: Range<Self> = Range { iter: T::MIN..T::MAX };
 }
 
@@ -134,7 +134,7 @@ pub struct Range<T: Iterable> {
     pub(crate) iter: Iter<T>,
 }
 
-impl<T: AllIterable> Default for Range<T> {
+impl<T: All> Default for Range<T> {
     #[inline]
     fn default() -> Self { T::ALL }
 }
@@ -198,7 +198,7 @@ impl<T: Iterable> Range<T> {
     /// Basic usage:
     ///
     /// ```
-    /// use hexe_core::iter::{AllIterable, Range};
+    /// use hexe_core::iter::{All, Range};
     /// use hexe_core::square::File;
     ///
     /// for f1 in File::ALL {

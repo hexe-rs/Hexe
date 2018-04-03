@@ -4,7 +4,7 @@ use test::{Bencher, black_box};
 use rand;
 
 use castle::Right;
-use iter::AllIterable;
+use iter::All;
 use square::Square;
 
 macro_rules! piece_map {

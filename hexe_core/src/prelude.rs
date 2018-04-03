@@ -10,5 +10,5 @@ pub use piece::{Piece, Role, Promotion};
 pub use square::{Square, File, Rank};
 
 // Abstract types (traits)
-pub use iter::AllIterable;
+pub use iter::All;
 pub use misc::Extract;
