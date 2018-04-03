@@ -11,3 +11,4 @@ pub use square::{Square, File, Rank};
 
 // Abstract types (traits)
 pub use iter::AllIterable;
+pub use misc::Extract;

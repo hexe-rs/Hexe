@@ -141,6 +141,20 @@ impl str::FromStr for Rights {
     }
 }
 
+impl<T> ::misc::Extract<[T; MAX_LEN]> for Rights {
+    type Out = T;
+
+    #[inline]
+    fn extract<'a>(self, array: &'a [T; MAX_LEN]) -> &'a T {
+        unsafe { array.get_unchecked(self.0 as usize) }
+    }
+
+    #[inline]
+    fn extract_mut<'a>(self, array: &'a mut [T; MAX_LEN]) -> &'a mut T {
+        unsafe { array.get_unchecked_mut(self.0 as usize) }
+    }
+}
+
 impl Rights {
     /// Rights for white player.
     pub const WHITE: Rights = Rights(0b0011);
@@ -159,20 +173,6 @@ impl Rights {
 
     /// Black queenside.
     pub const BLACK_QUEEN: Rights = Rights(0b1000);
-
-    /// Extracts a reference to the value within the buffer which the value
-    /// indexes.
-    #[inline]
-    pub fn extract<'a, T: 'a>(&self, array: &'a [T; MAX_LEN]) -> &'a T {
-        unsafe { array.get_unchecked(self.0 as usize) }
-    }
-
-    /// Extracts a mutable reference to the value within the buffer which the
-    /// value indexes.
-    #[inline]
-    pub fn extract_mut<'a, T: 'a>(&self, array: &'a mut [T; MAX_LEN]) -> &'a mut T {
-        unsafe { array.get_unchecked_mut(self.0 as usize) }
-    }
 
     /// Returns the result of applying a function to a mutable string
     /// representation of `self`.

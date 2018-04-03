@@ -45,6 +45,20 @@ macro_rules! impl_iterable {
                 (all.iter.start <= value) && (value < all.iter.end)
             }
         }
+
+        impl<'all, T> ::misc::Extract<[T; $max]> for &'all All<$t> {
+            type Out = [T];
+
+            #[inline]
+            fn extract<'a>(self, buf: &'a [T; $max]) -> &'a [T] {
+                unsafe { buf.get_unchecked(self.range()) }
+            }
+
+            #[inline]
+            fn extract_mut<'a>(self, buf: &'a mut [T; $max]) -> &'a mut [T] {
+                unsafe { buf.get_unchecked_mut(self.range()) }
+            }
+        }
     }
 }
 
@@ -138,19 +152,5 @@ impl<T: AllIterable> All<T> {
     #[inline]
     pub fn is_empty(&self) -> bool {
         self.len() == 0
-    }
-}
-
-impl All<::square::Square> {
-    /// Extracts a slice from the buffer over which `self` iterates.
-    #[inline]
-    pub fn extract<'a, T: 'a>(&self, buf: &'a [T; 64]) -> &'a [T] {
-        unsafe { buf.get_unchecked(self.range()) }
-    }
-
-    /// Extracts a mutable slice from the buffer over which `self` iterates.
-    #[inline]
-    pub fn extract_mut<'a, T: 'a>(&self, buf: &'a mut [T; 64]) -> &'a mut [T] {
-        unsafe { buf.get_unchecked_mut(self.range()) }
     }
 }
