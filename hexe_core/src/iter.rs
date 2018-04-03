@@ -46,6 +46,20 @@ macro_rules! impl_iterable {
             }
         }
 
+        impl<T> ::misc::Extract<[T; $max]> for $t {
+            type Out = T;
+
+            #[inline]
+            fn extract<'a>(self, buf: &'a [T; $max]) -> &'a T {
+                &buf[self as usize]
+            }
+
+            #[inline]
+            fn extract_mut<'a>(self, buf: &'a mut [T; $max]) -> &'a mut T {
+                &mut buf[self as usize]
+            }
+        }
+
         impl<'all, T> ::misc::Extract<[T; $max]> for &'all All<$t> {
             type Out = [T];
 
