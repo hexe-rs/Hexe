@@ -11,11 +11,11 @@ pub trait Contained<T> {
 /// All operations are non-panicking and cannot fail.
 pub trait Extract<T: ?Sized> {
     /// The output type.
-    type Out: ?Sized;
+    type Output: ?Sized;
 
     /// Extracts a reference to the value for `self` within `buf`.
-    fn extract<'a>(self, buf: &'a T) -> &'a Self::Out;
+    fn extract<'a>(self, buf: &'a T) -> &'a Self::Output;
 
     /// Extracts a mutable reference to the value for `self` within `buf`.
-    fn extract_mut<'a>(self, buf: &'a mut T) -> &'a mut Self::Out;
+    fn extract_mut<'a>(self, buf: &'a mut T) -> &'a mut Self::Output;
 }

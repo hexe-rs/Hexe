@@ -142,7 +142,7 @@ impl str::FromStr for Rights {
 }
 
 impl<T> ::misc::Extract<[T; MAX_LEN]> for Rights {
-    type Out = T;
+    type Output = T;
 
     #[inline]
     fn extract<'a>(self, array: &'a [T; MAX_LEN]) -> &'a T {
