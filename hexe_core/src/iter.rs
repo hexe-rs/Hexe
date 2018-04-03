@@ -9,7 +9,7 @@ mod private {
     use super::*;
 
     pub trait Iterable: Sized {
-        type Raw: Copy + Ord + Sized;
+        type Raw: Copy + Ord + Sized + From<u8> + ops::Add<Output=Self::Raw>;
 
         const MIN: Self::Raw;
         const MAX: Self::Raw;
@@ -169,6 +169,57 @@ impl<T: Iterable> ExactSizeIterator for Range<T> {
 }
 
 impl<T: Iterable> Range<T> {
+    /// Creates a range beginning at `start`, making it the first value
+    /// returned.
+    #[inline]
+    pub fn begin(start: T) -> Range<T> {
+        Range { iter: start.raw()..T::MAX }
+    }
+
+    /// Creates a range that iterates over each instance through `end`, making
+    /// it the last value returned.
+    #[inline]
+    pub fn through(end: T) -> Range<T> {
+        Range { iter: T::MIN..(end.raw() + T::Raw::from(1)) }
+    }
+
+    /// Creates a range that iterates over each instance until `end`, stopping
+    /// at the value immediately before it.
+    #[inline]
+    pub fn until(end: T) -> Range<T> {
+        Range { iter: T::MIN..end.raw() }
+    }
+
+    /// Creates a new range between `a` and `b`, starting at the lesser of the
+    /// two values and ending with the greater of the two values.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// use hexe_core::iter::{AllIterable, Range};
+    /// use hexe_core::square::File;
+    ///
+    /// for f1 in File::ALL {
+    ///     for f2 in File::ALL {
+    ///         let r1 = Range::between(f1, f2);
+    ///         let r2 = Range::between(f2, f1);
+    ///         assert!(r1 == r2);
+    ///     }
+    /// }
+    /// ```
+    #[inline]
+    pub fn between(a: T, b: T) -> Range<T> {
+        let a = a.raw();
+        let b = b.raw();
+        if a > b {
+            Range { iter: b..(a + T::Raw::from(1)) }
+        } else {
+            Range { iter: a..(b + T::Raw::from(1)) }
+        }
+    }
+
     /// Returns whether `self` contains `item`.
     #[inline]
     pub fn contains<'a>(&'a self, item: T) -> bool
