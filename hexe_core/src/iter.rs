@@ -65,12 +65,12 @@ macro_rules! impl_iterable {
 
             #[inline]
             fn extract<'a>(self, buf: &'a [T; $max]) -> &'a [T] {
-                unsafe { buf.get_unchecked(self.range()) }
+                unsafe { buf.get_unchecked(self.indices()) }
             }
 
             #[inline]
             fn extract_mut<'a>(self, buf: &'a mut [T; $max]) -> &'a mut [T] {
-                unsafe { buf.get_unchecked_mut(self.range()) }
+                unsafe { buf.get_unchecked_mut(self.indices()) }
             }
         }
     }
@@ -156,9 +156,9 @@ impl<T: AllIterable> All<T> {
         item.contained_in(self)
     }
 
-    /// Returns the range over which `self` iterates.
+    /// Returns the range of indices over which `self` iterates.
     #[inline]
-    pub fn range(&self) -> Range<usize> {
+    pub fn indices(&self) -> Range<usize> {
         T::__range(&self.iter)
     }
 
