@@ -4,9 +4,6 @@ use std::io::{self, BufRead};
 use std::mem;
 use std::str;
 
-
-use scoped_threadpool::Scope;
-
 use core::color::Color;
 use core::mv::Move;
 use util::MutRef;
@@ -96,18 +93,13 @@ impl<'a> Uci<'a> {
     /// engine.uci().start();
     /// ```
     pub fn start(&mut self) {
-        let Engine { ref mut pool, ref mut engine } = *self.0;
-        pool.scoped(|scope| {
-            let stdin = io::stdin();
-            let lines = stdin.lock()
-                             .lines()
-                             .filter_map(Result::ok);
-            for line in lines {
-                if !engine.run_uci_line(scope, &line) {
-                    break;
-                }
+        let stdin = io::stdin();
+        let lines = stdin.lock().lines().filter_map(Result::ok);
+        for line in lines {
+            if !self.0.run_uci_line(&line) {
+                break;
             }
-        });
+        }
     }
 
     /// Runs the UCI loop, feeding commands from an iterator.
@@ -130,21 +122,15 @@ impl<'a> Uci<'a> {
         where I: IntoIterator,
               I::Item: AsRef<str>,
     {
-        let Engine { ref mut pool, ref mut engine } = *self.0;
-        pool.scoped(|scope| {
-            for line in commands {
-                engine.run_uci(scope, line.as_ref());
-            }
-        });
+        for line in commands {
+            self.0.run_uci(line.as_ref());
+        }
     }
 
     /// Runs a single UCI command or multiple if newlines are found.
     #[inline]
     pub fn run(&mut self, command: &str) {
-        let Engine { ref mut pool, ref mut engine } = *self.0;
-        pool.scoped(|scope| {
-            engine.run_uci(scope, command);
-        });
+        self.0.run_uci(command);
     }
 }
 
@@ -152,20 +138,20 @@ macro_rules! unknown_command {
     ($cmd:expr) => { println!("Unknown command: {}", $cmd) }
 }
 
-impl EngineInner {
-    fn run_uci(&mut self, scope: &Scope, command: &str) {
+impl Engine {
+    fn run_uci(&mut self, command: &str) {
         if command.is_empty() {
             unknown_command!(command);
         } else {
             for line in command.lines() {
-                if !self.run_uci_line(scope, line) {
+                if !self.run_uci_line(line) {
                     break;
                 }
             }
         }
     }
 
-    fn run_uci_line(&mut self, scope: &Scope, line: &str) -> bool {
+    fn run_uci_line(&mut self, line: &str) -> bool {
         let mut split = line.split_whitespace();
         match split.next().unwrap_or("") {
             "quit"       => return false,

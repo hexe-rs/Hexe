@@ -5,9 +5,9 @@
 
 use std::usize;
 
-use scoped_threadpool::Pool;
-
 use position::Position;
+
+use thread::Pool;
 
 mod uci;
 pub use self::uci::Uci;
@@ -29,10 +29,6 @@ pub use self::uci::Uci;
 /// ```
 pub struct Engine {
     pool: Pool,
-    engine: EngineInner,
-}
-
-struct EngineInner {
     position: Position,
     options: Options,
 }
@@ -60,27 +56,31 @@ impl Engine {
     pub fn uci(&mut self) -> Uci {
         Uci::from(self)
     }
+
+    /// Returns the number of threads that the engine currently has spawned.
+    #[inline]
+    pub fn num_threads(&self) -> usize {
+        self.pool.num_threads()
+    }
 }
 
 /// A type that can be used to build an [`Engine`](struct.Engine.html) instance.
 #[derive(Copy, Clone, Debug)]
 pub struct EngineBuilder {
-    num_threads: u32,
+    num_threads: usize,
 }
 
 impl EngineBuilder {
     /// Builds a new [`Engine`](struct.Engine.html) with the options of `self`.
     pub fn build(self) -> Engine {
         let num_threads = match self.num_threads {
-            0 => ::num_cpus::get() as u32,
+            0 => ::num_cpus::get(),
             n => n,
         };
         Engine {
             pool: Pool::new(num_threads),
-            engine: EngineInner {
-                position: Position::default(),
-                options: Options { num_threads },
-            },
+            position: Position::default(),
+            options: Options { num_threads },
         }
     }
 
@@ -90,7 +90,7 @@ impl EngineBuilder {
     /// threads will be selected automatically. The default is the number of
     /// logical CPUs.
     #[inline]
-    pub fn num_threads(mut self, n: u32) -> EngineBuilder {
+    pub fn num_threads(mut self, n: usize) -> EngineBuilder {
         self.num_threads = n;
         self
     }
@@ -98,7 +98,7 @@ impl EngineBuilder {
 
 /// Chess engine options.
 struct Options {
-    num_threads: u32,
+    num_threads: usize,
 }
 
 impl Options {

@@ -73,7 +73,6 @@ pub extern crate hexe_core as core;
 use core::_shared::*;
 
 extern crate num_cpus;
-extern crate scoped_threadpool;
 
 extern crate uncon;
 
@@ -86,6 +85,7 @@ extern crate static_assertions;
 
 // Modules /////////////////////////////////////////////////////////////////////
 
+mod thread;
 mod util;
 
 pub mod engine;
