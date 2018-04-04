@@ -94,6 +94,7 @@ impl Position {
 
         let player  = self.player();
         let king    = self.king_square(player);
+        let pieces  = self.pieces();
         let board   = self.board();
         let checked = board.is_attacked(king, player);
 
@@ -109,9 +110,10 @@ impl Position {
                     return false;
                 }
 
-                // Cannot castle through or into check
+                // Cannot castle through or into check and no
+                // piece can sit in between the rook and king
                 for sq in right.path_iter() {
-                    if board.is_attacked(sq, player) {
+                    if pieces.contains(sq) || board.is_attacked(sq, player) {
                         return false;
                     }
                 }
