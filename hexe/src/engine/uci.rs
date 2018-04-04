@@ -6,7 +6,6 @@ use std::str;
 
 use core::color::Color;
 use core::mv::Move;
-use util::MutRef;
 
 const WHITE: usize = Color::White as usize;
 const BLACK: usize = Color::Black as usize;
@@ -19,6 +18,10 @@ macro_rules! id {
     ($mac:ident) => {
         concat!("id ", stringify!($mac), " ", $mac!())
     }
+}
+
+macro_rules! unknown_command {
+    ($cmd:expr) => { println!("Unknown command: {}", $cmd) }
 }
 
 struct Limits {
@@ -45,26 +48,11 @@ type UciIter<'a> = str::SplitWhitespace<'a>;
 /// Runs the engine via the [Universal Chess Interface][uci] (UCI) protocol.
 ///
 /// [uci]: http://wbec-ridderkerk.nl/html/UCIProtocol.html
-pub struct Uci<'a>(MutRef<'a, Engine>);
+pub struct Uci<'a>(&'a mut Engine);
 
 impl<'a> From<&'a mut Engine> for Uci<'a> {
     #[inline]
-    fn from(engine: &'a mut Engine) -> Uci<'a> {
-        Uci(MutRef::Borrowed(engine))
-    }
-}
-
-impl<'a> From<Box<Engine>> for Uci<'a> {
-    #[inline]
-    fn from(engine: Box<Engine>) -> Uci<'a> {
-        Uci(MutRef::Owned(engine))
-    }
-}
-
-impl<'a> Default for Uci<'a> {
-    fn default() -> Uci<'a> {
-        Uci(MutRef::Owned(Box::default()))
-    }
+    fn from(engine: &'a mut Engine) -> Uci<'a> { Uci(engine) }
 }
 
 impl<'a> Uci<'a> {
@@ -96,7 +84,7 @@ impl<'a> Uci<'a> {
         let stdin = io::stdin();
         let lines = stdin.lock().lines().filter_map(Result::ok);
         for line in lines {
-            if !self.0.run_uci_line(&line) {
+            if !self.run_line(&line) {
                 break;
             }
         }
@@ -123,35 +111,25 @@ impl<'a> Uci<'a> {
               I::Item: AsRef<str>,
     {
         for line in commands {
-            self.0.run_uci(line.as_ref());
+            self.run(line.as_ref());
         }
     }
 
     /// Runs a single UCI command or multiple if newlines are found.
     #[inline]
     pub fn run(&mut self, command: &str) {
-        self.0.run_uci(command);
-    }
-}
-
-macro_rules! unknown_command {
-    ($cmd:expr) => { println!("Unknown command: {}", $cmd) }
-}
-
-impl Engine {
-    fn run_uci(&mut self, command: &str) {
         if command.is_empty() {
             unknown_command!(command);
         } else {
             for line in command.lines() {
-                if !self.run_uci_line(line) {
+                if !self.run_line(line) {
                     break;
                 }
             }
         }
     }
 
-    fn run_uci_line(&mut self, line: &str) -> bool {
+    fn run_line(&mut self, line: &str) -> bool {
         let mut split = line.split_whitespace();
         match split.next().unwrap_or("") {
             "quit"       => return false,
@@ -168,23 +146,27 @@ impl Engine {
         true
     }
 
+    fn report_options(&self) {
+        self.0.options.report();
+    }
+
     fn cmd_uci(&self) {
         println!(id!(name));
         println!(id!(authors));
-        self.options.report();
+        self.report_options();
         println!("uciok");
     }
 
     fn cmd_stop(&mut self) {
-
+        unimplemented!();
     }
 
     fn cmd_ponder_hit(&mut self) {
-
+        unimplemented!();
     }
 
     fn cmd_position(&mut self, _: UciIter) {
-
+        unimplemented!();
     }
 
     fn cmd_set_option(&mut self, mut iter: UciIter) {
@@ -210,13 +192,13 @@ impl Engine {
             value.push_str(next);
         }
 
-        if !self.options.set(&name, &value) {
+        if !self.0.options.set(&name, &value) {
             println!("No such option: {}", name);
         }
     }
 
     fn cmd_new_game(&mut self) {
-
+        unimplemented!();
     }
 
     fn cmd_go(&mut self, mut iter: UciIter) {
@@ -257,10 +239,10 @@ impl Engine {
     }
 
     fn cmd_read_move(&self, s: &str) -> Option<Move> {
-        None
+        unimplemented!();
     }
 
     fn cmd_start_thinking(&mut self, limits: &Limits, moves: &[Move]) {
-
+        unimplemented!();
     }
 }

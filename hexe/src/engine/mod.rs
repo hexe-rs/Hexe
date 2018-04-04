@@ -107,20 +107,8 @@ impl Options {
     fn set(&mut self, name: &str, value: &str) -> bool {
         // Performs a case-insensitive check against the option
         let match_option = |opt: &str| {
-            if name.len() == opt.len() {
-                let a = name.as_bytes().iter();
-                let b = opt.as_bytes().iter();
-                for (&a, &b) in a.zip(b) {
-                    if a | 32 != b {
-                        return false;
-                    }
-                }
-                true
-            } else {
-                false
-            }
+            ::util::matches_lower_alpha(opt.as_ref(), name.as_ref())
         };
-
         if match_option("threads") {
             panic!("Cannot currently set number of threads");
         } else {
