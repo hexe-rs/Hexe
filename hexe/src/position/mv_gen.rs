@@ -13,19 +13,11 @@ pub struct MoveGen<'pos, 'buf> {
 impl<'a, 'b> MoveGen<'a, 'b> {
     /// Generates all legal moves.
     pub fn legal(&mut self) -> &mut Self {
-        self
+        unimplemented!();
     }
 
     /// Generates all pseudo-legal castling moves.
     pub fn castle(&mut self) -> &mut Self {
-        let all = self.pos.board.all_bits();
-        for right in self.pos.rights() {
-            if !all.intersects(right.path()) {
-                if self.buf.push(Castle::from(right).into()).is_some() {
-                    break;
-                }
-            }
-        }
-        self
+        unimplemented!();
     }
 }
