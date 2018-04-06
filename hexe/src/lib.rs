@@ -69,11 +69,7 @@ extern crate test;
 
 pub extern crate hexe_core as core;
 
-#[allow(unused_imports)]
-use core::_shared::*;
-
 extern crate num_cpus;
-
 extern crate uncon;
 
 #[cfg(any(test, feature = "rand"))]
@@ -84,6 +80,9 @@ extern crate rand;
 extern crate static_assertions;
 
 // Modules /////////////////////////////////////////////////////////////////////
+
+#[allow(unused_imports)]
+use core::_shared::*;
 
 mod table;
 mod thread;
