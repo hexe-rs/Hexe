@@ -2,14 +2,14 @@ use std::mem;
 
 const CACHE_LINE:   usize = 64;
 const CLUSTER_SIZE: usize = mem::size_of::<Cluster>();
-const ENTRY_COUNT:  usize = 16;
+const ENTRY_COUNT:  usize = CACHE_LINE / mem::size_of::<Entry>();
 const MB_SIZE:      usize = 1024 * 1024;
 
 #[cfg(test)]
 assert_eq_size! { cluster_size;
     Cluster,
-    [u8; mem::align_of::<Cluster>()],
-    [u8; CACHE_LINE],
+    [u8; mem::align_of::<Cluster>()], // Same size and alignment
+    [u8; CACHE_LINE],                 // as the cache line size
 }
 
 /// A transposition table.
@@ -71,7 +71,6 @@ impl Table {
 #[repr(C, align(64))]
 union Cluster {
     entries: [Entry; ENTRY_COUNT],
-    padding: [u8; CACHE_LINE],
 }
 
 #[derive(Debug, Copy, Clone)]
