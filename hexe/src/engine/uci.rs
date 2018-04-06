@@ -148,7 +148,8 @@ impl<'a> Uci<'a> {
 
     fn report_options(&self) {
         println!(
-            "\noption name Threads type spin default {} min 1 max {}",
+            "\noption name Threads type spin default {0} min 1 max {1}\
+             \noption name Hash type spin default 1 min 1 max {1}",
             ::num_cpus::get(),
             usize::MAX,
         );
@@ -203,6 +204,15 @@ impl<'a> Uci<'a> {
 
         if match_option("threads") {
             panic!("Cannot currently set number of threads");
+        } else if match_option("hash") {
+            match value.parse::<usize>() {
+                Ok(value) => {
+                    self.0.table.resize_exact(value);
+                },
+                Err(e) => {
+                    // TODO: handle could not parse value
+                },
+            }
         } else {
             println!("No such option: {}", name);
         }

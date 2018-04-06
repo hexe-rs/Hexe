@@ -46,7 +46,7 @@ impl Engine {
     pub fn builder() -> EngineBuilder {
         EngineBuilder {
             num_threads: 0,
-            hash_mb: 0,
+            hash_size: 0,
         }
     }
 
@@ -73,7 +73,7 @@ impl Engine {
 #[derive(Copy, Clone, Debug)]
 pub struct EngineBuilder {
     num_threads: usize,
-    hash_mb: usize,
+    hash_size: usize,
 }
 
 impl EngineBuilder {
@@ -83,13 +83,13 @@ impl EngineBuilder {
             0 => ::num_cpus::get(),
             n => n,
         };
-        let hash_mb = match self.hash_mb {
+        let hash_size = match self.hash_size {
             0 => 1,
             n => n,
         };
         Engine {
             pool:     Pool::new(num_threads),
-            table:    Table::new(hash_mb, true),
+            table:    Table::new(hash_size, true),
             position: Position::default(),
             options:  Options { num_threads },
         }
@@ -111,8 +111,8 @@ impl EngineBuilder {
     /// If `n` is 0, or you do not call this function, then the table size will
     /// be selected automatically. The default is 1.
     #[inline]
-    pub fn hash_mb(mut self, n: usize) -> EngineBuilder {
-        self.hash_mb = n;
+    pub fn hash_size(mut self, size_mb: usize) -> EngineBuilder {
+        self.hash_size = size_mb;
         self
     }
 }
