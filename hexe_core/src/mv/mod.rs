@@ -67,6 +67,7 @@ const FILE_LO: u16 = FILE_MASK / LO_MASK;
 /// [`Castle`]:    ./kind/struct.Castle.html
 /// [`EnPassant`]: ./kind/struct.EnPassant.html
 #[derive(PartialEq, Eq, Clone, Copy, Hash, FromUnchecked)]
+#[repr(C)]
 pub struct Move(pub(crate) u16);
 
 impl From<Move> for u16 {
@@ -310,6 +311,7 @@ pub mod kind {
 
     /// A normal, non-special move.
     #[derive(PartialEq, Eq, Clone, Copy, Hash)]
+    #[repr(C)]
     pub struct Normal(pub(crate) Move);
 
     impl fmt::Debug for Normal {
@@ -334,6 +336,7 @@ pub mod kind {
 
     /// A castling move.
     #[derive(PartialEq, Eq, Clone, Copy, Hash)]
+    #[repr(C)]
     pub struct Castle(pub(crate) Move);
 
     impl fmt::Debug for Castle {
@@ -397,6 +400,7 @@ pub mod kind {
 
     /// A promotion move.
     #[derive(PartialEq, Eq, Clone, Copy, Hash)]
+    #[repr(C)]
     pub struct Promotion(pub(crate) Move);
 
     impl fmt::Debug for Promotion {
@@ -449,6 +453,7 @@ pub mod kind {
 
     /// An en passant move.
     #[derive(PartialEq, Eq, Clone, Copy, Hash)]
+    #[repr(C)]
     pub struct EnPassant(pub(crate) Move);
 
     impl fmt::Debug for EnPassant {
