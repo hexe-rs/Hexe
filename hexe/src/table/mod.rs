@@ -1,6 +1,9 @@
 use std::cmp::Ordering;
 use std::mem;
 
+#[cfg(all(test, nightly))]
+mod benches;
+
 const CACHE_LINE:   usize = 64;
 const CLUSTER_SIZE: usize = mem::size_of::<Cluster>();
 const ENTRY_COUNT:  usize = CACHE_LINE / mem::size_of::<Entry>();
