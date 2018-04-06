@@ -121,27 +121,3 @@ impl EngineBuilder {
 struct Options {
     num_threads: usize,
 }
-
-impl Options {
-    /// Attempts to set the option of `name` to `value`. Returns `false` if
-    /// `name` is not an option.
-    fn set(&mut self, name: &str, value: &str) -> bool {
-        // Performs a case-insensitive check against the option
-        let match_option = |opt: &str| {
-            ::util::matches_lower_alpha(opt.as_ref(), name.as_ref())
-        };
-        if match_option("threads") {
-            panic!("Cannot currently set number of threads");
-        } else {
-            false
-        }
-    }
-
-    fn report(&self) {
-        println!(
-            "\noption name Threads type spin default {} min 1 max {}",
-            ::num_cpus::get(),
-            usize::MAX,
-        );
-    }
-}

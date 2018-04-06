@@ -147,7 +147,11 @@ impl<'a> Uci<'a> {
     }
 
     fn report_options(&self) {
-        self.0.options.report();
+        println!(
+            "\noption name Threads type spin default {} min 1 max {}",
+            ::num_cpus::get(),
+            usize::MAX,
+        );
     }
 
     fn cmd_uci(&self) {
@@ -192,7 +196,14 @@ impl<'a> Uci<'a> {
             value.push_str(next);
         }
 
-        if !self.0.options.set(&name, &value) {
+        // Performs a case-insensitive check against the option
+        let match_option = |opt: &str| {
+            ::util::matches_lower_alpha(opt.as_ref(), name.as_ref())
+        };
+
+        if match_option("threads") {
+            panic!("Cannot currently set number of threads");
+        } else {
             println!("No such option: {}", name);
         }
     }
