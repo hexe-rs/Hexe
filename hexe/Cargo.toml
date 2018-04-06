@@ -23,8 +23,9 @@ appveyor  = { repository = "nvzqz/Hexe" }
 [dependencies]
 hexe_core = { version = "0.0.5", path = "../hexe_core" }
 rand      = { version = "0.4.0", optional = true }
-num_cpus  = "1.0.0"
-uncon     = "1.1.0"
+libc      = "0.2"
+num_cpus  = "1.0"
+uncon     = "1.1"
 
 [dev-dependencies]
 rand              = "0.4"

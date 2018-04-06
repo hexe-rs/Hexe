@@ -69,6 +69,7 @@ extern crate test;
 
 pub extern crate hexe_core as core;
 
+extern crate libc;
 extern crate num_cpus;
 extern crate uncon;
 

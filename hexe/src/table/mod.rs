@@ -1,24 +1,44 @@
 use std::cmp::Ordering;
 use std::mem;
+use std::ptr::{self, NonNull};
+use std::slice;
+
+use libc;
 
 #[cfg(all(test, nightly))]
 mod benches;
 
-const CACHE_LINE:   usize = 64;
-const CLUSTER_SIZE: usize = mem::size_of::<Cluster>();
-const ENTRY_COUNT:  usize = CACHE_LINE / mem::size_of::<Entry>();
-const MB_SIZE:      usize = 1024 * 1024;
+#[cfg(test)]
+mod tests;
+
+const CACHE_LINE:    usize = 64;
+const CLUSTER_ALIGN: usize = mem::align_of::<Cluster>();
+const CLUSTER_SIZE:  usize = mem::size_of::<Cluster>();
+const ENTRY_COUNT:   usize = CACHE_LINE / mem::size_of::<Entry>();
+const MB_SIZE:       usize = 1024 * 1024;
 
 #[cfg(test)]
 assert_eq_size! { cluster_size;
     Cluster,
-    [u8; mem::align_of::<Cluster>()], // Same size and alignment
-    [u8; CACHE_LINE],                 // as the cache line size
+    [u8; CLUSTER_ALIGN], // Same size and alignment
+    [u8; CACHE_LINE],    // as the cache line size
 }
 
 /// A transposition table.
 pub struct Table {
-    clusters: Vec<Cluster>
+    /// The start of the `calloc`ed buffer.
+    start: *mut libc::c_void,
+    /// A pointer offset to the correct alignment of `Cluster`.
+    align: NonNull<Cluster>,
+    /// The size of the table by number of clusters.
+    len: usize,
+}
+
+impl Drop for Table {
+    #[inline]
+    fn drop(&mut self) {
+        unsafe { self.dealloc() };
+    }
 }
 
 impl Table {
@@ -26,7 +46,9 @@ impl Table {
     /// number of megabytes.
     pub fn new(size_mb: usize, exact: bool) -> Table {
         let mut table = Table {
-            clusters: Default::default()
+            start: ptr::null_mut(),
+            align: NonNull::dangling(),
+            len: 0,
         };
         if exact {
             table.resize_exact(size_mb);
@@ -36,14 +58,24 @@ impl Table {
         table
     }
 
+    #[inline]
+    unsafe fn dealloc(&mut self) {
+        libc::free(self.start);
+    }
+
+    #[cfg(test)]
+    fn is_aligned(&self) -> bool {
+        self.align.as_ptr() as usize % CLUSTER_ALIGN == 0
+    }
+
     /// Returns the number of entries in the table.
     pub fn size(&self) -> usize {
-        self.clusters.len() * ENTRY_COUNT
+        self.len * ENTRY_COUNT
     }
 
     /// Returns the size of the table in megabytes.
     pub fn size_mb(&self) -> usize {
-        self.clusters.len() * CLUSTER_SIZE / MB_SIZE
+        self.len * CLUSTER_SIZE / MB_SIZE
     }
 
     /// Resizes the table to the next power of two number of megabytes.
@@ -53,27 +85,35 @@ impl Table {
 
     /// Resizes the table to exactly `size_mb` number of megabytes.
     pub fn resize_exact(&mut self, size_mb: usize) {
-        let new = size_mb * MB_SIZE / CLUSTER_SIZE;
-        let old = self.clusters.len();
-
-        match new.cmp(&old) {
-            Ordering::Equal => return,
-            Ordering::Greater => unsafe {
-                self.clusters.reserve_exact(new - old);
-                self.clusters.set_len(new);
-                let slice = self.clusters.get_unchecked_mut(old..new);
-                ::util::zero(slice);
-            },
-            Ordering::Less => {
-                self.clusters.truncate(new);
-                self.clusters.shrink_to_fit();
-            },
+        let len = size_mb * MB_SIZE / CLUSTER_SIZE;
+        if len == self.len {
+            return;
         }
+
+        if !self.start.is_null() {
+            unsafe { self.dealloc() };
+        }
+
+        let calloc = unsafe { libc::calloc(len + 1, CLUSTER_SIZE) };
+        self.start = calloc;
+        self.len   = len;
+
+        self.align = unsafe {
+            const MASK: usize = !(CLUSTER_SIZE - 1);
+            let val = calloc.offset(CLUSTER_SIZE as _) as usize;
+            NonNull::new_unchecked((val & MASK) as *mut Cluster)
+        };
+    }
+
+    fn clusters_mut(&mut self) -> &mut [Cluster] {
+        let ptr = self.align.as_ptr();
+        let len = self.len * CLUSTER_SIZE;
+        unsafe { slice::from_raw_parts_mut(ptr, len) }
     }
 
     /// Zeroes out the entire table.
     pub fn clear(&mut self) {
-        unsafe { ::util::zero(&mut self.clusters[..]) };
+        unsafe { ::util::zero(self.clusters_mut()) };
     }
 }
 
