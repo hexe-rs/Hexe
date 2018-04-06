@@ -475,8 +475,7 @@ pub mod kind {
         /// Creates a new en passant move without checking whether it is legal.
         #[inline]
         pub unsafe fn new_unchecked(src: Square, dst: Square) -> EnPassant {
-            let kind = (Kind::EnPassant as u16) << KIND_SHIFT;
-            EnPassant(Move(base!(src, dst) | kind))
+            EnPassant(Move(base!(src, dst) | kind!(EnPassant)))
         }
 
         /// Returns the kind for `self`.
