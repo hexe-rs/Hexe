@@ -20,11 +20,15 @@ pub struct Table {
 impl Table {
     /// Creates a new table with a capacity and size that matches `size_mb`
     /// number of megabytes.
-    pub fn new(size_mb: usize) -> Table {
+    pub fn new(size_mb: usize, exact: bool) -> Table {
         let mut table = Table {
             clusters: Default::default()
         };
-        table.resize(size_mb);
+        if exact {
+            table.resize_exact(size_mb);
+        } else {
+            table.resize(size_mb);
+        }
         table
     }
 

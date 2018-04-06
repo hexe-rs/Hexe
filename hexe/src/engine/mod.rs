@@ -89,7 +89,7 @@ impl EngineBuilder {
         };
         Engine {
             pool:     Pool::new(num_threads),
-            table:    Table::new(hash_mb),
+            table:    Table::new(hash_mb, true),
             position: Position::default(),
             options:  Options { num_threads },
         }
