@@ -119,6 +119,12 @@ impl Move {
         ((self.0 >> SRC_SHIFT) & SRC_MASK).into()
     }
 
+    #[inline]
+    fn color(self) -> Color {
+        // src rank is even for white and odd for black
+        ((u16::from(self) >> RANK_SHIFT) & 1).into()
+    }
+
     /// Returns the destination square for `self`.
     #[inline]
     pub fn dst(self) -> Square {
@@ -440,11 +446,7 @@ pub mod kind {
 
         /// Returns the color of the moving piece.
         #[inline]
-        pub fn color(self) -> Color {
-            // src rank is even for white and odd for black
-            let inner = u16::from(self);
-            ((inner >> RANK_SHIFT) & 1).into()
-        }
+        pub fn color(self) -> Color { Move::color(self.into()) }
 
         /// Returns the promotion piece.
         #[inline]
@@ -491,11 +493,7 @@ pub mod kind {
 
         /// Returns the color of the moving piece.
         #[inline]
-        pub fn color(self) -> Color {
-            // src rank is even for white and odd for black
-            let inner = u16::from(self);
-            ((inner >> RANK_SHIFT) & 1).into()
-        }
+        pub fn color(self) -> Color { Move::color(self.into()) }
 
         /// Returns whether the en passant is legal and is acting on the correct
         /// squares.
