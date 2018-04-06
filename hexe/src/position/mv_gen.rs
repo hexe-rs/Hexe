@@ -13,11 +13,11 @@ pub struct MoveGen<'pos, 'buf> {
 impl<'a, 'b> MoveGen<'a, 'b> {
     /// Generates all legal moves.
     pub fn legal(&mut self) -> &mut Self {
-        unimplemented!();
+        self
     }
 
     /// Generates all pseudo-legal castling moves.
     pub fn castle(&mut self) -> &mut Self {
-        unimplemented!();
+        self
     }
 }
