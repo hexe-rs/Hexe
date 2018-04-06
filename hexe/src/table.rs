@@ -1,17 +1,18 @@
 use std::mem;
 
+const CACHE_LINE:   usize = 64;
 const CLUSTER_SIZE: usize = mem::size_of::<Cluster>();
-const ENTRY_COUNT:  usize = 1;
+const ENTRY_COUNT:  usize = 16;
 const MB_SIZE:      usize = 1024 * 1024;
 
 #[cfg(test)]
-const CACHE_LINE: usize = 64;
-
-#[cfg(test)]
-const_assert!(cluster_size; 64 % CACHE_LINE == 0);
+assert_eq_size! { cluster_size;
+    Cluster,
+    [u8; mem::align_of::<Cluster>()],
+    [u8; CACHE_LINE],
+}
 
 /// A transposition table.
-#[derive(Debug)]
 pub struct Table {
     clusters: Vec<Cluster>
 }
@@ -67,13 +68,15 @@ impl Table {
     }
 }
 
-#[derive(Debug)]
-#[repr(C)]
-struct Cluster([Entry; ENTRY_COUNT]);
+#[repr(C, align(64))]
+union Cluster {
+    entries: [Entry; ENTRY_COUNT],
+    padding: [u8; CACHE_LINE],
+}
 
 #[derive(Debug, Copy, Clone)]
 #[repr(C)]
 struct Entry {
-    mv:    u16,
-    value: i16,
+    mv:  u16,
+    val: i16,
 }
