@@ -7,6 +7,7 @@ use std::usize;
 
 use position::Position;
 
+use table::Table;
 use thread::Pool;
 
 mod uci;
@@ -29,6 +30,7 @@ pub use self::uci::Uci;
 /// ```
 pub struct Engine {
     pool: Pool,
+    table: Table,
     position: Position,
     options: Options,
 }
@@ -42,7 +44,10 @@ impl Engine {
     /// Creates a new builder for setting engine options.
     #[inline]
     pub fn builder() -> EngineBuilder {
-        EngineBuilder { num_threads: 0 }
+        EngineBuilder {
+            num_threads: 0,
+            hash_mb: 0,
+        }
     }
 
     /// Creates an instance of the engine with the default options applied.
@@ -68,6 +73,7 @@ impl Engine {
 #[derive(Copy, Clone, Debug)]
 pub struct EngineBuilder {
     num_threads: usize,
+    hash_mb: usize,
 }
 
 impl EngineBuilder {
@@ -77,10 +83,15 @@ impl EngineBuilder {
             0 => ::num_cpus::get(),
             n => n,
         };
+        let hash_mb = match self.hash_mb {
+            0 => 1,
+            n => n,
+        };
         Engine {
-            pool: Pool::new(num_threads),
+            pool:     Pool::new(num_threads),
+            table:    Table::new(hash_mb),
             position: Position::default(),
-            options: Options { num_threads },
+            options:  Options { num_threads },
         }
     }
 
@@ -92,6 +103,16 @@ impl EngineBuilder {
     #[inline]
     pub fn num_threads(mut self, n: usize) -> EngineBuilder {
         self.num_threads = n;
+        self
+    }
+
+    /// The number of megabytes available for the hash table.
+    ///
+    /// If `n` is 0, or you do not call this function, then the table size will
+    /// be selected automatically. The default is 1.
+    #[inline]
+    pub fn hash_mb(mut self, n: usize) -> EngineBuilder {
+        self.hash_mb = n;
         self
     }
 }
