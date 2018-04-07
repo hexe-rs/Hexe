@@ -86,7 +86,12 @@ impl Position {
     }
 
     /// Returns whether the move is legal for this position.
-    pub fn is_legal(&self, mv: Move) -> bool {
+    #[inline]
+    pub fn is_legal<M: Into<Move>>(&self, mv: M) -> bool {
+        self._is_legal(mv.into())
+    }
+
+    fn _is_legal(&self, mv: Move) -> bool {
         use self::mv::Matches;
 
         let src = mv.src();
