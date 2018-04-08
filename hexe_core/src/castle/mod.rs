@@ -43,6 +43,9 @@ use serde::*;
 
 use iter;
 
+mod tables;
+pub(crate) use self::tables::TABLES;
+
 const ALL_BITS: u8 = 0b1111;
 const MAX_LEN: usize = 1 + ALL_BITS as usize;
 
@@ -234,7 +237,7 @@ impl ops::Not for Side {
 impl From<Right> for char {
     #[inline]
     fn from(right: Right) -> char {
-        b"KQkq"[right as usize] as char
+        TABLES.chars[right as usize] as char
     }
 }
 

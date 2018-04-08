@@ -5,7 +5,7 @@ use core::fmt;
 use uncon::FromUnchecked;
 
 use color::Color;
-use castle::Right;
+use castle::{self, Right};
 use piece;
 use square::{File, Rank, Square};
 
@@ -31,6 +31,13 @@ macro_rules! kind {
 macro_rules! meta {
     ($m:expr) => { ($m as u16) << META_SHIFT };
 }
+
+pub (crate) const KIND_CASTLE: u16 = kind!(Castle);
+
+pub(crate) const META_WK: u16 = meta!(Right::WhiteKing);
+pub(crate) const META_WQ: u16 = meta!(Right::WhiteQueen);
+pub(crate) const META_BK: u16 = meta!(Right::BlackKing);
+pub(crate) const META_BQ: u16 = meta!(Right::BlackQueen);
 
 const SRC_SHIFT:  usize =  0;
 const DST_SHIFT:  usize =  6;
@@ -292,10 +299,10 @@ pub mod kind {
     use super::*;
     use core::ops;
 
-    const WK: u16 = base!(Square::E1, Square::G1);
-    const WQ: u16 = base!(Square::E1, Square::C1);
-    const BK: u16 = base!(Square::E8, Square::G8);
-    const BQ: u16 = base!(Square::E8, Square::C8);
+    pub(crate) const WK: u16 = base!(Square::E1, Square::G1);
+    pub(crate) const WQ: u16 = base!(Square::E1, Square::C1);
+    pub(crate) const BK: u16 = base!(Square::E8, Square::G8);
+    pub(crate) const BQ: u16 = base!(Square::E8, Square::C8);
 
     macro_rules! impl_from_move {
         ($($t:ident),+) => { $(
@@ -377,13 +384,7 @@ pub mod kind {
     impl From<Right> for Castle {
         #[inline]
         fn from(right: Right) -> Castle {
-            static ALL: [u16; 4] = [
-                WK | kind!(Castle) | meta!(Right::WhiteKing),
-                WQ | kind!(Castle) | meta!(Right::WhiteQueen),
-                BK | kind!(Castle) | meta!(Right::BlackKing),
-                BQ | kind!(Castle) | meta!(Right::BlackQueen),
-            ];
-            Castle(Move(ALL[right as usize]))
+            Castle(Move(castle::TABLES.moves[right as usize]))
         }
     }
 

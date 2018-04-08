@@ -6,7 +6,7 @@ use core::{hash, ops, mem};
 use core::simd::u8x64;
 
 use board::{Bitboard, PieceMap};
-use castle::Right;
+use castle::{self, Right};
 use color::Color;
 use piece::{Piece, Role};
 use square::Square;
@@ -536,15 +536,7 @@ impl MultiBoard {
     /// [XOR]: https://en.wikipedia.org/wiki/Exclusive_or
     #[inline]
     pub fn castle(&mut self, right: Right) {
-        // (King, Rook)
-        static MASKS: [(u64, u64); 4] = [
-            (squares!(E1, G1), squares!(H1, F1)),
-            (squares!(E1, C1), squares!(A1, D1)),
-            (squares!(E8, G8), squares!(H8, F8)),
-            (squares!(E8, C8), squares!(A8, D8)),
-        ];
-
-        let (king, rook) = MASKS[right as usize];
+        let (king, rook) = castle::TABLES.mb_masks[right as usize];
         self[right.color()]   ^= king | rook;
         self[Role::King] ^= king;
         self[Role::Rook] ^= rook;
