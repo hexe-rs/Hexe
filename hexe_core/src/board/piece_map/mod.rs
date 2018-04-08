@@ -5,6 +5,7 @@ use core::{fmt, hash, mem, ops, ptr, str};
 #[cfg(feature = "simd")]
 use core::simd::u8x64;
 
+use castle;
 use consts::PTR_SIZE;
 use misc::Contained;
 use piece::Piece;
@@ -55,7 +56,7 @@ mod tables {
     ];
 }
 
-const NONE: u8 = 12;
+pub(crate) const NONE: u8 = 12;
 
 const SQUARE_NUM: usize = 64;
 
@@ -440,36 +441,12 @@ impl PieceMap {
     /// involved with castling using `right` are in a correct state post-castle.
     #[inline]
     pub fn castle(&mut self, right: Right) {
-        use piece::Piece::*;
-        use square::Square::*;
-
-        macro_rules! quad {
-            ($a:expr, $b:expr, $c:expr, $d:expr) => {
-                (($d as u32) << 24) |
-                (($c as u32) << 16) |
-                (($b as u32) << 8)  |
-                ( $a as u32)
-            }
-        }
-
-        struct Values { value: [u32; 4], pairs: [(Square, Square); 4] }
-
-        static VALUES: Values = Values {
-            value: [
-                quad!(NONE, WhiteRook, WhiteKing, NONE),
-                quad!(NONE, NONE,      WhiteKing, WhiteRook),
-                quad!(NONE, BlackRook, BlackKing, NONE),
-                quad!(NONE, NONE,      BlackKing, BlackRook),
-            ],
-            pairs: [(E1, E1), (E1, A1), (E8, E8), (E8, A8)],
-        };
-
-        let (king_sq, start_sq) = VALUES.pairs[right as usize];
+        let (king_sq, start_sq) = castle::TABLES.pm_pairs[right as usize];
         self.remove(king_sq);
 
         let buf = unsafe { self.as_bytes_mut() };
         let ptr = &mut buf[start_sq as usize] as *mut u8 as *mut u32;
-        unsafe { *ptr = VALUES.value[right as usize] };
+        unsafe { *ptr = castle::TABLES.pm_value[right as usize] };
     }
 
     /// Inserts all pieces for which the function returns `Some`.
