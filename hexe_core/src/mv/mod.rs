@@ -160,6 +160,31 @@ impl Move {
         }
     }
 
+    /// Returns whether `self` has an internal value of zero.
+    ///
+    /// # Examples
+    ///
+    /// There is only one such move:
+    ///
+    /// ```
+    /// # use hexe_core::mv::Move;
+    /// # use hexe_core::square::Square;
+    /// let sq = Square::A1;
+    /// let mv = Move::normal(sq, sq);
+    ///
+    /// assert!(mv.is_null());
+    /// ```
+    #[inline]
+    pub fn is_null(self) -> bool {
+        self.0 == 0
+    }
+
+    /// Returns whether `self` actually moves from one square to another.
+    #[inline]
+    pub fn is_real(self) -> bool {
+        self.src() != self.dst()
+    }
+
     /// Returns a `match`-able type that represents the inner variant of `self`.
     ///
     /// # Examples
