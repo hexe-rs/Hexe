@@ -50,7 +50,9 @@ use serde::*;
 
 #[cfg(all(test, nightly))]
 mod benches;
+
 mod tables;
+use self::tables::TABLES;
 
 impl_rand!(u8 => Square, File, Rank);
 
@@ -151,14 +153,12 @@ impl Square {
 
     #[inline]
     pub(crate) fn between(self, other: Square) -> Bitboard {
-        use self::tables::*;
-        Bitboard(TABLES[BETWEEN_START..][self as usize][other as usize])
+        Bitboard(TABLES.between[self as usize][other as usize])
     }
 
     #[inline]
     pub(crate) fn line(self, other: Square) -> Bitboard {
-        use self::tables::*;
-        Bitboard(TABLES[LINE_START..][self as usize][other as usize])
+        Bitboard(TABLES.line[self as usize][other as usize])
     }
 
     /// Returns the `File` for `self`.
@@ -299,7 +299,7 @@ impl Square {
     /// [wiki]: https://en.wikipedia.org/wiki/Chebyshev_distance
     #[inline]
     pub fn distance(self, other: Square) -> usize {
-        tables::DISTANCE[self as usize][other as usize] as usize
+        TABLES.distance[self as usize][other as usize] as usize
     }
 
     /// Calculates the [Manhattan distance][wiki] between `self` and `other`.
@@ -346,8 +346,7 @@ impl Square {
     /// [wiki]: https://en.wikipedia.org/wiki/Chebyshev_distance
     #[inline]
     pub fn center_distance(self) -> usize {
-        use self::tables::*;
-        DISTANCE[CHEBYSHEV_INDEX][self as usize] as usize
+        TABLES.chebyshev[self as usize] as usize
     }
 
     /// Calculates the [Manhattan distance][wiki] between `self` and the center
@@ -356,8 +355,7 @@ impl Square {
     /// [wiki]: https://en.wiktionary.org/wiki/Manhattan_distance
     #[inline]
     pub fn center_man_distance(self) -> usize {
-        use self::tables::*;
-        DISTANCE[MANHATTAN_INDEX][self as usize] as usize
+        TABLES.manhattan[self as usize] as usize
     }
 
     /// Returns the [triangular index][wiki] for `self` and `other`.
@@ -430,13 +428,13 @@ impl Square {
     /// Returns the pawn attacks for `self` and `color`.
     #[inline]
     pub fn pawn_attacks(self, color: Color) -> Bitboard {
-        Bitboard(tables::TABLES[color as usize][self as usize])
+        Bitboard(TABLES.pawns[color as usize][self as usize])
     }
 
     /// Returns the knight attacks for `self`.
     #[inline]
     pub fn knight_attacks(self) -> Bitboard {
-        Bitboard(tables::TABLES[2][self as usize])
+        Bitboard(TABLES.knight[self as usize])
     }
 
     /// Returns the rook attacks for `self` and `occupied`.
@@ -486,7 +484,7 @@ impl Square {
     /// Returns the king attacks for `self`.
     #[inline]
     pub fn king_attacks(self) -> Bitboard {
-        Bitboard(tables::TABLES[3][self as usize])
+        Bitboard(TABLES.king[self as usize])
     }
 
     /// Returns the queen attacks for `self` and `occupied`.
@@ -709,6 +707,30 @@ mod tests {
     sliding_attacks! { rook_attacks bishop_attacks queen_attacks }
 
     jump_attacks! { knight_attacks king_attacks }
+
+    #[test]
+    fn tables_alignment() {
+        const ALIGN: usize = 64;
+
+        macro_rules! test {
+            ($($field:ident),+) => { $({
+                let ptr   = &TABLES.$field as *const _;
+                let align = ptr as usize % ALIGN;
+                assert_eq!(
+                    align,
+                    0,
+                    concat!(
+                        "TABLES.",
+                        stringify!($field),
+                        " at {:p} is incorrectly aligned"
+                    ),
+                    ptr,
+                );
+            })+ }
+        }
+
+        test!(distance, pawns, knight, king, between, line);
+    }
 
     #[test]
     fn distance() {
