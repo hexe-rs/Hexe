@@ -250,6 +250,13 @@ impl From<Move> for Matches {
 
 macro_rules! impl_matches {
     ($($k:ident, $m:ident, $d:expr;)+) => {
+        impl fmt::Debug for Matches {
+            #[inline]
+            fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+                match *self { $(Matches::$k(mv) => mv.fmt(f),)+ }
+            }
+        }
+
         impl Matches {
             $(
                 #[doc = $d]
@@ -278,18 +285,6 @@ impl_matches! {
     Castle,    castle;
     Promotion, promotion;
     EnPassant, en_passant;
-}
-
-impl fmt::Debug for Matches {
-    #[inline]
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        match *self {
-            Matches::Normal(mv)    => mv.fmt(f),
-            Matches::Castle(mv)    => mv.fmt(f),
-            Matches::Promotion(mv) => mv.fmt(f),
-            Matches::EnPassant(mv) => mv.fmt(f),
-        }
-    }
 }
 
 /// The different underlying kinds of moves.
