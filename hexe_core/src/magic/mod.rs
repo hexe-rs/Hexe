@@ -25,10 +25,10 @@ fn attacks(magic: &Magic, occupied: u64, shift: u8) -> u64 {
 
 #[inline]
 pub fn rook_attacks(square: Square, occupied: Bitboard) -> Bitboard {
-    attacks(&tables::MAGICS[0][square as usize], occupied.0, 12).into()
+    attacks(&tables::MAGICS.rook[square as usize], occupied.0, 12).into()
 }
 
 #[inline]
 pub fn bishop_attacks(square: Square, occupied: Bitboard) -> Bitboard {
-    attacks(&tables::MAGICS[1][square as usize], occupied.0, 9).into()
+    attacks(&tables::MAGICS.bishop[square as usize], occupied.0, 9).into()
 }
