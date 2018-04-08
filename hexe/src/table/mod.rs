@@ -107,8 +107,12 @@ impl Table {
 
     fn clusters_mut(&mut self) -> &mut [Cluster] {
         let ptr = self.align.as_ptr();
-        let len = self.len * CLUSTER_SIZE;
-        unsafe { slice::from_raw_parts_mut(ptr, len) }
+        unsafe { slice::from_raw_parts_mut(ptr, self.len) }
+    }
+
+    fn clusters(&self) -> &[Cluster] {
+        let ptr = self.align.as_ptr();
+        unsafe { slice::from_raw_parts(ptr, self.len) }
     }
 
     /// Zeroes out the entire table.
@@ -120,6 +124,16 @@ impl Table {
 #[repr(C, align(64))]
 union Cluster {
     entries: [Entry; ENTRY_COUNT],
+}
+
+impl Cluster {
+    fn entries(&self) -> &[Entry; ENTRY_COUNT] {
+        unsafe { &self.entries }
+    }
+
+    fn entries_mut(&mut self) -> &mut [Entry; ENTRY_COUNT] {
+        unsafe { &mut self.entries }
+    }
 }
 
 #[derive(Debug, Copy, Clone)]
