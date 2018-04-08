@@ -1,5 +1,6 @@
 use super::*;
 use board::piece_map::NONE;
+use iter::Range;
 use mv;
 use piece::Piece::*;
 use square::Square::*;
@@ -20,6 +21,8 @@ pub struct Tables {
     pub chars: [u8; 4],
     pub pm_value: [u32; 4],
     pub pm_pairs: [(Square, Square); 4],
+    pub path: [Bitboard; 4],
+    pub path_iter: [Range<Square>; 4],
 }
 
 pub static TABLES: Tables = Tables {
@@ -43,4 +46,16 @@ pub static TABLES: Tables = Tables {
         quad!(NONE, NONE,      BlackKing, BlackRook),
     ],
     pm_pairs: [(E1, E1), (E1, A1), (E8, E8), (E8, A8)],
+    path: [
+        path::WHITE_KING,
+        path::WHITE_QUEEN,
+        path::BLACK_KING,
+        path::BLACK_QUEEN,
+    ],
+    path_iter: [
+        Range { iter: 05..07 },
+        Range { iter: 01..04 },
+        Range { iter: 61..63 },
+        Range { iter: 57..60 },
+    ],
 };

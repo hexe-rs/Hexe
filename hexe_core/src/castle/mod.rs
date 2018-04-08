@@ -275,20 +275,14 @@ impl Right {
     /// Returns the path between the rook and king for this right.
     #[inline]
     pub fn path(self) -> Bitboard {
-        path::ALL[self as usize]
+        TABLES.path[self as usize]
     }
 
     /// Returns an efficient iterator over each square in the path between the
     /// rook and king for `self`.
     #[inline]
     pub fn path_iter(self) -> iter::Range<Square> {
-        static ITERS: [iter::Range<Square>; 4] = [
-            iter::Range { iter: 05..07 },
-            iter::Range { iter: 01..04 },
-            iter::Range { iter: 61..63 },
-            iter::Range { iter: 57..60 },
-        ];
-        ITERS[self as usize].clone()
+        TABLES.path_iter[self as usize].clone()
     }
 
     /// Returns the color for `self`.
@@ -319,14 +313,6 @@ pub mod path {
 
     /// Black queenside path.
     pub const BLACK_QUEEN: Bitboard = Bitboard(WHITE_QUEEN.0 << 56);
-
-    /// All paths.
-    pub static ALL: [Bitboard; 4] = [
-        WHITE_KING,
-        WHITE_QUEEN,
-        BLACK_KING,
-        BLACK_QUEEN,
-    ];
 }
 
 /// A side used to castle.
