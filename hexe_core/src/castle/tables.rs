@@ -1,6 +1,7 @@
 use super::*;
 use mv;
 
+#[repr(align(64))]
 pub struct Tables {
     pub mb_masks: [(u64, u64); 4],
     pub chars: [u8; 4],
