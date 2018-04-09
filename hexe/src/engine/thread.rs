@@ -42,19 +42,20 @@ impl Pool {
         };
 
         for index in 0..n {
+            // Request stealer while in pool thread
             let stealer = pool.jobs.stealer();
 
             let handle = thread::spawn(move || {
+                // Move the stealer into worker scope
                 let stealer = stealer;
                 loop {
                     match stealer.steal() {
                         Steal::Empty => {
+                            println!("Thread {} found deque empty", index);
                             return;
                         },
                         Steal::Data(job) => job.execute(index),
-                        Steal::Retry => {
-                            continue;
-                        },
+                        Steal::Retry => continue,
                     }
                 }
             });
