@@ -47,15 +47,18 @@ pub enum Job {
     },
 }
 
-pub struct Context<'a> {
+/// Context data available to a worker thread.
+pub struct Context<'ctx> {
+    /// The thread identifier.
     pub thread: usize,
-    pub worker: &'a mut Worker,
-    pub shared: &'a Shared,
+    /// The thread's unique worker data.
+    pub worker: &'ctx mut Worker,
+    /// Data shared with all threads.
+    pub shared: &'ctx Shared,
 }
 
 impl Job {
-    /// Executes `self` on thread `id` with mutable access to `Worker` and
-    /// a reference to `Shared`.
+    /// Executes `self` within `context`.
     pub fn execute(self, context: &mut Context) {
         match self {
             Job::Search { limits, moves } => {
