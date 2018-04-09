@@ -1,17 +1,30 @@
 use std::mem;
 use std::thread::{self, JoinHandle};
 use std::sync::{Arc, Condvar, Mutex};
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use crossbeam_deque::{Deque, Stealer, Steal};
+
+use util::AnySend;
 
 mod job;
 pub use self::job::Job;
 
 struct Thread {
-    /// The index for this thread.
-    index: usize,
+    /// Data unique to this thread.
+    ///
+    /// Although the pool owns this pointer, only its thread may access mutably.
+    ///
+    /// Boxed to ensure a stable address.
+    unique: Box<Unique>,
     /// Join up with everyone else.
     handle: JoinHandle<()>,
+}
+
+/// Data unique to a given thread. The pool may not access it mutably, but the
+/// corresponding running thread may if data.
+struct Unique {
+    kill: AtomicBool,
 }
 
 /// Data shared between the pool and threads.
@@ -36,6 +49,7 @@ pub struct Pool {
 
 impl Drop for Pool {
     fn drop(&mut self) {
+        self.kill_all();
         for thread in self.threads.drain(..) {
             if let Err(_) = thread.handle.join() {
                 unreachable!("Thread panicked");
@@ -68,15 +82,25 @@ impl Pool {
             let stealer = self.jobs.stealer();
             let shared  = Arc::clone(&self.shared);
 
+            // The pool owns the pointer to the unique value
+            let mut unique = Box::new(Unique {
+                kill: AtomicBool::new(false),
+            });
+
+            // Wrap up in order to send to the corresponding thread
+            let unique_ptr = AnySend::new(&mut *unique as *mut Unique);
+
             let handle = thread::spawn(move || {
                 // Move all shared data into worker thread scope
                 let stealer = stealer;
+                let unique  = unsafe { &mut *unique_ptr.get() };
                 let shared  = shared;
 
-                loop {
+                while !unique.kill.load(Ordering::SeqCst) {
+                    eprintln!("Thread {} about to attempt steal", index);
                     match stealer.steal() {
                         Steal::Empty => {
-                            eprintln!("Thread {} about to get guard", index);
+                            eprintln!("Thread {} found empty deque", index);
                             let guard = shared.empty_mutex.lock().unwrap();
 
                             eprintln!("Thread {} is now waiting", index);
@@ -88,18 +112,26 @@ impl Pool {
                         Steal::Retry => continue,
                     }
                 }
+
+                eprintln!("Thread {} about to exit", index);
             });
 
-            self.threads.push(Thread {
-                index,
-                handle,
-            });
+            self.threads.push(Thread { unique, handle });
         }
     }
 
     /// Returns the number of threads in the pool.
     pub fn num_threads(&self) -> usize {
         self.threads.len()
+    }
+
+    /// Kills all threads.
+    pub fn kill_all(&self) {
+        for thread in &self.threads {
+            thread.unique.kill.store(true, Ordering::SeqCst);
+        }
+        // Wake up anyone sleeping until the next enqueue
+        self.shared.empty_cond.notify_all();
     }
 
     /// Enqueues the job to be executed.

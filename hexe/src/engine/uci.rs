@@ -163,7 +163,7 @@ impl<'a> Uci<'a> {
     }
 
     fn cmd_stop(&mut self) {
-        unimplemented!();
+        self.engine_mut().stop();
     }
 
     fn cmd_ponder_hit(&mut self) {

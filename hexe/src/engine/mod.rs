@@ -63,6 +63,11 @@ impl Engine {
         Uci::from(self)
     }
 
+    /// Stops all worker threads of the engine.
+    pub fn stop(&mut self) {
+        self.pool.kill_all();
+    }
+
     /// Returns the number of threads that the engine currently has spawned.
     #[inline]
     pub fn num_threads(&self) -> usize {
