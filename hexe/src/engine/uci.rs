@@ -264,6 +264,7 @@ impl<'a> Uci<'a> {
     }
 
     fn cmd_start_thinking(&mut self, limits: &Limits, moves: &[Move]) {
-        unimplemented!();
+        use engine::thread::Job;
+        self.engine().pool.enqueue(Job);
     }
 }
