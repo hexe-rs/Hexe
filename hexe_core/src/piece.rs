@@ -221,9 +221,9 @@ impl Role {
 
     /// The role is a promotion.
     #[inline]
-    pub fn is_promotion(&self) -> bool {
+    pub fn is_promotion(self) -> bool {
         // Pawn wraps around to 0xFF
-        (*self as u8).wrapping_sub(1) < Role::Queen as u8
+        (self as u8).wrapping_sub(1) < Role::Queen as u8
     }
 }
 
