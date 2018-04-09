@@ -48,7 +48,7 @@ pub enum Job {
 }
 
 pub struct Context<'a> {
-    pub index: usize,
+    pub thread: usize,
     pub worker: &'a mut Worker,
     pub shared: &'a Shared,
 }
@@ -59,8 +59,9 @@ impl Job {
     pub fn execute(self, context: &mut Context) {
         match self {
             Job::Search { limits, moves } => {
-                eprintln!("Thread {} is now executing a search", context.index);
+                eprintln!("Thread {} is now searching", context.thread);
             },
         }
+        eprintln!("Thread {} finished job", context.thread);
     }
 }

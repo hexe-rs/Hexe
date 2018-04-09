@@ -55,11 +55,11 @@ impl Pool {
             let handle = thread::spawn(move || {
                 // Move all shared data into worker thread scope
                 let stealer = stealer;
-                let worker  = unsafe { &mut *worker_ptr.get() };
-                let shared  = shared;
 
                 let mut context = Context {
-                    index, worker, shared: &shared
+                    thread: index,
+                    worker: unsafe { &mut *worker_ptr.get() },
+                    shared: &shared
                 };
 
                 while !context.worker.kill.load(Ordering::SeqCst) {
