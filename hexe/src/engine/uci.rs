@@ -7,7 +7,7 @@ use std::str;
 use core::color::Color;
 use core::mv::Move;
 use engine::Limits;
-use engine::thread::job::{self, Job};
+use engine::thread::Job;
 
 const WHITE: usize = Color::White as usize;
 const BLACK: usize = Color::Black as usize;
