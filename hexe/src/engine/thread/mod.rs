@@ -1,15 +1,14 @@
-use std::mem;
 use std::thread::{self, JoinHandle};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
-use crossbeam_deque::{Deque, Stealer, Steal};
+use crossbeam_deque::{Deque, Steal};
 use parking_lot::{Condvar, Mutex};
 
 use util::AnySend;
 
-mod job;
-pub use self::job::Job;
+pub mod job;
+use self::job::{Job, Context};
 
 struct Thread {
     /// Data unique to this thread.
@@ -24,12 +23,12 @@ struct Thread {
 
 /// Data unique to a given thread. The pool may not access it mutably, but the
 /// corresponding running thread may if data.
-struct Worker {
+pub struct Worker {
     kill: AtomicBool,
 }
 
 /// Data shared between the pool and threads.
-struct Shared {
+pub struct Shared {
     /// The condition variable for the deque being empty.
     empty_cond: Condvar,
     /// The mutex associated with `empty_cond`.
@@ -94,10 +93,14 @@ impl Pool {
             let handle = thread::spawn(move || {
                 // Move all shared data into worker thread scope
                 let stealer = stealer;
-                let unique  = unsafe { &mut *worker_ptr.get() };
+                let worker  = unsafe { &mut *worker_ptr.get() };
                 let shared  = shared;
 
-                while !unique.kill.load(Ordering::SeqCst) {
+                let mut context = Context {
+                    index, worker, shared: &shared
+                };
+
+                while !context.worker.kill.load(Ordering::SeqCst) {
                     eprintln!("Thread {} about to attempt steal", index);
                     match stealer.steal() {
                         Steal::Empty => {
@@ -109,7 +112,7 @@ impl Pool {
 
                             eprintln!("Thread {} finished waiting", index);
                         },
-                        Steal::Data(job) => job.execute(index),
+                        Steal::Data(job) => job.execute(&mut context),
                         Steal::Retry => continue,
                     }
                 }

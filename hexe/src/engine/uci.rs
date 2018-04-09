@@ -6,6 +6,8 @@ use std::str;
 
 use core::color::Color;
 use core::mv::Move;
+use engine::Limits;
+use engine::thread::job::{self, Job};
 
 const WHITE: usize = Color::White as usize;
 const BLACK: usize = Color::Black as usize;
@@ -22,18 +24,6 @@ macro_rules! id {
 
 macro_rules! unknown_command {
     ($cmd:expr) => { println!("Unknown command: {}", $cmd) }
-}
-
-struct Limits {
-    ponder: bool,
-    infinite: bool,
-    moves_to_go: u32,
-    time: [u32; 2],
-    inc: [u32; 2],
-    depth: u32,
-    nodes: u32,
-    mate: u32,
-    move_time: u32,
 }
 
 impl Default for Limits {
@@ -256,15 +246,15 @@ impl<'a> Uci<'a> {
             }
         }
 
-        self.cmd_start_thinking(&limits, &moves);
+        self.cmd_start_thinking(limits, moves.into());
     }
 
     fn cmd_read_move(&self, s: &str) -> Option<Move> {
         unimplemented!();
     }
 
-    fn cmd_start_thinking(&mut self, limits: &Limits, moves: &[Move]) {
-        use engine::thread::Job;
-        self.engine().pool.enqueue(Job);
+    fn cmd_start_thinking(&mut self, limits: Limits, moves: Box<[Move]>) {
+        let job = Job::Search { limits, moves };
+        self.engine().pool.enqueue(job);
     }
 }

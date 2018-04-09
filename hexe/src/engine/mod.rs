@@ -8,6 +8,9 @@ use std::usize;
 use position::Position;
 use table::Table;
 
+mod limits;
+pub(crate) use self::limits::Limits;
+
 mod thread;
 use self::thread::Pool;
 
