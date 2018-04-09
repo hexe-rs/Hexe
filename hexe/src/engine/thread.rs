@@ -1,3 +1,4 @@
+use std::mem;
 use std::thread::{self, JoinHandle};
 
 use crossbeam_deque::{Deque, Stealer, Steal};
@@ -22,6 +23,14 @@ pub struct Pool {
     threads: Vec<Thread>,
     /// Insertion point for jobs.
     jobs: Deque<Job>,
+}
+
+impl Drop for Pool {
+    fn drop(&mut self) {
+        for thread in self.threads.drain(..) {
+            thread.handle.join();
+        }
+    }
 }
 
 impl Pool {
