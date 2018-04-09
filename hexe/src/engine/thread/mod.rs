@@ -51,7 +51,7 @@ impl Drop for Pool {
     fn drop(&mut self) {
         self.kill_all();
         for thread in self.threads.drain(..) {
-            if let Err(_) = thread.handle.join() {
+            if thread.handle.join().is_err() {
                 unreachable!("Thread panicked");
             }
         }
