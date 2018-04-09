@@ -16,14 +16,14 @@ struct Thread {
     /// Although the pool owns this pointer, only its thread may access mutably.
     ///
     /// Boxed to ensure a stable address.
-    unique: Box<Unique>,
+    worker: Box<Worker>,
     /// Join up with everyone else.
     handle: JoinHandle<()>,
 }
 
 /// Data unique to a given thread. The pool may not access it mutably, but the
 /// corresponding running thread may if data.
-struct Unique {
+struct Worker {
     kill: AtomicBool,
 }
 
@@ -83,17 +83,17 @@ impl Pool {
             let shared  = Arc::clone(&self.shared);
 
             // The pool owns the pointer to the unique value
-            let mut unique = Box::new(Unique {
+            let mut worker = Box::new(Worker {
                 kill: AtomicBool::new(false),
             });
 
             // Wrap up in order to send to the corresponding thread
-            let unique_ptr = AnySend::new(&mut *unique as *mut Unique);
+            let worker_ptr = AnySend::new(&mut *worker as *mut Worker);
 
             let handle = thread::spawn(move || {
                 // Move all shared data into worker thread scope
                 let stealer = stealer;
-                let unique  = unsafe { &mut *unique_ptr.get() };
+                let unique  = unsafe { &mut *worker_ptr.get() };
                 let shared  = shared;
 
                 while !unique.kill.load(Ordering::SeqCst) {
@@ -116,7 +116,7 @@ impl Pool {
                 eprintln!("Thread {} about to exit", index);
             });
 
-            self.threads.push(Thread { unique, handle });
+            self.threads.push(Thread { worker, handle });
         }
     }
 
@@ -128,7 +128,7 @@ impl Pool {
     /// Kills all threads.
     pub fn kill_all(&self) {
         for thread in &self.threads {
-            thread.unique.kill.store(true, Ordering::SeqCst);
+            thread.worker.kill.store(true, Ordering::SeqCst);
         }
         // Wake up anyone sleeping until the next enqueue
         self.shared.empty_cond.notify_all();
