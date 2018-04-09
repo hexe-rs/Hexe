@@ -86,7 +86,6 @@ extern crate static_assertions;
 use core::_shared::*;
 
 mod table;
-mod thread;
 mod util;
 
 pub mod engine;

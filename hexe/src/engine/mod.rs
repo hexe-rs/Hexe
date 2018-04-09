@@ -6,9 +6,10 @@
 use std::usize;
 
 use position::Position;
-
 use table::Table;
-use thread::Pool;
+
+mod thread;
+use self::thread::Pool;
 
 mod uci;
 pub use self::uci::Uci;
