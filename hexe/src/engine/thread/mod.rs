@@ -1,9 +1,10 @@
 use std::mem;
 use std::thread::{self, JoinHandle};
-use std::sync::{Arc, Condvar, Mutex};
 use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::Arc;
 
 use crossbeam_deque::{Deque, Stealer, Steal};
+use parking_lot::{Condvar, Mutex};
 
 use util::AnySend;
 
@@ -101,10 +102,10 @@ impl Pool {
                     match stealer.steal() {
                         Steal::Empty => {
                             eprintln!("Thread {} found empty deque", index);
-                            let guard = shared.empty_mutex.lock().unwrap();
+                            let mut guard = shared.empty_mutex.lock();
 
                             eprintln!("Thread {} is now waiting", index);
-                            drop(shared.empty_cond.wait(guard).unwrap());
+                            shared.empty_cond.wait(&mut guard);
 
                             eprintln!("Thread {} finished waiting", index);
                         },

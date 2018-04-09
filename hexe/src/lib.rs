@@ -72,6 +72,7 @@ pub extern crate hexe_core as core;
 extern crate crossbeam_deque;
 extern crate libc;
 extern crate num_cpus;
+extern crate parking_lot;
 extern crate uncon;
 
 #[cfg(any(test, feature = "rand"))]
