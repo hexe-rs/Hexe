@@ -127,6 +127,7 @@ impl Pool {
 
     /// Kills all threads.
     pub fn kill_all(&self) {
+        eprintln!("Killing all threads");
         for thread in &self.threads {
             thread.worker.kill.store(true, Ordering::SeqCst);
         }
