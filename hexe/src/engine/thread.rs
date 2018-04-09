@@ -28,7 +28,9 @@ pub struct Pool {
 impl Drop for Pool {
     fn drop(&mut self) {
         for thread in self.threads.drain(..) {
-            thread.handle.join();
+            if let Err(_) = thread.handle.join() {
+                unreachable!("Thread panicked");
+            }
         }
     }
 }
