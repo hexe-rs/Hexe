@@ -47,18 +47,26 @@ impl Drop for Pool {
 impl Pool {
     /// Creates a new pool with `n` number of threads.
     pub fn new(n: usize) -> Pool {
-        let mut threads = Vec::<Thread>::with_capacity(n);
+        let mut pool = Pool {
+            threads: Vec::<Thread>::with_capacity(n),
+            shared: Arc::new(Shared {
+                empty_cond: Condvar::new(),
+                empty_mutex: Mutex::default(),
+            }),
+            jobs: Deque::<Job>::new(),
+        };
+        pool.add_threads(n);
+        pool
+    }
 
-        let jobs = Deque::<Job>::new();
+    /// Adds `n` number of threads to the pool.
+    pub fn add_threads(&mut self, n: usize) {
+        let start = self.num_threads();
+        let range = start..(start + n);
 
-        let shared = Arc::new(Shared {
-            empty_cond: Condvar::new(),
-            empty_mutex: Mutex::default(),
-        });
-
-        for index in 0..n {
-            let stealer = jobs.stealer();
-            let shared  = Arc::clone(&shared);
+        for index in range {
+            let stealer = self.jobs.stealer();
+            let shared  = Arc::clone(&self.shared);
 
             let handle = thread::spawn(move || {
                 // Move all shared data into worker thread scope
@@ -70,8 +78,10 @@ impl Pool {
                         Steal::Empty => {
                             eprintln!("Thread {} about to get guard", index);
                             let guard = shared.empty_mutex.lock().unwrap();
+
                             eprintln!("Thread {} is now waiting", index);
-                            shared.empty_cond.wait(guard).unwrap();
+                            drop(shared.empty_cond.wait(guard).unwrap());
+
                             eprintln!("Thread {} finished waiting", index);
                         },
                         Steal::Data(job) => job.execute(index),
@@ -80,13 +90,11 @@ impl Pool {
                 }
             });
 
-            threads.push(Thread {
+            self.threads.push(Thread {
                 index,
                 handle,
             });
         }
-
-        Pool { threads, shared, jobs }
     }
 
     /// Returns the number of threads in the pool.
