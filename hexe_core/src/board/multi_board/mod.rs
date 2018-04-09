@@ -1,20 +1,17 @@
 //! A bitboard-segmented chess board representation.
 
 use core::{hash, ops, mem};
-
 #[cfg(feature = "simd")]
 use core::simd::u8x64;
 
-use board::{Bitboard, PieceMap};
-use castle::{self, Right};
-use color::Color;
-use piece::{Piece, Role};
-use square::Square;
 use uncon::*;
+
+use prelude::*;
+use board::PieceMap;
+use castle;
 
 #[cfg(all(test, nightly))]
 mod benches;
-
 #[cfg(test)]
 mod tests;
 
@@ -124,14 +121,14 @@ impl ops::Index<Role> for MultiBoard {
 
     #[inline]
     fn index(&self, role: Role) -> &Bitboard {
-        Bitboard::convert_ref(&self.pieces[role as usize])
+        role.extract(&self.pieces).as_ref()
     }
 }
 
 impl ops::IndexMut<Role> for MultiBoard {
     #[inline]
     fn index_mut(&mut self, role: Role) -> &mut Bitboard {
-        Bitboard::convert_mut(&mut self.pieces[role as usize])
+        role.extract_mut(&mut self.pieces).as_mut()
     }
 }
 
@@ -140,14 +137,14 @@ impl ops::Index<Color> for MultiBoard {
 
     #[inline]
     fn index(&self, color: Color) -> &Bitboard {
-        Bitboard::convert_ref(&self.colors[color as usize])
+        color.extract(&self.colors).as_ref()
     }
 }
 
 impl ops::IndexMut<Color> for MultiBoard {
     #[inline]
     fn index_mut(&mut self, color: Color) -> &mut Bitboard {
-        Bitboard::convert_mut(&mut self.colors[color as usize])
+        color.extract_mut(&mut self.colors).as_mut()
     }
 }
 
@@ -536,8 +533,8 @@ impl MultiBoard {
     /// [XOR]: https://en.wikipedia.org/wiki/Exclusive_or
     #[inline]
     pub fn castle(&mut self, right: Right) {
-        let (king, rook) = castle::TABLES.mb_masks[right as usize];
-        self[right.color()]   ^= king | rook;
+        let &(king, rook) = right.extract(&castle::TABLES.mb_masks);
+        self[right.color()] ^= king | rook;
         self[Role::King] ^= king;
         self[Role::Rook] ^= rook;
     }

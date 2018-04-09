@@ -1,11 +1,12 @@
 //! A piece used to play chess.
 
 use core::{fmt, str};
-use color::Color;
-use uncon::*;
 
+use uncon::*;
 #[cfg(feature = "serde")]
 use serde::*;
+
+use prelude::{Color, Extract};
 
 impl_rand!(u8 => Piece, Role, Promotion);
 
@@ -200,7 +201,7 @@ impl Role {
     /// Converts `self` into a static string.
     #[inline]
     pub fn into_str(self) -> &'static str {
-        ROLES[self as usize]
+        *self.extract(&ROLES)
     }
 
     /// Converts `self` into a character.

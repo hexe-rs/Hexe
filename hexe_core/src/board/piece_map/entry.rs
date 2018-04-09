@@ -28,7 +28,7 @@ impl<'a> OccupiedEntry<'a> {
     pub fn remove_entry(self) -> (Square, Piece) {
         let key = self.key;
         let buf = unsafe { self.map.as_bytes_mut() };
-        let val = mem::replace(&mut buf[key as usize], NONE);
+        let val = mem::replace(key.extract_mut(buf), NONE);
         unsafe { (key, val.into_unchecked()) }
     }
 
@@ -55,7 +55,7 @@ impl<'a> OccupiedEntry<'a> {
     #[inline]
     pub fn insert(&mut self, piece: Piece) -> Piece {
         let buf = unsafe { self.map.as_bytes_mut() };
-        let pc = mem::replace(&mut buf[self.key as usize], piece as u8);
+        let pc = mem::replace(self.key.extract_mut(buf), piece as u8);
         unsafe { pc.into_unchecked() }
     }
 
@@ -97,7 +97,7 @@ impl<'a> VacantEntry<'a> {
     #[inline]
     pub fn insert(self, piece: Piece) -> &'a mut Piece {
         unsafe {
-            let slot = &mut self.map.0.array[self.key as usize];
+            let slot = self.key.extract_mut(&mut self.map.0.array);
             *slot = piece as u8;
             slot.into_unchecked()
         }
