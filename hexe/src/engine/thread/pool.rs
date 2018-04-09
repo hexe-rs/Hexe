@@ -56,7 +56,7 @@ impl Pool {
                 // Move all shared data into worker thread scope
                 let stealer = stealer;
 
-                let mut context = Context {
+                let ref mut context = Context {
                     thread: index,
                     worker: unsafe { &mut *worker_ptr.get() },
                     shared: &shared
@@ -74,7 +74,7 @@ impl Pool {
 
                             eprintln!("Thread {} finished waiting", index);
                         },
-                        Steal::Data(job) => job.execute(&mut context),
+                        Steal::Data(job) => job.execute(context),
                         Steal::Retry => continue,
                     }
                 }
