@@ -1,6 +1,7 @@
 [workspace]
 members = [
     "hexe",
+    "hexe_bin",
     "hexe_core",
 ]
 
