@@ -34,6 +34,9 @@ pub struct Table {
     len: usize,
 }
 
+unsafe impl Send for Table {}
+unsafe impl Sync for Table {}
+
 impl Default for Table {
     #[inline]
     fn default() -> Table {
