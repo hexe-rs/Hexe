@@ -71,7 +71,7 @@ const SQUARE_NUM: usize = 64;
 pub struct PieceMap(Inner);
 
 #[derive(Copy, Clone)]
-#[repr(C)]
+#[repr(C, align(64))]
 union Inner {
     #[cfg(feature = "simd")]
     simd: u8x64,
