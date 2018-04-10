@@ -4,8 +4,8 @@ use super::*;
 pub struct Pool {
     /// All threads spawned within this pool.
     threads: Vec<Thread>,
-    /// Our handle on the shared data.
-    shared: Arc<Shared>,
+    /// Owning handle on the shared data.
+    shared: Box<Shared>,
     /// Insertion point for jobs.
     jobs: Deque<Job>,
 }
@@ -26,7 +26,7 @@ impl Pool {
     pub fn new(n: usize) -> Pool {
         let mut pool = Pool {
             threads: Vec::<Thread>::with_capacity(n),
-            shared: Arc::new(Shared {
+            shared: Box::new(Shared {
                 empty_cond: Condvar::new(),
                 empty_mutex: Mutex::default(),
             }),
@@ -43,7 +43,6 @@ impl Pool {
 
         for index in range {
             let stealer = self.jobs.stealer();
-            let shared  = Arc::clone(&self.shared);
 
             // The pool owns the pointer to the unique value
             let mut worker = Box::new(Worker {
@@ -53,6 +52,9 @@ impl Pool {
             // Wrap up in order to send to the corresponding thread
             let worker_ptr = AnySend::new(&mut *worker as *mut Worker);
 
+            // The pool owns the boxed pointer value
+            let shared_ptr = AnySend::new(&*self.shared as *const Shared);
+
             let handle = thread::spawn(move || {
                 // Move all shared data into worker thread scope
                 let stealer = stealer;
@@ -60,7 +62,7 @@ impl Pool {
                 let ref mut context = Context {
                     thread: index,
                     worker: unsafe { &mut *worker_ptr.get() },
-                    shared: &shared,
+                    shared: unsafe { &*shared_ptr.get() },
                     position: Position::default(),
                 };
 
@@ -69,10 +71,10 @@ impl Pool {
                     match stealer.steal() {
                         Steal::Empty => {
                             eprintln!("Thread {} found empty deque", index);
-                            let mut guard = shared.empty_mutex.lock();
+                            let mut guard = context.shared.empty_mutex.lock();
 
                             eprintln!("Thread {} is now waiting", index);
-                            shared.empty_cond.wait(&mut guard);
+                            context.shared.empty_cond.wait(&mut guard);
 
                             eprintln!("Thread {} finished waiting", index);
                         },

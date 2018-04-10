@@ -1,6 +1,5 @@
 use std::thread::{self, JoinHandle};
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::Arc;
 
 use crossbeam_deque::{Deque, Steal};
 use parking_lot::{Condvar, Mutex};
