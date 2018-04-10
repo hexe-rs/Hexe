@@ -1,7 +1,7 @@
 use std::thread::{self, JoinHandle};
 use std::sync::atomic::{AtomicBool, Ordering};
 
-use crossbeam_deque::{Deque, Steal};
+use crossbeam_deque::{Deque, Stealer, Steal};
 use parking_lot::{Condvar, Mutex};
 
 use core::mv::Move;
@@ -74,9 +74,66 @@ pub struct Context<'ctx> {
     pub shared: &'ctx Shared,
     /// The current position.
     pub position: Position,
+    /// The job stealer.
+    pub jobs: Stealer<Job>,
 }
 
 impl<'ctx> Context<'ctx> {
+    /// Runs the worker loop within the thread context.
+    pub fn run(&mut self) {
+        loop {
+            self.try_stop();
+            if self.worker.kill.load(Ordering::SeqCst) {
+                return;
+            }
+
+            eprintln!("Thread {} attempting steal", self.thread);
+            match self.jobs.steal() {
+                Steal::Empty => {
+                    eprintln!("Thread {} found empty deque", self.thread);
+                    let mut guard = self.shared.empty_mutex.lock();
+
+                    eprintln!("Thread {} now waiting", self.thread);
+                    self.shared.empty_cond.wait(&mut guard);
+
+                    eprintln!("Thread {} finished waiting", self.thread);
+                },
+                Steal::Data(job) => match self.execute(job) {
+                    Some(Interruption::Stop) => self.stop(),
+                    Some(Interruption::Kill) => return,
+                    _ => continue,
+                },
+                Steal::Retry => continue,
+            }
+        }
+    }
+
+    /// Executes `job` within the worker thread context.
+    fn execute(&mut self, job: Job) -> Option<Interruption> {
+        macro_rules! interrupt {
+            () => {
+                if self.shared.stop.load(Ordering::SeqCst) {
+                    return Some(Interruption::Stop);
+                }
+                if self.worker.kill.load(Ordering::SeqCst) {
+                    return Some(Interruption::Kill);
+                }
+            }
+        }
+
+        // Check if we're being asked to exit before making any progress
+        interrupt!();
+
+        match job {
+            Job::Search { limits, moves } => {
+                eprintln!("Thread {} is now searching", self.thread);
+            },
+        }
+
+        eprintln!("Thread {} finished job", self.thread);
+        None
+    }
+
     /// Stops the thread unconditionally.
     #[cold]
     pub fn stop(&self) {
@@ -105,31 +162,4 @@ impl<'ctx> Context<'ctx> {
 pub enum Interruption {
     Stop,
     Kill,
-}
-
-impl Job {
-    /// Executes `self` within `context`.
-    pub fn execute(self, context: &mut Context) -> Option<Interruption> {
-        macro_rules! interrupt {
-            () => {
-                if context.shared.stop.load(Ordering::SeqCst) {
-                    return Some(Interruption::Stop);
-                }
-                if context.worker.kill.load(Ordering::SeqCst) {
-                    return Some(Interruption::Kill);
-                }
-            }
-        }
-
-        interrupt!();
-
-        match self {
-            Job::Search { limits, moves } => {
-                eprintln!("Thread {} is now searching", context.thread);
-            },
-        }
-
-        eprintln!("Thread {} finished job", context.thread);
-        None
-    }
 }

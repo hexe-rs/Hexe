@@ -53,48 +53,14 @@ impl Pool {
             let shared_ptr = AnySend::new(&*self.shared as *const Shared);
 
             let handle = thread::spawn(move || {
-                // Move all shared data into worker thread scope
-                let stealer = stealer;
-
                 let mut context = Context {
                     thread: index,
                     worker: unsafe { &*worker_ptr.get() },
                     shared: unsafe { &*shared_ptr.get() },
                     position: Position::default(),
+                    jobs: stealer,
                 };
-
-                loop {
-                    context.try_stop();
-                    if context.worker.kill.load(Ordering::SeqCst) {
-                        break;
-                    }
-
-                    eprintln!("Thread {} attempting steal", index);
-                    match stealer.steal() {
-                        Steal::Empty => {
-                            eprintln!("Thread {} found empty deque", index);
-                            let mut guard = context.shared.empty_mutex.lock();
-
-                            eprintln!("Thread {} now waiting", index);
-                            context.shared.empty_cond.wait(&mut guard);
-
-                            eprintln!("Thread {} finished waiting", index);
-                        },
-                        Steal::Data(job) => {
-                            match job.execute(&mut context) {
-                                Some(Interruption::Stop) => {
-                                    context.stop();
-                                },
-                                Some(Interruption::Kill) => {
-                                    return;
-                                }
-                                _ => continue,
-                            }
-                        },
-                        Steal::Retry => continue,
-                    }
-                }
-
+                context.run();
                 eprintln!("Thread {} about to exit", index);
             });
 
