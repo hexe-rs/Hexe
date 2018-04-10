@@ -1,4 +1,5 @@
 use std::cmp;
+use std::ops;
 
 use position::Position;
 use super::*;
@@ -47,32 +48,7 @@ impl Pool {
 
         match n.cmp(&cur) {
             cmp::Ordering::Equal => return,
-            cmp::Ordering::Greater => {
-                for index in cur..n {
-                    let stealer = self.jobs.stealer();
-
-                    // The pool owns the pointer to the unique value
-                    let mut worker = Box::<Worker>::default();
-
-                    // The pool owns the boxed values and no worker outlives it
-                    let worker_ptr = AnySend::new(&*worker as *const _);
-                    let shared_ptr = AnySend::new(&*self.shared as *const _);
-
-                    let handle = thread::spawn(move || {
-                        let context = Context {
-                            thread: index,
-                            worker: unsafe { &*worker_ptr.get() },
-                            shared: unsafe { &*shared_ptr.get() },
-                            position: Position::default(),
-                            jobs: stealer,
-                        };
-                        context.run();
-                        eprintln!("Thread {} about to exit", index);
-                    });
-
-                    self.threads.push(Thread { worker, handle });
-                }
-            },
+            cmp::Ordering::Greater => self.add_range(cur..n),
             cmp::Ordering::Less => {
                 unimplemented!("Cannot yet remove threads from pool");
             },
@@ -81,6 +57,35 @@ impl Pool {
 
     /// Adds `n` number of threads to the pool.
     pub fn add_threads(&mut self, n: usize) {
+        let i = self.num_threads();
+        self.add_range(i..(i + n));
+    }
+
+    fn add_range(&mut self, range: ops::Range<usize>) {
+        for index in range {
+            let stealer = self.jobs.stealer();
+
+            // The pool owns the pointer to the unique value
+            let mut worker = Box::<Worker>::default();
+
+            // The pool owns the boxed values and no worker outlives it
+            let worker_ptr = AnySend::new(&*worker as *const _);
+            let shared_ptr = AnySend::new(&*self.shared as *const _);
+
+            let handle = thread::spawn(move || {
+                let context = Context {
+                    thread: index,
+                    worker: unsafe { &*worker_ptr.get() },
+                    shared: unsafe { &*shared_ptr.get() },
+                    position: Position::default(),
+                    jobs: stealer,
+                };
+                context.run();
+                eprintln!("Thread {} about to exit", index);
+            });
+
+            self.threads.push(Thread { worker, handle });
+        }
     }
 
     /// Returns the number of threads in the pool.
