@@ -34,6 +34,17 @@ pub struct Table {
     len: usize,
 }
 
+impl Default for Table {
+    #[inline]
+    fn default() -> Table {
+        Table {
+            start: ptr::null_mut(),
+            align: NonNull::dangling(),
+            len: 0,
+        }
+    }
+}
+
 impl Drop for Table {
     #[inline]
     fn drop(&mut self) {
@@ -45,11 +56,7 @@ impl Table {
     /// Creates a new table with a capacity and size that matches `size_mb`
     /// number of megabytes.
     pub fn new(size_mb: usize, exact: bool) -> Table {
-        let mut table = Table {
-            start: ptr::null_mut(),
-            align: NonNull::dangling(),
-            len: 0,
-        };
+        let mut table = Table::default();
         if exact {
             table.resize_exact(size_mb);
         } else {
@@ -60,7 +67,9 @@ impl Table {
 
     #[inline]
     unsafe fn dealloc(&mut self) {
-        libc::free(self.start);
+        if !self.start.is_null() {
+            libc::free(self.start);
+        }
     }
 
     #[cfg(test)]
@@ -90,9 +99,7 @@ impl Table {
             return;
         }
 
-        if !self.start.is_null() {
-            unsafe { self.dealloc() };
-        }
+        unsafe { self.dealloc() };
 
         let calloc = unsafe { libc::calloc(len + 1, CLUSTER_SIZE) };
         self.start = calloc;
