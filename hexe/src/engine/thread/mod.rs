@@ -84,23 +84,23 @@ impl<'ctx> Context<'ctx> {
         loop {
             match self.steal() {
                 Ok(_) => {},
-                Err(Interruption::Kill) => return,
-                Err(Interruption::Stop) => self.stop(),
+                Err(Interrupt::Kill) => return,
+                Err(Interrupt::Stop) => self.stop(),
             }
         }
     }
 
-    fn interrupt(&self) -> Result<(), Interruption> {
+    fn interrupt(&self) -> Result<(), Interrupt> {
         if self.worker.kill.load(Ordering::SeqCst) {
-            Err(Interruption::Kill)
+            Err(Interrupt::Kill)
         } else if self.shared.stop.load(Ordering::SeqCst) {
-            Err(Interruption::Stop)
+            Err(Interrupt::Stop)
         } else {
             Ok(())
         }
     }
 
-    fn steal(&mut self) -> Result<(), Interruption> {
+    fn steal(&mut self) -> Result<(), Interrupt> {
         self.interrupt()?;
 
         eprintln!("Thread {} attempting steal", self.thread);
@@ -121,7 +121,7 @@ impl<'ctx> Context<'ctx> {
     }
 
     /// Executes `job` within the worker thread context.
-    fn execute(&mut self, job: Job) -> Result<(), Interruption> {
+    fn execute(&mut self, job: Job) -> Result<(), Interrupt> {
         // Check if we're being asked to exit before making any progress
         self.interrupt()?;
 
@@ -146,8 +146,11 @@ impl<'ctx> Context<'ctx> {
     }
 }
 
+/// A request to stop current progress.
 #[derive(Copy, Clone, Debug)]
-pub enum Interruption {
+pub enum Interrupt {
+    /// Stop progress for all threads.
     Stop,
+    /// Immediately kill the current thread.
     Kill,
 }
