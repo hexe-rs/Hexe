@@ -25,7 +25,7 @@ impl_zero! {
     i8 i16 i32 i64 isize
 }
 
-unsafe impl<'a, T: Zero> Zero for &'a mut [T] {}
+unsafe impl<T: Zero> Zero for [T] {}
 
 /// A buffer that, when allocated, starts as all zeroes.
 pub struct ZeroBuffer<T: Zero> {
