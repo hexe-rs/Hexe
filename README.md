@@ -53,13 +53,13 @@ The goal of this project is to have the following features:
 ### [`hexe`]
 
 - [x] UCI compatibility
+- [x] Work-stealing multi-threaded search
 - [ ] Aspiration Windows
 - [ ] Iterative Deepening
 - [ ] Killer Moves
 - [ ] Minimax with Alpha-Beta pruning
 - [ ] Null Move Heuristic
 - [ ] Transposition Tables
-- [x] Work-stealing multi-threaded search
 
 ### [`hexe_core`]
 
