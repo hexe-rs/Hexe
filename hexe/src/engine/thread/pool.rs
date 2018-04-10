@@ -29,14 +29,14 @@ impl Pool {
     /// megabytes available in the shared transposition table.
     pub fn new(n: usize, size_mb: usize) -> Pool {
         let mut pool = Pool {
-            threads: Vec::<Thread>::with_capacity(n),
+            threads: Default::default(),
             shared: Box::new(
                 Shared {
                     table: Table::new(size_mb, true),
                     .. Default::default()
                 }
             ),
-            jobs: Deque::<Job>::default(),
+            jobs: Default::default(),
         };
         pool.add_threads(n);
         pool
@@ -62,6 +62,8 @@ impl Pool {
     }
 
     fn add_range(&mut self, range: ops::Range<usize>) {
+        self.threads.reserve(range.len());
+
         for index in range {
             let stealer = self.jobs.stealer();
 
