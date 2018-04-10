@@ -26,10 +26,7 @@ impl Pool {
     pub fn new(n: usize) -> Pool {
         let mut pool = Pool {
             threads: Vec::<Thread>::with_capacity(n),
-            shared: Box::new(Shared {
-                empty_cond: Condvar::new(),
-                empty_mutex: Mutex::default(),
-            }),
+            shared: Box::<Shared>::default(),
             jobs: Deque::<Job>::new(),
         };
         pool.add_threads(n);
@@ -45,9 +42,7 @@ impl Pool {
             let stealer = self.jobs.stealer();
 
             // The pool owns the pointer to the unique value
-            let mut worker = Box::new(Worker {
-                kill: AtomicBool::new(false),
-            });
+            let mut worker = Box::<Worker>::default();
 
             // The pool owns the boxed values and no worker outlives the pool
             let worker_ptr = AnySend::new(&*worker as *const Worker);

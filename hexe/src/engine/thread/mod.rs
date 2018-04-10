@@ -25,11 +25,13 @@ struct Thread {
 
 /// Data unique to a given thread. The pool may not access it mutably, but the
 /// corresponding running thread may if data.
+#[derive(Default)]
 pub struct Worker {
     kill: AtomicBool,
 }
 
 /// Data shared between the pool and threads.
+#[derive(Default)]
 pub struct Shared {
     /// The condition variable for the deque being empty.
     empty_cond: Condvar,
