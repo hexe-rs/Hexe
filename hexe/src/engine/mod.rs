@@ -91,6 +91,11 @@ impl Engine {
         self.pool.kill_all();
     }
 
+    /// Sets the number of threads to `n`.
+    pub fn set_threads(&mut self, n: usize) {
+        self.pool.set_threads(n);
+    }
+
     /// Returns the number of threads that the engine currently has spawned.
     #[inline]
     pub fn num_threads(&self) -> usize {

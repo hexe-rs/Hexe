@@ -1,3 +1,5 @@
+use std::cmp;
+
 use position::Position;
 use super::*;
 
@@ -27,45 +29,58 @@ impl Pool {
     pub fn new(n: usize, size_mb: usize) -> Pool {
         let mut pool = Pool {
             threads: Vec::<Thread>::with_capacity(n),
-            shared:  Box::new(Shared {
-                table: Table::new(size_mb, true),
-                .. Default::default()
-            }),
-            jobs:    Deque::<Job>::default(),
+            shared: Box::new(
+                Shared {
+                    table: Table::new(size_mb, true),
+                    .. Default::default()
+                }
+            ),
+            jobs: Deque::<Job>::default(),
         };
-        pool.add_threads(n);
+        pool.set_threads(n);
         pool
+    }
+
+    /// Sets the number of threads to `n`.
+    pub fn set_threads(&mut self, n: usize) {
+        let cur = self.num_threads();
+
+        match n.cmp(&cur) {
+            cmp::Ordering::Equal => return,
+            cmp::Ordering::Greater => {
+                for index in cur..n {
+                    let stealer = self.jobs.stealer();
+
+                    // The pool owns the pointer to the unique value
+                    let mut worker = Box::<Worker>::default();
+
+                    // The pool owns the boxed values and no worker outlives it
+                    let worker_ptr = AnySend::new(&*worker as *const _);
+                    let shared_ptr = AnySend::new(&*self.shared as *const _);
+
+                    let handle = thread::spawn(move || {
+                        let context = Context {
+                            thread: index,
+                            worker: unsafe { &*worker_ptr.get() },
+                            shared: unsafe { &*shared_ptr.get() },
+                            position: Position::default(),
+                            jobs: stealer,
+                        };
+                        context.run();
+                        eprintln!("Thread {} about to exit", index);
+                    });
+
+                    self.threads.push(Thread { worker, handle });
+                }
+            },
+            cmp::Ordering::Less => {
+                unimplemented!("Cannot yet remove threads from pool");
+            },
+        }
     }
 
     /// Adds `n` number of threads to the pool.
     pub fn add_threads(&mut self, n: usize) {
-        let start = self.num_threads();
-        let range = start..(start + n);
-
-        for index in range {
-            let stealer = self.jobs.stealer();
-
-            // The pool owns the pointer to the unique value
-            let mut worker = Box::<Worker>::default();
-
-            // The pool owns the boxed values and no worker outlives the pool
-            let worker_ptr = AnySend::new(&*worker as *const Worker);
-            let shared_ptr = AnySend::new(&*self.shared as *const Shared);
-
-            let handle = thread::spawn(move || {
-                let context = Context {
-                    thread: index,
-                    worker: unsafe { &*worker_ptr.get() },
-                    shared: unsafe { &*shared_ptr.get() },
-                    position: Position::default(),
-                    jobs: stealer,
-                };
-                context.run();
-                eprintln!("Thread {} about to exit", index);
-            });
-
-            self.threads.push(Thread { worker, handle });
-        }
     }
 
     /// Returns the number of threads in the pool.

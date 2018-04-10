@@ -196,7 +196,11 @@ impl<'a> Uci<'a> {
         };
 
         if match_option("threads") {
-            panic!("Cannot currently set number of threads");
+            if let Ok(n) = value.parse() {
+                self.engine_mut().set_threads(n);
+            } else {
+                eprintln!("Could not parse \"{}\" as integer", value);
+            }
         } else if match_option("hash") {
             panic!("Cannot currently set table size");
         } else {
