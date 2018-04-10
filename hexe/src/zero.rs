@@ -8,8 +8,8 @@ use libc;
 /// A type whose instances can safely be all zeroes.
 pub unsafe trait Zero {
     /// Safely zeroes out `self`.
+    #[inline]
     fn zero(&mut self) {
-        #[inline]
         unsafe { ::util::zero(self) };
     }
 }
