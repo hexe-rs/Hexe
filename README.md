@@ -59,7 +59,7 @@ The goal of this project is to have the following features:
 - [ ] Minimax with Alpha-Beta pruning
 - [ ] Null Move Heuristic
 - [ ] Transposition Tables
-- [ ] Work-stealing multi-threaded search
+- [x] Work-stealing multi-threaded search
 
 ### [`hexe_core`]
 
