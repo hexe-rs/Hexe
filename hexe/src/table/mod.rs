@@ -5,6 +5,8 @@ use std::slice;
 
 use libc;
 
+use util::ZeroBuffer;
+
 #[cfg(all(test, nightly))]
 mod benches;
 
@@ -25,35 +27,8 @@ assert_eq_size! { cluster_size;
 }
 
 /// A transposition table.
-pub struct Table {
-    /// The start of the `calloc`ed buffer.
-    start: *mut libc::c_void,
-    /// A pointer offset to the correct alignment of `Cluster`.
-    align: NonNull<Cluster>,
-    /// The size of the table by number of clusters.
-    len: usize,
-}
-
-unsafe impl Send for Table {}
-unsafe impl Sync for Table {}
-
-impl Default for Table {
-    #[inline]
-    fn default() -> Table {
-        Table {
-            start: ptr::null_mut(),
-            align: NonNull::dangling(),
-            len: 0,
-        }
-    }
-}
-
-impl Drop for Table {
-    #[inline]
-    fn drop(&mut self) {
-        unsafe { self.dealloc() };
-    }
-}
+#[derive(Default)]
+pub struct Table(ZeroBuffer<Cluster>);
 
 impl Table {
     /// Creates a new table with a capacity and size that matches `size_mb`
@@ -68,21 +43,9 @@ impl Table {
         table
     }
 
-    #[inline]
-    unsafe fn dealloc(&mut self) {
-        if !self.start.is_null() {
-            libc::free(self.start);
-        }
-    }
-
-    #[cfg(test)]
-    fn is_aligned(&self) -> bool {
-        self.align.as_ptr() as usize % CLUSTER_ALIGN == 0
-    }
-
     /// Returns the number of entries in the table.
     pub fn size(&self) -> usize {
-        self.len * ENTRY_COUNT
+        self.0.len() * ENTRY_COUNT
     }
 
     /// Returns the size of the table in megabytes.
@@ -97,34 +60,17 @@ impl Table {
 
     /// Resizes the table to exactly `size_mb` number of megabytes.
     pub fn resize_exact(&mut self, size_mb: usize) {
-        let len = size_mb * MB_SIZE / CLUSTER_SIZE;
-        if len == self.len {
-            return;
-        }
-
-        unsafe { self.dealloc() };
-
-        let calloc = unsafe { libc::calloc(len + 1, CLUSTER_SIZE) };
-        self.start = calloc;
-        self.len   = len;
-
-        self.align = unsafe {
-            const MASK: usize = !(CLUSTER_SIZE - 1);
-            let val = calloc.offset(CLUSTER_SIZE as _) as usize;
-            NonNull::new_unchecked((val & MASK) as *mut Cluster)
-        };
+        self.0.resize_exact(size_mb * MB_SIZE / CLUSTER_SIZE);
     }
 
     /// Returns `self` as a slice of clusters.
     pub fn clusters(&self) -> &[Cluster] {
-        let ptr = self.align.as_ptr();
-        unsafe { slice::from_raw_parts(ptr, self.len) }
+        self.0.as_ref()
     }
 
     /// Returns `self` as a mutable slice of clusters.
     pub fn clusters_mut(&mut self) -> &mut [Cluster] {
-        let ptr = self.align.as_ptr();
-        unsafe { slice::from_raw_parts_mut(ptr, self.len) }
+        self.0.as_mut()
     }
 
     /// Zeroes out the entire table.

@@ -35,13 +35,13 @@ fn size_mb() {
 fn is_aligned() {
     for mut n in 0..16 {
         let mut table = Table::new(n, true);
-        assert!(table.is_aligned());
+        assert!(table.0.is_aligned());
 
         n = (n + 5) / 2;
         table.resize_exact(n);
-        assert!(table.is_aligned());
+        assert!(table.0.is_aligned());
 
         table.resize(n);
-        assert!(table.is_aligned());
+        assert!(table.0.is_aligned());
     }
 }
