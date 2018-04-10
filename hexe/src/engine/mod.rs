@@ -25,10 +25,10 @@ pub use self::uci::Uci;
 /// ```
 /// use hexe::engine::Engine;
 ///
+/// # return;
 /// let mut engine = Engine::builder()
 ///                         .num_threads(4)
 ///                         .build();
-/// # return;
 /// engine.uci().start();
 /// ```
 pub struct Engine {
