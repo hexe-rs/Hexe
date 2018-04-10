@@ -54,6 +54,7 @@
 #![allow(needless_lifetimes)]
 #![allow(redundant_field_names)]
 #![allow(unreadable_literal)]
+#![allow(while_immutable_condition)]
 #![allow(zero_prefixed_literal)]
 
 // Attributes //////////////////////////////////////////////////////////////////
