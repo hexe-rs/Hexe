@@ -3,9 +3,7 @@ use std::mem;
 use std::ptr::{self, NonNull};
 use std::slice;
 
-use libc;
-
-use util::ZeroBuffer;
+use zero::{Zero, ZeroBuffer};
 
 #[cfg(all(test, nightly))]
 mod benches;
@@ -86,6 +84,8 @@ pub struct Cluster {
     entries: [Entry; ENTRY_COUNT],
 }
 
+unsafe impl Zero for Cluster {}
+
 impl Cluster {
     fn entries(&self) -> &[Entry; ENTRY_COUNT] {
         &self.entries
@@ -102,3 +102,5 @@ struct Entry {
     mv:  u16,
     val: i16,
 }
+
+unsafe impl Zero for Entry {}

@@ -90,6 +90,7 @@ use core::_shared::*;
 
 mod table;
 mod util;
+mod zero;
 
 pub mod engine;
 pub mod position;
