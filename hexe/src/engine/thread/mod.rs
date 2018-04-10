@@ -7,6 +7,7 @@ use parking_lot::{Condvar, Mutex};
 
 use core::mv::Move;
 use engine::Limits;
+use position::Position;
 use util::AnySend;
 
 mod pool;
@@ -55,6 +56,8 @@ pub struct Context<'ctx> {
     pub worker: &'ctx mut Worker,
     /// Data shared with all threads.
     pub shared: &'ctx Shared,
+    /// The current position.
+    pub position: Position,
 }
 
 impl Job {

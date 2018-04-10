@@ -1,3 +1,4 @@
+use position::Position;
 use super::*;
 
 pub struct Pool {
@@ -59,7 +60,8 @@ impl Pool {
                 let ref mut context = Context {
                     thread: index,
                     worker: unsafe { &mut *worker_ptr.get() },
-                    shared: &shared
+                    shared: &shared,
+                    position: Position::default(),
                 };
 
                 while !context.worker.kill.load(Ordering::SeqCst) {
