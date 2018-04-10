@@ -5,8 +5,6 @@
 
 use std::usize;
 
-use table::Table;
-
 mod limits;
 pub(crate) use self::limits::Limits;
 

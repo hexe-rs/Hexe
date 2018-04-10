@@ -1,7 +1,5 @@
 use std::cmp::Ordering;
 use std::mem;
-use std::ptr::{self, NonNull};
-use std::slice;
 
 use zero::{Zero, ZeroBuffer};
 
