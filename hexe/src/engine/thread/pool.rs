@@ -47,11 +47,24 @@ impl Pool {
         let cur = self.num_threads();
 
         match n.cmp(&cur) {
-            cmp::Ordering::Equal => return,
+            cmp::Ordering::Equal   => return,
             cmp::Ordering::Greater => self.add_range(cur..n),
-            cmp::Ordering::Less => {
-                unimplemented!("Cannot yet remove threads from pool");
-            },
+            cmp::Ordering::Less    => self.rem_after(n),
+        }
+    }
+
+    /// Removes all threads after `n` in `self`.
+    fn rem_after(&mut self, n: usize) {
+        for thread in &self.threads[n..] {
+            thread.worker.kill();
+        }
+
+        // Wake up anyone who might have been erm... killed?
+        self.shared.empty_cond.notify_all();
+        self.shared.stop_cond.notify_all();
+
+        for thread in self.threads.drain(n..) {
+            thread.handle.join();
         }
     }
 
