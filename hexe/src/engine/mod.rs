@@ -141,8 +141,11 @@ impl EngineBuilder {
 
     /// The number of megabytes available for the transposition table.
     ///
-    /// If `n` is 0, or you do not call this function, then the table size will
-    /// be selected automatically. The default is 1.
+    /// The allocated table size is the smallest power of two greater than or
+    /// equal to `size_mb`.
+    ///
+    /// If `size_mb` is 0, or you do not call this function, then the table size
+    /// will be selected automatically. The default is 1.
     #[inline]
     pub fn hash_size(mut self, size_mb: usize) -> EngineBuilder {
         self.0.hash_size = size_mb;

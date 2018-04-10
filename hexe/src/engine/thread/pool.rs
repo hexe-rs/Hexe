@@ -32,7 +32,7 @@ impl Pool {
             threads: Default::default(),
             shared: Box::new(
                 Shared {
-                    table: Table::new(size_mb, true),
+                    table: Table::new(size_mb),
                     .. Default::default()
                 }
             ),

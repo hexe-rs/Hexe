@@ -29,15 +29,11 @@ assert_eq_size! { cluster_size;
 pub struct Table(ZeroBuffer<UnsafeCell<Cluster>>);
 
 impl Table {
-    /// Creates a new table with a capacity and size that matches `size_mb`
-    /// number of megabytes.
-    pub fn new(size_mb: usize, exact: bool) -> Table {
+    /// Creates a table with its capacity and size set to the smallest power of
+    /// two greater than or equal to `size_mb` number of megabytes.
+    pub fn new(size_mb: usize) -> Table {
         let mut table = Table::default();
-        if exact {
-            table.resize_exact(size_mb);
-        } else {
-            table.resize(size_mb);
-        }
+        table.resize(size_mb);
         table
     }
 
@@ -53,11 +49,16 @@ impl Table {
 
     /// Resizes the table to the next power of two number of megabytes.
     pub fn resize(&mut self, size_mb: usize) {
-        self.resize_exact(size_mb.next_power_of_two());
+        unsafe { self.resize_exact(size_mb.next_power_of_two()) };
     }
 
     /// Resizes the table to exactly `size_mb` number of megabytes.
-    pub fn resize_exact(&mut self, size_mb: usize) {
+    ///
+    /// # Safety
+    ///
+    /// This type's internals assume that the buffer has a power of two size.
+    unsafe fn resize_exact(&mut self, size_mb: usize) {
+        debug_assert!(size_mb.is_power_of_two());
         self.0.resize_exact(size_mb * MB_SIZE / CLUSTER_SIZE);
     }
 
