@@ -38,22 +38,34 @@ type UciIter<'a> = str::SplitWhitespace<'a>;
 /// Runs the engine via the [Universal Chess Interface][uci] (UCI) protocol.
 ///
 /// [uci]: http://wbec-ridderkerk.nl/html/UCIProtocol.html
-pub struct Uci<'a>(&'a mut Engine);
+pub struct Uci<'a> {
+    engine: &'a mut Engine,
+
+    // Reusable string buffers
+    string_buf_0: String,
+    string_buf_1: String,
+}
 
 impl<'a> From<&'a mut Engine> for Uci<'a> {
     #[inline]
-    fn from(engine: &'a mut Engine) -> Uci<'a> { Uci(engine) }
+    fn from(engine: &'a mut Engine) -> Uci<'a> {
+        Uci {
+            engine,
+            string_buf_0: String::new(),
+            string_buf_1: String::new(),
+        }
+    }
 }
 
 impl<'a> Uci<'a> {
     /// Returns a reference to the underlying engine over which `self` iterates.
     #[inline]
-    pub fn engine(&self) -> &Engine { &self.0 }
+    pub fn engine(&self) -> &Engine { &self.engine }
 
     /// Returns a mutable reference to the underlying engine over which `self`
     /// iterates.
     #[inline]
-    pub fn engine_mut(&mut self) -> &mut Engine { &mut self.0 }
+    pub fn engine_mut(&mut self) -> &mut Engine { &mut self.engine }
 
     /// Runs the UCI loop, feeding commands from `stdin`.
     ///
@@ -133,7 +145,7 @@ impl<'a> Uci<'a> {
             "ucinewgame" => self.cmd_new_game(),
             "go"         => self.cmd_go(split),
             "isready"    => println!("readyok"),
-            "resume"     => self.engine().resume_all(),
+            "resume"     => self.engine.resume_all(),
             _            => unknown_command!(line),
         }
         true
@@ -156,7 +168,7 @@ impl<'a> Uci<'a> {
     }
 
     fn cmd_stop(&mut self) {
-        self.engine().stop_all();
+        self.engine.stop_all();
     }
 
     fn cmd_ponder_hit(&mut self) {
@@ -170,8 +182,11 @@ impl<'a> Uci<'a> {
     fn cmd_set_option(&mut self, mut iter: UciIter) {
         iter.next(); // consume "name"
 
-        let mut name  = String::new();
-        let mut value = String::new();
+        let mut name  = &mut self.string_buf_0;
+        let mut value = &mut self.string_buf_1;
+
+        name.clear();
+        value.clear();
 
         while let Some(next) = iter.next() {
             if next == "value" {
@@ -197,7 +212,7 @@ impl<'a> Uci<'a> {
 
         if match_option("threads") {
             if let Ok(n) = value.parse() {
-                self.engine_mut().set_threads(n);
+                self.engine.set_threads(n);
             } else {
                 eprintln!("Could not parse \"{}\" as integer", value);
             }
@@ -255,6 +270,6 @@ impl<'a> Uci<'a> {
 
     fn cmd_start_thinking(&mut self, limits: Limits, moves: Box<[Move]>) {
         let job = Job::Search { limits, moves };
-        self.engine().pool.enqueue(job);
+        self.engine.pool.enqueue(job);
     }
 }
