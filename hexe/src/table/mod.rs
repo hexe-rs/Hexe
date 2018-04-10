@@ -84,7 +84,7 @@ impl Table {
 
     /// Returns the size of the table in megabytes.
     pub fn size_mb(&self) -> usize {
-        self.len * CLUSTER_SIZE / MB_SIZE
+        mem::size_of_val(self.clusters()) / MB_SIZE
     }
 
     /// Resizes the table to the next power of two number of megabytes.
@@ -112,14 +112,16 @@ impl Table {
         };
     }
 
-    fn clusters_mut(&mut self) -> &mut [Cluster] {
-        let ptr = self.align.as_ptr();
-        unsafe { slice::from_raw_parts_mut(ptr, self.len) }
-    }
-
-    fn clusters(&self) -> &[Cluster] {
+    /// Returns `self` as a slice of clusters.
+    pub fn clusters(&self) -> &[Cluster] {
         let ptr = self.align.as_ptr();
         unsafe { slice::from_raw_parts(ptr, self.len) }
+    }
+
+    /// Returns `self` as a mutable slice of clusters.
+    pub fn clusters_mut(&mut self) -> &mut [Cluster] {
+        let ptr = self.align.as_ptr();
+        unsafe { slice::from_raw_parts_mut(ptr, self.len) }
     }
 
     /// Zeroes out the entire table.
@@ -128,18 +130,20 @@ impl Table {
     }
 }
 
+/// A cluster of table entries aligned to the cache line size.
+#[derive(Debug)]
 #[repr(C, align(64))]
-union Cluster {
+pub struct Cluster {
     entries: [Entry; ENTRY_COUNT],
 }
 
 impl Cluster {
     fn entries(&self) -> &[Entry; ENTRY_COUNT] {
-        unsafe { &self.entries }
+        &self.entries
     }
 
     fn entries_mut(&mut self) -> &mut [Entry; ENTRY_COUNT] {
-        unsafe { &mut self.entries }
+        &mut self.entries
     }
 }
 
