@@ -82,49 +82,48 @@ impl<'ctx> Context<'ctx> {
     /// Runs the worker loop within the thread context.
     pub fn run(mut self) {
         loop {
-            if self.shared.stop.load(Ordering::SeqCst) {
-                self.stop();
+            match self.steal() {
+                Ok(_) => {},
+                Err(Interruption::Kill) => return,
+                Err(Interruption::Stop) => self.stop(),
             }
-            if self.worker.kill.load(Ordering::SeqCst) {
-                return;
-            }
+        }
+    }
 
-            eprintln!("Thread {} attempting steal", self.thread);
-            match self.jobs.steal() {
-                Steal::Empty => {
-                    eprintln!("Thread {} found empty deque", self.thread);
-                    let mut guard = self.shared.empty_mutex.lock();
+    fn interrupt(&self) -> Result<(), Interruption> {
+        if self.worker.kill.load(Ordering::SeqCst) {
+            Err(Interruption::Kill)
+        } else if self.shared.stop.load(Ordering::SeqCst) {
+            Err(Interruption::Stop)
+        } else {
+            Ok(())
+        }
+    }
 
-                    eprintln!("Thread {} now waiting", self.thread);
-                    self.shared.empty_cond.wait(&mut guard);
+    fn steal(&mut self) -> Result<(), Interruption> {
+        self.interrupt()?;
 
-                    eprintln!("Thread {} finished waiting", self.thread);
-                },
-                Steal::Data(job) => match self.execute(job) {
-                    Err(Interruption::Stop) => self.stop(),
-                    Err(Interruption::Kill) => return,
-                    Ok(_) => continue,
-                },
-                Steal::Retry => continue,
-            }
+        eprintln!("Thread {} attempting steal", self.thread);
+        match self.jobs.steal() {
+            Steal::Empty => {
+                eprintln!("Thread {} found empty deque", self.thread);
+                let mut guard = self.shared.empty_mutex.lock();
+
+                eprintln!("Thread {} now waiting", self.thread);
+                self.shared.empty_cond.wait(&mut guard);
+
+                eprintln!("Thread {} finished waiting", self.thread);
+                Ok(())
+            },
+            Steal::Data(job) => self.execute(job),
+            Steal::Retry => Ok(()),
         }
     }
 
     /// Executes `job` within the worker thread context.
     fn execute(&mut self, job: Job) -> Result<(), Interruption> {
-        macro_rules! interrupt {
-            () => {
-                if self.shared.stop.load(Ordering::SeqCst) {
-                    return Err(Interruption::Stop);
-                }
-                if self.worker.kill.load(Ordering::SeqCst) {
-                    return Err(Interruption::Kill);
-                }
-            }
-        }
-
         // Check if we're being asked to exit before making any progress
-        interrupt!();
+        self.interrupt()?;
 
         match job {
             Job::Search { limits, moves } => {
@@ -139,17 +138,11 @@ impl<'ctx> Context<'ctx> {
     /// Stops the thread unconditionally.
     #[cold]
     fn stop(&self) {
-        loop {
-            eprintln!("Thread {} should stop", self.thread);
-            let mut guard = self.shared.stop_mutex.lock();
+        eprintln!("Thread {} should stop", self.thread);
+        let mut guard = self.shared.stop_mutex.lock();
 
-            eprintln!("Thread {} will stop now", self.thread);
-            self.shared.stop_cond.wait(&mut guard);
-
-            if !self.shared.stop.load(Ordering::SeqCst) {
-                break;
-            }
-        }
+        eprintln!("Thread {} will stop now", self.thread);
+        self.shared.stop_cond.wait(&mut guard);
     }
 }
 
