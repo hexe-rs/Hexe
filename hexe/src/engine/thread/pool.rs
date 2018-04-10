@@ -59,7 +59,11 @@ impl Pool {
                     position: Position::default(),
                 };
 
-                while !context.worker.kill.load(Ordering::SeqCst) {
+                while {
+                    context.try_stop();
+                    !context.worker.kill.load(Ordering::SeqCst)
+                } {
+
                     eprintln!("Thread {} about to attempt steal", index);
                     match stealer.steal() {
                         Steal::Empty => {
@@ -71,7 +75,17 @@ impl Pool {
 
                             eprintln!("Thread {} finished waiting", index);
                         },
-                        Steal::Data(job) => job.execute(&mut context),
+                        Steal::Data(job) => {
+                            match job.execute(&mut context) {
+                                Some(Interruption::Stop) => {
+                                    context.stop();
+                                },
+                                Some(Interruption::Kill) => {
+                                    return;
+                                }
+                                _ => continue,
+                            }
+                        },
                         Steal::Retry => continue,
                     }
                 }
@@ -88,14 +102,39 @@ impl Pool {
         self.threads.len()
     }
 
+    /// Stops what each thread is currently doing.
+    pub fn stop_all(&self) {
+        eprintln!("Stopping all threads");
+        self.shared.stop.store(true, Ordering::SeqCst);
+        self.shared.empty_cond.notify_all();
+    }
+
+    /// Resumes all stopped threads.
+    pub fn resume_all(&self) {
+        eprintln!("Resuming all stopped threads");
+        self.shared.stop.store(false, Ordering::SeqCst);
+        self.shared.stop_cond.notify_all();
+    }
+
+    /// Attempts to kill `thread`, returning whether or not it is in the pool.
+    pub fn kill(&self, thread: usize) -> bool {
+        if let Some(thread) = self.threads.get(thread) {
+            thread.worker.kill();
+            true
+        } else {
+            false
+        }
+    }
+
     /// Kills all threads.
     pub fn kill_all(&self) {
         eprintln!("Killing all threads");
         for thread in &self.threads {
             thread.worker.kill.store(true, Ordering::SeqCst);
         }
-        // Wake up anyone sleeping until the next enqueue
+        // Wake up anyone sleeping
         self.shared.empty_cond.notify_all();
+        self.resume_all();
     }
 
     /// Enqueues the job to be executed.

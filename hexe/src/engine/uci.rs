@@ -133,6 +133,7 @@ impl<'a> Uci<'a> {
             "ucinewgame" => self.cmd_new_game(),
             "go"         => self.cmd_go(split),
             "isready"    => println!("readyok"),
+            "resume"     => self.engine().resume_all(),
             _            => unknown_command!(line),
         }
         true
@@ -155,7 +156,7 @@ impl<'a> Uci<'a> {
     }
 
     fn cmd_stop(&mut self) {
-        self.engine_mut().kill_all();
+        self.engine().stop_all();
     }
 
     fn cmd_ponder_hit(&mut self) {

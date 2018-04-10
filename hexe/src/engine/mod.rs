@@ -72,6 +72,21 @@ impl Engine {
         Uci::from(self)
     }
 
+    /// Stops all worker threads of the engine.
+    pub fn stop_all(&self) {
+        self.pool.stop_all();
+    }
+
+    /// Resumes all stopped worker threads.
+    pub fn resume_all(&self) {
+        self.pool.resume_all();
+    }
+
+    /// Attempts to kill `thread`, returning whether or not it is in the pool.
+    pub fn kill(&self, thread: usize) -> bool {
+        self.pool.kill(thread)
+    }
+
     /// Kills all worker threads of the engine.
     ///
     /// New threads need to be spawned to continue execution of queued jobs.
