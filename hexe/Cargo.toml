@@ -19,6 +19,7 @@ appveyor  = { repository = "nvzqz/Hexe" }
 
 [dependencies]
 hexe_core = { version = "0.0.5", path = "../hexe_core" }
+log       = { version = "0.4.0", optional = true }
 rand      = { version = "0.4.0", optional = true }
 
 crossbeam-deque = "0.3"

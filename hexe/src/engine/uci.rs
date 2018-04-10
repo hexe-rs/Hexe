@@ -214,7 +214,7 @@ impl<'a> Uci<'a> {
             if let Ok(n) = value.parse() {
                 self.engine.set_threads(n);
             } else {
-                eprintln!("Could not parse \"{}\" as integer", value);
+                log_trace!("Could not parse \"{}\" as integer", value);
             }
         } else if match_option("hash") {
             panic!("Cannot currently set table size");

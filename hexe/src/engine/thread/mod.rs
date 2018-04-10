@@ -106,16 +106,16 @@ impl<'ctx> Context<'ctx> {
     fn try_next(&mut self) -> Result<(), Interrupt> {
         self.interrupt()?;
 
-        eprintln!("Thread {} attempting steal", self.thread);
+        log_trace!("Thread {} attempting steal", self.thread);
         match self.jobs.steal() {
             Steal::Empty => {
-                eprintln!("Thread {} found empty deque", self.thread);
+                log_trace!("Thread {} found empty deque", self.thread);
                 let mut guard = self.shared.empty_mutex.lock();
 
-                eprintln!("Thread {} now waiting", self.thread);
+                log_trace!("Thread {} now waiting", self.thread);
                 self.shared.empty_cond.wait(&mut guard);
 
-                eprintln!("Thread {} finished waiting", self.thread);
+                log_trace!("Thread {} finished waiting", self.thread);
                 Ok(())
             },
             Steal::Data(job) => self.execute(job),
@@ -130,21 +130,21 @@ impl<'ctx> Context<'ctx> {
 
         match job {
             Job::Search { limits, moves } => {
-                eprintln!("Thread {} is now searching", self.thread);
+                log_trace!("Thread {} is now searching", self.thread);
             },
         }
 
-        eprintln!("Thread {} finished job", self.thread);
+        log_trace!("Thread {} finished job", self.thread);
         Ok(())
     }
 
     /// Stops the thread unconditionally.
     #[cold]
     fn stop(&self) {
-        eprintln!("Thread {} should stop", self.thread);
+        log_trace!("Thread {} should stop", self.thread);
         let mut guard = self.shared.stop_mutex.lock();
 
-        eprintln!("Thread {} will stop now", self.thread);
+        log_trace!("Thread {} will stop now", self.thread);
         self.shared.stop_cond.wait(&mut guard);
     }
 }

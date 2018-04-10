@@ -70,6 +70,10 @@ extern crate test;
 
 pub extern crate hexe_core as core;
 
+#[cfg(feature = "log")]
+#[macro_use]
+extern crate log;
+
 extern crate crossbeam_deque;
 extern crate libc;
 extern crate num_cpus;
@@ -88,6 +92,8 @@ extern crate static_assertions;
 #[allow(unused_imports)]
 use core::_shared::*;
 
+#[macro_use]
+mod macros;
 mod table;
 mod util;
 mod zero;
