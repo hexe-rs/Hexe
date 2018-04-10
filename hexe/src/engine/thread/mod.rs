@@ -74,6 +74,7 @@ pub struct Context<'ctx> {
 
 impl<'ctx> Context<'ctx> {
     /// Stops the thread unconditionally.
+    #[cold]
     pub fn stop(&self) {
         loop {
             eprintln!("Thread {} should stop", self.thread);
