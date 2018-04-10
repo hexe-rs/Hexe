@@ -26,8 +26,8 @@ impl Pool {
     pub fn new(n: usize) -> Pool {
         let mut pool = Pool {
             threads: Vec::<Thread>::with_capacity(n),
-            shared: Box::<Shared>::default(),
-            jobs: Deque::<Job>::new(),
+            shared:  Box::<Shared>::default(),
+            jobs:    Deque::<Job>::default(),
         };
         pool.add_threads(n);
         pool
