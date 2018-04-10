@@ -198,14 +198,7 @@ impl<'a> Uci<'a> {
         if match_option("threads") {
             panic!("Cannot currently set number of threads");
         } else if match_option("hash") {
-            match value.parse::<usize>() {
-                Ok(value) => {
-                    self.0.table.resize_exact(value);
-                },
-                Err(e) => {
-                    // TODO: handle could not parse value
-                },
-            }
+            panic!("Cannot currently set table size");
         } else {
             println!("No such option: {}", name);
         }

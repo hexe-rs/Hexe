@@ -33,7 +33,6 @@ pub use self::uci::Uci;
 /// ```
 pub struct Engine {
     pool: Pool,
-    table: Table,
 }
 
 impl Default for Engine {
@@ -62,7 +61,7 @@ impl Engine {
     pub fn options(&self) -> Options {
         Options {
             num_threads: self.num_threads(),
-            hash_size: self.table.size_mb(),
+            hash_size: self.pool.shared().table.size_mb(),
         }
     }
 
@@ -123,10 +122,7 @@ impl EngineBuilder {
             0 => 1,
             n => n,
         };
-        Engine {
-            pool:  Pool::new(num_threads),
-            table: Table::new(hash_size, true),
-        }
+        Engine { pool: Pool::new(num_threads, hash_size) }
     }
 
     /// Set the number of threads to be used by the engine.

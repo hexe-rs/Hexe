@@ -22,11 +22,15 @@ impl Drop for Pool {
 }
 
 impl Pool {
-    /// Creates a new pool with `n` number of threads.
-    pub fn new(n: usize) -> Pool {
+    /// Creates a new pool with `n` number of threads and `size_mb` number of
+    /// megabytes available in the shared transposition table.
+    pub fn new(n: usize, size_mb: usize) -> Pool {
         let mut pool = Pool {
             threads: Vec::<Thread>::with_capacity(n),
-            shared:  Box::<Shared>::default(),
+            shared:  Box::new(Shared {
+                table: Table::new(size_mb, true),
+                .. Default::default()
+            }),
             jobs:    Deque::<Job>::default(),
         };
         pool.add_threads(n);
@@ -137,6 +141,9 @@ impl Pool {
         self.shared.empty_cond.notify_all();
         self.resume_all();
     }
+
+    /// Returns a reference to the data shared by all threads.
+    pub fn shared(&self) -> &Shared { &self.shared }
 
     /// Enqueues the job to be executed.
     pub fn enqueue(&self, job: Job) {

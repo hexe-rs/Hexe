@@ -7,6 +7,7 @@ use parking_lot::{Condvar, Mutex};
 use core::mv::Move;
 use engine::Limits;
 use position::Position;
+use table::Table;
 use util::AnySend;
 
 mod pool;
@@ -48,6 +49,9 @@ pub struct Shared {
     stop: AtomicBool,
     stop_cond: Condvar,
     stop_mutex: Mutex<()>,
+
+    /// The transposition table.
+    pub table: Table,
 }
 
 #[cfg(test)]
