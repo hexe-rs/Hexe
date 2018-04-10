@@ -82,7 +82,7 @@ impl<'ctx> Context<'ctx> {
     /// Runs the worker loop within the thread context.
     pub fn run(mut self) {
         loop {
-            match self.steal() {
+            match self.try_next() {
                 Ok(_) => {},
                 Err(Interrupt::Kill) => return,
                 Err(Interrupt::Stop) => self.stop(),
@@ -90,6 +90,7 @@ impl<'ctx> Context<'ctx> {
         }
     }
 
+    /// Returns whether the thread should be killed or stopped as `Result::Err`.
     fn interrupt(&self) -> Result<(), Interrupt> {
         if self.worker.kill.load(Ordering::SeqCst) {
             Err(Interrupt::Kill)
@@ -100,7 +101,9 @@ impl<'ctx> Context<'ctx> {
         }
     }
 
-    fn steal(&mut self) -> Result<(), Interrupt> {
+    /// Attempts to steal and execute the next job with a chance of being
+    /// interrupted.
+    fn try_next(&mut self) -> Result<(), Interrupt> {
         self.interrupt()?;
 
         eprintln!("Thread {} attempting steal", self.thread);
