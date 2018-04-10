@@ -82,7 +82,9 @@ impl<'ctx> Context<'ctx> {
     /// Runs the worker loop within the thread context.
     pub fn run(&mut self) {
         loop {
-            self.try_stop();
+            if self.shared.stop.load(Ordering::SeqCst) {
+                self.stop();
+            }
             if self.worker.kill.load(Ordering::SeqCst) {
                 return;
             }
@@ -136,7 +138,7 @@ impl<'ctx> Context<'ctx> {
 
     /// Stops the thread unconditionally.
     #[cold]
-    pub fn stop(&self) {
+    fn stop(&self) {
         loop {
             eprintln!("Thread {} should stop", self.thread);
             let mut guard = self.shared.stop_mutex.lock();
@@ -147,13 +149,6 @@ impl<'ctx> Context<'ctx> {
             if !self.shared.stop.load(Ordering::SeqCst) {
                 break;
             }
-        }
-    }
-
-    /// Stops the thread if it needs to be.
-    pub fn try_stop(&self) {
-        if self.shared.stop.load(Ordering::SeqCst) {
-            self.stop();
         }
     }
 }
