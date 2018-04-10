@@ -153,7 +153,7 @@ impl<'a> Uci<'a> {
     }
 
     fn cmd_stop(&mut self) {
-        self.engine_mut().stop();
+        self.engine_mut().kill_all();
     }
 
     fn cmd_ponder_hit(&mut self) {
