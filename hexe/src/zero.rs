@@ -1,3 +1,4 @@
+use std::cell::UnsafeCell;
 use std::mem;
 use std::ops;
 use std::ptr::{self, NonNull};
@@ -26,6 +27,8 @@ impl_zero! {
 }
 
 unsafe impl<T: Zero> Zero for [T] {}
+
+unsafe impl<T: Zero> Zero for UnsafeCell<T> {}
 
 /// A buffer that, when allocated, starts as all zeroes.
 pub struct ZeroBuffer<T: Zero> {
