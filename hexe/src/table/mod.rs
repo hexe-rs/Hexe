@@ -1,4 +1,7 @@
+use std::cell::UnsafeCell;
 use std::mem;
+
+use uncon::*;
 
 use zero::{Zero, ZeroBuffer};
 
@@ -23,7 +26,7 @@ assert_eq_size! { cluster_size;
 
 /// A transposition table.
 #[derive(Default)]
-pub struct Table(ZeroBuffer<Cluster>);
+pub struct Table(ZeroBuffer<UnsafeCell<Cluster>>);
 
 impl Table {
     /// Creates a new table with a capacity and size that matches `size_mb`
@@ -40,7 +43,7 @@ impl Table {
 
     /// Returns the number of entries in the table.
     pub fn size(&self) -> usize {
-        self.0.len() * ENTRY_COUNT
+        self.clusters().len() * ENTRY_COUNT
     }
 
     /// Returns the size of the table in megabytes.
@@ -60,12 +63,12 @@ impl Table {
 
     /// Returns `self` as a slice of clusters.
     pub fn clusters(&self) -> &[Cluster] {
-        self.0.as_ref()
+        Cluster::slice(&self.0)
     }
 
     /// Returns `self` as a mutable slice of clusters.
     pub fn clusters_mut(&mut self) -> &mut [Cluster] {
-        self.0.as_mut()
+        Cluster::slice_mut(&mut self.0)
     }
 
     /// Zeroes out the entire table.
@@ -82,6 +85,16 @@ pub struct Cluster {
 }
 
 unsafe impl Zero for Cluster {}
+
+impl Cluster {
+    fn slice(s: &[UnsafeCell<Self>]) -> &[Self] {
+        unsafe { s.into_unchecked() }
+    }
+
+    fn slice_mut(s: &mut [UnsafeCell<Self>]) -> &mut [Self] {
+        unsafe { s.into_unchecked() }
+    }
+}
 
 impl Cluster {
     fn entries(&self) -> &[Entry; ENTRY_COUNT] {
