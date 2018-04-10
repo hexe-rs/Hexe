@@ -1,4 +1,3 @@
-use std::cmp::Ordering;
 use std::mem;
 
 use zero::{Zero, ZeroBuffer};
