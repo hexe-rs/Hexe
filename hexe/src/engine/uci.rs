@@ -182,8 +182,8 @@ impl<'a> Uci<'a> {
     fn cmd_set_option(&mut self, mut iter: UciIter) {
         iter.next(); // consume "name"
 
-        let mut name  = &mut self.string_buf_0;
-        let mut value = &mut self.string_buf_1;
+        let name  = &mut self.string_buf_0;
+        let value = &mut self.string_buf_1;
 
         name.clear();
         value.clear();
