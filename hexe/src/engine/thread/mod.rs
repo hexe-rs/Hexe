@@ -99,9 +99,9 @@ impl<'ctx> Context<'ctx> {
                     eprintln!("Thread {} finished waiting", self.thread);
                 },
                 Steal::Data(job) => match self.execute(job) {
-                    Some(Interruption::Stop) => self.stop(),
-                    Some(Interruption::Kill) => return,
-                    _ => continue,
+                    Err(Interruption::Stop) => self.stop(),
+                    Err(Interruption::Kill) => return,
+                    Ok(_) => continue,
                 },
                 Steal::Retry => continue,
             }
@@ -109,14 +109,14 @@ impl<'ctx> Context<'ctx> {
     }
 
     /// Executes `job` within the worker thread context.
-    fn execute(&mut self, job: Job) -> Option<Interruption> {
+    fn execute(&mut self, job: Job) -> Result<(), Interruption> {
         macro_rules! interrupt {
             () => {
                 if self.shared.stop.load(Ordering::SeqCst) {
-                    return Some(Interruption::Stop);
+                    return Err(Interruption::Stop);
                 }
                 if self.worker.kill.load(Ordering::SeqCst) {
-                    return Some(Interruption::Kill);
+                    return Err(Interruption::Kill);
                 }
             }
         }
@@ -131,7 +131,7 @@ impl<'ctx> Context<'ctx> {
         }
 
         eprintln!("Thread {} finished job", self.thread);
-        None
+        Ok(())
     }
 
     /// Stops the thread unconditionally.
