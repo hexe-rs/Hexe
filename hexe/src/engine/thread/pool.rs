@@ -59,18 +59,19 @@ impl Pool {
                     position: Position::default(),
                 };
 
-                while {
+                loop {
                     context.try_stop();
-                    !context.worker.kill.load(Ordering::SeqCst)
-                } {
+                    if context.worker.kill.load(Ordering::SeqCst) {
+                        break;
+                    }
 
-                    eprintln!("Thread {} about to attempt steal", index);
+                    eprintln!("Thread {} attempting steal", index);
                     match stealer.steal() {
                         Steal::Empty => {
                             eprintln!("Thread {} found empty deque", index);
                             let mut guard = context.shared.empty_mutex.lock();
 
-                            eprintln!("Thread {} is now waiting", index);
+                            eprintln!("Thread {} now waiting", index);
                             context.shared.empty_cond.wait(&mut guard);
 
                             eprintln!("Thread {} finished waiting", index);
