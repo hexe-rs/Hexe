@@ -52,7 +52,7 @@ pub struct Context<'ctx> {
     /// The thread identifier.
     pub thread: usize,
     /// The thread's unique worker data.
-    pub worker: &'ctx mut Worker,
+    pub worker: &'ctx Worker,
     /// Data shared with all threads.
     pub shared: &'ctx Shared,
     /// The current position.

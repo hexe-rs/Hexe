@@ -49,10 +49,8 @@ impl Pool {
                 kill: AtomicBool::new(false),
             });
 
-            // Wrap up in order to send to the corresponding thread
-            let worker_ptr = AnySend::new(&mut *worker as *mut Worker);
-
-            // The pool owns the boxed pointer value
+            // The pool owns the boxed values and no worker outlives the pool
+            let worker_ptr = AnySend::new(&*worker as *const Worker);
             let shared_ptr = AnySend::new(&*self.shared as *const Shared);
 
             let handle = thread::spawn(move || {
@@ -61,7 +59,7 @@ impl Pool {
 
                 let ref mut context = Context {
                     thread: index,
-                    worker: unsafe { &mut *worker_ptr.get() },
+                    worker: unsafe { &*worker_ptr.get() },
                     shared: unsafe { &*shared_ptr.get() },
                     position: Position::default(),
                 };
