@@ -59,12 +59,14 @@ The goal of this project is to have the following features:
 - [ ] Killer Moves
 - [ ] Minimax with Alpha-Beta pruning
 - [ ] Null Move Heuristic
+- [ ] [SIMD] parallelism (see [#4])
 - [ ] Transposition Tables
 
 ### [`hexe_core`]
 
 - [x] Bitboard and square-to-piece map chess board representations
 - [x] Lookup tables and magic Bitboards without runtime initialization
+- [ ] [SIMD] parallelism (see [#4])
 
 ### Cross-Platform Compatibility
 
@@ -98,6 +100,8 @@ Hexe is licensed under either of
 
 at your choosing.
 
+[#4]: https://github.com/hexe-rs/Hexe/issues/4
+
 [`hexe`]:      https://docs.rs/hexe
 [`hexe_core`]: https://docs.rs/hexe_core
 
@@ -109,6 +113,7 @@ at your choosing.
 [license-apache]: https://github.com/hexe-rs/Hexe/blob/master/LICENSE-APACHE
 [license-mit]: https://github.com/hexe-rs/Hexe/blob/master/LICENSE-MIT
 
+[SIMD]:        https://en.wikipedia.org/wiki/SIMD
 [std]:         https://doc.rust-lang.org/std/
 [tier1]:       https://forge.rust-lang.org/platform-support.html#tier-1
 [clarke-laws]: https://en.wikipedia.org/wiki/Clarke%27s_three_laws
