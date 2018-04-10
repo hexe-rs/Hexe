@@ -38,7 +38,7 @@ impl Pool {
             ),
             jobs: Deque::<Job>::default(),
         };
-        pool.set_threads(n);
+        pool.add_threads(n);
         pool
     }
 
