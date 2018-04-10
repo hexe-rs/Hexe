@@ -67,6 +67,7 @@ impl<'a> Uci<'a> {
     /// ```rust,norun
     /// use hexe::engine::Engine;
     ///
+    /// # return;
     /// let mut engine = Engine::default();
     /// engine.uci().start();
     /// ```
@@ -93,6 +94,7 @@ impl<'a> Uci<'a> {
     /// let mut args = env::args();
     /// args.next(); // discard program name
     ///
+    /// # return;
     /// let mut engine = Engine::default();
     /// engine.uci().start_with(args);
     /// ```
