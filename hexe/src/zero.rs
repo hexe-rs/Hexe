@@ -6,7 +6,13 @@ use std::slice;
 use libc;
 
 /// A type whose instances can safely be all zeroes.
-pub unsafe trait Zero {}
+pub unsafe trait Zero {
+    /// Safely zeroes out `self`.
+    fn zero(&mut self) {
+        #[inline]
+        unsafe { ::util::zero(self) };
+    }
+}
 
 macro_rules! impl_zero {
     ($($t:ty)+) => { $(
@@ -18,6 +24,8 @@ impl_zero! {
     u8 u16 u32 u64 usize
     i8 i16 i32 i64 isize
 }
+
+unsafe impl<'a, T: Zero> Zero for &'a mut [T] {}
 
 /// A buffer that, when allocated, starts as all zeroes.
 pub struct ZeroBuffer<T: Zero> {

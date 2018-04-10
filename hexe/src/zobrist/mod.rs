@@ -6,6 +6,7 @@ use core::castle::Rights;
 use core::misc::Extract;
 use core::piece::Role;
 use core::square::{File, Square};
+use zero::Zero;
 
 mod tables;
 
@@ -45,6 +46,8 @@ pub struct Zobrist {
     /// Key for the playing color.
     pub color: u64,
 }
+
+unsafe impl Zero for Zobrist {}
 
 // Copy is not implemented due to large structure size
 impl Clone for Zobrist {
@@ -146,7 +149,7 @@ impl Zobrist {
     /// Clear all hashes by setting them to zero.
     #[inline]
     pub fn clear(&mut self) {
-        unsafe { ::util::zero(self) }
+        self.zero();
     }
 
     /// Returns the zobrist keys as a contiguous slice.

@@ -73,7 +73,7 @@ impl Table {
 
     /// Zeroes out the entire table.
     pub fn clear(&mut self) {
-        unsafe { ::util::zero(self.clusters_mut()) };
+        self.clusters_mut().zero();
     }
 }
 
