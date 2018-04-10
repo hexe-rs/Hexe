@@ -80,7 +80,7 @@ pub struct Context<'ctx> {
 
 impl<'ctx> Context<'ctx> {
     /// Runs the worker loop within the thread context.
-    pub fn run(&mut self) {
+    pub fn run(mut self) {
         loop {
             if self.shared.stop.load(Ordering::SeqCst) {
                 self.stop();

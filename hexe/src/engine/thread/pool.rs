@@ -53,7 +53,7 @@ impl Pool {
             let shared_ptr = AnySend::new(&*self.shared as *const Shared);
 
             let handle = thread::spawn(move || {
-                let mut context = Context {
+                let context = Context {
                     thread: index,
                     worker: unsafe { &*worker_ptr.get() },
                     shared: unsafe { &*shared_ptr.get() },
