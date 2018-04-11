@@ -96,7 +96,7 @@ impl Pool {
                     jobs: stealer,
                 };
                 context.run();
-                log_trace!("Thread {} about to exit", index);
+                trace!("Thread {} about to exit", index);
             });
 
             self.threads.push(Thread { worker, handle });
@@ -110,14 +110,14 @@ impl Pool {
 
     /// Stops what each thread is currently doing.
     pub fn stop_all(&self) {
-        log_trace!("Stopping all threads");
+        trace!("Stopping all threads");
         self.shared.stop.store(true, Ordering::SeqCst);
         self.shared.empty_cond.notify_all();
     }
 
     /// Resumes all stopped threads.
     pub fn resume_all(&self) {
-        log_trace!("Resuming all stopped threads");
+        trace!("Resuming all stopped threads");
         self.shared.stop.store(false, Ordering::SeqCst);
         self.shared.stop_cond.notify_all();
     }
@@ -134,7 +134,7 @@ impl Pool {
 
     /// Kills all threads.
     pub fn kill_all(&self) {
-        log_trace!("Killing all threads");
+        trace!("Killing all threads");
         for thread in &self.threads {
             thread.worker.kill.store(true, Ordering::SeqCst);
         }
