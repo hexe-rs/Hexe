@@ -17,7 +17,9 @@ fn main() {
     #[cfg(feature = "log")]
     {
         use env_logger::Builder;
-        Builder::from_env("HEXE_LOG").init();
+
+        let mut builder = Builder::from_env("HEXE_LOG");
+        builder.default_format_module_path(false).init();
     }
 
     let mut args = env::args_os();
