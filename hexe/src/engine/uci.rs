@@ -84,6 +84,7 @@ impl<'a> Uci<'a> {
     /// engine.uci().start();
     /// ```
     pub fn start(&mut self) {
+        info!("Starting UCI interface from stdin");
         let stdin = io::stdin();
         let lines = stdin.lock().lines().filter_map(Result::ok);
         for line in lines {
@@ -114,6 +115,7 @@ impl<'a> Uci<'a> {
         where I: IntoIterator,
               I::Item: AsRef<str>,
     {
+        info!("Starting UCI interface from iterator");
         for line in commands {
             self.run(line.as_ref());
         }
@@ -134,6 +136,8 @@ impl<'a> Uci<'a> {
     }
 
     fn run_line(&mut self, line: &str) -> bool {
+        debug!("Running command \"{}\"", line);
+
         let mut split = line.split_whitespace();
         match split.next().unwrap_or("") {
             "quit"       => return false,

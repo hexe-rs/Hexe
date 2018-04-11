@@ -38,12 +38,14 @@ impl Pool {
             ),
             jobs: Default::default(),
         };
-        pool.add_threads(n);
+        pool.set_threads(n);
         pool
     }
 
     /// Sets the number of threads to `n`.
     pub fn set_threads(&mut self, n: usize) {
+        debug!("Setting engine threads to {}", n);
+
         let cur = self.num_threads();
 
         match n.cmp(&cur) {
