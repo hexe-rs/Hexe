@@ -6,7 +6,7 @@ macro_rules! impl_benches {
         #[bench]
         fn $bench(b: &mut Bencher) {
             b.iter(|| {
-                let mut table = Table::new(black_box($num), true);
+                let mut table = Table::new(black_box($num));
                 black_box(&mut table);
             });
         }
