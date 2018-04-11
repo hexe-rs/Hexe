@@ -74,6 +74,16 @@ pub extern crate hexe_core as core;
 #[macro_use]
 extern crate log;
 
+#[cfg(not(feature = "log"))]
+#[macro_use]
+mod log {
+    macro_rules! trace { ($($t:tt)*) => {} }
+    macro_rules! debug { ($($t:tt)*) => {} }
+    macro_rules! info  { ($($t:tt)*) => {} }
+    macro_rules! warn  { ($($t:tt)*) => {} }
+    macro_rules! error { ($($t:tt)*) => {} }
+}
+
 extern crate crossbeam_deque;
 extern crate libc;
 extern crate num_cpus;
@@ -92,8 +102,6 @@ extern crate static_assertions;
 #[allow(unused_imports)]
 use core::_shared::*;
 
-#[macro_use]
-mod macros;
 mod table;
 mod util;
 mod zero;
