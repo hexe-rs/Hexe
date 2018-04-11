@@ -14,8 +14,6 @@ const BLACK: usize = Color::Black as usize;
 
 macro_rules! name { () => { "Hexe" } }
 
-macro_rules! authors { () => { "Nikolai Vazquez" } }
-
 macro_rules! id {
     ($mac:ident) => {
         concat!("id ", stringify!($mac), " ", $mac!())

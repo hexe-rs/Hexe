@@ -97,6 +97,14 @@ extern crate rand;
 #[macro_use]
 extern crate static_assertions;
 
+// Macros //////////////////////////////////////////////////////////////////////
+
+/// A compile-time string containing the authors of this project.
+#[macro_export]
+macro_rules! authors {
+    () => { "Nikolai Vazquez" }
+}
+
 // Modules /////////////////////////////////////////////////////////////////////
 
 #[allow(unused_imports)]
