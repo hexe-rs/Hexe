@@ -116,7 +116,7 @@ impl From<Options> for EngineBuilder {
 
 impl EngineBuilder {
     /// Builds a new [`Engine`](struct.Engine.html) with the options of `self`.
-    pub fn build(self) -> Engine {
+    pub fn build(&self) -> Engine {
         let num_threads = match self.0.num_threads {
             0 => ::num_cpus::get(),
             n => n,
@@ -134,7 +134,7 @@ impl EngineBuilder {
     /// threads will be selected automatically. The default is the number of
     /// logical CPUs.
     #[inline]
-    pub fn num_threads(mut self, n: usize) -> EngineBuilder {
+    pub fn num_threads(&mut self, n: usize) -> &mut EngineBuilder {
         self.0.num_threads = n;
         self
     }
@@ -147,7 +147,7 @@ impl EngineBuilder {
     /// If `size_mb` is 0, or you do not call this function, then the table size
     /// will be selected automatically. The default is 1.
     #[inline]
-    pub fn hash_size(mut self, size_mb: usize) -> EngineBuilder {
+    pub fn hash_size(&mut self, size_mb: usize) -> &mut EngineBuilder {
         self.0.hash_size = size_mb;
         self
     }
