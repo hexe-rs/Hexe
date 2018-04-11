@@ -28,6 +28,9 @@ assert_eq_size! { cluster_size;
 #[derive(Default)]
 pub struct Table(ZeroBuffer<UnsafeCell<Cluster>>);
 
+unsafe impl Send for Table {}
+unsafe impl Sync for Table {}
+
 impl Table {
     /// Creates a table with its capacity and size set to the smallest power of
     /// two greater than or equal to `size_mb` number of megabytes.
