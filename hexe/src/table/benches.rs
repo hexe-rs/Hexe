@@ -14,7 +14,7 @@ macro_rules! impl_benches {
 }
 
 impl_benches! {
-    table_new_01_mb, 1;
-    table_new_04_mb, 4;
-    table_new_16_mb, 16;
+    table_new_1_mb, 1;
+    table_new_4_mb, 4;
+    table_new_8_mb, 8;
 }
