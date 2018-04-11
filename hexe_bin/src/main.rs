@@ -1,3 +1,5 @@
+#[cfg(feature = "log")]
+extern crate env_logger;
 extern crate hexe;
 
 use std::env;
@@ -12,6 +14,9 @@ fn to_string(os_str: OsString) -> String {
 }
 
 fn main() {
+    #[cfg(feature = "log")]
+    env_logger::init();
+
     let mut args = env::args_os();
     let mut eng  = hexe::engine::Engine::default();
     let mut uci  = eng.uci();
