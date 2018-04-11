@@ -58,6 +58,7 @@ impl Table {
     ///
     /// This type's internals assume that the buffer has a power of two size.
     unsafe fn resize_exact(&mut self, size_mb: usize) {
+        debug!("Setting table size to {} megabytes", size_mb);
         debug_assert!(size_mb.is_power_of_two());
         self.0.resize_exact(size_mb * MB_SIZE / CLUSTER_SIZE);
     }

@@ -84,7 +84,7 @@ impl<'a> Uci<'a> {
     /// engine.uci().start();
     /// ```
     pub fn start(&mut self) {
-        info!("Starting UCI interface from stdin");
+        info!("Starting UCI from stdin");
         let stdin = io::stdin();
         let lines = stdin.lock().lines().filter_map(Result::ok);
         for line in lines {
@@ -115,7 +115,7 @@ impl<'a> Uci<'a> {
         where I: IntoIterator,
               I::Item: AsRef<str>,
     {
-        info!("Starting UCI interface from iterator");
+        info!("Starting UCI from iterator");
         for line in commands {
             self.run(line.as_ref());
         }
@@ -136,7 +136,7 @@ impl<'a> Uci<'a> {
     }
 
     fn run_line(&mut self, line: &str) -> bool {
-        debug!("Running command \"{}\"", line);
+        debug!("Running UCI command: \"{}\"", line);
 
         let mut split = line.split_whitespace();
         match split.next().unwrap_or("") {
@@ -202,6 +202,11 @@ impl<'a> Uci<'a> {
             name.push_str(next);
         }
 
+        if name.is_empty() {
+            error!("No option provided");
+            return;
+        }
+
         for next in iter {
             if !value.is_empty() {
                 value.push(' ');
@@ -214,14 +219,16 @@ impl<'a> Uci<'a> {
             ::util::matches_lower_alpha(opt.as_ref(), name.as_ref())
         };
 
+        debug!("Setting UCI option \"{}\" to \"{}\"", name, value);
+
         if match_option("threads") {
             if let Ok(n) = value.parse() {
                 self.engine.set_threads(n);
             } else {
-                trace!("Could not parse \"{}\" as integer", value);
+                error!("Could not parse \"{}\" as integer", value);
             }
         } else if match_option("hash") {
-            panic!("Cannot currently set table size");
+            warn!("Cannot currently set table size");
         } else {
             println!("No such option: {}", name);
         }
