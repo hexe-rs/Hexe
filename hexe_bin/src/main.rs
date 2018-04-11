@@ -15,7 +15,12 @@ fn to_string(os_str: OsString) -> String {
 
 fn main() {
     #[cfg(feature = "log")]
-    env_logger::init();
+    {
+        use env_logger::Builder;
+
+        let mut builder = Builder::from_default_env();
+        builder.default_format_timestamp(false).init();
+    }
 
     let mut args = env::args_os();
     let mut eng  = hexe::engine::Engine::default();
