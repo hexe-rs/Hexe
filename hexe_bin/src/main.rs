@@ -88,8 +88,8 @@ fn main() {
             builder.parse_write_style(style);
         }
 
-        if let Some(log_arg) = matches.value_of_lossy("log") {
-            builder.parse(&log_arg);
+        if let Some(log_arg) = matches.value_of("log") {
+            builder.parse(log_arg);
         }
 
         builder.default_format_module_path(false).init();
