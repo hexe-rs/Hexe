@@ -101,6 +101,21 @@ impl Engine {
     pub fn num_threads(&self) -> usize {
         self.pool.num_threads()
     }
+
+    /// Returns the engine's current hash table size.
+    pub fn hash_size(&self) -> bool {
+        self.pool.shared().table.size_mb()
+    }
+
+    /// Sets the engine's hash table size to `size`
+    /// [MiB](https://en.wikipedia.org/wiki/Mebibyte).
+    /// Returns `false` if the value is not within the inclusive range from 1 to
+    /// 131072.
+    ///
+    /// This method waits for all threads to stop.
+    pub fn set_hash_size(&mut self, size: usize) -> bool {
+        unimplemented!();
+    }
 }
 
 /// A type that can be used to build an [`Engine`](struct.Engine.html) instance.
