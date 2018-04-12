@@ -37,7 +37,8 @@ fn main() {
             .long("log")
             .global(true)
             .takes_value(true)
-            .help("The logging directive. Overrides `HEXE_LOG` var."))
+            .env("HEXE_LOG")
+            .help("The logging directive."))
     }
 
     let matches = app.get_matches();
@@ -57,7 +58,7 @@ fn main() {
     {
         use env_logger::Builder;
 
-        let mut builder = Builder::from_env("HEXE_LOG");
+        let mut builder = Builder::new();
 
         if let Some(log_arg) = matches.value_of_os("log") {
             if let Some(s) = log_arg.to_str() {
