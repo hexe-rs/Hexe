@@ -26,6 +26,7 @@ fn main() {
         .arg(Arg::with_name("threads")
             .long("threads")
             .takes_value(true)
+            .empty_values(false)
             .help("The number of OS threads used to run the engine. \
                    If the value is 0, then the number of \
                    available logical cores is used."));
@@ -34,8 +35,9 @@ fn main() {
     if cfg!(feature = "log") {
         app = app.arg(Arg::with_name("log")
             .long("log")
+            .global(true)
             .takes_value(true)
-            .help("The logging directive"))
+            .help("The logging directive. Overrides `HEXE_LOG` var."))
     }
 
     let matches = app.get_matches();
