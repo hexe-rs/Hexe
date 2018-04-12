@@ -13,6 +13,8 @@ A UCI-compatible chess engine.
 
 Project home page: https://github.com/hexe-rs/Hexe";
 
+static mut NUM_THREADS: usize = 0;
+
 fn main() {
     let mut app = App::new("Hexe")
         .version(concat!("v", env!("CARGO_PKG_VERSION")))
@@ -27,12 +29,15 @@ fn main() {
             .long("threads")
             .takes_value(true)
             .validator(|val| {
-                for &byte in val.as_bytes() {
-                    if byte < b'0' || byte > b'9' {
-                        return Err("found non-digit".into())
-                    }
+                // Parsing here makes use of clap's
+                // built-in error handling
+                match val.parse() {
+                    Ok(n) => unsafe {
+                        NUM_THREADS = n;
+                        Ok(())
+                    },
+                    Err(e) => Err(e.to_string()),
                 }
-                Ok(())
             })
             .empty_values(false)
             .help("The number of OS threads used to run the engine. \
@@ -53,8 +58,9 @@ fn main() {
 
     let mut engine = Engine::builder();
 
-    if let Some(num_threads) = matches.value_of("threads") {
-        engine.num_threads(num_threads.parse().unwrap());
+    unsafe {
+        // Set by `get_matches`
+        engine.num_threads(NUM_THREADS);
     }
 
     #[cfg(feature = "log")]
