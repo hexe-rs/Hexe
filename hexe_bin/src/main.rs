@@ -26,6 +26,14 @@ fn main() {
         .arg(Arg::with_name("threads")
             .long("threads")
             .takes_value(true)
+            .validator(|val| {
+                for &byte in val.as_bytes() {
+                    if byte < b'0' || byte > b'9' {
+                        return Err("found non-digit".into())
+                    }
+                }
+                Ok(())
+            })
             .empty_values(false)
             .help("The number of OS threads used to run the engine. \
                    If the value is 0, then the number of \
@@ -46,12 +54,7 @@ fn main() {
     let mut engine = Engine::builder();
 
     if let Some(num_threads) = matches.value_of("threads") {
-        match num_threads.parse() {
-            Ok(n)  => {
-                engine.num_threads(n);
-            },
-            Err(err) => eprintln!("Error parsing \'threads\': {}", err),
-        }
+        engine.num_threads(num_threads.parse().unwrap());
     }
 
     #[cfg(feature = "log")]
