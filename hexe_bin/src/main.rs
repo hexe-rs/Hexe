@@ -5,6 +5,8 @@ extern crate clap;
 #[macro_use]
 extern crate hexe;
 
+use std::str::FromStr;
+
 use clap::{Arg, App, AppSettings};
 use hexe::engine::Engine;
 
@@ -13,7 +15,22 @@ A UCI-compatible chess engine.
 
 Project home page: https://github.com/hexe-rs/Hexe";
 
-static mut NUM_THREADS: usize = 0;
+static mut NUM_THREADS: Option<usize> = None;
+static mut HASH_SIZE:   Option<usize> = None;
+
+/// Parses `val` and stores it in `dst`.
+fn parse<T>(val: String, dst: &mut Option<T>) -> Result<(), String>
+    where T: FromStr,
+          T::Err: ToString,
+{
+    match val.parse::<T>() {
+        Ok(val) => {
+            *dst = Some(val);
+            Ok(())
+        },
+        Err(err) => Err(err.to_string())
+    }
+}
 
 fn main() {
     let mut app = App::new("Hexe")
@@ -26,21 +43,18 @@ fn main() {
             AppSettings::StrictUtf8,
             AppSettings::VersionlessSubcommands,
         ])
+        .arg(Arg::with_name("hash size")
+            .long("hash")
+            .short("H")
+            .value_name("SIZE")
+            .takes_value(true)
+            .validator(|val| parse(val, unsafe { &mut HASH_SIZE }))
+            .help("The hash table size in megabytes."))
         .arg(Arg::with_name("threads")
             .long("threads")
             .value_name("N")
             .takes_value(true)
-            .validator(|val| {
-                // Parsing here makes use of clap's
-                // built-in error handling
-                match val.parse() {
-                    Ok(n) => unsafe {
-                        NUM_THREADS = n;
-                        Ok(())
-                    },
-                    Err(e) => Err(e.to_string()),
-                }
-            })
+            .validator(|val| parse(val, unsafe { &mut NUM_THREADS }))
             .empty_values(false)
             .help("The number of OS threads used to run the engine. \
                    If N is 0, the number of \
@@ -73,9 +87,14 @@ fn main() {
 
     let mut engine = Engine::builder();
 
+    // Set by `get_matches`
     unsafe {
-        // Set by `get_matches`
-        engine.num_threads(NUM_THREADS);
+        if let Some(n) = NUM_THREADS {
+            engine.num_threads(n);
+        }
+        if let Some(n) = HASH_SIZE {
+            engine.hash_size(n);
+        }
     }
 
     #[cfg(feature = "log")]
