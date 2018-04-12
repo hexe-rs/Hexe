@@ -48,16 +48,27 @@ fn main() {
 
     // Conditionally include logging flag if feature is enabled
     if cfg!(feature = "log") {
-        app = app.arg(Arg::with_name("log")
-            .long("log")
-            .short("l")
-            .global(true)
-            .value_name("LOG")
-            .takes_value(true)
-            .env("HEXE_LOG")
-            .help("The logging directive."))
+        app = app
+            .arg(Arg::with_name("log")
+                .long("log")
+                .short("l")
+                .global(true)
+                .value_name("LOG")
+                .takes_value(true)
+                .env("HEXE_LOG")
+                .help("The logging directive."))
+            .arg(Arg::with_name("color")
+                .long("color")
+                .short("c")
+                .global(true)
+                .takes_value(true)
+                .value_name("when")
+                .possible_values(&["auto", "always", "never"])
+                .help("When to color logging output."))
     }
 
+    // Matches unused when "log" is disabled
+    #[allow(unused_variables)]
     let matches = app.get_matches();
 
     let mut engine = Engine::builder();
@@ -72,6 +83,10 @@ fn main() {
         use env_logger::Builder;
 
         let mut builder = Builder::new();
+
+        if let Some(style) = matches.value_of("color") {
+            builder.parse_write_style(style);
+        }
 
         if let Some(log_arg) = matches.value_of_lossy("log") {
             builder.parse(&log_arg);
