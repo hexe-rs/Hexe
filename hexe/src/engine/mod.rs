@@ -14,6 +14,14 @@ use self::thread::Pool;
 mod uci;
 pub use self::uci::Uci;
 
+/// The maximum number of threads that may be running in an
+/// [`Engine`](struct.Engine.html)'s threadpool.
+pub const MAX_THREADS: usize = 512;
+
+/// The maximum hash table size that may be passed to
+/// [`Engine::set_hash_size`](struct.Engine.html#method.set_hash_size).
+pub const MAX_TABLE_SIZE: usize = 131072;
+
 /// An instance of the Hexe chess engine.
 ///
 /// # Examples
