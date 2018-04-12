@@ -146,6 +146,16 @@ impl Pool {
     /// Returns a reference to the data shared by all threads.
     pub fn shared(&self) -> &Shared { &self.shared }
 
+    /// Returns a mutable reference to the data shared by all threads.
+    ///
+    /// # Safety
+    ///
+    /// The caller must ensure that no thread is currently accessing `Shared`,
+    /// such as with thread pool resizing.
+    pub unsafe fn shared_mut(&mut self) -> &mut Shared {
+        &mut self.shared
+    }
+
     /// Enqueues the job to be executed.
     pub fn enqueue(&self, job: Job) {
         self.jobs.push(job);
