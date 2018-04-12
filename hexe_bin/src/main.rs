@@ -62,7 +62,7 @@ fn main() {
                 .short("c")
                 .global(true)
                 .takes_value(true)
-                .value_name("when")
+                .value_name("WHEN")
                 .possible_values(&["auto", "always", "never"])
                 .help("When to color logging output."))
     }
