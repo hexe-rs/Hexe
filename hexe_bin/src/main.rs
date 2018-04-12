@@ -5,15 +5,24 @@ extern crate clap;
 #[macro_use]
 extern crate hexe;
 
-use clap::{Arg, App};
+use clap::{Arg, App, AppSettings};
 use hexe::engine::Engine;
+
+const ABOUT: &str = "
+A UCI-compatible chess engine.
+
+Project home page: https://github.com/hexe-rs/Hexe";
 
 fn main() {
     let mut app = App::new("Hexe")
         .version(concat!("v", env!("CARGO_PKG_VERSION")))
         .author(authors!())
-        .about("A chess engine")
+        .about(ABOUT)
         .set_term_width(80)
+        .settings(&[
+            AppSettings::ColoredHelp,
+            AppSettings::VersionlessSubcommands,
+        ])
         .arg(Arg::with_name("threads")
             .long("threads")
             .takes_value(true)
@@ -38,7 +47,7 @@ fn main() {
             Ok(n)  => {
                 engine.num_threads(n);
             },
-            Err(_) => eprintln!("Invalid digit found in \'--threads\'"),
+            Err(err) => eprintln!("Error parsing \'threads\': {}", err),
         }
     }
 
@@ -52,7 +61,7 @@ fn main() {
             if let Some(s) = log_arg.to_str() {
                 builder.parse(s);
             } else {
-                eprintln!("Invalid UTF-8 string found in \'--log\'")
+                eprintln!("Invalid UTF-8 string found in \'log\'")
             }
         }
 
