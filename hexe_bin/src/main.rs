@@ -63,12 +63,8 @@ fn main() {
 
         let mut builder = Builder::new();
 
-        if let Some(log_arg) = matches.value_of_os("log") {
-            if let Some(s) = log_arg.to_str() {
-                builder.parse(s);
-            } else {
-                eprintln!("Invalid UTF-8 string found in \'log\'")
-            }
+        if let Some(log_arg) = matches.value_of_lossy("log") {
+            builder.parse(&log_arg);
         }
 
         builder.default_format_module_path(false).init();
