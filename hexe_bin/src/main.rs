@@ -23,6 +23,7 @@ fn main() {
         .set_term_width(80)
         .settings(&[
             AppSettings::ColoredHelp,
+            AppSettings::StrictUtf8,
             AppSettings::VersionlessSubcommands,
         ])
         .arg(Arg::with_name("threads")
