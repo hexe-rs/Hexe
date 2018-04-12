@@ -16,6 +16,7 @@ const CLUSTER_ALIGN: usize = mem::align_of::<Cluster>();
 const CLUSTER_SIZE:  usize = mem::size_of::<Cluster>();
 const ENTRY_COUNT:   usize = CACHE_LINE / mem::size_of::<Entry>();
 const MB_SIZE:       usize = 1024 * 1024;
+const SIZE_MUL:      usize = MB_SIZE / CLUSTER_SIZE;
 
 #[cfg(test)]
 assert_eq_size! { cluster_size;
@@ -51,8 +52,11 @@ impl Table {
     }
 
     /// Resizes the table to the next power of two number of megabytes.
-    pub fn resize(&mut self, size_mb: usize) {
-        unsafe { self.resize_exact(size_mb.next_power_of_two()) };
+    ///
+    /// Returns whether or not the resize is successful. This method may fail if
+    /// `size_mb` results in an overflow.
+    pub fn resize(&mut self, size_mb: usize) -> bool {
+        unsafe { self.resize_exact(size_mb.next_power_of_two()) }
     }
 
     /// Resizes the table to exactly `size_mb` number of megabytes.
@@ -60,10 +64,16 @@ impl Table {
     /// # Safety
     ///
     /// This type's internals assume that the buffer has a power of two size.
-    unsafe fn resize_exact(&mut self, size_mb: usize) {
-        debug!("Setting table size to {} megabytes", size_mb);
+    unsafe fn resize_exact(&mut self, size_mb: usize) -> bool {
+        debug!("Setting table size to {} MiB", size_mb);
         debug_assert!(size_mb.is_power_of_two());
-        self.0.resize_exact(size_mb * MB_SIZE / CLUSTER_SIZE);
+        if let Some(n) = size_mb.checked_mul(SIZE_MUL) {
+            self.0.resize_exact(n);
+            true
+        } else {
+            error!("Table size overflows; keeping {} MiB", self.size_mb());
+            false
+        }
     }
 
     /// Returns `self` as a slice of clusters.
