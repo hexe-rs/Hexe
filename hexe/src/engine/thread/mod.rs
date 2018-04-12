@@ -45,13 +45,22 @@ pub struct Shared {
     /// The mutex associated with `empty_cond`.
     empty_mutex: Mutex<()>,
 
-    /// Whether or not to stop all searches.
+    /// Pool communication to all workers whether or not to stop.
     stop: AtomicBool,
     stop_cond: Condvar,
     stop_mutex: Mutex<()>,
 
     /// The transposition table.
     pub table: Table,
+}
+
+impl Shared {
+    /// Stops what each thread is currently doing.
+    pub fn stop(&self) {
+        trace!("Stopping all threads");
+        self.stop.store(true, Ordering::SeqCst);
+        self.empty_cond.notify_all();
+    }
 }
 
 #[cfg(test)]

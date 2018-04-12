@@ -112,9 +112,7 @@ impl Pool {
 
     /// Stops what each thread is currently doing.
     pub fn stop_all(&self) {
-        trace!("Stopping all threads");
-        self.shared.stop.store(true, Ordering::SeqCst);
-        self.shared.empty_cond.notify_all();
+        self.shared.stop()
     }
 
     /// Resumes all stopped threads.
