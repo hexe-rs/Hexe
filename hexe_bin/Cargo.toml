@@ -18,11 +18,18 @@ path = "src/main.rs"
 travis-ci = { repository = "hexe-rs/Hexe" }
 appveyor  = { repository = "nvzqz/Hexe" }
 
-[dependencies]
-hexe       = { version = "0.0.5", path = "../hexe" }
-env_logger = { version = "0.5.0", optional = true }
+[dependencies.hexe]
+version = "0.0.5"
+path    = "../hexe"
 
-clap = "2.0"
+[dependencies.clap]
+version          = "2.0"
+default-features = false
+features         = ["color", "suggestions"]
+
+[dependencies.env_logger]
+version  = "0.5"
+optional = true
 
 [features]
 default = ["log"]
