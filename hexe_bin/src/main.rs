@@ -59,7 +59,7 @@ fn main() {
                 .help("The logging directive."))
             .arg(Arg::with_name("color")
                 .long("color")
-                .short("c")
+                .short("C")
                 .global(true)
                 .takes_value(true)
                 .value_name("WHEN")
