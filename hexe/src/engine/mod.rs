@@ -111,7 +111,7 @@ impl Engine {
     }
 
     /// Returns the engine's current hash table size.
-    pub fn hash_size(&self) -> bool {
+    pub fn hash_size(&self) -> usize {
         self.pool.shared().table.size_mb()
     }
 
