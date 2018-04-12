@@ -50,6 +50,7 @@ fn main() {
     if cfg!(feature = "log") {
         app = app.arg(Arg::with_name("log")
             .long("log")
+            .short("l")
             .global(true)
             .value_name("LOG")
             .takes_value(true)
