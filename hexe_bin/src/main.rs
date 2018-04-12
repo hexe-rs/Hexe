@@ -28,6 +28,7 @@ fn main() {
         ])
         .arg(Arg::with_name("threads")
             .long("threads")
+            .value_name("N")
             .takes_value(true)
             .validator(|val| {
                 // Parsing here makes use of clap's
@@ -42,7 +43,7 @@ fn main() {
             })
             .empty_values(false)
             .help("The number of OS threads used to run the engine. \
-                   If the value is 0, then the number of \
+                   If N is 0, the number of \
                    available logical cores is used."));
 
     // Conditionally include logging flag if feature is enabled
@@ -50,6 +51,7 @@ fn main() {
         app = app.arg(Arg::with_name("log")
             .long("log")
             .global(true)
+            .value_name("LOG")
             .takes_value(true)
             .env("HEXE_LOG")
             .help("The logging directive."))
