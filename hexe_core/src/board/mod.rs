@@ -94,3 +94,24 @@ pub mod piece_map;
 #[doc(inline)] pub use self::bitboard::Bitboard;
 #[doc(inline)] pub use self::multi_board::MultiBoard;
 #[doc(inline)] pub use self::piece_map::PieceMap;
+
+/// Chess variants that Hexe supports (or plans to support).
+#[derive(Copy, Clone, Debug)]
+pub enum Variant {
+    /// Standard vanilla chess.
+    Standard,
+    /// [Chess960](https://en.wikipedia.org/wiki/Chess960), where players' ranks
+    /// are randomized prior to starting.
+    ///
+    /// This variant may also be called Fischer Random Chess.
+    Chess960,
+    #[doc(hidden)]
+    // Here be dragons and nasal demons.
+    // TODO: https://github.com/rust-lang/rust/issues/44109
+    __NonExhaustive,
+}
+
+impl Default for Variant {
+    #[inline]
+    fn default() -> Variant { Variant::Standard }
+}
