@@ -18,6 +18,38 @@ assert_valid_none! {
 }
 
 #[test]
+fn option_values() {
+    // We can use Option<Piece> in place of a byte value
+    // if we can safely assume its size and values
+
+    let none = None::<Piece>;
+    let byte = unsafe { mem::transmute::<_, u8>(none) };
+    assert_eq!(byte, NONE);
+
+    for piece in Piece::ALL {
+        let byte = unsafe { mem::transmute::<_, u8>(Some(piece)) };
+        assert_eq!(byte, piece as u8);
+    }
+}
+
+#[test]
+fn index() {
+    let mut map = PieceMap::STANDARD;
+
+    for sq in Square::ALL {
+        let fr = (sq.file(), sq.rank());
+
+        let a = map.get(sq).map(|pc| *pc);
+        let b = map.get(fr).map(|pc| *pc);
+        assert_eq!(a, b);
+
+        let a = map.get_mut(sq).map(|pc| *pc);
+        let b = map.get_mut(fr).map(|pc| *pc);
+        assert_eq!(a, b);
+    }
+}
+
+#[test]
 fn len() {
     let mut map = PieceMap::new();
 
@@ -178,7 +210,7 @@ fn castle() {
 
             let range = affected_range(right);
             let start = ..range.start;
-            let end   = range.end..SQUARE_NUM;
+            let end   = range.end..NUM_SQUARES;
 
             assert_eq!(&map.as_bytes()[start.clone()],
                        &original.as_bytes()[start]);

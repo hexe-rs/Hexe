@@ -97,7 +97,7 @@ impl<'a> VacantEntry<'a> {
     #[inline]
     pub fn insert(self, piece: Piece) -> &'a mut Piece {
         unsafe {
-            let slot = self.key.extract_mut(&mut self.map.0.array);
+            let slot = self.key.extract_mut(&mut self.map.0.bytes);
             *slot = piece as u8;
             slot.into_unchecked()
         }

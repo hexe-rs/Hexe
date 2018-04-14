@@ -1,7 +1,7 @@
 use super::{Piece, PieceMap};
 
 use test::{Bencher, black_box};
-use rand;
+use rand::{self, Rng};
 
 use castle::Right;
 use iter::All;
@@ -91,7 +91,8 @@ fn iter_len(b: &mut Bencher) {
 #[bench]
 fn len_1000(b: &mut Bencher) {
     let mut map = PieceMap::STANDARD;
-    map.shuffle(&mut rand::thread_rng());
+    rand::thread_rng().shuffle(map.as_array_mut());
+
     b.iter(|| {
         for _ in 0..1000 {
             black_box(black_box(&map).len());
@@ -108,7 +109,7 @@ fn len_naive_1000(b: &mut Bencher) {
     }
 
     let mut map = PieceMap::STANDARD;
-    map.shuffle(&mut rand::thread_rng());
+    rand::thread_rng().shuffle(map.as_array_mut());
 
     assert_eq!(map.len(), len(&map));
 
