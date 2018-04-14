@@ -58,6 +58,9 @@ mod tables {
 
 pub(crate) const NONE: u8 = 12;
 
+#[cfg(feature = "simd")]
+pub(crate) const NONE_SIMD: u8x64 = u8x64::splat(NONE);
+
 const NUM_SQUARES: usize = NUM_FILES * NUM_RANKS;
 const NUM_FILES: usize = NUM_RANKS;
 const NUM_RANKS: usize = 8;
@@ -591,7 +594,7 @@ impl PieceMap {
     pub fn is_empty(&self) -> bool {
         #[cfg(feature = "simd")]
         {
-            *self.as_vector() == u8x64::splat(NONE)
+            *self.as_vector() == NONE_SIMD
         }
         #[cfg(not(feature = "simd"))]
         {
