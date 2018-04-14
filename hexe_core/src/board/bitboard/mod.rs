@@ -49,6 +49,15 @@
 //!
 //! [ka]: ../square/enum.Square.html#method.knight_attacks
 
+use core::{fmt, ops, str};
+
+#[cfg(feature = "serde")]
+use serde::*;
+use uncon::*;
+
+use prelude::*;
+use util::Bytes;
+
 pub mod masks;
 
 mod carry_rippler;
@@ -59,14 +68,6 @@ pub use self::dir::*;
 
 #[cfg(all(test, nightly))]
 mod benches;
-
-use core::{fmt, ops, str};
-use prelude::*;
-use util::Bytes;
-
-#[cfg(feature = "serde")]
-use serde::*;
-use uncon::*;
 
 impl_rand!(u64 => Bitboard);
 
