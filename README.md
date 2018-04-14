@@ -26,17 +26,18 @@ is split into three packages (crates):
 
 - **[ bin ]** `hexe_bin`: The CLI frontend for Hexe
 
-    - Actually executes the chess engine
+  - Actually executes the chess engine
 
-- **[ lib ]** [`hexe`]: The chess engine itself
+- **[ lib ]** [`hexe` (documentation)][hexe]: The chess engine itself
 
-    - Specialized for Hexe's use cases
+  - Specialized for Hexe's use cases
 
-- **[ lib ]** [`hexe_core`]: The chess engine's building blocks
+- **[ lib ]** [`hexe_core` (documentation)][hexe_core]: The chess engine's
+  building blocks
 
-    - Supports `no_std` builds
+  - Supports `no_std` builds
 
-    - May be used by other chess programs for ease of code reuse
+  - May be used by other chess programs for ease of code reuse
 
 ## Why "Hexe"?
 
@@ -52,7 +53,7 @@ technology is indistinguishable from magic."
 
 The goal of this project is to have the following features:
 
-### [`hexe`]
+### [`hexe`][hexe]
 
 - [x] UCI compatibility
 - [x] [Work stealing](https://en.wikipedia.org/wiki/Work_stealing)
@@ -65,7 +66,7 @@ The goal of this project is to have the following features:
 - [ ] [SIMD] parallelism (see [#4])
 - [ ] Transposition Tables
 
-### [`hexe_core`]
+### [`hexe_core`][hexe_core]
 
 - [x] Bitboard and square-to-piece map chess board representations
 - [x] Lookup tables and magic Bitboards without runtime initialization
@@ -105,8 +106,8 @@ at your choosing.
 
 [#4]: https://github.com/hexe-rs/Hexe/issues/4
 
-[`hexe`]:      https://docs.rs/hexe
-[`hexe_core`]: https://docs.rs/hexe_core
+[hexe]: https://docs.rs/hexe
+[hexe_core]: https://docs.rs/hexe_core
 
 [travis]:       https://travis-ci.org/hexe-rs/Hexe
 [travis-badge]: https://travis-ci.org/hexe-rs/Hexe.svg?branch=master
