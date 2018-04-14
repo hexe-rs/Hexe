@@ -4,6 +4,7 @@ use color::Color;
 use iter::All;
 use square::Square;
 
+use rand::{self, Rng};
 use test::{Bencher, black_box};
 
 #[inline(always)]
@@ -32,7 +33,9 @@ fn is_attacked_standard_64(b: &mut Bencher) {
 
 #[bench]
 fn from_piece_map(b: &mut Bencher) {
-    let map = ::board::PieceMap::STANDARD;
+    let mut map = ::board::PieceMap::STANDARD;
+    rand::thread_rng().shuffle(map.as_array_mut());
+
     b.iter(|| {
         let board = MultiBoard::from(black_box(&map));
         black_box(&board);
