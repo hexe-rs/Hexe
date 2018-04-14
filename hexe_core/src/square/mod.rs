@@ -535,7 +535,7 @@ impl File {
     /// ```
     #[inline]
     pub fn adjacent_mask(&self) -> Bitboard {
-        Bitboard(tables::ADJACENT[0][*self as usize])
+        Bitboard(TABLES.adj_file[*self as usize])
     }
 }
 
@@ -589,7 +589,7 @@ impl Rank {
     /// ```
     #[inline]
     pub fn adjacent_mask(&self) -> Bitboard {
-        Bitboard(tables::ADJACENT[1][*self as usize])
+        Bitboard(TABLES.adj_rank[*self as usize])
     }
 
     /// Returns the remaining distance for `color` to reach the end of the board

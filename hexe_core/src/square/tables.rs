@@ -1,14 +1,10 @@
 use board::bitboard::masks::*;
 
-pub static ADJACENT: [[u64; 8]; 2] = [
-    [FILE_B.0, FILE_A.0 | FILE_C.0, FILE_B.0 | FILE_D.0, FILE_C.0 | FILE_E.0,
-     FILE_D.0 | FILE_F.0, FILE_E.0 | FILE_G.0, FILE_F.0 | FILE_H.0, FILE_G.0],
-    [RANK_2.0, RANK_1.0 | RANK_3.0, RANK_2.0 | RANK_4.0, RANK_3.0 | RANK_5.0,
-     RANK_4.0 | RANK_6.0, RANK_5.0 | RANK_7.0, RANK_6.0 | RANK_8.0, RANK_7.0],
-];
 
 #[repr(align(64))]
 pub struct Tables {
+    pub adj_file: [u64; 8],
+    pub adj_rank: [u64; 8],
     pub distance: [[u8; 64]; 64],
     pub chebyshev: [u8; 64],
     pub manhattan: [u8; 64],
@@ -20,6 +16,14 @@ pub struct Tables {
 }
 
 pub static TABLES: Tables = Tables {
+    adj_file: [
+        FILE_B.0, FILE_A.0 | FILE_C.0, FILE_B.0 | FILE_D.0, FILE_C.0 | FILE_E.0,
+        FILE_D.0 | FILE_F.0, FILE_E.0 | FILE_G.0, FILE_F.0 | FILE_H.0, FILE_G.0,
+    ],
+    adj_rank: [
+        RANK_2.0, RANK_1.0 | RANK_3.0, RANK_2.0 | RANK_4.0, RANK_3.0 | RANK_5.0,
+        RANK_4.0 | RANK_6.0, RANK_5.0 | RANK_7.0, RANK_6.0 | RANK_8.0, RANK_7.0,
+    ],
     distance: [
         [0,1,2,3,4,5,6,7,1,1,2,3,4,5,6,7,2,2,2,3,4,5,6,7,3,3,3,3,4,5,6,7,4,4,4,4,4,5,6,7,5,5,5,5,5,5,6,7,6,6,6,6,6,6,6,7,7,7,7,7,7,7,7,7],
         [1,0,1,2,3,4,5,6,1,1,1,2,3,4,5,6,2,2,2,2,3,4,5,6,3,3,3,3,3,4,5,6,4,4,4,4,4,4,5,6,5,5,5,5,5,5,5,6,6,6,6,6,6,6,6,6,7,7,7,7,7,7,7,7],
