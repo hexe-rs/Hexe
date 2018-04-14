@@ -48,6 +48,10 @@ technology is indistinguishable from magic."
 
 3. If she weighs the same as a duck... she's made of wood. And therefore...
 
+## Configuration
+
+See [`CONFIGURATION.md`](https://github.com/hexe-rs/Hexe/blob/master/CONFIGURATION.md).
+
 ## Features
 
 The goal of this project is to have the following features:
