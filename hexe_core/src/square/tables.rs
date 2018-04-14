@@ -1,6 +1,6 @@
 use board::bitboard::masks::*;
 
-
+// Currently 70.25 KiB in size
 #[repr(align(64))]
 pub struct Tables {
     pub adj_file: [u64; 8],
