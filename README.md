@@ -55,7 +55,8 @@ The goal of this project is to have the following features:
 ### [`hexe`]
 
 - [x] UCI compatibility
-- [x] Work-stealing multi-threaded search
+- [x] [Work stealing](https://en.wikipedia.org/wiki/Work_stealing)
+      multi-threaded search
 - [ ] Aspiration Windows
 - [ ] Iterative Deepening
 - [ ] Killer Moves
