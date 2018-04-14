@@ -2,8 +2,8 @@ use super::*;
 
 #[repr(align(64))]
 pub(super) struct Magics {
-    pub rook:   [Magic; 64],
-    pub bishop: [Magic; 64],
+    pub rook:   Table,
+    pub bishop: Table,
 }
 
 // Fixed shift white magics found by Volker Annuss, published at

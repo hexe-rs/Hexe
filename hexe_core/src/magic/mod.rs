@@ -3,6 +3,8 @@ use square::Square;
 
 mod tables;
 
+type Table = [Magic; 64];
+
 // Fixed shift magic
 struct Magic {
     mask: u64,
@@ -19,16 +21,17 @@ impl Magic {
 }
 
 #[inline]
-fn attacks(magic: &Magic, occupied: u64, shift: u8) -> u64 {
-    unsafe { *tables::ATTACKS.get_unchecked(magic.index(occupied, shift)) }
+fn attacks(table: &Table, sq: Square, occupied: u64, shift: u8) -> u64 {
+    let index = table[sq as usize].index(occupied, shift);
+    unsafe { *tables::ATTACKS.get_unchecked(index) }
 }
 
 #[inline]
-pub fn rook_attacks(square: Square, occupied: Bitboard) -> Bitboard {
-    attacks(&tables::MAGICS.rook[square as usize], occupied.0, 12).into()
+pub fn rook_attacks(sq: Square, occupied: Bitboard) -> Bitboard {
+    attacks(&tables::MAGICS.rook, sq, occupied.0, 12).into()
 }
 
 #[inline]
-pub fn bishop_attacks(square: Square, occupied: Bitboard) -> Bitboard {
-    attacks(&tables::MAGICS.bishop[square as usize], occupied.0, 9).into()
+pub fn bishop_attacks(sq: Square, occupied: Bitboard) -> Bitboard {
+    attacks(&tables::MAGICS.bishop, sq, occupied.0, 9).into()
 }
