@@ -97,6 +97,7 @@ impl AsMut<[Bitboard]> for MultiBoard {
 }
 
 impl<'a> From<&'a PieceMap> for MultiBoard {
+    #[inline]
     fn from(map: &PieceMap) -> MultiBoard {
         let mut board = MultiBoard::default();
         for (square, &piece) in map {
