@@ -16,7 +16,7 @@ features = ["simd"]
 Enables [SIMD]-accelerated operations **(nightly)**. See
 [issue #4](https://github.com/hexe-rs/Hexe/issues/4) for more information.
 
-Once SIMD is stable [#48556](https://github.com/rust-lang/rust/issues/48556),
+Once SIMD is stable ([#48556](https://github.com/rust-lang/rust/issues/48556)),
 this feature will be made a default. By opting out, Hexe can still compile using
 previous `rustc` versions without SIMD support.
 
