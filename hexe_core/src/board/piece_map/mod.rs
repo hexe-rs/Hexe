@@ -569,7 +569,7 @@ impl PieceMap {
     /// Clears the map, removing all pieces.
     #[inline]
     pub fn clear(&mut self) {
-        self.0.bytes = [NONE; NUM_SQUARES];
+        *self = PieceMap::EMPTY;
     }
 
     /// Removes all pieces from the given file.
