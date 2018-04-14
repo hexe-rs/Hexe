@@ -37,7 +37,7 @@ Some features that may be worth using:
 
   Enables the hardware **population count** instruction instead of the slower
   software algorithm. This improves the performance of methods such as
-  `Bitboard::len` and `PieceMap::len`.
+  `Bitboard::len` and `MultiBoard::len`.
 
 ### Target CPU
 
