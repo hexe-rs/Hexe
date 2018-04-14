@@ -18,3 +18,21 @@ macro_rules! impl_sliding_benches {
 }
 
 impl_sliding_benches! { rook_attacks bishop_attacks queen_attacks }
+
+#[bench]
+fn iter(b: &mut Bencher) {
+    b.iter(|| {
+        for sq in black_box(Bitboard::FULL) {
+            black_box(sq);
+        }
+    });
+}
+
+#[bench]
+fn iter_rev(b: &mut Bencher) {
+    b.iter(|| {
+        for sq in black_box(Bitboard::FULL).rev() {
+            black_box(sq);
+        }
+    });
+}
