@@ -41,7 +41,7 @@
 #![allow(inline_always)]
 #![allow(needless_lifetimes)]
 #![allow(redundant_field_names)]
-#![allow(suspicious_arithmetic_impl)]
+#![allow(suspicious_arithmetic_impl)] // very suspicious
 #![allow(unreadable_literal)]
 #![allow(verbose_bit_mask)]
 #![allow(zero_prefixed_literal)]

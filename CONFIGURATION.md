@@ -35,7 +35,7 @@ Some features that may be worth using:
 
 - `popcnt` **(`x86`, `x86_64`)**:
 
-  Enables the hardware population count instruction instead of the slower
+  Enables the hardware **population count** instruction instead of the slower
   software algorithm. This improves the performance of methods such as
   `Bitboard::len` and `PieceMap::len`.
 
