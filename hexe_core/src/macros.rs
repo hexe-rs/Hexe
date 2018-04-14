@@ -136,6 +136,13 @@ macro_rules! impl_bit_set {
             }
 
             /// Returns the number of bits set in `self`.
+            ///
+            /// Set the following when compiling to use the much faster hardware
+            /// implementation **(`x86` and `x86_64` only)**:
+            ///
+            /// ```sh
+            /// RUSTFLAGS="-C target-feature +popcnt"
+            /// ```
             #[inline]
             pub fn len(&self) -> usize {
                 self.0.count_ones() as usize
