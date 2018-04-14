@@ -19,6 +19,10 @@
 //! # fn main() {}
 //! ```
 //!
+//! # Configuration
+//!
+//! See [`CONFIGURATION.md`](https://github.com/hexe-rs/Hexe/blob/master/CONFIGURATION.md).
+//!
 //! [hexe]: https://docs.rs/hexe/0.0.5/hexe/
 //! [crate]: https://crates.io/crates/hexe_core
 
