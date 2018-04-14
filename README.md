@@ -78,6 +78,10 @@ The goal of this project is to have the following features:
 - [x] Optional dependency on the Rust standard library or `libc`
 - [ ] [SIMD] parallelism (see [#4])
 
+## Compatibility
+
+Hexe is automatically tested against a minimum Rust version: 1.25.0.
+
 ### Cross-Platform Compatibility
 
 Hexe is written to be available for the main platforms that Rust compiles to.
