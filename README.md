@@ -72,7 +72,7 @@ The goal of this project is to have the following features:
 - [x] Lookup tables
   - [x] Magic bitboards without runtime initialization
   - [x] Usually aligned to common cache line size (64 bytes)
-- [x] No dependency on the Rust standard library or `libc`
+- [x] Optional dependency on the Rust standard library or `libc`
 - [ ] [SIMD] parallelism (see [#4])
 
 ### Cross-Platform Compatibility
