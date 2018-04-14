@@ -69,7 +69,10 @@ The goal of this project is to have the following features:
 ### [`hexe_core`][hexe_core]
 
 - [x] Bitboard and square-to-piece map chess board representations
-- [x] Lookup tables and magic Bitboards without runtime initialization
+- [x] Lookup tables
+  - [x] Magic bitboards without runtime initialization
+  - [x] Usually aligned to common cache line size (64 bytes)
+- [x] No dependency on the Rust standard library or `libc`
 - [ ] [SIMD] parallelism (see [#4])
 
 ### Cross-Platform Compatibility
