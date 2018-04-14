@@ -213,10 +213,9 @@ impl PartialEq for PieceMap {
             self as *const _ == other as *const _ ||
             self.as_vector() == other.as_vector()
         }
+
         #[cfg(not(feature = "simd"))]
-        {
-            self.as_bytes()[..] == other.as_bytes()[..]
-        }
+        { self.as_bytes()[..] == other.as_bytes()[..] }
     }
 }
 
@@ -593,9 +592,8 @@ impl PieceMap {
     #[inline]
     pub fn is_empty(&self) -> bool {
         #[cfg(feature = "simd")]
-        {
-            *self.as_vector() == NONE_SIMD
-        }
+        { *self.as_vector() == NONE_SIMD }
+
         #[cfg(not(feature = "simd"))]
         {
             let empty = usize::splat(NONE);

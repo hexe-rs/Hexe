@@ -50,13 +50,10 @@ impl PartialEq for MultiBoard {
     #[inline]
     fn eq(&self, other: &Self) -> bool {
         #[cfg(feature = "simd")]
-        {
-            self as *const _ == other as *const _ || self.simd() == other.simd()
-        }
+        { self as *const _ == other as *const _ || self.simd() == other.simd() }
+
         #[cfg(not(feature = "simd"))]
-        {
-            self.bytes()[..] == other.bytes()[..]
-        }
+        { self.bytes()[..] == other.bytes()[..] }
     }
 }
 
