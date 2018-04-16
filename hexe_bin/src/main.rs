@@ -13,7 +13,8 @@ use hexe::engine::Engine;
 const ABOUT: &str = "
 A UCI-compatible chess engine.
 
-Project home page: https://github.com/hexe-rs/Hexe";
+Project homepage: https://github.com/hexe-rs/Hexe
+Library docs:     https://docs.rs/hexe";
 
 static mut NUM_THREADS: Option<usize> = None;
 static mut HASH_SIZE:   Option<usize> = None;
