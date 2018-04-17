@@ -98,7 +98,6 @@ impl Pool {
                     jobs: stealer,
                 };
                 context.run();
-                trace!("Thread {} about to exit", index);
             });
 
             self.threads.push(Thread { worker, handle });

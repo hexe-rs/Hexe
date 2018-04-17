@@ -93,7 +93,10 @@ impl<'ctx> Context<'ctx> {
         loop {
             match self.try_next() {
                 Ok(_) => {},
-                Err(Interrupt::Kill) => return,
+                Err(Interrupt::Kill) => {
+                    self.kill();
+                    return;
+                },
                 Err(Interrupt::Stop) => self.stop(),
             }
         }
@@ -147,13 +150,29 @@ impl<'ctx> Context<'ctx> {
         Ok(())
     }
 
+    /// Performs any cleanup operations necessary. This is called upon stop or
+    /// kill.
+    fn cleanup(&mut self) {
+        info!("Thread {} performing cleanup", self.thread);
+        // TODO: What should go here?
+    }
+
+    /// Terminates the thread.
+    #[cold]
+    fn kill(mut self) {
+        self.cleanup();
+        info!("Thread {} will be killed now", self.thread);
+    }
+
     /// Stops the thread unconditionally.
     #[cold]
-    fn stop(&self) {
+    fn stop(&mut self) {
+        self.cleanup();
+
         trace!("Thread {} should stop", self.thread);
         let mut guard = self.shared.stop_mutex.lock();
 
-        trace!("Thread {} will stop now", self.thread);
+        info!("Thread {} will stop now", self.thread);
         self.shared.stop_cond.wait(&mut guard);
     }
 }
