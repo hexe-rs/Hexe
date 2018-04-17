@@ -24,6 +24,20 @@ pub const MAX_TABLE_SIZE: usize = 131072;
 
 /// An instance of the Hexe chess engine.
 ///
+/// # Thread Pool Management
+///
+/// Variations of the following commands are available:
+///
+/// - **Stop** – Ceases job execution. The difference between this and **kill**
+///   is that the worker thread may be resumed and pick up the next job, if any.
+///
+/// - **Kill** – Terminates thread execution as soon as possible while ensuring
+///   a correct state for the thread pool. Unlike **stop**, the thread may not
+///   be resumed.
+///
+/// - **Resume** - Continues all **stop**ped threads, having them each pick up a
+///   new job to perform, if any.
+///
 /// # Examples
 ///
 /// Basic usage:
@@ -77,7 +91,7 @@ impl Engine {
         Uci::from(self)
     }
 
-    /// Stops all worker threads of the engine.
+    /// Ceases execution of all current jobs.
     pub fn stop_all(&self) {
         self.pool.stop_all();
     }
