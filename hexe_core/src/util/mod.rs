@@ -9,6 +9,8 @@ mod count;
 pub use self::bytes::*;
 pub use self::count::*;
 
+pub type Usize64 = bytes64!(usize);
+
 #[inline]
 pub unsafe fn zero<T: ?Sized>(val: &mut T) {
     let len = mem::size_of_val(val);

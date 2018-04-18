@@ -18,6 +18,11 @@ macro_rules! forward_bit_ops_impl {
     )+ }
 }
 
+/// Creates an array type for `$t` that fits within 64 bytes.
+macro_rules! bytes64 {
+    ($t:ty) => { [$t; 64 / mem::size_of::<$t>()] }
+}
+
 macro_rules! squares {
     ($($s:ident),+) => {
         $(1 << ::square::Square::$s as u64)|+

@@ -27,10 +27,9 @@ impl<'a> Count<u8> for &'a [u8; 64] {
     #[inline]
     #[cfg(not(feature = "simd"))]
     fn count(self, needle: u8) -> usize {
-        use consts::PTR_SIZE;
         use util::bytes::Bytes;
 
-        let chunks: &[usize; 64 / PTR_SIZE] = unsafe {
+        let chunks: &super::Usize64 = unsafe {
             use uncon::*;
             self.into_unchecked()
         };

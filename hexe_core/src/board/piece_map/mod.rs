@@ -6,12 +6,11 @@ use core::{fmt, hash, mem, ops, ptr, str};
 use core::simd::u8x64;
 
 use castle;
-use consts::PTR_SIZE;
 use misc::Contained;
 use piece::Piece;
 use prelude::*;
 use uncon::*;
-use util::{Bytes as UtilBytes, Count};
+use util::{Bytes as UtilBytes, Count, Usize64};
 
 mod entry;
 pub use self::entry::*;
@@ -149,7 +148,7 @@ union Inner {
 }
 
 #[cfg(test)]
-assert_eq_size!(inner; Bytes, Array);
+assert_eq_size!(inner_size; Inner, Bytes, Array, Usize64);
 
 impl FromUnchecked<Bytes> for PieceMap {
     #[inline]
@@ -401,12 +400,12 @@ impl PieceMap {
 
     #[inline]
     #[cfg_attr(feature = "simd", allow(dead_code))]
-    fn inner_ptr_sized(&self) -> &[usize; NUM_SQUARES / PTR_SIZE] {
+    fn inner_ptr_sized(&self) -> &Usize64 {
         unsafe { (&self.0).into_unchecked() }
     }
 
     #[inline]
-    fn inner_u64(&self) -> &[u64; 8] {
+    fn inner_u64(&self) -> &bytes64!(u64) {
         unsafe { (&self.0).into_unchecked() }
     }
 
