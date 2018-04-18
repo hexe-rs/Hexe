@@ -640,6 +640,9 @@ impl PieceMap {
     ///
     /// assert!(map.contains(sq));
     /// assert!(map.contains(pc));
+    ///
+    /// assert!(map.contains(sq.file()));
+    /// assert!(map.contains(sq.rank()));
     /// ```
     #[inline]
     pub fn contains<'a, T: Contained<&'a Self>>(&'a self, value: T) -> bool {
@@ -934,6 +937,25 @@ impl<'a> Contained<&'a PieceMap> for Square {
     #[inline]
     fn contained_in(self, map: &PieceMap) -> bool {
         map.as_array()[self as usize].is_some()
+    }
+}
+
+impl<'a> Contained<&'a PieceMap> for File {
+    #[inline]
+    fn contained_in(self, map: &PieceMap) -> bool {
+        for rank in map.as_2d() {
+            if rank[self as usize].is_some() {
+                return true;
+            }
+        }
+        false
+    }
+}
+
+impl<'a> Contained<&'a PieceMap> for Rank {
+    #[inline]
+    fn contained_in(self, map: &PieceMap) -> bool {
+        map.inner_u64()[self as usize] != u64::splat(NONE)
     }
 }
 
