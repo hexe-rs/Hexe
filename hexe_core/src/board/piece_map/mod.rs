@@ -457,6 +457,19 @@ impl PieceMap {
     }
 
     /// Removes all pieces at `loc` and returns them, if any.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// # use hexe_core::board::PieceMap;
+    /// # use hexe_core::prelude::*;
+    /// let mut map = PieceMap::STANDARD;
+    ///
+    /// assert_eq!(map.remove(Rank::Two), [Some(Piece::WhitePawn); 8]);
+    /// assert_eq!(map.remove(Square::H8), Some(Piece::BlackRook));
+    /// ```
     #[inline]
     pub fn remove<T: Replace>(&mut self, loc: T) -> T::Output {
         loc.replace(self, None)
