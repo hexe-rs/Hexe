@@ -13,7 +13,7 @@ impl Count<u8> for u8x64 {
     fn count(self, needle: u8) -> usize {
         let zero = u8x64::splat(0);
         let val  = u8x64::splat(needle);
-        (zero - u8x64::from_bits(self.eq(val))).sum() as usize
+        (zero - u8x64::from_bits(self.eq(val))).wrapping_sum() as usize
     }
 }
 
