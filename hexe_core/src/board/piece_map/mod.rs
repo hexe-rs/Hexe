@@ -444,28 +444,22 @@ impl PieceMap {
         self.iter_mut().next_back()
     }
 
-    /// Efficiently fills the rank entirely with the given piece.
+    /// Replaces all pieces at `loc`, returning any previous pieces.
     #[inline]
-    pub fn fill_rank(&mut self, r: Rank, pc: Piece) {
-        self.as_2d_mut()[r as usize] = [Some(pc); 8];
+    pub fn replace<T: Replace>(&mut self, loc: T, pc: Option<Piece>) -> T::Output {
+        loc.replace(self, pc)
     }
 
-    /// Replaces the piece at a square, returning the previous one if any.
+    /// Inserts the piece at `loc`, returning any previous pieces.
     #[inline]
-    pub fn replace(&mut self, sq: Square, pc: Option<Piece>) -> Option<Piece> {
-        mem::replace(sq.extract_mut(self.as_array_mut()), pc)
+    pub fn insert<T: Replace>(&mut self, loc: T, pc: Piece) -> T::Output {
+        loc.replace(self, Some(pc))
     }
 
-    /// Inserts the piece at a square, returning the previous one if any.
+    /// Removes all pieces at `loc` and returns them, if any.
     #[inline]
-    pub fn insert(&mut self, sq: Square, pc: Piece) -> Option<Piece> {
-        self.replace(sq, Some(pc))
-    }
-
-    /// Removes the piece at a square.
-    #[inline]
-    pub fn remove(&mut self, sq: Square) -> Option<Piece> {
-        self.replace(sq, None)
+    pub fn remove<T: Replace>(&mut self, loc: T) -> T::Output {
+        loc.replace(self, None)
     }
 
     /// Swaps two values in the map.
@@ -967,6 +961,52 @@ impl<'a> Contained<&'a PieceMap> for Piece {
 
         #[cfg(not(feature = "simd"))]
         { map.find(self).is_some() }
+    }
+}
+
+/// A type whose instances may be used to replace values in a
+/// [`PieceMap`](struct.PieceMap.html).
+pub trait Replace {
+    /// The resulting type after replacement.
+    type Output;
+
+    /// Replaces all pieces in `map` at `self` with `piece`, returning any
+    /// previous pieces.
+    fn replace(self, map: &mut PieceMap, piece: Option<Piece>) -> Self::Output;
+}
+
+impl Replace for Square {
+    type Output = Option<Piece>;
+
+    #[inline]
+    fn replace(self, map: &mut PieceMap, piece: Option<Piece>) -> Self::Output {
+        mem::replace(self.extract_mut(map.as_array_mut()), piece)
+    }
+}
+
+impl Replace for File {
+    type Output = [Option<Piece>; 8];
+
+    #[inline]
+    fn replace(self, map: &mut PieceMap, piece: Option<Piece>) -> Self::Output {
+        let mut out = [None; 8];
+        let arr = map.as_2d_mut();
+
+        for rank in Rank::ALL {
+            let slot = &mut arr[rank as usize][self as usize];
+            out[rank as usize] = mem::replace(slot, piece);
+        }
+
+        out
+    }
+}
+
+impl Replace for Rank {
+    type Output = [Option<Piece>; 8];
+
+    #[inline]
+    fn replace(self, map: &mut PieceMap, piece: Option<Piece>) -> Self::Output {
+        mem::replace(&mut map.as_2d_mut()[self as usize], [piece; 8])
     }
 }
 
