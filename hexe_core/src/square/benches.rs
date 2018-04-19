@@ -31,6 +31,16 @@ fn shift_1000(b: &mut Bencher) {
 }
 
 #[bench]
+fn wrapping_shift_1000(b: &mut Bencher) {
+    let pairs = rand_pairs::<Square, Direction>();
+    b.iter(|| {
+        for &(s, d) in pairs.iter() {
+            black_box(black_box(s).wrapping_shift(black_box(d)));
+        }
+    });
+}
+
+#[bench]
 fn iter(b: &mut Bencher) {
     b.iter(|| {
         for sq in black_box(Square::ALL) {

@@ -277,6 +277,21 @@ impl Square {
         Bitboard::from(self).shift(direction).lsb()
     }
 
+    /// Returns `self` shifted in `direction` (relative to white's perspective),
+    /// wrapping the result around to the opposite side of the board.
+    pub fn wrapping_shift(self, direction: Direction) -> Square {
+        match direction {
+            Direction::Up        => self.wrapping_up(),
+            Direction::Down      => self.wrapping_down(),
+            Direction::Right     => self.wrapping_right(),
+            Direction::Left      => self.wrapping_left(),
+            Direction::UpRight   => self.wrapping_up().wrapping_right(),
+            Direction::UpLeft    => self.wrapping_up().wrapping_left(),
+            Direction::DownRight => self.wrapping_down().wrapping_right(),
+            Direction::DownLeft  => self.wrapping_down().wrapping_left(),
+        }
+    }
+
     /// Combines the file of `self` with the rank of `other`.
     ///
     /// # Examples

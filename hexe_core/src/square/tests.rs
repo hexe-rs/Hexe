@@ -65,6 +65,11 @@ fn wrapping_shift() {
         for &[a, b] in &FN {
             assert_eq!(a(sq), b(sq));
         }
+        for dir in Direction::ALL {
+            if let Some(val) = sq.shift(dir) {
+                assert_eq!(sq.wrapping_shift(dir), val);
+            }
+        }
     }
 }
 
