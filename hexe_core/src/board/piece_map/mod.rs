@@ -62,7 +62,7 @@ pub(crate) const NONE_SIMD: u8x64 = u8x64::splat(NONE);
 
 const NUM_SQUARES: usize = NUM_FILES * NUM_RANKS;
 const NUM_FILES: usize = NUM_RANKS;
-const NUM_RANKS: usize = 8;
+const NUM_RANKS: usize = 1 + Rank::Eight as usize;
 
 /// An array of `Option<Piece>` as a view into
 /// [`PieceMap`](struct.PieceMap.html)'s storage.
