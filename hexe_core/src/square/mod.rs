@@ -47,7 +47,7 @@ use core::{fmt, ops, str};
 use serde::*;
 use uncon::*;
 
-use board::bitboard::Direction;
+use misc::Direction;
 use prelude::*;
 
 #[cfg(all(test, nightly))]

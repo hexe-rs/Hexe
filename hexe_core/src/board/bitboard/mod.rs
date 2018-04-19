@@ -55,6 +55,7 @@ use core::{fmt, ops, str};
 use serde::*;
 use uncon::*;
 
+use misc::Direction;
 use prelude::*;
 use util::Bytes;
 
@@ -62,9 +63,6 @@ pub mod masks;
 
 mod carry_rippler;
 pub use self::carry_rippler::*;
-
-mod dir;
-pub use self::dir::*;
 
 #[cfg(all(test, nightly))]
 mod benches;

@@ -1,7 +1,7 @@
 use test::{Bencher, black_box};
 
 use super::*;
-use board::bitboard::Direction;
+use misc::Direction;
 use util::rand_pairs;
 
 macro_rules! impl_sliding_benches {

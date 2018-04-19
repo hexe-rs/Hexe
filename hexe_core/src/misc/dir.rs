@@ -3,8 +3,7 @@ use core::{ops, mem};
 
 impl_rand!(u8 => Direction);
 
-/// A cardinal direction that can be used to shift or fill the bits of a
-/// [`Bitboard`](struct.Bitboard.html).
+/// A cardinal direction that can be used to shifts or fills.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
