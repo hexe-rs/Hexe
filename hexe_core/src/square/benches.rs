@@ -1,6 +1,7 @@
 use test::{Bencher, black_box};
 
 use super::*;
+use board::bitboard::Direction;
 use util::rand_pairs;
 
 macro_rules! impl_sliding_benches {
@@ -18,6 +19,16 @@ macro_rules! impl_sliding_benches {
 }
 
 impl_sliding_benches! { rook_attacks bishop_attacks queen_attacks }
+
+#[bench]
+fn shift_1000(b: &mut Bencher) {
+    let pairs = rand_pairs::<Square, Direction>();
+    b.iter(|| {
+        for &(s, d) in pairs.iter() {
+            black_box(black_box(s).shift(black_box(d)));
+        }
+    });
+}
 
 #[bench]
 fn iter(b: &mut Bencher) {
