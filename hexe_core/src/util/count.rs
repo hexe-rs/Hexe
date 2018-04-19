@@ -27,13 +27,10 @@ impl<'a> Count<u8> for &'a [u8; 64] {
     #[inline]
     #[cfg(not(feature = "simd"))]
     fn count(self, needle: u8) -> usize {
+        use uncon::*;
         use util::bytes::Bytes;
 
-        let chunks: &super::Usize64 = unsafe {
-            use uncon::*;
-            self.into_unchecked()
-        };
-
+        let chunks: &super::Usize64 = unsafe { self.into_unchecked() };
         let splat = usize::splat(needle);
 
         chunks.into_iter().fold(0usize, |sums, chunk| {
