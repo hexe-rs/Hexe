@@ -245,18 +245,18 @@ impl Square {
         }
     }
 
-    /// Returns `self` shifted in `direction`, or `None` if the shift causes
-    /// `self` to go off the board.
+    /// Returns `self` shifted in `direction` (relative to white's perspective),
+    /// or `None` if the shift causes `self` to go off the board.
     pub fn shift(self, direction: Direction) -> Option<Square> {
         match direction {
-            Direction::North     => self.up(),
-            Direction::South     => self.down(),
-            Direction::East      => self.right(),
-            Direction::West      => self.left(),
-            Direction::Northeast => self.up().and_then(Square::right),
-            Direction::Northwest => self.up().and_then(Square::left),
-            Direction::Southeast => self.down().and_then(Square::right),
-            Direction::Southwest => self.down().and_then(Square::left),
+            Direction::Up        => self.up(),
+            Direction::Down      => self.down(),
+            Direction::Right     => self.right(),
+            Direction::Left      => self.left(),
+            Direction::UpRight   => self.up().and_then(Square::right),
+            Direction::UpLeft    => self.up().and_then(Square::left),
+            Direction::DownRight => self.down().and_then(Square::right),
+            Direction::DownLeft  => self.down().and_then(Square::left),
         }
     }
 

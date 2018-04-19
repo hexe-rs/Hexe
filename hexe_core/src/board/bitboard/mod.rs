@@ -307,8 +307,8 @@ impl Bitboard {
     pub fn pawn_attacks(self, color: Color) -> Bitboard {
         use self::Direction::*;
         match color {
-            Color::White => self.shift(Northeast) | self.shift(Northwest),
-            Color::Black => self.shift(Southeast) | self.shift(Southwest),
+            Color::White => self.shift(UpRight)   | self.shift(UpLeft),
+            Color::Black => self.shift(DownRight) | self.shift(DownLeft),
         }
     }
 
@@ -327,24 +327,24 @@ impl Bitboard {
     /// Generates bishop attacks for each of the bits of `self`.
     pub fn bishop_attacks(self, empty: Bitboard) -> Bitboard {
         use self::Direction::*;
-        self.fill_shift(Northeast, empty) | self.fill_shift(Northwest, empty) |
-        self.fill_shift(Southeast, empty) | self.fill_shift(Southwest, empty)
+        self.fill_shift(UpRight,   empty) | self.fill_shift(UpLeft,   empty) |
+        self.fill_shift(DownRight, empty) | self.fill_shift(DownLeft, empty)
     }
 
     /// Generates rook attacks for each of the bits of `self`.
     pub fn rook_attacks(self, empty: Bitboard) -> Bitboard {
         use self::Direction::*;
-        self.fill_shift(North, empty) | self.fill_shift(East, empty) |
-        self.fill_shift(South, empty) | self.fill_shift(West, empty)
+        self.fill_shift(Up,   empty) | self.fill_shift(Right, empty) |
+        self.fill_shift(Down, empty) | self.fill_shift(Left,  empty)
     }
 
     /// Generates king attacks for each of the bits of `self`.
     #[inline]
     pub fn king_attacks(self) -> Bitboard {
         use self::Direction::*;
-        let attacks = self.shift(East) | self.shift(West);
+        let attacks = self.shift(Right) | self.shift(Left);
         let combine = self | attacks;
-        attacks | combine.shift(North) | combine.shift(South)
+        attacks | combine.shift(Up) | combine.shift(Down)
     }
 
     /// Generates queen attacks for each of the bits of `self`.
@@ -364,23 +364,24 @@ impl Bitboard {
         self.shift(Direction::backward(color))
     }
 
-    /// Returns `self` shifted in a direction.
+    /// Returns `self` shifted in a direction (relative to white's perspective).
     #[inline]
     pub fn shift(self, direction: Direction) -> Bitboard {
         use self::Direction::*;
         match direction {
-            North     => self << 8,
-            South     => self >> 8,
-            East      => self << 1 & NOT_FILE_A,
-            West      => self >> 1 & NOT_FILE_H,
-            Northeast => self << 9 & NOT_FILE_A,
-            Southeast => self >> 7 & NOT_FILE_A,
-            Northwest => self << 7 & NOT_FILE_H,
-            Southwest => self >> 9 & NOT_FILE_H,
+            Up        => self << 8,
+            Down      => self >> 8,
+            Right     => self << 1 & NOT_FILE_A,
+            Left      => self >> 1 & NOT_FILE_H,
+            UpRight   => self << 9 & NOT_FILE_A,
+            DownRight => self >> 7 & NOT_FILE_A,
+            UpLeft    => self << 7 & NOT_FILE_H,
+            DownLeft  => self >> 9 & NOT_FILE_H,
         }
     }
 
-    /// Returns `self` filled in a direction, blocked off by non-empty squares.
+    /// Returns `self` filled in a direction (relative to white's perspective),
+    /// blocked off by non-empty squares.
     #[inline]
     pub fn fill(mut self, direction: Direction, mut empty: Bitboard) -> Bitboard {
         macro_rules! impl_fills {
@@ -403,16 +404,16 @@ impl Bitboard {
             }
         }
         impl_fills! {
-            North, Bitboard::FULL, 8, <<;
-            South, Bitboard::FULL, 8, >>;
+            Up,   Bitboard::FULL, 8, <<;
+            Down, Bitboard::FULL, 8, >>;
 
-            East, NOT_FILE_A, 1, <<;
-            West, NOT_FILE_H, 1, >>;
+            Right, NOT_FILE_A, 1, <<;
+            Left,  NOT_FILE_H, 1, >>;
 
-            Northeast, NOT_FILE_A, 9, <<;
-            Southeast, NOT_FILE_A, 7, >>;
-            Northwest, NOT_FILE_H, 7, <<;
-            Southwest, NOT_FILE_H, 9, >>;
+            UpRight,   NOT_FILE_A, 9, <<;
+            DownRight, NOT_FILE_A, 7, >>;
+            UpLeft,    NOT_FILE_H, 7, <<;
+            DownLeft,  NOT_FILE_H, 9, >>;
         }
     }
 

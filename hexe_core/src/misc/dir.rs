@@ -3,27 +3,27 @@ use core::{ops, mem};
 
 impl_rand!(u8 => Direction);
 
-/// A cardinal direction that can be used to shifts or fills.
+/// A relative direction that can be used to shifts or fills.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 pub enum Direction {
-    /// North (up).
-    North,
-    /// East (right).
-    East,
-    /// Northeast (up + right).
-    Northeast,
-    /// Southeast (down + right).
-    Southeast,
-    /// Northwest (up + left).
-    Northwest,
-    /// Southwest (down + left).
-    Southwest,
-    /// West (left).
-    West,
-    /// South (down).
-    South,
+    /// Up only.
+    Up,
+    /// Right only.
+    Right,
+    /// Up and right.
+    UpRight,
+    /// Down and right.
+    DownRight,
+    /// Up and left.
+    UpLeft,
+    /// Down and left.
+    DownLeft,
+    /// Left only.
+    Left,
+    /// Down only.
+    Down,
 }
 
 impl ops::Not for Direction {
@@ -38,20 +38,20 @@ impl ops::Not for Direction {
 impl Direction {
     /// Returns the forward direction for `color`.
     ///
-    /// - `White` becomes `North`
-    /// - `Black` becomes `South`
+    /// - `White` becomes `Up`
+    /// - `Black` becomes `Down`
     #[inline]
     pub fn forward(color: Color) -> Direction {
         match color {
-            Color::White => Direction::North,
-            Color::Black => Direction::South,
+            Color::White => Direction::Up,
+            Color::Black => Direction::Down,
         }
     }
 
     /// Returns the backward direction for `color`.
     ///
-    /// - `White` becomes `South`
-    /// - `Black` becomes `North`
+    /// - `White` becomes `Down`
+    /// - `Black` becomes `Up`
     #[inline]
     pub fn backward(color: Color) -> Direction {
         Direction::forward(!color)
@@ -66,10 +66,10 @@ mod tests {
     fn not() {
         use self::Direction::*;
         static NOT: [(Direction, Direction); 4] = [
-            (North,     South),
-            (East,      West),
-            (Northeast, Southwest),
-            (Northwest, Southeast),
+            (Up,      Down),
+            (Right,   Left),
+            (UpRight, DownLeft),
+            (UpLeft,  DownRight),
         ];
 
         for &(a, b) in &NOT {
