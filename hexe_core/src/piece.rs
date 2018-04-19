@@ -1,6 +1,6 @@
 //! A piece used to play chess.
 
-use core::{fmt, str};
+use core::{cmp, fmt, str};
 
 use uncon::*;
 #[cfg(feature = "serde")]
@@ -88,7 +88,7 @@ impl Piece {
 }
 
 /// A chess piece role.
-#[derive(Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
+#[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 #[allow(missing_docs)]
@@ -99,6 +99,20 @@ pub enum Role {
     Rook,
     Queen,
     King,
+}
+
+impl PartialOrd for Role {
+    #[inline]
+    fn partial_cmp(&self, other: &Role) -> Option<cmp::Ordering> {
+        (*self as u8).partial_cmp(&(*other as u8))
+    }
+}
+
+impl Ord for Role {
+    #[inline]
+    fn cmp(&self, other: &Role) -> cmp::Ordering {
+        (*self as u8).cmp(&(*other as u8))
+    }
 }
 
 static ROLES: [&str; 6] = ["Pawn", "Knight", "Bishop", "Rook", "Queen", "King"];
