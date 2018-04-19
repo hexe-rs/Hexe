@@ -88,7 +88,7 @@ impl Piece {
 }
 
 /// A chess piece role.
-#[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
+#[derive(Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 #[allow(missing_docs)]
