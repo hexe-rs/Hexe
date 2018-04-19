@@ -202,6 +202,22 @@ impl ops::IndexMut<Square> for PieceMap {
     }
 }
 
+impl ops::Index<Rank> for PieceMap {
+    type Output = [Option<Piece>; 8];
+
+    #[inline]
+    fn index(&self, r: Rank) -> &Self::Output {
+        &self.as_2d()[r as usize]
+    }
+}
+
+impl ops::IndexMut<Rank> for PieceMap {
+    #[inline]
+    fn index_mut(&mut self, r: Rank) -> &mut Self::Output {
+        &mut self.as_2d_mut()[r as usize]
+    }
+}
+
 impl fmt::Debug for PieceMap {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         f.debug_map().entries(self.iter()).finish()
@@ -953,10 +969,9 @@ impl Replace for File {
     #[inline]
     fn replace(self, map: &mut PieceMap, piece: Option<Piece>) -> Self::Output {
         let mut out = [None; 8];
-        let arr = map.as_2d_mut();
 
         for rank in Rank::ALL {
-            let slot = &mut arr[rank as usize][self as usize];
+            let slot = &mut map[rank][self as usize];
             out[rank as usize] = mem::replace(slot, piece);
         }
 
@@ -969,7 +984,7 @@ impl Replace for Rank {
 
     #[inline]
     fn replace(self, map: &mut PieceMap, piece: Option<Piece>) -> Self::Output {
-        mem::replace(&mut map.as_2d_mut()[self as usize], [piece; 8])
+        mem::replace(&mut map[self], [piece; 8])
     }
 }
 
