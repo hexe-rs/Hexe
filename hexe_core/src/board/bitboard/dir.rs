@@ -1,9 +1,12 @@
 use color::Color;
 use core::{ops, mem};
 
+impl_rand!(u8 => Direction);
+
 /// A cardinal direction that can be used to shift or fill the bits of a
 /// [`Bitboard`](struct.Bitboard.html).
-#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq)]
+#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, FromUnchecked)]
+#[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 pub enum Direction {
     /// North (up).
