@@ -29,6 +29,24 @@ macro_rules! squares {
     }
 }
 
+macro_rules! impl_ord {
+    ($($t:ty),+) => { $(
+        impl PartialOrd for $t {
+            #[inline]
+            fn partial_cmp(&self, other: &$t) -> Option<::core::cmp::Ordering> {
+                (*self as usize).partial_cmp(&(*other as usize))
+            }
+        }
+
+        impl Ord for $t {
+            #[inline]
+            fn cmp(&self, other: &$t) -> ::core::cmp::Ordering {
+                (*self as usize).cmp(&(*other as usize))
+            }
+        }
+    )+ }
+}
+
 macro_rules! impl_rand {
     ($s:ty => $($t:ty),+) => { $(
         #[cfg(any(test, feature = "rand"))]

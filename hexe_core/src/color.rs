@@ -32,7 +32,7 @@ use core::{fmt, ops, str};
 use serde::*;
 
 /// A black or white color.
-#[derive(Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
+#[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 pub enum Color {
@@ -41,6 +41,8 @@ pub enum Color {
     /// Black color.
     Black,
 }
+
+impl_ord!(Color);
 
 static COLORS: [[u8; 5]; 2] = [*b"White", *b"Black"];
 

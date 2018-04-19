@@ -57,10 +57,11 @@ mod tests;
 mod tables;
 use self::tables::TABLES;
 
+impl_ord!(Square, File, Rank);
 impl_rand!(u8 => Square, File, Rank);
 
 /// A square on a chess board.
-#[derive(Copy, Clone, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
+#[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 #[allow(missing_docs)]
@@ -501,7 +502,7 @@ impl Square {
 }
 
 /// A file (or column) for a chess board.
-#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
+#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 #[allow(missing_docs)]
@@ -540,7 +541,7 @@ impl File {
 }
 
 /// A rank (or row) for a chess board.
-#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord, FromUnchecked)]
+#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
 #[allow(missing_docs)]

@@ -1,6 +1,6 @@
 //! A piece used to play chess.
 
-use core::{cmp, fmt, str};
+use core::{fmt, str};
 
 use uncon::*;
 #[cfg(feature = "serde")]
@@ -101,19 +101,7 @@ pub enum Role {
     King,
 }
 
-impl PartialOrd for Role {
-    #[inline]
-    fn partial_cmp(&self, other: &Role) -> Option<cmp::Ordering> {
-        (*self as u8).partial_cmp(&(*other as u8))
-    }
-}
-
-impl Ord for Role {
-    #[inline]
-    fn cmp(&self, other: &Role) -> cmp::Ordering {
-        (*self as u8).cmp(&(*other as u8))
-    }
-}
+impl_ord!(Role);
 
 static ROLES: [&str; 6] = ["Pawn", "Knight", "Bishop", "Rook", "Queen", "King"];
 
