@@ -3,7 +3,7 @@ use core::{ops, mem};
 
 impl_rand!(u8 => Direction);
 
-/// A relative direction that can be used to shifts or fills.
+/// A relative direction that can be used for shifts or fills.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
