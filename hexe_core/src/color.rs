@@ -59,12 +59,14 @@ impl ::rand::Rand for Color {
 }
 
 impl fmt::Debug for Color {
+    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Display::fmt(self, f)
     }
 }
 
 impl fmt::Display for Color {
+    #[inline]
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         self.into_str().fmt(f)
     }
