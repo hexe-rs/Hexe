@@ -46,16 +46,6 @@ sliding_attacks! { rook_attacks bishop_attacks queen_attacks }
 jump_attacks! { knight_attacks king_attacks }
 
 #[test]
-fn shift() {
-    for dir in Direction::ALL {
-        for sq in Square::ALL {
-            let bb = Bitboard::from(sq);
-            assert_eq!(sq.shift(dir), bb.shift(dir).lsb());
-        }
-    }
-}
-
-#[test]
 fn tables_alignment() {
     const ALIGN: usize = 64;
 

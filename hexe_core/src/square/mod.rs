@@ -248,16 +248,7 @@ impl Square {
     /// Returns `self` shifted in `direction` (relative to white's perspective),
     /// or `None` if the shift causes `self` to go off the board.
     pub fn shift(self, direction: Direction) -> Option<Square> {
-        match direction {
-            Direction::Up        => self.up(),
-            Direction::Down      => self.down(),
-            Direction::Right     => self.right(),
-            Direction::Left      => self.left(),
-            Direction::UpRight   => self.up().and_then(Square::right),
-            Direction::UpLeft    => self.up().and_then(Square::left),
-            Direction::DownRight => self.down().and_then(Square::right),
-            Direction::DownLeft  => self.down().and_then(Square::left),
-        }
+        Bitboard::from(self).shift(direction).lsb()
     }
 
     /// Combines the file of `self` with the rank of `other`.
