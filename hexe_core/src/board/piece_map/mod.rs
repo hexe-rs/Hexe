@@ -70,7 +70,14 @@ pub type Array = [Option<Piece>; NUM_SQUARES];
 
 /// A two-dimensional array of `Option<Piece>` as a view into
 /// [`PieceMap`](struct.PieceMap.html)'s storage.
-pub type Array2d = [[Option<Piece>; NUM_FILES]; NUM_RANKS];
+pub type Array2d = [Slice; NUM_RANKS];
+
+/// A one-dimensional fixed-size slice into [`PieceMap`](struct.PieceMap.html).
+///
+/// Usually used for when performing operations with
+/// [`File`](../../square/enum.File.html) or
+/// [`Rank`](../../square/enum.Rank.html).
+pub type Slice = [Option<Piece>; NUM_FILES];
 
 /// An array of bytes as a view into [`PieceMap`](struct.PieceMap.html)'s
 /// storage.
@@ -203,7 +210,7 @@ impl ops::IndexMut<Square> for PieceMap {
 }
 
 impl ops::Index<Rank> for PieceMap {
-    type Output = [Option<Piece>; 8];
+    type Output = Slice;
 
     #[inline]
     fn index(&self, r: Rank) -> &Self::Output {
@@ -950,7 +957,7 @@ impl Replace for Square {
 }
 
 impl Replace for File {
-    type Output = [Option<Piece>; 8];
+    type Output = Slice;
 
     #[inline]
     fn replace(self, map: &mut PieceMap, piece: Option<Piece>) -> Self::Output {
@@ -966,7 +973,7 @@ impl Replace for File {
 }
 
 impl Replace for Rank {
-    type Output = [Option<Piece>; 8];
+    type Output = Slice;
 
     #[inline]
     fn replace(self, map: &mut PieceMap, piece: Option<Piece>) -> Self::Output {
