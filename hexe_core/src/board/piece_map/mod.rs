@@ -543,20 +543,6 @@ impl PieceMap {
         *self = PieceMap::EMPTY;
     }
 
-    /// Removes all pieces from the given file.
-    #[inline]
-    pub fn clear_file(&mut self, file: File) {
-        for rank in self.as_2d_mut() {
-            rank[file as usize] = None;
-        }
-    }
-
-    /// Removes all pieces from the given rank.
-    #[inline]
-    pub fn clear_rank(&mut self, rank: Rank) {
-        self.as_2d_mut()[rank as usize] = [None; 8];
-    }
-
     /// Returns whether `self` is empty.
     ///
     /// For much better performance and readability, is recommended to use this
