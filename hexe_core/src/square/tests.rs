@@ -46,6 +46,29 @@ sliding_attacks! { rook_attacks bishop_attacks queen_attacks }
 jump_attacks! { knight_attacks king_attacks }
 
 #[test]
+fn wrapping_shift() {
+    // As an optimization, the library methods only affect rank bits
+
+    fn wrapping_up(sq: Square) -> Square {
+        Square::new(sq.file(), (sq.rank() as u8).wrapping_add(1).into())
+    }
+    fn wrapping_down(sq: Square) -> Square {
+        Square::new(sq.file(), (sq.rank() as u8).wrapping_sub(1).into())
+    }
+
+    static FN: [[fn(Square) -> Square; 2]; 2] = [
+        [Square::wrapping_up,   wrapping_up],
+        [Square::wrapping_down, wrapping_down],
+    ];
+
+    for sq in Square::ALL {
+        for &[a, b] in &FN {
+            assert_eq!(a(sq), b(sq));
+        }
+    }
+}
+
+#[test]
 fn tables_alignment() {
     const ALIGN: usize = 64;
 

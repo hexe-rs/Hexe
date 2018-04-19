@@ -218,6 +218,12 @@ impl Square {
         }
     }
 
+    /// Returns `self` shifted up one rank, wrapping around to `Rank::One`.
+    #[inline]
+    pub fn wrapping_up(self) -> Square {
+        (self as u8).wrapping_add(RANK_INC).into()
+    }
+
     /// Returns `self` shifted down one rank, or `None` if at first rank.
     #[inline]
     pub fn down(self) -> Option<Square> {
@@ -225,6 +231,12 @@ impl Square {
             Rank::One => None,
             _ => unsafe { Some((self as u8 - RANK_INC).into_unchecked()) },
         }
+    }
+
+    /// Returns `self` shifted down one rank, wrapping around to `Rank::Eight`.
+    #[inline]
+    pub fn wrapping_down(self) -> Square {
+        (self as u8).wrapping_sub(RANK_INC).into()
     }
 
     /// Returns `self` shifted right one file, or `None` if at last file.
@@ -236,6 +248,13 @@ impl Square {
         }
     }
 
+    /// Returns `self` shifted right one file, wrapping around to `File::A`.
+    #[inline]
+    pub fn wrapping_right(self) -> Square {
+        let rank = (self.rank() as u8).wrapping_add(1);
+        Square::new(self.file(), rank.into())
+    }
+
     /// Returns `self` shifted left one file, or `None` if at first file.
     #[inline]
     pub fn left(self) -> Option<Square> {
@@ -243,6 +262,13 @@ impl Square {
             File::A => None,
             _ => unsafe { Some((self as u8 - FILE_INC).into_unchecked()) },
         }
+    }
+
+    /// Returns `self` shifted left one file, wrapping around to `File::H`.
+    #[inline]
+    pub fn wrapping_left(self) -> Square {
+        let rank = (self.rank() as u8).wrapping_sub(1);
+        Square::new(self.file(), rank.into())
     }
 
     /// Returns `self` shifted in `direction` (relative to white's perspective),
