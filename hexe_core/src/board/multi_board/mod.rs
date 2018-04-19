@@ -220,7 +220,8 @@ impl MultiBoard {
     /// ```
     #[inline]
     pub fn all_bits(&self) -> Bitboard {
-        Bitboard(self.colors[0] | self.colors[1])
+        let [w, b] = self.colors;
+        Bitboard(w | b)
     }
 
     /// Returns the `Bitboard` for `value` in `self`.
