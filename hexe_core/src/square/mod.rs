@@ -134,6 +134,10 @@ const FILE_BITS: u8 = 7;
 const RANK_BITS: u8 = FILE_BITS << RANK_SHIFT;
 const RANK_SHIFT: usize = 3;
 
+// Component increments
+const FILE_INC: u8 = 1;
+const RANK_INC: u8 = 1 << RANK_SHIFT;
+
 const TRIANGLE_LEN: usize = 64 * 65 / 2;
 
 impl Square {
@@ -208,10 +212,7 @@ impl Square {
     pub fn up(self) -> Option<Square> {
         match self.rank() {
             Rank::Eight => None,
-            _ => {
-                let val = self as u8 + (1 << RANK_SHIFT);
-                Some(unsafe { val.into_unchecked() })
-            }
+            _ => unsafe { Some((self as u8 + RANK_INC).into_unchecked()) },
         }
     }
 
@@ -220,10 +221,7 @@ impl Square {
     pub fn down(self) -> Option<Square> {
         match self.rank() {
             Rank::One => None,
-            _ => {
-                let val = self as u8 - (1 << RANK_SHIFT);
-                Some(unsafe { val.into_unchecked() })
-            }
+            _ => unsafe { Some((self as u8 - RANK_INC).into_unchecked()) },
         }
     }
 
@@ -232,10 +230,7 @@ impl Square {
     pub fn right(self) -> Option<Square> {
         match self.file() {
             File::H => None,
-            _ => {
-                let val = self as u8 + 1;
-                Some(unsafe { val.into_unchecked() })
-            }
+            _ => unsafe { Some((self as u8 + FILE_INC).into_unchecked()) },
         }
     }
 
@@ -244,10 +239,7 @@ impl Square {
     pub fn left(self) -> Option<Square> {
         match self.file() {
             File::A => None,
-            _ => {
-                let val = self as u8 - 1;
-                Some(unsafe { val.into_unchecked() })
-            }
+            _ => unsafe { Some((self as u8 - FILE_INC).into_unchecked()) },
         }
     }
 
