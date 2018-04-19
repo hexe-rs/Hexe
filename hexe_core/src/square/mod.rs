@@ -203,6 +203,54 @@ impl Square {
         (RANK_BITS ^ self as u8).into()
     }
 
+    /// Returns `self` shifted up one rank, or `None` if at last rank.
+    #[inline]
+    pub fn up(self) -> Option<Square> {
+        match self.rank() {
+            Rank::Eight => None,
+            _ => {
+                let val = self as u8 + (1 << RANK_SHIFT);
+                Some(unsafe { val.into_unchecked() })
+            }
+        }
+    }
+
+    /// Returns `self` shifted down one rank, or `None` if at first rank.
+    #[inline]
+    pub fn down(self) -> Option<Square> {
+        match self.rank() {
+            Rank::One => None,
+            _ => {
+                let val = self as u8 - (1 << RANK_SHIFT);
+                Some(unsafe { val.into_unchecked() })
+            }
+        }
+    }
+
+    /// Returns `self` shifted right one file, or `None` if at last file.
+    #[inline]
+    pub fn right(self) -> Option<Square> {
+        match self.file() {
+            File::H => None,
+            _ => {
+                let val = self as u8 + 1;
+                Some(unsafe { val.into_unchecked() })
+            }
+        }
+    }
+
+    /// Returns `self` shifted left one file, or `None` if at first file.
+    #[inline]
+    pub fn left(self) -> Option<Square> {
+        match self.file() {
+            File::A => None,
+            _ => {
+                let val = self as u8 - 1;
+                Some(unsafe { val.into_unchecked() })
+            }
+        }
+    }
+
     /// Combines the file of `self` with the rank of `other`.
     ///
     /// # Examples
