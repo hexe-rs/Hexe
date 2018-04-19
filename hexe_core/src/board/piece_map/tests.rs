@@ -33,23 +33,6 @@ fn option_values() {
 }
 
 #[test]
-fn index() {
-    let mut map = PieceMap::STANDARD;
-
-    for sq in Square::ALL {
-        let fr = (sq.file(), sq.rank());
-
-        let a = map.get(sq).map(|pc| *pc);
-        let b = map.get(fr).map(|pc| *pc);
-        assert_eq!(a, b);
-
-        let a = map.get_mut(sq).map(|pc| *pc);
-        let b = map.get_mut(fr).map(|pc| *pc);
-        assert_eq!(a, b);
-    }
-}
-
-#[test]
 fn len() {
     let mut map = PieceMap::new();
 

@@ -76,56 +76,6 @@ pub type Array2d = [[Option<Piece>; NUM_FILES]; NUM_RANKS];
 /// storage.
 pub type Bytes = [u8; NUM_SQUARES];
 
-/// A type that can be used for [`PieceMap`](struct.PieceMap.html) indexing
-/// operations.
-pub trait Index {
-    /// Returns an optional reference to the piece at `self` in `map`.
-    fn get(self, map: &PieceMap) -> Option<&Piece>;
-
-    /// Returns an optional mutable reference to the piece at `self` in `map`.
-    fn get_mut(self, map: &mut PieceMap) -> Option<&mut Piece>;
-}
-
-impl Index for Square {
-    #[inline]
-    fn get(self, map: &PieceMap) -> Option<&Piece> {
-        map.as_array()[self as usize].as_ref()
-    }
-
-    #[inline]
-    fn get_mut(self, map: &mut PieceMap) -> Option<&mut Piece> {
-        map.as_array_mut()[self as usize].as_mut()
-    }
-}
-
-impl Index for (File, Rank) {
-    #[inline]
-    fn get(self, map: &PieceMap) -> Option<&Piece> {
-        let (f, r) = self;
-        map.as_2d()[r as usize][f as usize].as_ref()
-    }
-
-    #[inline]
-    fn get_mut(self, map: &mut PieceMap) -> Option<&mut Piece> {
-        let (f, r) = self;
-        map.as_2d_mut()[r as usize][f as usize].as_mut()
-    }
-}
-
-impl Index for (Rank, File) {
-    #[inline]
-    fn get(self, map: &PieceMap) -> Option<&Piece> {
-        let (f, r) = self;
-        (r, f).get(map)
-    }
-
-    #[inline]
-    fn get_mut(self, map: &mut PieceMap) -> Option<&mut Piece> {
-        let (f, r) = self;
-        (r, f).get_mut(map)
-    }
-}
-
 /// A mapping of sixty-four squares to pieces.
 ///
 /// This allows for faster lookups than possible with bitboards.
@@ -236,19 +186,19 @@ impl hash::Hash for PieceMap {
 
 static INDEX_ERR: &'static str = "no piece found for square";
 
-impl<I: Index> ops::Index<I> for PieceMap {
+impl ops::Index<Square> for PieceMap {
     type Output = Piece;
 
     #[inline]
-    fn index(&self, idx: I) -> &Piece {
-        self.get(idx).expect(INDEX_ERR)
+    fn index(&self, sq: Square) -> &Piece {
+        self.get(sq).expect(INDEX_ERR)
     }
 }
 
-impl<I: Index> ops::IndexMut<I> for PieceMap {
+impl ops::IndexMut<Square> for PieceMap {
     #[inline]
-    fn index_mut(&mut self, idx: I) -> &mut Piece {
-        self.get_mut(idx).expect(INDEX_ERR)
+    fn index_mut(&mut self, sq: Square) -> &mut Piece {
+        self.get_mut(sq).expect(INDEX_ERR)
     }
 }
 
@@ -685,16 +635,16 @@ impl PieceMap {
         Entry::from_map(self, sq)
     }
 
-    /// Returns a reference to the piece at `idx`, if any.
+    /// Returns a reference to the piece at `square`, if any.
     #[inline]
-    pub fn get<I: Index>(&self, idx: I) -> Option<&Piece> {
-        idx.get(self)
+    pub fn get(&self, square: Square) -> Option<&Piece> {
+        self.as_array()[square as usize].as_ref()
     }
 
-    /// Returns a mutable reference to the piece at `idx`, if any.
+    /// Returns a mutable reference to the piece at `square`, if any.
     #[inline]
-    pub fn get_mut<I: Index>(&mut self, idx: I) -> Option<&mut Piece> {
-        idx.get_mut(self)
+    pub fn get_mut(&mut self, square: Square) -> Option<&mut Piece> {
+        self.as_array_mut()[square as usize].as_mut()
     }
 
     /// Returns a reference to the piece at a square without checking.
