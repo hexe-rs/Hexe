@@ -46,36 +46,12 @@ sliding_attacks! { rook_attacks bishop_attacks queen_attacks }
 jump_attacks! { knight_attacks king_attacks }
 
 #[test]
-fn shifts() {
-    fn up(sq: Square) -> Option<Square> {
-        match sq.rank() {
-            Rank::Eight => None,
-            r => Some(Square::new(sq.file(), (r as u8 + 1).into()))
+fn shift() {
+    for dir in Direction::ALL {
+        for sq in Square::ALL {
+            let bb = Bitboard::from(sq);
+            assert_eq!(sq.shift(dir), bb.shift(dir).lsb());
         }
-    }
-    fn down(sq: Square) -> Option<Square> {
-        match sq.rank() {
-            Rank::One => None,
-            r => Some(Square::new(sq.file(), (r as u8 - 1).into()))
-        }
-    }
-    fn right(sq: Square) -> Option<Square> {
-        match sq.file() {
-            File::H => None,
-            r => Some(Square::new((r as u8 + 1).into(), sq.rank()))
-        }
-    }
-    fn left(sq: Square) -> Option<Square> {
-        match sq.file() {
-            File::A => None,
-            r => Some(Square::new((r as u8 - 1).into(), sq.rank()))
-        }
-    }
-    for sq in Square::ALL {
-        assert_eq!(sq.up(),    up(sq));
-        assert_eq!(sq.down(),  down(sq));
-        assert_eq!(sq.right(), right(sq));
-        assert_eq!(sq.left(),  left(sq));
     }
 }
 
