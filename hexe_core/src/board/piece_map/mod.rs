@@ -988,6 +988,15 @@ impl Swap for Square {
     }
 }
 
+impl Swap for File {
+    #[inline]
+    fn swap(i: File, j: File, map: &mut PieceMap) {
+        for rank in map.as_2d_mut() {
+            rank.swap(i as usize, j as usize);
+        }
+    }
+}
+
 impl Swap for Rank {
     #[inline]
     fn swap(i: Rank, j: Rank, map: &mut PieceMap) {
