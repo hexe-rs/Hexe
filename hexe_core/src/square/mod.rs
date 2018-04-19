@@ -251,8 +251,8 @@ impl Square {
     /// Returns `self` shifted right one file, wrapping around to `File::A`.
     #[inline]
     pub fn wrapping_right(self) -> Square {
-        let rank = (self.rank() as u8).wrapping_add(1);
-        Square::new(self.file(), rank.into())
+        let file = (self.file() as u8).wrapping_add(1);
+        Square::new(file.into(), self.rank())
     }
 
     /// Returns `self` shifted left one file, or `None` if at first file.
@@ -267,8 +267,8 @@ impl Square {
     /// Returns `self` shifted left one file, wrapping around to `File::H`.
     #[inline]
     pub fn wrapping_left(self) -> Square {
-        let rank = (self.rank() as u8).wrapping_sub(1);
-        Square::new(self.file(), rank.into())
+        let file = (self.file() as u8).wrapping_sub(1);
+        Square::new(file.into(), self.rank())
     }
 
     /// Returns `self` shifted in `direction` (relative to white's perspective),
