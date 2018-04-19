@@ -42,11 +42,13 @@
 //! [`Square`]: enum.Square.html
 
 use core::{fmt, ops, str};
-use prelude::*;
-use uncon::*;
 
 #[cfg(feature = "serde")]
 use serde::*;
+use uncon::*;
+
+use board::bitboard::Direction;
+use prelude::*;
 
 #[cfg(all(test, nightly))]
 mod benches;
@@ -240,6 +242,21 @@ impl Square {
         match self.file() {
             File::A => None,
             _ => unsafe { Some((self as u8 - FILE_INC).into_unchecked()) },
+        }
+    }
+
+    /// Returns `self` shifted in `direction`, or `None` if the shift causes
+    /// `self` to go off the board.
+    pub fn shift(self, direction: Direction) -> Option<Square> {
+        match direction {
+            Direction::North     => self.up(),
+            Direction::South     => self.down(),
+            Direction::East      => self.right(),
+            Direction::West      => self.left(),
+            Direction::Northeast => self.up().and_then(Square::right),
+            Direction::Northwest => self.up().and_then(Square::left),
+            Direction::Southeast => self.down().and_then(Square::right),
+            Direction::Southwest => self.down().and_then(Square::left),
         }
     }
 
