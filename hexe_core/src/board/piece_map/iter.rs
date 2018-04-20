@@ -1,5 +1,3 @@
-use core::mem;
-
 use super::*;
 use iter;
 
@@ -24,7 +22,7 @@ macro_rules! iter_mut {
             while let Some(sq) = self.iter.$next() {
                 if let Some(pc) = self.map.get_mut(sq) {
                     // Extend the lifetime
-                    let pc = unsafe { mem::transmute(pc) };
+                    let pc = unsafe { &mut *(pc as *mut _) };
                     return Some((sq, pc));
                 }
             }
