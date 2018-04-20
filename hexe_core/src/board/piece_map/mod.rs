@@ -807,6 +807,7 @@ impl PieceMap {
     pub fn iter_mut(&mut self) -> IterMut { self.into_iter() }
 
     /// Returns a view into the map as an array of `Option<Piece>`.
+    #[inline]
     pub fn as_array(&self) -> &Array {
         unsafe { &self.0.array }
     }
@@ -820,6 +821,7 @@ impl PieceMap {
     /// This method is not marked as `unsafe` because it does not allow for the
     /// same value violations that
     /// [`PieceMap::as_bytes_mut`](#method.as_bytes_mut) allows.
+    #[inline]
     pub fn as_array_mut(&mut self) -> &mut Array {
         unsafe { &mut self.0.array }
     }
