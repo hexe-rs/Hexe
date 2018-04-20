@@ -22,18 +22,14 @@
 //!
 //! See [`CONFIGURATION.md`](https://github.com/hexe-rs/Hexe/blob/master/CONFIGURATION.md).
 //!
-//! # Using `hexe_core`
+//! # Core
 //!
-//! This crate reexports the [`hexe_core`] crate as `hexe::core`. Its most
-//! commonly used parts are available in the [`prelude`].
+//! The [`hexe_core`] crate serves as the building blocks for Hexe. It is
+//! designed to be a general-purpose chess library that can be easily used by
+//! any chess program or library. Its most commonly used parts can be found in
+//! the [`prelude`].
 //!
-//! If you wish to use `hexe_core` with its original name, you may do:
-//!
-//! ```
-//! use hexe::core as hexe_core;
-//! ```
-//!
-//! ## What `hexe_core` Provides
+//! What it provides:
 //!
 //! - [Various board representations](https://docs.rs/hexe_core/0.0.5/hexe_core/board/)
 //!
