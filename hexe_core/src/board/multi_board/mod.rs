@@ -235,45 +235,45 @@ impl MultiBoard {
     /// use hexe_core::prelude::*;
     ///
     /// let board   = MultiBoard::STANDARD;
-    /// let king_sq = board.bit_board(Piece::WhiteKing).lsb();
+    /// let king_sq = board.bits(Piece::WhiteKing).lsb();
     ///
     /// assert_eq!(king_sq, Some(Square::E1));
     /// ```
     #[inline]
-    pub fn bit_board<T: Index>(&self, value: T) -> BitBoard {
-        value.bit_board(self)
+    pub fn bits<T: Index>(&self, value: T) -> BitBoard {
+        value.bits(self)
     }
 
     /// Returns the bits of the royal pieces, King and Queen.
     #[inline]
     pub fn royals(&self) -> BitBoard {
-        self.bit_board(Role::Queen) | self.bit_board(Role::King)
+        self.bits(Role::Queen) | self.bits(Role::King)
     }
 
     /// Returns the first square that `value` appears at, if any.
     #[inline]
     pub fn first<T: Index>(&self, value: T) -> Option<Square> {
-        self.bit_board(value).lsb()
+        self.bits(value).lsb()
     }
 
     /// Returns the first square that `value` may appear at, without checking
     /// whether it exists in `self`.
     #[inline]
     pub unsafe fn first_unchecked<T: Index>(&self, value: T) -> Square {
-        self.bit_board(value).lsb_unchecked()
+        self.bits(value).lsb_unchecked()
     }
 
     /// Returns the last square that `value` appears at, if any.
     #[inline]
     pub fn last<T: Index>(&self, value: T) -> Option<Square> {
-        self.bit_board(value).msb()
+        self.bits(value).msb()
     }
 
     /// Returns the last square that `value` may appear at, without checking
     /// whether it exists in `self`.
     #[inline]
     pub unsafe fn last_unchecked<T: Index>(&self, value: T) -> Square {
-        self.bit_board(value).msb_unchecked()
+        self.bits(value).msb_unchecked()
     }
 
     /// Returns the total number of `value` in `self`.
@@ -294,7 +294,7 @@ impl MultiBoard {
     /// ```
     #[inline]
     pub fn count<T: Index>(&self, value: T) -> usize {
-        self.bit_board(value).len()
+        self.bits(value).len()
     }
 
     /// Returns whether `value` is contained at all squares in `bits`.
@@ -317,7 +317,7 @@ impl MultiBoard {
     pub fn contains<T, U>(&self, bits: T, value: U) -> bool
         where T: Into<BitBoard>, U: Index
     {
-        self.bit_board(value).contains(bits)
+        self.bits(value).contains(bits)
     }
 
     /// Returns whether `value` is contained at any square in `bits`.
@@ -339,7 +339,7 @@ impl MultiBoard {
     pub fn contains_any<T, U>(&self, bits: T, value: U) -> bool
         where T: Into<BitBoard>, U: Index
     {
-        !(self.bit_board(value) & bits).is_empty()
+        !(self.bits(value) & bits).is_empty()
     }
 
     /// Inserts `piece` at each square in `bits`, removing any other pieces
@@ -440,24 +440,24 @@ impl MultiBoard {
             ($e:expr) => { if $e { return true } };
         }
 
-        let opp = self.bit_board(!player);
-        let all = opp | self.bit_board(player);
+        let opp = self.bits(!player);
+        let all = opp | self.bits(player);
 
-        let pawns = opp & self.bit_board(Role::Pawn);
+        let pawns = opp & self.bits(Role::Pawn);
         check!(pawns.intersects(sq.pawn_attacks(player)));
 
-        let knights = opp & self.bit_board(Role::Knight);
+        let knights = opp & self.bits(Role::Knight);
         check!(knights.intersects(sq.knight_attacks()));
 
-        let kings = opp & (self.bit_board(Role::King));
+        let kings = opp & (self.bits(Role::King));
         check!(kings.intersects(sq.king_attacks()));
 
-        let queens = self.bit_board(Role::Queen);
+        let queens = self.bits(Role::Queen);
 
-        let bishops = opp & (self.bit_board(Role::Bishop) | queens);
+        let bishops = opp & (self.bits(Role::Bishop) | queens);
         check!(bishops.intersects(sq.bishop_attacks(all)));
 
-        let rooks = opp & (self.bit_board(Role::Rook) | queens);
+        let rooks = opp & (self.bits(Role::Rook) | queens);
         rooks.intersects(sq.rook_attacks(all))
     }
 
@@ -543,7 +543,7 @@ impl MultiBoard {
 /// operations.
 pub trait Index {
     /// Returns the `BitBoard` for `self` in `board`.
-    fn bit_board(self, board: &MultiBoard) -> BitBoard;
+    fn bits(self, board: &MultiBoard) -> BitBoard;
 
     /// Removes the `bits` of `self` from `board`.
     fn remove<T: Into<BitBoard>>(self, bits: T, board: &mut MultiBoard);
@@ -554,7 +554,7 @@ pub trait Index {
 
 impl Index for Color {
     #[inline]
-    fn bit_board(self, board: &MultiBoard) -> BitBoard {
+    fn bits(self, board: &MultiBoard) -> BitBoard {
         board[self]
     }
 
@@ -575,8 +575,8 @@ impl Index for Color {
 
 impl Index for Piece {
     #[inline]
-    fn bit_board(self, board: &MultiBoard) -> BitBoard {
-        self.color().bit_board(board) & self.role().bit_board(board)
+    fn bits(self, board: &MultiBoard) -> BitBoard {
+        self.color().bits(board) & self.role().bits(board)
     }
 
     #[inline]
@@ -595,7 +595,7 @@ impl Index for Piece {
 
 impl Index for Role {
     #[inline]
-    fn bit_board(self, board: &MultiBoard) -> BitBoard {
+    fn bits(self, board: &MultiBoard) -> BitBoard {
         board[self]
     }
 

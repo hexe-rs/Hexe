@@ -143,8 +143,8 @@ impl Position {
 
     /// Returns the `BitBoard` corresponding to the current player.
     #[inline]
-    pub fn player_bitboard(&self) -> BitBoard {
-        self.board().bit_board(self.player())
+    pub fn player_bits(&self) -> BitBoard {
+        self.board().bits(self.player())
     }
 
     /// Returns the opponent player's color.
@@ -155,8 +155,8 @@ impl Position {
 
     /// Returns the `BitBoard` corresponding to the opponent player.
     #[inline]
-    pub fn opponent_bitboard(&self) -> BitBoard {
-        self.board().bit_board(self.opponent())
+    pub fn opponent_bits(&self) -> BitBoard {
+        self.board().bits(self.opponent())
     }
 
     /// Returns the en passant square.
@@ -175,7 +175,7 @@ impl Position {
     #[inline]
     pub fn king_square(&self, color: Color) -> Square {
         let piece = Piece::new(Role::King, color);
-        let board = self.board().bit_board(piece);
+        let board = self.board().bits(piece);
 
         // Both colors should *always* have a king
         debug_assert!(!board.is_empty(), "{:?} not found", piece);
@@ -196,7 +196,7 @@ macro_rules! impl_contained {
         $(impl<'a> Contained<&'a Position> for $t {
             #[inline]
             fn contained_in(self, pos: &Position) -> bool {
-                !pos.board().bit_board(self).is_empty()
+                !pos.board().bits(self).is_empty()
             }
         })+
     }
