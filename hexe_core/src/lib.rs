@@ -37,6 +37,7 @@
 
 // Clippy
 #![allow(cast_lossless)]
+#![allow(cast_ptr_alignment)]
 #![allow(explicit_into_iter_loop)]
 #![allow(inline_always)]
 #![allow(needless_lifetimes)]
