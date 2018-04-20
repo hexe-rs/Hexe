@@ -518,6 +518,19 @@ impl Square {
         unsafe { f(str::from_utf8_unchecked_mut(&mut buf)) }
     }
 
+    /// Returns the attacks for `piece` at `self`, taking `occupied` into
+    /// account for sliding pieces.
+    pub fn attacks(self, piece: Piece, occupied: BitBoard) -> BitBoard {
+        match piece.role() {
+            Role::Pawn   => self.pawn_attacks(piece.color()),
+            Role::Knight => self.knight_attacks(),
+            Role::Bishop => self.bishop_attacks(occupied),
+            Role::Rook   => self.rook_attacks(occupied),
+            Role::Queen  => self.queen_attacks(occupied),
+            Role::King   => self.king_attacks(),
+        }
+    }
+
     /// Returns the pawn attacks for `self` and `color`.
     #[inline]
     pub fn pawn_attacks(self, color: Color) -> BitBoard {
