@@ -189,16 +189,17 @@ impl EngineBuilder {
         self
     }
 
-    /// The number of megabytes available for the transposition table.
+    /// The number of [MiB](https://en.wikipedia.org/wiki/Mebibyte) available
+    /// for the transposition table.
     ///
     /// The allocated table size is the smallest power of two greater than or
-    /// equal to `size_mb`.
+    /// equal to `size`.
     ///
-    /// If `size_mb` is 0, or you do not call this function, then the table size
+    /// If `size` is 0, or you do not call this function, then the table size
     /// will be selected automatically. The default is 1.
     #[inline]
-    pub fn hash_size(&mut self, size_mb: usize) -> &mut EngineBuilder {
-        self.0.hash_size = size_mb;
+    pub fn hash_size(&mut self, size: usize) -> &mut EngineBuilder {
+        self.0.hash_size = size;
         self
     }
 }
@@ -208,6 +209,7 @@ impl EngineBuilder {
 pub struct Options {
     /// The number of threads in the engine's thread pool.
     pub num_threads: usize,
-    /// The number of megabytes for the engine's transposition table.
+    /// The number of [MiB](https://en.wikipedia.org/wiki/Mebibyte) for the
+    /// engine's transposition table.
     pub hash_size: usize,
 }
