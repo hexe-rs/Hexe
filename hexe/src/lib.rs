@@ -124,3 +124,6 @@ pub mod engine;
 pub mod position;
 pub mod prelude;
 pub mod zobrist;
+
+#[doc(inline)] pub use self::engine::Engine;
+#[doc(inline)] pub use self::position::Position;
