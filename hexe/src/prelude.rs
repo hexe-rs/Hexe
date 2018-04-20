@@ -1,8 +1,21 @@
-//! The Hexe prelude imports various types that may be used often when
-//! interacting with this crate.
+//! The Hexe prelude re-exports various types and traits that are used often.
 //!
-//! The core prelude is also imported, removing the need to import both
-//! separately.
+//! Notice that the contents of the core prelude are also exported, removing the
+//! need to it separately.
+//!
+//! # Usage
+//!
+//! This module may be batch imported for convenience.
+//!
+//! ```
+//! use hexe::prelude::*;
+//! ```
+//!
+//! Specific items can also be chosen.
+//!
+//! ```
+//! use hexe::prelude::{BitBoard, Square, Position};
+//! ```
 
 pub use core::prelude::*;
 

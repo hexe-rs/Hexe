@@ -1,5 +1,18 @@
-//! The Hexe core prelude imports various primitives and traits that may be
-//! used often when interacting with this crate.
+//! The core prelude re-exports various types and traits that are used often.
+//!
+//! # Usage
+//!
+//! This module may be batch imported for convenience.
+//!
+//! ```
+//! use hexe_core::prelude::*;
+//! ```
+//!
+//! Specific items can also be chosen.
+//!
+//! ```
+//! use hexe_core::prelude::{BitBoard, Square, Piece};
+//! ```
 
 // Concrete types
 pub use board::BitBoard;
