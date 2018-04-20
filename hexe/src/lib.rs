@@ -55,11 +55,13 @@
 #![deny(missing_docs)]
 
 // Clippy
-#![allow(needless_lifetimes)]
-#![allow(redundant_field_names)]
-#![allow(unreadable_literal)]
-#![allow(while_immutable_condition)]
-#![allow(zero_prefixed_literal)]
+#![allow(
+    needless_lifetimes,
+    redundant_field_names,
+    unreadable_literal,
+    while_immutable_condition,
+    zero_prefixed_literal,
+)]
 
 // Attributes //////////////////////////////////////////////////////////////////
 

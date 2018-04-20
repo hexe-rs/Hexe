@@ -36,16 +36,18 @@
 #![deny(missing_docs)]
 
 // Clippy
-#![allow(cast_lossless)]
-#![allow(cast_ptr_alignment)]
-#![allow(explicit_into_iter_loop)]
-#![allow(inline_always)]
-#![allow(needless_lifetimes)]
-#![allow(redundant_field_names)]
-#![allow(suspicious_arithmetic_impl)] // very suspicious
-#![allow(unreadable_literal)]
-#![allow(verbose_bit_mask)]
-#![allow(zero_prefixed_literal)]
+#![allow(
+    cast_lossless,
+    cast_ptr_alignment,
+    explicit_into_iter_loop,
+    inline_always,
+    needless_lifetimes,
+    redundant_field_names,
+    suspicious_arithmetic_impl, // very suspicious
+    unreadable_literal,
+    verbose_bit_mask,
+    zero_prefixed_literal,
+)]
 #![deny(bool_comparison)]
 
 // Attributes //////////////////////////////////////////////////////////////////
