@@ -90,6 +90,7 @@ impl Pool {
             let shared_ptr = AnySend::new(&*self.shared as *const _);
 
             let handle = thread::spawn(move || {
+                info!("Thread {} spawned", index);
                 let context = Context {
                     thread: index,
                     worker: unsafe { &*worker_ptr.get() },
