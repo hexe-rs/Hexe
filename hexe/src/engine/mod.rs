@@ -15,7 +15,7 @@ mod uci;
 pub use self::uci::Uci;
 
 /// The maximum number of threads that may be running in an
-/// [`Engine`](struct.Engine.html)'s threadpool.
+/// [`Engine`](struct.Engine.html)'s thread pool.
 pub const MAX_THREADS: usize = 512;
 
 /// The maximum hash table size that may be passed to
@@ -113,9 +113,16 @@ impl Engine {
         self.pool.kill_all();
     }
 
-    /// Sets the number of threads to `n`.
-    pub fn set_threads(&mut self, n: usize) {
-        self.pool.set_threads(n);
+    /// Sets the number of threads to `n`, returning `false` if the value is not
+    /// within the inclusive range of 1 through 512.
+    pub fn set_threads(&mut self, n: usize) -> bool {
+        match n {
+            1...MAX_THREADS => {
+                self.pool.set_threads(n);
+                true
+            },
+            _ => false,
+        }
     }
 
     /// Returns the number of threads that the engine currently has spawned.
@@ -129,14 +136,20 @@ impl Engine {
         self.pool.shared().table.size_mb()
     }
 
-    /// Sets the engine's hash table size to `size`
-    /// [MiB](https://en.wikipedia.org/wiki/Mebibyte).
-    /// Returns `false` if the value is not within the inclusive range from 1 to
-    /// 131072.
+    /// Sets the engine's hash table size to `size` [MiB], returning `false` if
+    /// the value is not within the inclusive range of 1 through 131072.
     ///
     /// This method waits for all threads to stop.
+    ///
+    /// [MiB]: https://en.wikipedia.org/wiki/Mebibyte
     pub fn set_hash_size(&mut self, size: usize) -> bool {
-        unimplemented!();
+        match size {
+            1...MAX_TABLE_SIZE => {
+                warn!("Cannot currently set table size");
+                true
+            },
+            _ => false,
+        }
     }
 }
 

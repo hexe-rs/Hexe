@@ -220,13 +220,27 @@ impl<'a> Uci<'a> {
         debug!("Setting UCI option \"{}\" to \"{}\"", name, value);
 
         if match_option("threads") {
-            if let Ok(n) = value.parse() {
-                self.engine.set_threads(n);
-            } else {
-                error!("Could not parse \"{}\" as integer", value);
+            match value.parse() {
+                Ok(n) => {
+                    if !self.engine.set_threads(n) {
+                        error!("Cannot set thread count to {}", n);
+                    }
+                },
+                Err(e) => {
+                    parse_error!(value, e);
+                },
             }
         } else if match_option("hash") {
-            warn!("Cannot currently set table size");
+            match value.parse() {
+                Ok(n) => {
+                    if !self.engine.set_hash_size(n) {
+                        error!("Cannot set table size to {}", n);
+                    }
+                },
+                Err(e) => {
+                    parse_error!(value, e);
+                },
+            }
         } else {
             println!("No such option: {}", name);
         }

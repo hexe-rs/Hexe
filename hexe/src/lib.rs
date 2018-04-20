@@ -116,6 +116,8 @@ macro_rules! authors {
 #[allow(unused_imports)]
 use core::_shared::*;
 
+#[macro_use]
+mod macros;
 mod table;
 mod util;
 mod zero;
