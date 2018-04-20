@@ -1,4 +1,4 @@
-use board::bitboard::masks::*;
+use board::bit_board::masks::*;
 
 // Currently 70.25 KiB in size
 #[repr(align(64))]

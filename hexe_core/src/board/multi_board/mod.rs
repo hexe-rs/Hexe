@@ -1,4 +1,4 @@
-//! A bitboard-segmented chess board representation.
+//! A `BitBoard`-segmented chess board representation.
 
 use core::{hash, ops, mem};
 #[cfg(feature = "simd")]
@@ -38,7 +38,7 @@ const NUM_COLORS: usize = 2;
 const NUM_BOARDS: usize = NUM_PIECES + NUM_COLORS;
 const NUM_BYTES:  usize = NUM_BOARDS * 8;
 
-/// A full chess board, represented as multiple bitboard segments.
+/// A full chess board, represented as multiple `BitBoard` segments.
 #[repr(C)]
 #[derive(Clone, Eq)]
 pub struct MultiBoard {
@@ -80,17 +80,17 @@ impl AsMut<[u64]> for MultiBoard {
     }
 }
 
-impl AsRef<[Bitboard]> for MultiBoard {
+impl AsRef<[BitBoard]> for MultiBoard {
     #[inline]
-    fn as_ref(&self) -> &[Bitboard] {
+    fn as_ref(&self) -> &[BitBoard] {
         let array = self as *const _ as *const [_; NUM_BOARDS];
         unsafe { &*array }
     }
 }
 
-impl AsMut<[Bitboard]> for MultiBoard {
+impl AsMut<[BitBoard]> for MultiBoard {
     #[inline]
-    fn as_mut(&mut self) -> &mut [Bitboard] {
+    fn as_mut(&mut self) -> &mut [BitBoard] {
         let array = self as *mut _ as *mut [_; NUM_BOARDS];
         unsafe { &mut *array }
     }
@@ -115,33 +115,33 @@ impl hash::Hash for MultiBoard {
 }
 
 impl ops::Index<Role> for MultiBoard {
-    type Output = Bitboard;
+    type Output = BitBoard;
 
     #[inline]
-    fn index(&self, role: Role) -> &Bitboard {
+    fn index(&self, role: Role) -> &BitBoard {
         role.extract(&self.pieces).as_ref()
     }
 }
 
 impl ops::IndexMut<Role> for MultiBoard {
     #[inline]
-    fn index_mut(&mut self, role: Role) -> &mut Bitboard {
+    fn index_mut(&mut self, role: Role) -> &mut BitBoard {
         role.extract_mut(&mut self.pieces).as_mut()
     }
 }
 
 impl ops::Index<Color> for MultiBoard {
-    type Output = Bitboard;
+    type Output = BitBoard;
 
     #[inline]
-    fn index(&self, color: Color) -> &Bitboard {
+    fn index(&self, color: Color) -> &BitBoard {
         color.extract(&self.colors).as_ref()
     }
 }
 
 impl ops::IndexMut<Color> for MultiBoard {
     #[inline]
-    fn index_mut(&mut self, color: Color) -> &mut Bitboard {
+    fn index_mut(&mut self, color: Color) -> &mut BitBoard {
         color.extract_mut(&mut self.colors).as_mut()
     }
 }
@@ -219,12 +219,12 @@ impl MultiBoard {
     /// assert_eq!(board.all_bits(), value.into());
     /// ```
     #[inline]
-    pub fn all_bits(&self) -> Bitboard {
+    pub fn all_bits(&self) -> BitBoard {
         let [w, b] = self.colors;
-        Bitboard(w | b)
+        BitBoard(w | b)
     }
 
-    /// Returns the `Bitboard` for `value` in `self`.
+    /// Returns the `BitBoard` for `value` in `self`.
     ///
     /// # Examples
     ///
@@ -235,45 +235,45 @@ impl MultiBoard {
     /// use hexe_core::prelude::*;
     ///
     /// let board   = MultiBoard::STANDARD;
-    /// let king_sq = board.bitboard(Piece::WhiteKing).lsb();
+    /// let king_sq = board.bit_board(Piece::WhiteKing).lsb();
     ///
     /// assert_eq!(king_sq, Some(Square::E1));
     /// ```
     #[inline]
-    pub fn bitboard<T: Index>(&self, value: T) -> Bitboard {
-        value.bitboard(self)
+    pub fn bit_board<T: Index>(&self, value: T) -> BitBoard {
+        value.bit_board(self)
     }
 
     /// Returns the bits of the royal pieces, King and Queen.
     #[inline]
-    pub fn royals(&self) -> Bitboard {
-        self.bitboard(Role::Queen) | self.bitboard(Role::King)
+    pub fn royals(&self) -> BitBoard {
+        self.bit_board(Role::Queen) | self.bit_board(Role::King)
     }
 
     /// Returns the first square that `value` appears at, if any.
     #[inline]
     pub fn first<T: Index>(&self, value: T) -> Option<Square> {
-        self.bitboard(value).lsb()
+        self.bit_board(value).lsb()
     }
 
     /// Returns the first square that `value` may appear at, without checking
     /// whether it exists in `self`.
     #[inline]
     pub unsafe fn first_unchecked<T: Index>(&self, value: T) -> Square {
-        self.bitboard(value).lsb_unchecked()
+        self.bit_board(value).lsb_unchecked()
     }
 
     /// Returns the last square that `value` appears at, if any.
     #[inline]
     pub fn last<T: Index>(&self, value: T) -> Option<Square> {
-        self.bitboard(value).msb()
+        self.bit_board(value).msb()
     }
 
     /// Returns the last square that `value` may appear at, without checking
     /// whether it exists in `self`.
     #[inline]
     pub unsafe fn last_unchecked<T: Index>(&self, value: T) -> Square {
-        self.bitboard(value).msb_unchecked()
+        self.bit_board(value).msb_unchecked()
     }
 
     /// Returns the total number of `value` in `self`.
@@ -294,7 +294,7 @@ impl MultiBoard {
     /// ```
     #[inline]
     pub fn count<T: Index>(&self, value: T) -> usize {
-        self.bitboard(value).len()
+        self.bit_board(value).len()
     }
 
     /// Returns whether `value` is contained at all squares in `bits`.
@@ -315,9 +315,9 @@ impl MultiBoard {
     /// ```
     #[inline]
     pub fn contains<T, U>(&self, bits: T, value: U) -> bool
-        where T: Into<Bitboard>, U: Index
+        where T: Into<BitBoard>, U: Index
     {
-        self.bitboard(value).contains(bits)
+        self.bit_board(value).contains(bits)
     }
 
     /// Returns whether `value` is contained at any square in `bits`.
@@ -337,15 +337,15 @@ impl MultiBoard {
     /// ```
     #[inline]
     pub fn contains_any<T, U>(&self, bits: T, value: U) -> bool
-        where T: Into<Bitboard>, U: Index
+        where T: Into<BitBoard>, U: Index
     {
-        !(self.bitboard(value) & bits).is_empty()
+        !(self.bit_board(value) & bits).is_empty()
     }
 
     /// Inserts `piece` at each square in `bits`, removing any other pieces
     /// that may be at `bits`.
     #[inline]
-    pub fn insert<T: Into<Bitboard>>(&mut self, bits: T, piece: Piece) {
+    pub fn insert<T: Into<BitBoard>>(&mut self, bits: T, piece: Piece) {
         let value = bits.into();
         self.remove_all(value);
         self.insert_unchecked(value, piece);
@@ -357,7 +357,7 @@ impl MultiBoard {
     /// board may contain pieces at `bits`, then [`insert`](#method.insert)
     /// should be called instead.
     #[inline]
-    pub fn insert_unchecked<T: Into<Bitboard>>(&mut self, bits: T, piece: Piece) {
+    pub fn insert_unchecked<T: Into<BitBoard>>(&mut self, bits: T, piece: Piece) {
         let value = bits.into();
         self[piece.color()] |= value;
         self[piece.role() ] |= value;
@@ -366,7 +366,7 @@ impl MultiBoard {
     /// Removes each piece at `bits` for `value`.
     #[inline]
     pub fn remove<T, U>(&mut self, bits: T, value: U)
-        where T: Into<Bitboard>, U: Index
+        where T: Into<BitBoard>, U: Index
     {
         value.remove(bits, self);
     }
@@ -377,7 +377,7 @@ impl MultiBoard {
     /// are located at `bits`.
     #[inline]
     pub fn remove_unchecked<T, U>(&mut self, bits: T, value: U)
-        where T: Into<Bitboard>, U: Index
+        where T: Into<BitBoard>, U: Index
     {
         value.remove_unchecked(bits, self);
     }
@@ -406,26 +406,26 @@ impl MultiBoard {
     /// }
     /// ```
     #[inline]
-    pub fn remove_all<T: Into<Bitboard>>(&mut self, bits: T) {
+    pub fn remove_all<T: Into<BitBoard>>(&mut self, bits: T) {
         let value = !bits.into().0;
         for board in AsMut::<[u64]>::as_mut(self) {
             *board &= value;
         }
     }
 
-    /// Returns references to the underlying bitboards for `Color` and
+    /// Returns references to the underlying bit boards for `Color` and
     /// `Role`, respectively.
     #[inline]
-    pub fn split(&self) -> (&[Bitboard; NUM_COLORS], &[Bitboard; NUM_PIECES]) {
+    pub fn split(&self) -> (&[BitBoard; NUM_COLORS], &[BitBoard; NUM_PIECES]) {
         let colors = &self.colors as *const _ as *const _;
         let pieces = &self.pieces as *const _ as *const _;
         unsafe { (&*colors, &*pieces) }
     }
 
-    /// Returns mutable references to the underlying bitboards for `Color` and
+    /// Returns mutable references to the underlying bit boards for `Color` and
     /// `Role`, respectively.
     #[inline]
-    pub fn split_mut(&mut self) -> (&mut [Bitboard; NUM_COLORS], &mut [Bitboard; NUM_PIECES]) {
+    pub fn split_mut(&mut self) -> (&mut [BitBoard; NUM_COLORS], &mut [BitBoard; NUM_PIECES]) {
         let colors = &mut self.colors as *mut _ as *mut _;
         let pieces = &mut self.pieces as *mut _ as *mut _;
         unsafe { (&mut *colors, &mut *pieces) }
@@ -440,24 +440,24 @@ impl MultiBoard {
             ($e:expr) => { if $e { return true } };
         }
 
-        let opp = self.bitboard(!player);
-        let all = opp | self.bitboard(player);
+        let opp = self.bit_board(!player);
+        let all = opp | self.bit_board(player);
 
-        let pawns = opp & self.bitboard(Role::Pawn);
+        let pawns = opp & self.bit_board(Role::Pawn);
         check!(pawns.intersects(sq.pawn_attacks(player)));
 
-        let knights = opp & self.bitboard(Role::Knight);
+        let knights = opp & self.bit_board(Role::Knight);
         check!(knights.intersects(sq.knight_attacks()));
 
-        let kings = opp & (self.bitboard(Role::King));
+        let kings = opp & (self.bit_board(Role::King));
         check!(kings.intersects(sq.king_attacks()));
 
-        let queens = self.bitboard(Role::Queen);
+        let queens = self.bit_board(Role::Queen);
 
-        let bishops = opp & (self.bitboard(Role::Bishop) | queens);
+        let bishops = opp & (self.bit_board(Role::Bishop) | queens);
         check!(bishops.intersects(sq.bishop_attacks(all)));
 
-        let rooks = opp & (self.bitboard(Role::Rook) | queens);
+        let rooks = opp & (self.bit_board(Role::Rook) | queens);
         rooks.intersects(sq.rook_attacks(all))
     }
 
@@ -542,29 +542,29 @@ impl MultiBoard {
 /// A type that can be used for [`MultiBoard`](struct.MultiBoard.html) indexing
 /// operations.
 pub trait Index {
-    /// Returns the bitboard for `self` in `board`.
-    fn bitboard(self, board: &MultiBoard) -> Bitboard;
+    /// Returns the `BitBoard` for `self` in `board`.
+    fn bit_board(self, board: &MultiBoard) -> BitBoard;
 
     /// Removes the `bits` of `self` from `board`.
-    fn remove<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard);
+    fn remove<T: Into<BitBoard>>(self, bits: T, board: &mut MultiBoard);
 
     /// Performs a **blind** removal of `self` at `bits` in `board`.
-    fn remove_unchecked<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard);
+    fn remove_unchecked<T: Into<BitBoard>>(self, bits: T, board: &mut MultiBoard);
 }
 
 impl Index for Color {
     #[inline]
-    fn bitboard(self, board: &MultiBoard) -> Bitboard {
+    fn bit_board(self, board: &MultiBoard) -> BitBoard {
         board[self]
     }
 
     #[inline]
-    fn remove<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
+    fn remove<T: Into<BitBoard>>(self, bits: T, board: &mut MultiBoard) {
         self.remove_unchecked(board[self] & bits.into(), board);
     }
 
     #[inline]
-    fn remove_unchecked<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
+    fn remove_unchecked<T: Into<BitBoard>>(self, bits: T, board: &mut MultiBoard) {
         let value = !bits.into().0;
         board[self] &= value;
         for piece in &mut board.pieces {
@@ -575,18 +575,18 @@ impl Index for Color {
 
 impl Index for Piece {
     #[inline]
-    fn bitboard(self, board: &MultiBoard) -> Bitboard {
-        self.color().bitboard(board) & self.role().bitboard(board)
+    fn bit_board(self, board: &MultiBoard) -> BitBoard {
+        self.color().bit_board(board) & self.role().bit_board(board)
     }
 
     #[inline]
-    fn remove<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
+    fn remove<T: Into<BitBoard>>(self, bits: T, board: &mut MultiBoard) {
         let value = board[self.color()] | board[self.role()];
         self.remove_unchecked(value & bits.into(), board);
     }
 
     #[inline]
-    fn remove_unchecked<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
+    fn remove_unchecked<T: Into<BitBoard>>(self, bits: T, board: &mut MultiBoard) {
         let value = !bits.into().0;
         board[self.color()] &= value;
         board[self.role() ] &= value;
@@ -595,17 +595,17 @@ impl Index for Piece {
 
 impl Index for Role {
     #[inline]
-    fn bitboard(self, board: &MultiBoard) -> Bitboard {
+    fn bit_board(self, board: &MultiBoard) -> BitBoard {
         board[self]
     }
 
     #[inline]
-    fn remove<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
+    fn remove<T: Into<BitBoard>>(self, bits: T, board: &mut MultiBoard) {
         self.remove_unchecked(board[self] & bits.into(), board);
     }
 
     #[inline]
-    fn remove_unchecked<T: Into<Bitboard>>(self, bits: T, board: &mut MultiBoard) {
+    fn remove_unchecked<T: Into<BitBoard>>(self, bits: T, board: &mut MultiBoard) {
         let value = !bits.into().0;
         board[self] &= value;
         for color in &mut board.colors {

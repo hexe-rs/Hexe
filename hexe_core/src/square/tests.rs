@@ -6,9 +6,9 @@ macro_rules! sliding_attacks {
         $(#[test]
         fn $fn() {
             let mut rng = thread_rng();
-            for occupied in (0..20_000).map(|_| Bitboard(rng.gen())) {
+            for occupied in (0..20_000).map(|_| BitBoard(rng.gen())) {
                 for square in Square::ALL {
-                    let exp = Bitboard::from(square).$fn(!occupied);
+                    let exp = BitBoard::from(square).$fn(!occupied);
                     let res = square.$fn(occupied);
                     if exp != res {
                         panic!(
@@ -33,7 +33,7 @@ macro_rules! jump_attacks {
         $(#[test]
         fn $fn() {
             for square in Square::ALL {
-                let exp = Bitboard::from(square).$fn();
+                let exp = BitBoard::from(square).$fn();
                 let res = square.$fn();
                 assert_eq!(exp, res);
             }
@@ -126,7 +126,7 @@ fn tri_index() {
 fn pawn_attacks() {
     for &color in &[Color::White, Color::Black] {
         for square in Square::ALL {
-            let exp = Bitboard::from(square).pawn_attacks(color);
+            let exp = BitBoard::from(square).pawn_attacks(color);
             let res = square.pawn_attacks(color);
             assert_eq!(exp, res);
         }
@@ -156,8 +156,8 @@ fn square_color() {
             assert_eq!(s1.color() == s2.color(), s1.color_eq(s2));
         }
     }
-    for &(b, c) in &[(Bitboard::WHITE, Color::White),
-                     (Bitboard::BLACK, Color::Black)] {
+    for &(b, c) in &[(BitBoard::WHITE, Color::White),
+                     (BitBoard::BLACK, Color::Black)] {
         for s in b {
             assert_eq!(s.color(), c);
         }

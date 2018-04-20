@@ -85,7 +85,7 @@ pub type Bytes = [u8; NUM_SQUARES];
 
 /// A mapping of sixty-four squares to pieces.
 ///
-/// This allows for faster lookups than possible with bitboards.
+/// This allows for faster lookups than possible with bit boards.
 ///
 /// **Note:** `PieceMap::default()` returns an empty piece map. Use
 /// [`PieceMap::STANDARD`](#associatedconstant.STANDARD) to get a mapping for

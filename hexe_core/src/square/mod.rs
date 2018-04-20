@@ -162,13 +162,13 @@ impl Square {
     }
 
     #[inline]
-    pub(crate) fn between(self, other: Square) -> Bitboard {
-        Bitboard(TABLES.between[self as usize][other as usize])
+    pub(crate) fn between(self, other: Square) -> BitBoard {
+        BitBoard(TABLES.between[self as usize][other as usize])
     }
 
     #[inline]
-    pub(crate) fn line(self, other: Square) -> Bitboard {
-        Bitboard(TABLES.line[self as usize][other as usize])
+    pub(crate) fn line(self, other: Square) -> BitBoard {
+        BitBoard(TABLES.line[self as usize][other as usize])
     }
 
     /// Returns the `File` for `self`.
@@ -274,7 +274,7 @@ impl Square {
     /// Returns `self` shifted in `direction` (relative to white's perspective),
     /// or `None` if the shift causes `self` to go off the board.
     pub fn shift(self, direction: Direction) -> Option<Square> {
-        Bitboard::from(self).shift(direction).lsb()
+        BitBoard::from(self).shift(direction).lsb()
     }
 
     /// Returns `self` shifted in `direction` (relative to white's perspective),
@@ -327,7 +327,7 @@ impl Square {
     /// ```
     #[inline]
     pub fn color(self) -> Color {
-        const BLACK: usize = Bitboard::BLACK.0 as usize;
+        const BLACK: usize = BitBoard::BLACK.0 as usize;
         const MOD:   usize = ::consts::PTR_SIZE * 8;
         (BLACK >> (self as usize % MOD)).into()
     }
@@ -520,14 +520,14 @@ impl Square {
 
     /// Returns the pawn attacks for `self` and `color`.
     #[inline]
-    pub fn pawn_attacks(self, color: Color) -> Bitboard {
-        Bitboard(TABLES.pawns[color as usize][self as usize])
+    pub fn pawn_attacks(self, color: Color) -> BitBoard {
+        BitBoard(TABLES.pawns[color as usize][self as usize])
     }
 
     /// Returns the knight attacks for `self`.
     #[inline]
-    pub fn knight_attacks(self) -> Bitboard {
-        Bitboard(TABLES.knight[self as usize])
+    pub fn knight_attacks(self) -> BitBoard {
+        BitBoard(TABLES.knight[self as usize])
     }
 
     /// Returns the rook attacks for `self` and `occupied`.
@@ -548,7 +548,7 @@ impl Square {
     /// assert_eq!(start.rook_attacks(occ), exp);
     /// ```
     #[inline]
-    pub fn rook_attacks(self, occupied: Bitboard) -> Bitboard {
+    pub fn rook_attacks(self, occupied: BitBoard) -> BitBoard {
         ::magic::rook_attacks(self, occupied)
     }
 
@@ -570,14 +570,14 @@ impl Square {
     /// assert_eq!(start.bishop_attacks(occ.into()), exp);
     /// ```
     #[inline]
-    pub fn bishop_attacks(self, occupied: Bitboard) -> Bitboard {
+    pub fn bishop_attacks(self, occupied: BitBoard) -> BitBoard {
         ::magic::bishop_attacks(self, occupied)
     }
 
     /// Returns the king attacks for `self`.
     #[inline]
-    pub fn king_attacks(self) -> Bitboard {
-        Bitboard(TABLES.king[self as usize])
+    pub fn king_attacks(self) -> BitBoard {
+        BitBoard(TABLES.king[self as usize])
     }
 
     /// Returns the queen attacks for `self` and `occupied`.
@@ -585,7 +585,7 @@ impl Square {
     /// This works the same as combining the results of `rook_attacks` and
     /// `bishop_attacks`.
     #[inline]
-    pub fn queen_attacks(self, occupied: Bitboard) -> Bitboard {
+    pub fn queen_attacks(self, occupied: BitBoard) -> BitBoard {
         self.rook_attacks(occupied) | self.bishop_attacks(occupied)
     }
 }
@@ -624,8 +624,8 @@ impl File {
     /// assert_eq!(val.adjacent_mask(), adj);
     /// ```
     #[inline]
-    pub fn adjacent_mask(&self) -> Bitboard {
-        Bitboard(TABLES.adj_file[*self as usize])
+    pub fn adjacent_mask(&self) -> BitBoard {
+        BitBoard(TABLES.adj_file[*self as usize])
     }
 }
 
@@ -678,8 +678,8 @@ impl Rank {
     /// assert_eq!(val.adjacent_mask(), adj);
     /// ```
     #[inline]
-    pub fn adjacent_mask(&self) -> Bitboard {
-        Bitboard(TABLES.adj_rank[*self as usize])
+    pub fn adjacent_mask(&self) -> BitBoard {
+        BitBoard(TABLES.adj_rank[*self as usize])
     }
 
     /// Returns the remaining distance for `color` to reach the end of the board

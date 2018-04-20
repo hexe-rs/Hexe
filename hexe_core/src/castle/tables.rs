@@ -21,7 +21,7 @@ pub struct Tables {
     pub chars: [u8; 4],
     pub pm_value: [u32; 4],
     pub pm_pairs: [(Square, Square); 4],
-    pub path: [Bitboard; 4],
+    pub path: [BitBoard; 4],
     pub path_iter: [Range<Square>; 4],
 }
 

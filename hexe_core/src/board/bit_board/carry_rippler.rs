@@ -1,7 +1,7 @@
 use super::*;
 use core::{fmt, u64};
 
-/// An iterator over all subsets of a [`Bitboard`].
+/// An iterator over all subsets of a [`BitBoard`].
 ///
 /// A reference implementation can be found [here][impl].
 ///
@@ -9,16 +9,16 @@ use core::{fmt, u64};
 ///
 /// ```
 /// # use hexe_core::prelude::*;
-/// let bitboard = Bitboard::FULL;
+/// let bit_board = BitBoard::FULL;
 ///
-/// for subset in bitboard.carry_rippler() {
+/// for subset in bit_board.carry_rippler() {
 ///     # break
 ///     /* ... */
 /// }
 /// ```
 ///
 /// [impl]: https://chessprogramming.wikispaces.com/Traversing+Subsets+of+a+Set
-/// [`Bitboard`]: struct.Bitboard.html
+/// [`BitBoard`]: struct.BitBoard.html
 #[derive(Copy, Clone, PartialEq, Eq)]
 pub struct CarryRippler {
     /// The current subset
@@ -39,31 +39,31 @@ impl fmt::Debug for CarryRippler {
     }
 }
 
-impl From<Bitboard> for CarryRippler {
+impl From<BitBoard> for CarryRippler {
     #[inline]
-    fn from(bitboard: Bitboard) -> CarryRippler {
-        CarryRippler { sub: 0, set: bitboard.0, is_first: true }
+    fn from(bit_board: BitBoard) -> CarryRippler {
+        CarryRippler { sub: 0, set: bit_board.0, is_first: true }
     }
 }
 
 impl Default for CarryRippler {
     #[inline]
     fn default() -> CarryRippler {
-        Bitboard::FULL.into()
+        BitBoard::FULL.into()
     }
 }
 
 impl CarryRippler {
     /// The initial superset from which `self` was constructed.
     #[inline]
-    pub fn superset(&self) -> Bitboard {
+    pub fn superset(&self) -> BitBoard {
         self.set.into()
     }
 
     /// The current subset. This value will be returned next if `self` is not
     /// yet finished.
     #[inline]
-    pub fn subset(&self) -> Bitboard {
+    pub fn subset(&self) -> BitBoard {
         self.sub.into()
     }
 
@@ -81,10 +81,10 @@ impl CarryRippler {
 }
 
 impl Iterator for CarryRippler {
-    type Item = Bitboard;
+    type Item = BitBoard;
 
     #[inline]
-    fn next(&mut self) -> Option<Bitboard> {
+    fn next(&mut self) -> Option<BitBoard> {
         if self.is_empty() { None } else {
             self.is_first = false;
             let sub = self.sub;
@@ -115,7 +115,7 @@ impl Iterator for CarryRippler {
     }
 
     #[inline]
-    fn last(self) -> Option<Bitboard> {
+    fn last(self) -> Option<BitBoard> {
         if self.is_empty() { None } else {
             // The last result is always the initial set
             Some(self.set.into())
@@ -141,7 +141,7 @@ mod tests {
         ];
 
         let superset = *SUBSETS.last().unwrap();
-        let mut iter = Bitboard(superset).carry_rippler();
+        let mut iter = BitBoard(superset).carry_rippler();
         let mut sum  = 0usize;
 
         assert_eq!(iter.size_hint().0, SUBSETS.len());

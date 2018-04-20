@@ -1,4 +1,4 @@
-//! Bitboard masks for each file and rank.
+//! `BitBoard` masks for each file and rank.
 
 #![allow(missing_docs)]
 
@@ -6,11 +6,11 @@ use super::*;
 
 macro_rules! impl_consts {
     ($base:expr, $shift:expr; $cur:ident, $($rest:tt)+) => {
-        pub const $cur: Bitboard = Bitboard($base);
+        pub const $cur: BitBoard = BitBoard($base);
         impl_consts!($shift; $cur, $($rest)+);
     };
     ($shift:expr; $prev:ident, $cur:ident) => {
-        pub const $cur: Bitboard = Bitboard($prev.0 << $shift);
+        pub const $cur: BitBoard = BitBoard($prev.0 << $shift);
     };
     ($shift:expr; $prev:ident, $cur:ident, $($next:ident),+) => {
         impl_consts!($shift; $prev, $cur);

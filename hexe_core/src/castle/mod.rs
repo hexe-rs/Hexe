@@ -55,7 +55,7 @@ impl_rand!(u8 => Rights, Right);
 ///
 /// # Examples
 ///
-/// Similar to with [`Bitboard`], castle rights can be composed with set
+/// Similar to with [`BitBoard`], castle rights can be composed with set
 /// operations.
 ///
 /// ```
@@ -66,7 +66,7 @@ impl_rand!(u8 => Rights, Right);
 /// );
 /// ```
 ///
-/// [`Bitboard`]: ../board/bitboard/struct.Bitboard.html
+/// [`BitBoard`]: ../board/bit_board/struct.BitBoard.html
 #[derive(PartialEq, Eq, Clone, Copy, Hash, FromUnchecked)]
 pub struct Rights(u8);
 
@@ -274,7 +274,7 @@ impl Right {
 
     /// Returns the path between the rook and king for this right.
     #[inline]
-    pub fn path(self) -> Bitboard {
+    pub fn path(self) -> BitBoard {
         TABLES.path[self as usize]
     }
 
@@ -303,16 +303,16 @@ pub mod path {
     use super::*;
 
     /// White kingside path.
-    pub const WHITE_KING: Bitboard = Bitboard(0x60);
+    pub const WHITE_KING: BitBoard = BitBoard(0x60);
 
     /// Black kingside path.
-    pub const BLACK_KING: Bitboard = Bitboard(WHITE_KING.0 << 56);
+    pub const BLACK_KING: BitBoard = BitBoard(WHITE_KING.0 << 56);
 
     /// White queenside path.
-    pub const WHITE_QUEEN: Bitboard = Bitboard(0x0E);
+    pub const WHITE_QUEEN: BitBoard = BitBoard(0x0E);
 
     /// Black queenside path.
-    pub const BLACK_QUEEN: Bitboard = Bitboard(WHITE_QUEEN.0 << 56);
+    pub const BLACK_QUEEN: BitBoard = BitBoard(WHITE_QUEEN.0 << 56);
 }
 
 /// A side used to castle.
@@ -373,7 +373,7 @@ mod tests {
 
     #[test]
     fn castle_right_path() {
-        fn path(right: Right) -> Bitboard {
+        fn path(right: Right) -> BitBoard {
             use self::Right::*;
             match right {
                 WhiteKing  => path::WHITE_KING,
@@ -385,7 +385,7 @@ mod tests {
         for right in Rights::FULL {
             let p = right.path();
             assert_eq!(p, path(right));
-            assert_eq!(p, right.path_iter().collect::<Bitboard>());
+            assert_eq!(p, right.path_iter().collect::<BitBoard>());
         }
     }
 

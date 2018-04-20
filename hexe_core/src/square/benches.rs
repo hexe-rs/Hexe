@@ -8,7 +8,7 @@ macro_rules! impl_sliding_benches {
     ($($f:ident)+) => { $(
         #[bench]
         fn $f(b: &mut Bencher) {
-            let pairs = rand_pairs::<Square, Bitboard>();
+            let pairs = rand_pairs::<Square, BitBoard>();
             b.iter(|| {
                 for &(sq, occ) in pairs.iter() {
                     black_box(black_box(sq).$f(black_box(occ)));

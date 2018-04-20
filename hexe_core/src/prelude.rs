@@ -2,7 +2,7 @@
 //! used often when interacting with this crate.
 
 // Concrete types
-pub use board::Bitboard;
+pub use board::BitBoard;
 pub use castle::{Rights, Right};
 pub use color::Color;
 pub use mv::Move;

@@ -1,4 +1,4 @@
-use board::Bitboard;
+use board::BitBoard;
 use square::Square;
 
 mod tables;
@@ -27,11 +27,11 @@ fn attacks(table: &Table, sq: Square, occupied: u64, shift: u8) -> u64 {
 }
 
 #[inline]
-pub fn rook_attacks(sq: Square, occupied: Bitboard) -> Bitboard {
+pub fn rook_attacks(sq: Square, occupied: BitBoard) -> BitBoard {
     attacks(&tables::MAGICS.rook, sq, occupied.0, 12).into()
 }
 
 #[inline]
-pub fn bishop_attacks(sq: Square, occupied: Bitboard) -> Bitboard {
+pub fn bishop_attacks(sq: Square, occupied: BitBoard) -> BitBoard {
     attacks(&tables::MAGICS.bishop, sq, occupied.0, 9).into()
 }

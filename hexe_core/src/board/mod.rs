@@ -5,7 +5,7 @@
 //! There are three chess board representations provided. They each have various
 //! advantages and disadvantages, which are outlined below:
 //!
-//! ### [`Bitboard`]
+//! ### [`BitBoard`]
 //!
 //! **Mapping:** bit-to-[`Square`]
 //!
@@ -21,13 +21,13 @@
 //!
 //! - Size—larger overall memory cost:
 //!
-//!     - A common compact way of representing all pieces with bitboards is to
-//!       have 6 × [`Role`] bitboards and 2 × [`Color`] bitboards. This
+//!     - A common compact way of representing all pieces with bit boards is to
+//!       have 6 × [`Role`] bit boards and 2 × [`Color`] bit boards. This
 //!       results in (2 + 6) × 8 = 64 bytes used to represent all pieces.
 //!
 //!       This is how [`MultiBoard`] works.
 //!
-//!     - Using 12 × [`Piece`](../piece/enum.Piece.html) bitboards is another
+//!     - Using 12 × [`Piece`](../piece/enum.Piece.html) bit boards is another
 //!       representation of the entire chess board. This results in 12 × 8 = 96
 //!       bytes used to represent all pieces.
 //!
@@ -35,7 +35,7 @@
 //!
 //! ### [`MultiBoard`]
 //!
-//! **Mapping:** [`Color`]/[`Piece`]/[`Role`] to [`Bitboard`]
+//! **Mapping:** [`Color`]/[`Piece`]/[`Role`] to [`BitBoard`]
 //!
 //! **Advantages:**
 //!
@@ -49,7 +49,7 @@
 //!   let king = board.first(Piece::WhiteKing).unwrap();
 //!   println!("White king found at {}", king);
 //!
-//!   for sq in board.bitboard(Color::White) {
+//!   for sq in board.bit_board(Color::White) {
 //!       println!("A white piece at {}", sq);
 //!   }
 //!   ```
@@ -78,7 +78,7 @@
 //!
 //!     - Uses exactly 64 bytes for each square on the board and its piece
 //!
-//! [`Bitboard`]: bitboard/struct.Bitboard.html
+//! [`BitBoard`]: bit_board/struct.BitBoard.html
 //! [`MultiBoard`]: multi_board/struct.MultiBoard.html
 //! [`PieceMap`]: piece_map/struct.PieceMap.html
 //!
@@ -87,11 +87,11 @@
 //! [`Role`]: ../piece/enum.Role.html
 //! [`Square`]: ../square/enum.Square.html
 
-pub mod bitboard;
+pub mod bit_board;
 pub mod multi_board;
 pub mod piece_map;
 
-#[doc(inline)] pub use self::bitboard::Bitboard;
+#[doc(inline)] pub use self::bit_board::BitBoard;
 #[doc(inline)] pub use self::multi_board::MultiBoard;
 #[doc(inline)] pub use self::piece_map::PieceMap;
 

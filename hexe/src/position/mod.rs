@@ -23,7 +23,7 @@ pub struct Position {
     /// A piece map board representation for fast lookups.
     pieces: PieceMap,
 
-    /// Bitboards for each color and piece role.
+    /// Bit boards for each color and piece role.
     board: MultiBoard,
 
     /// The color for the player whose turn it is.
@@ -141,10 +141,10 @@ impl Position {
         self.player
     }
 
-    /// Returns the bitboard corresponding to the current player.
+    /// Returns the `BitBoard` corresponding to the current player.
     #[inline]
-    pub fn player_bitboard(&self) -> Bitboard {
-        self.board().bitboard(self.player())
+    pub fn player_bitboard(&self) -> BitBoard {
+        self.board().bit_board(self.player())
     }
 
     /// Returns the opponent player's color.
@@ -153,10 +153,10 @@ impl Position {
         !self.player()
     }
 
-    /// Returns the bitboard corresponding to the opponent player.
+    /// Returns the `BitBoard` corresponding to the opponent player.
     #[inline]
-    pub fn opponent_bitboard(&self) -> Bitboard {
-        self.board().bitboard(self.opponent())
+    pub fn opponent_bitboard(&self) -> BitBoard {
+        self.board().bit_board(self.opponent())
     }
 
     /// Returns the en passant square.
@@ -175,7 +175,7 @@ impl Position {
     #[inline]
     pub fn king_square(&self, color: Color) -> Square {
         let piece = Piece::new(Role::King, color);
-        let board = self.board().bitboard(piece);
+        let board = self.board().bit_board(piece);
 
         // Both colors should *always* have a king
         debug_assert!(!board.is_empty(), "{:?} not found", piece);
@@ -196,7 +196,7 @@ macro_rules! impl_contained {
         $(impl<'a> Contained<&'a Position> for $t {
             #[inline]
             fn contained_in(self, pos: &Position) -> bool {
-                !pos.board().bitboard(self).is_empty()
+                !pos.board().bit_board(self).is_empty()
             }
         })+
     }
@@ -224,8 +224,8 @@ mod tests {
             } else {
                 let (a, b) = pos.board.split();
                 for &slice in &[&a[..], &b[..]] {
-                    for &bitboard in slice {
-                        assert!(!bitboard.contains(square));
+                    for &bit_board in slice {
+                        assert!(!bit_board.contains(square));
                     }
                 }
             }
