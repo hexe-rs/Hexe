@@ -130,7 +130,7 @@ impl Position {
                     }
                 }
 
-                true
+                return true;
             },
             // TODO: is promotion legal?
             Matches::Promotion(mv) => {
