@@ -36,25 +36,22 @@ impl ops::Not for Direction {
 }
 
 impl Direction {
-    /// Returns the forward direction for `color`.
-    ///
-    /// - `White` becomes `Up`
-    /// - `Black` becomes `Down`
+    /// Returns `Up` for `White` and `Down` for `Black`.
     #[inline]
     pub fn forward(color: Color) -> Direction {
-        match color {
-            Color::White => Direction::Up,
-            Color::Black => Direction::Down,
-        }
+        Direction::Up.swap(color)
     }
 
-    /// Returns the backward direction for `color`.
-    ///
-    /// - `White` becomes `Down`
-    /// - `Black` becomes `Up`
+    /// Returns `Down` for `White` and `Up` for `Black`.
     #[inline]
     pub fn backward(color: Color) -> Direction {
         Direction::forward(!color)
+    }
+
+    /// Swaps the direction on `Color::Black`.
+    #[inline]
+    pub fn swap(self, color: Color) -> Direction {
+        match color { Color::Black => !self, _ => self }
     }
 }
 
