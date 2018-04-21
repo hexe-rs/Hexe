@@ -104,6 +104,10 @@ impl Position {
         let checked = board.is_attacked(king, player);
 
         match mv.matches() {
+            // TODO: is normal legal?
+            Matches::Normal(mv) => {
+
+            },
             Matches::Castle(mv) => {
                 // Cannot castle out of check
                 if checked {
@@ -111,6 +115,9 @@ impl Position {
                 }
 
                 let right = mv.right();
+
+                // Castling is for current player and
+                // whether it would be allowed if so
                 if player != right.color() || !self.rights().contains(right) {
                     return false;
                 }
@@ -125,8 +132,16 @@ impl Position {
 
                 true
             },
-            _ => unimplemented!(),
+            // TODO: is promotion legal?
+            Matches::Promotion(mv) => {
+
+            },
+            // TODO: is en passant legal?
+            Matches::EnPassant(mv) => {
+
+            },
         }
+        false
     }
 
     /// Returns whether `self` contains the value.
