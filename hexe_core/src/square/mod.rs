@@ -142,6 +142,24 @@ const RANK_INC: u8 = 1 << RANK_SHIFT;
 
 const TRIANGLE_LEN: usize = 64 * 65 / 2;
 
+/// A triangular lookup table that can be indexed via
+/// [`Square::tri`](enum.Square.html#method.tri) and friends.
+pub type Tri<T> = [T; TRIANGLE_LEN];
+
+impl<T> Extract<Tri<T>> for (Square, Square) {
+    type Output = T;
+
+    #[inline]
+    fn extract(self, tri: &Tri<T>) -> &T {
+        self.0.tri(self.1, tri)
+    }
+
+    #[inline]
+    fn extract_mut(self, tri: &mut Tri<T>) -> &mut T {
+        self.0.tri_mut(self.1, tri)
+    }
+}
+
 impl Square {
     /// Initializes a `Square` from a `File` and `Rank`.
     ///
@@ -483,7 +501,7 @@ impl Square {
     /// Returns a shared reference to an element from the table via triangular
     /// index.
     #[inline]
-    pub fn tri<T>(self, other: Square, table: &[T; TRIANGLE_LEN]) -> &T {
+    pub fn tri<T>(self, other: Square, table: &Tri<T>) -> &T {
         // tri index < TRIANGLE_LEN
         unsafe { table.get_unchecked(self.tri_index(other)) }
     }
@@ -491,7 +509,7 @@ impl Square {
     /// Returns a mutable reference to an element from the table via triangular
     /// index.
     #[inline]
-    pub fn tri_mut<T>(self, other: Square, table: &mut [T; TRIANGLE_LEN]) -> &mut T {
+    pub fn tri_mut<T>(self, other: Square, table: &mut Tri<T>) -> &mut T {
         unsafe { table.get_unchecked_mut(self.tri_index(other)) }
     }
 
