@@ -43,12 +43,12 @@ pub trait Extract<T: ?Sized> {
     fn extract_mut(self, buf: &mut T) -> &mut Self::Output;
 }
 
-impl<T, A: 'static> Extract<T> for (A, A)
+impl<T, A: 'static, B: 'static> Extract<T> for (A, B)
     where
         A: Extract<T>,
-        A: Extract<<A as Extract<T>>::Output>,
+        B: Extract<<A as Extract<T>>::Output>,
 {
-    type Output = <A as Extract<<A as Extract<T>>::Output>>::Output;
+    type Output = <B as Extract<<A as Extract<T>>::Output>>::Output;
 
     #[inline]
     fn extract(self, table: &T) -> &Self::Output {
