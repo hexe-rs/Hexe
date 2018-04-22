@@ -22,3 +22,22 @@ pub trait Extract<T: ?Sized> {
     /// Extracts a mutable reference to the value for `self` within `buf`.
     fn extract_mut<'a>(self, buf: &'a mut T) -> &'a mut Self::Output;
 }
+
+// Allows for things like `(Square, Square)` indexing `[[T; 64]; 64]`
+impl<T, A: 'static> Extract<T> for (A, A)
+    where
+        A: Extract<T>,
+        A: Extract<<A as Extract<T>>::Output>,
+{
+    type Output = <A as Extract<<A as Extract<T>>::Output>>::Output;
+
+    #[inline]
+    fn extract(self, table: &T) -> &Self::Output {
+        self.1.extract(self.0.extract(table))
+    }
+
+    #[inline]
+    fn extract_mut(self, table: &mut T) -> &mut Self::Output {
+        self.1.extract_mut(self.0.extract_mut(table))
+    }
+}

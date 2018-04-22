@@ -160,25 +160,6 @@ impl<T> Extract<Tri<T>> for (Square, Square) {
     }
 }
 
-// Allows `(Square, Square)` to index `[[T; 64]; 64]`
-impl<T> Extract<T> for (Square, Square)
-    where
-        Square: Extract<T>,
-        Square: Extract<<Square as Extract<T>>::Output>,
-{
-    type Output = <Square as Extract<<Square as Extract<T>>::Output>>::Output;
-
-    #[inline]
-    fn extract(self, table: &T) -> &Self::Output {
-        self.1.extract(self.0.extract(table))
-    }
-
-    #[inline]
-    fn extract_mut(self, table: &mut T) -> &mut Self::Output {
-        self.1.extract_mut(self.0.extract_mut(table))
-    }
-}
-
 impl Square {
     /// Initializes a `Square` from a `File` and `Rank`.
     ///
