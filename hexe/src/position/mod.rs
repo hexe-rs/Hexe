@@ -72,7 +72,7 @@ impl Position {
     /// # Examples
     ///
     /// ```
-    /// use hexe::core::mv::MoveVec;
+    /// use hexe::mv::MoveVec;
     /// use hexe::position::Position;
     ///
     /// let mut moves = MoveVec::new();

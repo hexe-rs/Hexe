@@ -63,14 +63,14 @@
 
 #![cfg_attr(all(test, nightly), feature(test))]
 
-// Internal Crates /////////////////////////////////////////////////////////////
+// Standard Crates /////////////////////////////////////////////////////////////
 
 #[cfg(all(test, nightly))]
 extern crate test;
 
-// External Crates /////////////////////////////////////////////////////////////
+// crates.io ///////////////////////////////////////////////////////////////////
 
-pub extern crate hexe_core as core;
+extern crate hexe_core as core;
 
 #[cfg(feature = "log")]
 #[macro_use]
@@ -108,6 +108,9 @@ macro_rules! authors {
 }
 
 // Modules /////////////////////////////////////////////////////////////////////
+
+#[doc(inline)]
+pub use core::{board, castle, color, fen, iter, misc, mv, piece, square};
 
 #[allow(unused_imports)]
 use core::_shared::*;
