@@ -49,7 +49,7 @@
 //!   let king = board.first(Piece::WhiteKing).unwrap();
 //!   println!("White king found at {}", king);
 //!
-//!   for sq in board.bit_board(Color::White) {
+//!   for sq in board.bits(Color::White) {
 //!       println!("A white piece at {}", sq);
 //!   }
 //!   ```
