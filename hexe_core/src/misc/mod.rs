@@ -37,10 +37,10 @@ pub trait Extract<T: ?Sized> {
     type Output: ?Sized;
 
     /// Extracts a reference to the value for `self` within `buf`.
-    fn extract<'a>(self, buf: &'a T) -> &'a Self::Output;
+    fn extract(self, buf: &T) -> &Self::Output;
 
     /// Extracts a mutable reference to the value for `self` within `buf`.
-    fn extract_mut<'a>(self, buf: &'a mut T) -> &'a mut Self::Output;
+    fn extract_mut(self, buf: &mut T) -> &mut Self::Output;
 }
 
 impl<T, A: 'static> Extract<T> for (A, A)
