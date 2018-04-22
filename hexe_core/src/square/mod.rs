@@ -143,7 +143,7 @@ const RANK_INC: u8 = 1 << RANK_SHIFT;
 const TRIANGLE_LEN: usize = 64 * 65 / 2;
 
 /// A triangular lookup table that can be indexed via
-/// [`Square::tri`](enum.Square.html#method.tri) and friends.
+/// [`Square::tri_index`](enum.Square.html#method.tri_index) and friends.
 pub type Tri<T> = [T; TRIANGLE_LEN];
 
 impl<T> Extract<Tri<T>> for (Square, Square) {
