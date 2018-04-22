@@ -20,17 +20,21 @@ pub trait Contained<T> {
 /// ```
 /// use hexe_core::prelude::{Extract, Square};
 ///
-/// let mut table: [[u8; 64]; 64] = [
-///     /* ... */
-/// # [0; 64]; 64
+/// let mut table: [[[u8; 64]; 64]; 64] = [
+///     /* 256 KiB... */
+///     # [[0; 64]; 64]; 64
 /// ];
 ///
 /// let s1 = Square::B5;
 /// let s2 = Square::C8;
+/// let s3 = Square::A4;
 ///
-/// *(s1, s2).extract_mut(&mut table) = 20;
+/// *(s1, s2, s3).extract_mut(&mut table) = 20;
 ///
-/// assert_eq!(table[s1 as usize][s2 as usize], 20);
+/// let val = table[s1 as usize]
+///                [s2 as usize]
+///                [s3 as usize];
+/// assert_eq!(val, 20);
 /// ```
 pub trait Extract<T: ?Sized> {
     /// The output type.
@@ -43,10 +47,10 @@ pub trait Extract<T: ?Sized> {
     fn extract_mut(self, buf: &mut T) -> &mut Self::Output;
 }
 
-impl<T, A: 'static, B: 'static> Extract<T> for (A, B)
+impl<T, A, B> Extract<T> for (A, B)
     where
-        A: Extract<T>,
-        B: Extract<<A as Extract<T>>::Output>,
+        A: 'static + Extract<T>,
+        B: 'static + Extract<<A as Extract<T>>::Output>,
 {
     type Output = <B as Extract<<A as Extract<T>>::Output>>::Output;
 
@@ -58,5 +62,25 @@ impl<T, A: 'static, B: 'static> Extract<T> for (A, B)
     #[inline]
     fn extract_mut(self, table: &mut T) -> &mut Self::Output {
         self.1.extract_mut(self.0.extract_mut(table))
+    }
+}
+
+impl<T, A, B, C> Extract<T> for (A, B, C)
+    where
+        A: 'static,
+        B: 'static,
+        C: 'static,
+        ((A, B), C): Extract<T>,
+{
+    type Output = <((A, B), C) as Extract<T>>::Output;
+
+    #[inline]
+    fn extract(self, table: &T) -> &Self::Output {
+        ((self.0, self.1), self.2).extract(table)
+    }
+
+    #[inline]
+    fn extract_mut(self, table: &mut T) -> &mut Self::Output {
+        ((self.0, self.1), self.2).extract_mut(table)
     }
 }
