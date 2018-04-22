@@ -12,6 +12,26 @@ pub trait Contained<T> {
 /// A type whose instances may be used to extract references from buffers.
 ///
 /// All operations are non-panicking and cannot fail.
+///
+/// # Examples
+///
+/// Using tuples preserves the same order as normal indexing:
+///
+/// ```
+/// use hexe_core::prelude::{Extract, Square};
+///
+/// let mut table: [[u8; 64]; 64] = [
+///     /* ... */
+/// # [0; 64]; 64
+/// ];
+///
+/// let s1 = Square::B5;
+/// let s2 = Square::C8;
+///
+/// *(s1, s2).extract_mut(&mut table) = 20;
+///
+/// assert_eq!(table[s1 as usize][s2 as usize], 20);
+/// ```
 pub trait Extract<T: ?Sized> {
     /// The output type.
     type Output: ?Sized;
@@ -23,7 +43,6 @@ pub trait Extract<T: ?Sized> {
     fn extract_mut<'a>(self, buf: &'a mut T) -> &'a mut Self::Output;
 }
 
-// Allows for things like `(Square, Square)` indexing `[[T; 64]; 64]`
 impl<T, A: 'static> Extract<T> for (A, A)
     where
         A: Extract<T>,
