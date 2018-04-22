@@ -291,6 +291,7 @@ impl Square {
 
     /// Returns `self` shifted in `direction` (relative to white's perspective),
     /// or `None` if the shift causes `self` to go off the board.
+    #[inline]
     pub fn shift(self, direction: Direction) -> Option<Square> {
         BitBoard::from(self).shift(direction).lsb()
     }
