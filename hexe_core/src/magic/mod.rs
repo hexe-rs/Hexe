@@ -17,10 +17,10 @@ pub mod simd {
                 use simd::{Level, $l};
                 use core::simd::$s;
 
-                pub type Squares = <$l as Level>::Squares;
+                pub type Square = <$l as Level>::Square;
 
                 #[inline]
-                fn extract(table: &Table, [$($tmp),+]: Squares) -> [&Magic; $n] {
+                fn extract(table: &Table, [$($tmp),+]: Square) -> [&Magic; $n] {
                     use misc::Extract;
                     [$($tmp.extract(table)),+]
                 }
@@ -44,12 +44,12 @@ pub mod simd {
                 }
 
                 #[inline]
-                pub fn rook_attacks(sq: Squares, occupied: $s) -> $s {
+                pub fn rook_attacks(sq: Square, occupied: $s) -> $s {
                     attacks(extract(&tables::MAGICS.rook, sq), occupied, ROOK_SHIFT)
                 }
 
                 #[inline]
-                pub fn bishop_attacks(sq: Squares, occupied: $s) -> $s {
+                pub fn bishop_attacks(sq: Square, occupied: $s) -> $s {
                     attacks(extract(&tables::MAGICS.bishop, sq), occupied, BISHOP_SHIFT)
                 }
             }

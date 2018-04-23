@@ -12,24 +12,24 @@ use square::Square;
 
 /// The level of parallelism to use in operations.
 pub trait Level: Sealed {
-    /// Multiple `BitBoard` instances.
-    type BitBoards: Copy + BitOr<Output=Self::BitBoards>;
+    /// The `BitBoard` type.
+    type BitBoard: Copy + BitOr<Output=Self::BitBoard>;
 
-    /// Multiple `Square` instances.
-    type Squares: Copy;
+    /// The `Square` type.
+    type Square: Copy;
 
     /// An integral value for the level used. This is always a power of two.
     const LEVEL: usize;
 
     /// Returns the bishop attacks for each square and each occupied board.
-    fn bishop_attacks(sq: Self::Squares, occupied: Self::BitBoards) -> Self::BitBoards;
+    fn bishop_attacks(sq: Self::Square, occupied: Self::BitBoard) -> Self::BitBoard;
 
     /// Returns the rook attacks for each square and each occupied board.
-    fn rook_attacks(sq: Self::Squares, occupied: Self::BitBoards) -> Self::BitBoards;
+    fn rook_attacks(sq: Self::Square, occupied: Self::BitBoard) -> Self::BitBoard;
 
     /// Returns the queen attacks for each square and each occupied board.
     #[inline]
-    fn queen_attacks(sq: Self::Squares, occupied: Self::BitBoards) -> Self::BitBoards {
+    fn queen_attacks(sq: Self::Square, occupied: Self::BitBoard) -> Self::BitBoard {
         Self::bishop_attacks(sq, occupied) | Self::rook_attacks(sq, occupied)
     }
 }
@@ -41,8 +41,8 @@ pub struct L1;
 impl Sealed for L1 {}
 
 impl Level for L1 {
-    type BitBoards = BitBoard;
-    type Squares = Square;
+    type BitBoard = BitBoard;
+    type Square = Square;
 
     const LEVEL: usize = 1;
 
@@ -67,18 +67,18 @@ macro_rules! levels {
         impl Sealed for $l {}
 
         impl Level for $l {
-            type BitBoards = $bb;
-            type Squares = [Square; $n];
+            type BitBoard = $bb;
+            type Square = [Square; $n];
 
             const LEVEL: usize = $n;
 
             #[inline]
-            fn bishop_attacks(sq: Self::Squares, occupied: Self::BitBoards) -> Self::BitBoards {
+            fn bishop_attacks(sq: Self::Square, occupied: Self::BitBoard) -> Self::BitBoard {
                 ::magic::simd::$l::bishop_attacks(sq, occupied)
             }
 
             #[inline]
-            fn rook_attacks(sq: Self::Squares, occupied: Self::BitBoards) -> Self::BitBoards {
+            fn rook_attacks(sq: Self::Square, occupied: Self::BitBoard) -> Self::BitBoard {
                 ::magic::simd::$l::rook_attacks(sq, occupied)
             }
         }
