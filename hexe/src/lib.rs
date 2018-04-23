@@ -110,7 +110,7 @@ macro_rules! authors {
 // Modules /////////////////////////////////////////////////////////////////////
 
 #[doc(inline)]
-pub use core::{board, castle, color, fen, iter, misc, mv, piece, square};
+pub use core::{board, castle, color, fen, iter, misc, mv, piece, simd, square};
 
 #[allow(unused_imports)]
 use core::_shared::*;
