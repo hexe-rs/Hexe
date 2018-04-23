@@ -43,6 +43,9 @@
 
 use core::{fmt, ops, str};
 
+#[cfg(feature = "simd")]
+use core::simd::u64x4;
+
 #[cfg(feature = "serde")]
 use serde::*;
 use uncon::*;
@@ -158,6 +161,28 @@ impl<T> Extract<Tri<T>> for (Square, Square) {
     fn extract_mut(self, tri: &mut Tri<T>) -> &mut T {
         self.0.tri_mut(self.1, tri)
     }
+}
+
+macro_rules! simd_sliding {
+    ($n:expr, $simd:ty, $b:ident, $r:ident, $q:ident) => {
+        /// Returns the bishops attacks vector for `this` and `occupied`.
+        #[cfg(feature = "simd")]
+        pub fn $b(this: [Self; $n], occupied: $simd) -> $simd {
+            ::magic::simd::$b(this, occupied)
+        }
+
+        /// Returns the rook attacks vector for `this` and `occupied`.
+        #[cfg(feature = "simd")]
+        pub fn $r(this: [Self; $n], occupied: $simd) -> $simd {
+            ::magic::simd::$r(this, occupied)
+        }
+
+        /// Returns the rook attacks vector for `this` and `occupied`.
+        #[cfg(feature = "simd")]
+        pub fn $q(this: [Self; $n], occupied: $simd) -> $simd {
+            Self::$b(this, occupied) | Self::$r(this, occupied)
+        }
+    };
 }
 
 impl Square {
@@ -620,6 +645,8 @@ impl Square {
     pub fn queen_attacks(self, occupied: BitBoard) -> BitBoard {
         self.rook_attacks(occupied) | self.bishop_attacks(occupied)
     }
+
+    simd_sliding! { 4, u64x4, bishop_attacks_4, rook_attacks_4, queen_attacks_4 }
 }
 
 /// A file (or column) for a chess board.
