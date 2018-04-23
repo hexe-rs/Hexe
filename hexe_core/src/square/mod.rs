@@ -44,7 +44,7 @@
 use core::{fmt, ops, str};
 
 #[cfg(feature = "simd")]
-use core::simd::u64x4;
+use core::simd::{u64x2, u64x4, u64x8};
 
 #[cfg(feature = "serde")]
 use serde::*;
@@ -164,20 +164,26 @@ impl<T> Extract<Tri<T>> for (Square, Square) {
 }
 
 macro_rules! simd_sliding {
-    ($n:expr, $simd:ty, $b:ident, $r:ident, $q:ident) => {
-        /// Returns the bishops attacks vector for `this` and `occupied`.
+    ($n:expr, $m:ident, $simd:ty, $b:ident, $r:ident, $q:ident) => {
+        /// Returns the bishop attacks vector for `this` and `occupied`.
+        /// Requires `simd` feature.
         #[cfg(feature = "simd")]
+        #[inline]
         pub fn $b(this: [Self; $n], occupied: $simd) -> $simd {
-            ::magic::simd::$b(this, occupied)
+            ::magic::simd::$m::bishop_attacks(this, occupied)
         }
 
         /// Returns the rook attacks vector for `this` and `occupied`.
+        /// Requires `simd` feature.
         #[cfg(feature = "simd")]
+        #[inline]
         pub fn $r(this: [Self; $n], occupied: $simd) -> $simd {
-            ::magic::simd::$r(this, occupied)
+            ::magic::simd::$m::rook_attacks(this, occupied)
         }
 
-        /// Returns the rook attacks vector for `this` and `occupied`.
+        /// Returns the queen attacks vector for `this` and `occupied`.
+        /// Requires `simd` feature.
+        #[inline]
         #[cfg(feature = "simd")]
         pub fn $q(this: [Self; $n], occupied: $simd) -> $simd {
             Self::$b(this, occupied) | Self::$r(this, occupied)
@@ -646,7 +652,9 @@ impl Square {
         self.rook_attacks(occupied) | self.bishop_attacks(occupied)
     }
 
-    simd_sliding! { 4, u64x4, bishop_attacks_4, rook_attacks_4, queen_attacks_4 }
+    simd_sliding! { 2, x2, u64x2, bishop_attacks2, rook_attacks2, queen_attacks2 }
+    simd_sliding! { 4, x4, u64x4, bishop_attacks4, rook_attacks4, queen_attacks4 }
+    simd_sliding! { 8, x8, u64x8, bishop_attacks8, rook_attacks8, queen_attacks8 }
 }
 
 /// A file (or column) for a chess board.
