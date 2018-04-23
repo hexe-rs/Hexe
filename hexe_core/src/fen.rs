@@ -61,7 +61,7 @@ impl fmt::Display for Fen {
 }
 
 impl Fen {
-    /// FEN for the starting position. It is equivalent to:
+    /// FEN for the starting position in standard chess. It is equivalent to:
     ///
     /// ```txt
     /// rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
