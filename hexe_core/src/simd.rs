@@ -10,6 +10,17 @@ use board::BitBoard;
 use sealed::Sealed;
 use square::Square;
 
+/// The minimum level (1).
+pub type LMin = L1;
+
+/// The maximum level (8).
+#[cfg(feature = "simd")]
+pub type LMax = L8;
+
+/// The maximum level (1).
+#[cfg(not(feature = "simd"))]
+pub type LMax = L1;
+
 /// The level of parallelism to use in operations.
 pub trait Level: Sealed {
     /// The `BitBoard` type.
