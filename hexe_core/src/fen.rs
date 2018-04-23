@@ -66,7 +66,7 @@ impl Fen {
     /// ```txt
     /// rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
     /// ```
-    pub const STARTING: Fen = Fen {
+    pub const STANDARD: Fen = Fen {
         pieces: PieceMap::STANDARD,
         color: Color::White,
         castling: Rights::FULL,
@@ -98,7 +98,7 @@ mod tests {
     #[test]
     fn display() {
         let fens = [
-            (Fen::STARTING, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"),
+            (Fen::STANDARD, "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"),
             (Fen::EMPTY,    "8/8/8/8/8/8/8/8 w - - 0 1"),
         ];
 
