@@ -70,30 +70,76 @@ impl Level for L1 {
 
 #[cfg(feature = "simd")]
 macro_rules! levels {
-    ($($d:expr, $l:ident, $n:expr, $bb:ty, $($tmp:ident),+;)+) => { $(
-        #[doc = $d]
-        #[derive(Copy, Clone, Debug)]
-        pub struct $l;
+    ($($d:expr, $l:ident, $n:expr, $bb:ty, $($tmp:ident),+;)+) => {
+        $(
+            #[doc = $d]
+            #[derive(Copy, Clone, Debug)]
+            pub struct $l;
 
-        impl Sealed for $l {}
+            impl Sealed for $l {}
 
-        impl Level for $l {
-            type BitBoard = $bb;
-            type Square = [Square; $n];
+            impl Level for $l {
+                type BitBoard = $bb;
+                type Square = [Square; $n];
 
-            const LEVEL: usize = $n;
+                const LEVEL: usize = $n;
 
-            #[inline]
-            fn bishop_attacks(sq: Self::Square, occupied: Self::BitBoard) -> Self::BitBoard {
-                ::magic::simd::$l::bishop_attacks(sq, occupied)
+                #[inline]
+                fn bishop_attacks(sq: Self::Square, occupied: Self::BitBoard) -> Self::BitBoard {
+                    ::magic::simd::$l::bishop_attacks(sq, occupied)
+                }
+
+                #[inline]
+                fn rook_attacks(sq: Self::Square, occupied: Self::BitBoard) -> Self::BitBoard {
+                    ::magic::simd::$l::rook_attacks(sq, occupied)
+                }
             }
+        )+
 
-            #[inline]
-            fn rook_attacks(sq: Self::Square, occupied: Self::BitBoard) -> Self::BitBoard {
-                ::magic::simd::$l::rook_attacks(sq, occupied)
+        #[cfg(test)]
+        mod tests {
+            use super::*;
+            use core::mem;
+
+            #[test]
+            fn attacks() {
+                static SQ_FNS: [fn(Square, BitBoard) -> BitBoard; 2] = [
+                    Square::bishop_attacks,
+                    Square::rook_attacks,
+                ];
+
+                use rand::{Rng, thread_rng};
+                use square::Square;
+
+                let mut rng = thread_rng();
+
+                $(for _ in 0..(20_000 / $l::LEVEL) {
+                    type Array<T> = [T; $l::LEVEL];
+
+                    let squares = rng.gen::<Array<Square>>();
+                    let board   = rng.gen::<Array<u64>>();
+                    let occupied: $bb = unsafe { mem::transmute(board) };
+
+                    static FNS: [fn(Array<Square>, $bb) -> $bb; 2] = [
+                        $l::bishop_attacks,
+                        $l::rook_attacks,
+                    ];
+
+                    for (v, s) in FNS.iter().zip(SQ_FNS.iter()) {
+
+                        // Get moves for the input vectors
+                        let val = v(squares, occupied);
+                        let val: Array<u64> = unsafe { mem::transmute(val) };
+
+                        for (i, &x) in val.iter().enumerate() {
+                            let y = s(squares[i], board[i].into()).0;
+                            assert_eq!(x, y);
+                        }
+                    }
+                })+
             }
         }
-    )+ }
+    }
 }
 
 #[cfg(feature = "simd")]
