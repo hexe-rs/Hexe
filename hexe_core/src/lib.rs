@@ -95,6 +95,8 @@ pub mod mv;
 pub mod piece;
 pub mod square;
 
+pub mod simd;
+
 // Modules shared with hexe that aren't meant for public use
 #[doc(hidden)]
 pub mod _shared {
