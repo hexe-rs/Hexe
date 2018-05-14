@@ -2,7 +2,7 @@ use board::BitBoard;
 use square::Square;
 
 mod tables;
-pub use self::tables::*;
+pub use self::tables::TABLES;
 
 const BISHOP_SHIFT: u8 = 64 - 09;
 const ROOK_SHIFT:   u8 = 64 - 12;
@@ -27,15 +27,15 @@ impl Magic {
 #[inline]
 pub fn attacks(table: &Table, sq: Square, occupied: u64, shift: u8) -> u64 {
     let index = table[sq as usize].index(occupied, shift);
-    unsafe { *tables::ATTACKS.get_unchecked(index) }
+    unsafe { *TABLES.attack.get_unchecked(index) }
 }
 
 #[inline]
 pub fn rook_attacks(sq: Square, occupied: BitBoard) -> BitBoard {
-    attacks(&tables::MAGICS.rook, sq, occupied.0, ROOK_SHIFT).into()
+    attacks(&TABLES.rook, sq, occupied.0, ROOK_SHIFT).into()
 }
 
 #[inline]
 pub fn bishop_attacks(sq: Square, occupied: BitBoard) -> BitBoard {
-    attacks(&tables::MAGICS.bishop, sq, occupied.0, BISHOP_SHIFT).into()
+    attacks(&TABLES.bishop, sq, occupied.0, BISHOP_SHIFT).into()
 }
