@@ -1,5 +1,6 @@
 use color::Color;
-use core::{ops, mem};
+use core::ops;
+use uncon::IntoUnchecked;
 
 impl_rand!(u8 => Direction);
 
@@ -31,7 +32,7 @@ impl ops::Not for Direction {
 
     #[inline]
     fn not(self) -> Direction {
-        unsafe { mem::transmute(7 - self as u8) }
+        unsafe { (7 - self as u8).into_unchecked() }
     }
 }
 
