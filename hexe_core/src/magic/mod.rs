@@ -7,60 +7,6 @@ pub use self::tables::*;
 const BISHOP_SHIFT: u8 = 64 - 09;
 const ROOK_SHIFT:   u8 = 64 - 12;
 
-#[cfg(feature = "simd")]
-pub mod simd {
-    macro_rules! sliding {
-        ($l:ident, $n:expr, $s:ident, $($tmp:ident),+) => {
-            #[allow(non_snake_case)]
-            pub mod $l {
-                use super::super::{Magic, tables, Table, ROOK_SHIFT, BISHOP_SHIFT};
-                use simd::{Level, $l};
-                use core::simd::$s;
-
-                pub type Square = <$l as Level>::Square;
-
-                #[inline]
-                fn extract(table: &Table, [$($tmp),+]: Square) -> [&Magic; $n] {
-                    use misc::Extract;
-                    [$($tmp.extract(table)),+]
-                }
-
-                #[inline]
-                fn attacks([$($tmp),+]: [&Magic; $n], occupied: $s, shift: u8) -> $s {
-                    use core::mem;
-
-                    let mask = $s::new($($tmp.mask),+);
-                    let num  = $s::new($($tmp.num),+);
-                    let idx  = $s::new($($tmp.idx as _),+)
-                             + (((occupied & mask) * num) >> shift);
-
-                    let [$($tmp),+] = unsafe {
-                        mem::transmute::<_, [u64; $n]>(idx)
-                    };
-
-                    unsafe { $s::new(
-                        $(*tables::ATTACKS.get_unchecked($tmp as usize)),+
-                    ) }
-                }
-
-                #[inline]
-                pub fn rook_attacks(sq: Square, occupied: $s) -> $s {
-                    attacks(extract(&tables::MAGICS.rook, sq), occupied, ROOK_SHIFT)
-                }
-
-                #[inline]
-                pub fn bishop_attacks(sq: Square, occupied: $s) -> $s {
-                    attacks(extract(&tables::MAGICS.bishop, sq), occupied, BISHOP_SHIFT)
-                }
-            }
-        };
-    }
-
-    sliding! { L2, 2, u64x2, a, b }
-    sliding! { L4, 4, u64x4, a, b, c, d }
-    sliding! { L8, 8, u64x8, a, b, c, d, e, f, g, h }
-}
-
 type Table = [Magic; 64];
 
 // Fixed shift magic
