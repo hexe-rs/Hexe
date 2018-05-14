@@ -1,6 +1,6 @@
 //! This crate defines the **core** building blocks for [the Hexe chess
-//! engine][hexe].
-//!
+//! engine][hexe]. This library is designed to be used by Hexe but intended to
+//! be used by _any_ chess program, library, or engine.
 //!
 //! # Usage
 //!
