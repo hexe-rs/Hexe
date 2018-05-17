@@ -219,30 +219,29 @@ impl<'a> Uci<'a> {
 
         debug!("Setting UCI option \"{}\" to \"{}\"", name, value);
 
-        if match_option("threads") {
-            match value.parse() {
-                Ok(n) => {
-                    if !self.engine.set_threads(n) {
-                        error!("Cannot set thread count to {}", n);
+        macro_rules! parse {
+            ($($x:ident @ $s:expr => $b:expr,)+ _ => $c:expr,) => {
+                $(if match_option($s) {
+                    match value.parse() {
+                        Ok($x) => $b,
+                        Err(e) => { parse_error!(value, e); },
                     }
-                },
-                Err(e) => {
-                    parse_error!(value, e);
-                },
+                } else)+ { $c }
             }
-        } else if match_option("hash") {
-            match value.parse() {
-                Ok(n) => {
-                    if !self.engine.set_hash_size(n) {
-                        error!("Cannot set table size to {}", n);
-                    }
-                },
-                Err(e) => {
-                    parse_error!(value, e);
-                },
-            }
-        } else {
-            println!("No such option: {}", name);
+        }
+
+        parse! {
+            threads @ "threads" => {
+                if !self.engine.set_threads(threads) {
+                    error!("Cannot set thread count to {}", threads);
+                }
+            },
+            hash @ "hash" => {
+                if !self.engine.set_hash_size(hash) {
+                    error!("Cannot set table size to {}", hash);
+                }
+            },
+            _ => println!("No such option: {}", name),
         }
     }
 
