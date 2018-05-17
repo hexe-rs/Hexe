@@ -113,15 +113,12 @@ impl Engine {
         self.pool.kill_all();
     }
 
-    /// Sets the number of threads to `n`, returning `false` if the value is not
-    /// within the inclusive range of 1 through 512.
+    /// Sets the number of threads to `n`, returning `false` if the value is
+    /// greater than `engine::MAX_THREADS`.
     pub fn set_threads(&mut self, n: usize) -> bool {
-        match n {
-            1...MAX_THREADS => {
-                self.pool.set_threads(n);
-                true
-            },
-            _ => false,
+        if n > MAX_THREADS { false } else {
+            self.pool.set_threads(n);
+            true
         }
     }
 
