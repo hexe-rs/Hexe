@@ -66,7 +66,9 @@ impl Pool {
         self.shared.stop_cond.notify_all();
 
         for thread in self.threads.drain(n..) {
-            thread.handle.join();
+            if thread.handle.join().is_err() {
+                unreachable!("Thread panicked");
+            }
         }
     }
 
