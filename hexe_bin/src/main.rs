@@ -50,16 +50,16 @@ fn main() {
             .value_name("SIZE")
             .takes_value(true)
             .validator(|val| parse(val, unsafe { &mut HASH_SIZE }))
-            .help("The hash table size in megabytes."))
+            .help("The hash table size in megabytes"))
         .arg(Arg::with_name("threads")
             .long("threads")
             .value_name("N")
             .takes_value(true)
             .validator(|val| parse(val, unsafe { &mut NUM_THREADS }))
             .empty_values(false)
-            .help("The number of OS threads used to run the engine. \
-                   If N is 0, the number of \
-                   available logical cores is used."));
+            .help("The number of OS threads used to run the engine; \
+                   if not provided or N is 0, all available logical \
+                   cores are used"));
 
     // Conditionally include logging flag if feature is enabled
     if cfg!(feature = "log") {
@@ -71,7 +71,7 @@ fn main() {
                 .takes_value(true)
                 .value_name("LOG")
                 .env("HEXE_LOG")
-                .help("The logging directive."))
+                .help("The logging directive"))
             .arg(Arg::with_name("color")
                 .long("color")
                 .short("C")
@@ -79,7 +79,7 @@ fn main() {
                 .takes_value(true)
                 .value_name("WHEN")
                 .possible_values(&["auto", "always", "never"])
-                .help("When to color logging output."))
+                .help("When to color logging output"))
     }
 
     // Matches unused when "log" is disabled
