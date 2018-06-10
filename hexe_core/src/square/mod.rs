@@ -53,6 +53,8 @@ use prelude::*;
 #[cfg(all(test, nightly))]
 mod benches;
 
+mod magic;
+
 #[cfg(test)]
 mod tests;
 
@@ -581,7 +583,7 @@ impl Square {
     /// ```
     #[inline]
     pub fn rook_attacks(self, occupied: BitBoard) -> BitBoard {
-        ::magic::rook_attacks(self, occupied)
+        self::magic::rook_attacks(self, occupied)
     }
 
     /// Returns the bishop attacks for `self` and `occupied`.
@@ -603,7 +605,7 @@ impl Square {
     /// ```
     #[inline]
     pub fn bishop_attacks(self, occupied: BitBoard) -> BitBoard {
-        ::magic::bishop_attacks(self, occupied)
+        self::magic::bishop_attacks(self, occupied)
     }
 
     /// Returns the king attacks for `self`.

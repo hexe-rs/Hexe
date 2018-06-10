@@ -18,14 +18,14 @@ pub struct Magic {
 
 impl Magic {
     #[inline]
-    pub fn index(&self, occupied: u64, shift: u8) -> usize {
+    fn index(&self, occupied: u64, shift: u8) -> usize {
         let val = (occupied & self.mask).wrapping_mul(self.num);
         ((val >> shift) as usize).wrapping_add(self.idx)
     }
 }
 
 #[inline]
-pub fn attacks(table: &Table, sq: Square, occupied: u64, shift: u8) -> u64 {
+fn attacks(table: &Table, sq: Square, occupied: u64, shift: u8) -> u64 {
     let index = table[sq as usize].index(occupied, shift);
     unsafe { *TABLES.attack.get_unchecked(index) }
 }

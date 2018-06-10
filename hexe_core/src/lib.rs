@@ -111,4 +111,3 @@ mod sealed {
 
 mod consts;
 mod util;
-mod magic;
