@@ -26,7 +26,7 @@ three packages (crates):
 
 - **[ bin ]** `hexe_bin`
 
-  The CLI frontend for Hexe that actually executes it.
+  The CLI frontend for Hexe that actually executes the chess engine.
 
 - **[ lib ]** [`hexe` (documentation)][hexe]
 
