@@ -426,7 +426,7 @@ impl BitBoard {
     /// representation of `self`.
     #[inline]
     pub fn map_str<T, F: FnOnce(&mut str) -> T>(&self, f: F) -> T {
-        let mut buf = *::consts::BOARD_DOTS;
+        let mut buf = ::consts::BOARD_DOTS;
         for idx in self.map(|s| (0b111000 ^ s as usize) << 1) {
             unsafe { *buf.get_unchecked_mut(idx) = b'1' };
         }

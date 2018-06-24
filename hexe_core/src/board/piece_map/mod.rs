@@ -734,7 +734,7 @@ impl PieceMap {
     /// [`Square::map_str`]: ../../square/enum.Square.html#method.map_str
     #[inline]
     pub fn map_str<T, F: FnOnce(&mut str) -> T>(&self, f: F) -> T {
-        let mut buf = *::consts::BOARD_DOTS;
+        let mut buf = ::consts::BOARD_DOTS;
         for square in Square::ALL {
             if let Some(&piece) = self.get(square) {
                 let ch = char::from(piece) as u8;
