@@ -426,7 +426,7 @@ impl PieceMap {
     /// Inserts the piece at `loc`, returning any previous pieces.
     #[inline]
     pub fn insert<T: Replace>(&mut self, loc: T, pc: Piece) -> T::Output {
-        loc.replace(self, Some(pc))
+        self.replace(loc, Some(pc))
     }
 
     /// Removes all pieces at `loc` and returns them, if any.
