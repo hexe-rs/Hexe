@@ -14,19 +14,30 @@ impl_rand!(u8 => Piece, Role, Promotion);
 #[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
-#[allow(missing_docs)]
 pub enum Piece {
+    /// A white [pawn](https://en.wikipedia.org/wiki/Pawn_(chess)).
     WhitePawn,
+    /// A black [pawn](https://en.wikipedia.org/wiki/Pawn_(chess)).
     BlackPawn,
+    /// A white [knight](https://en.wikipedia.org/wiki/Knight_(chess)).
     WhiteKnight,
+    /// A black [knight](https://en.wikipedia.org/wiki/Knight_(chess)).
     BlackKnight,
+    /// A white [bishop](https://en.wikipedia.org/wiki/Bishop_(chess)).
     WhiteBishop,
+    /// A black [bishop](https://en.wikipedia.org/wiki/Bishop_(chess)).
     BlackBishop,
+    /// A white [rook](https://en.wikipedia.org/wiki/Rook_(chess)).
     WhiteRook,
+    /// A black [rook](https://en.wikipedia.org/wiki/Rook_(chess)).
     BlackRook,
+    /// A white [queen](https://en.wikipedia.org/wiki/Queen_(chess)).
     WhiteQueen,
+    /// A black [queen](https://en.wikipedia.org/wiki/Queen_(chess)).
     BlackQueen,
+    /// A white [king](https://en.wikipedia.org/wiki/King_(chess)).
     WhiteKing,
+    /// A black [king](https://en.wikipedia.org/wiki/King_(chess)).
     BlackKing,
 }
 
@@ -91,13 +102,18 @@ impl Piece {
 #[derive(Copy, Clone, Hash, PartialEq, Eq, FromUnchecked)]
 #[uncon(impl_from, other(u16, u32, u64, usize))]
 #[repr(u8)]
-#[allow(missing_docs)]
 pub enum Role {
+    /// A [pawn](https://en.wikipedia.org/wiki/Pawn_(chess)) piece.
     Pawn,
+    /// A [knight](https://en.wikipedia.org/wiki/Knight_(chess)) piece.
     Knight,
+    /// A [bishop](https://en.wikipedia.org/wiki/Bishop_(chess)) piece.
     Bishop,
+    /// A [bishop](https://en.wikipedia.org/wiki/Rook_(chess)) piece.
     Rook,
+    /// A [bishop](https://en.wikipedia.org/wiki/Queen_(chess)) piece.
     Queen,
+    /// A [bishop](https://en.wikipedia.org/wiki/King_(chess)) piece.
     King,
 }
 
