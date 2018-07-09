@@ -37,7 +37,9 @@ Some features that may be worth using:
 
   Enables the hardware **population count** instruction instead of the slower
   software algorithm. This improves the performance of methods such as
-  `Bitboard::len` and `MultiBoard::len`.
+  [`Bitboard::len`](https://docs.rs/hexe_core/0.0.5/hexe_core/board/struct.Bitboard.html#method.len)
+  and
+  [`MultiBoard::len`](https://docs.rs/hexe_core/0.0.5/hexe_core/board/struct.MultiBoard.html#method.len).
 
 ### Target CPU
 
