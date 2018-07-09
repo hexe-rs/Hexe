@@ -77,7 +77,7 @@ impl Piece {
     /// Returns the `Color` for the `Piece`.
     #[inline]
     pub fn color(self) -> Color {
-        ((self as u8) & 1).into()
+        (1 & self as u8).into()
     }
 
     /// Converts `self` into a character.
