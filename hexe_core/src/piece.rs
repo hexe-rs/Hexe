@@ -109,11 +109,11 @@ pub enum Role {
     Knight,
     /// A [bishop](https://en.wikipedia.org/wiki/Bishop_(chess)) piece.
     Bishop,
-    /// A [bishop](https://en.wikipedia.org/wiki/Rook_(chess)) piece.
+    /// A [rook](https://en.wikipedia.org/wiki/Rook_(chess)) piece.
     Rook,
-    /// A [bishop](https://en.wikipedia.org/wiki/Queen_(chess)) piece.
+    /// A [queen](https://en.wikipedia.org/wiki/Queen_(chess)) piece.
     Queen,
-    /// A [bishop](https://en.wikipedia.org/wiki/King_(chess)) piece.
+    /// A [king](https://en.wikipedia.org/wiki/King_(chess)) piece.
     King,
 }
 
