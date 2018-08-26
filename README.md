@@ -40,11 +40,16 @@ three packages (crates):
 
 ## Why "Hexe"?
 
-1. "Hexe" is German for witch. It denotes the use of magic bitboards within this
-project.
+1. "Hexe" means "witch" in German, denoting the use of
+   [magic bitboards](https://www.chessprogramming.org/Magic_Bitboards) within
+   this project.
 
-2. It refers to [Clarke's Third Law][clarke-laws]: "Any sufficiently advanced
-technology is indistinguishable from magic."
+   "Magic bitboards" refers to a very fast [perfect hash function][phf] used for
+   indexing into a large precomputed table of bishop and rook attacks.
+
+2. [Clarke's Third Law](https://en.wikipedia.org/wiki/Clarke%27s_three_laws):
+
+   "Any sufficiently advanced technology is indistinguishable from magic."
 
 3. If she weighs the same as a duck... she's made of wood. And therefore...
 
@@ -125,9 +130,9 @@ at your choosing.
 [appv-badge]:   https://ci.appveyor.com/api/projects/status/github/hexe-rs/Hexe?svg=true
 
 [license-apache]: https://github.com/hexe-rs/Hexe/blob/master/LICENSE-APACHE
-[license-mit]: https://github.com/hexe-rs/Hexe/blob/master/LICENSE-MIT
+[license-mit]:    https://github.com/hexe-rs/Hexe/blob/master/LICENSE-MIT
 
-[SIMD]:        https://en.wikipedia.org/wiki/SIMD
-[std]:         https://doc.rust-lang.org/std/
-[tier1]:       https://forge.rust-lang.org/platform-support.html#tier-1
-[clarke-laws]: https://en.wikipedia.org/wiki/Clarke%27s_three_laws
+[SIMD]:  https://en.wikipedia.org/wiki/SIMD
+[phf]:   https://en.wikipedia.org/wiki/Perfect_hash_function
+[std]:   https://doc.rust-lang.org/std/
+[tier1]: https://forge.rust-lang.org/platform-support.html#tier-1
