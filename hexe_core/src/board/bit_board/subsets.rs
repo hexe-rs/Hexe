@@ -17,7 +17,7 @@ use core::{fmt, u64};
 /// }
 /// ```
 ///
-/// [impl]: https://chessprogramming.wikispaces.com/Traversing+Subsets+of+a+Set
+/// [impl]: https://www.chessprogramming.org/Traversing_Subsets_of_a_Set#All_Subsets_of_any_Set
 /// [`BitBoard`]: struct.BitBoard.html
 #[derive(Copy, Clone, Debug, PartialEq, Eq)]
 pub struct Subsets {

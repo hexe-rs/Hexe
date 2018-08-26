@@ -487,7 +487,7 @@ impl Square {
     /// less than 2080. Because of this, it is safe to call [`get_unchecked`] on
     /// arrays/slices of that size or greater.
     ///
-    /// [wiki]: https://chessprogramming.wikispaces.com/Square+Attacked+By#Legality%20Test-In%20Between-Triangular%20Lookup
+    /// [wiki]: https://www.chessprogramming.org/Square_Attacked_By#Triangular_Lookup
     /// [`get_unchecked`]: https://doc.rust-lang.org/std/primitive.slice.html#method.get_unchecked
     #[inline]
     pub fn tri_index(self, other: Square) -> usize {
