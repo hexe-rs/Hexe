@@ -62,8 +62,8 @@ use util::Bytes;
 
 pub mod masks;
 
-mod carry_rippler;
-pub use self::carry_rippler::*;
+mod subsets;
+pub use self::subsets::*;
 
 #[cfg(all(test, nightly))]
 mod benches;
@@ -299,7 +299,7 @@ impl BitBoard {
 
     /// Returns an iterator over the subsets of `self`.
     #[inline]
-    pub fn carry_rippler(self) -> CarryRippler {
+    pub fn subsets(self) -> Subsets {
         self.into()
     }
 
