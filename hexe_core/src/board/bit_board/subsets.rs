@@ -1,5 +1,5 @@
 use super::*;
-use core::{fmt, u64};
+use core::u64;
 
 /// An iterator over all subsets of a [`BitBoard`].
 ///
