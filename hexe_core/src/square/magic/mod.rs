@@ -12,22 +12,23 @@ type Table = [Magic; 64];
 // Fixed shift magic
 pub struct Magic {
     pub mask: u64,
-    pub num: u64, // Factor
-    pub idx: usize, // Offset
+    // Factor
+    pub num: u64,
+    // Pointer into attacks table
+    pub ptr: &'static u64,
 }
 
 impl Magic {
     #[inline]
-    fn index(&self, occupied: u64, shift: u8) -> usize {
+    unsafe fn get(&self, occupied: u64, shift: u8) -> u64 {
         let val = (occupied & self.mask).wrapping_mul(self.num);
-        ((val >> shift) as usize).wrapping_add(self.idx)
+        *(self.ptr as *const u64).offset((val >> shift) as isize)
     }
 }
 
 #[inline]
 fn attacks(table: &Table, sq: Square, occupied: u64, shift: u8) -> u64 {
-    let index = table[sq as usize].index(occupied, shift);
-    unsafe { *TABLES.attack.get_unchecked(index) }
+    unsafe { table[sq as usize].get(occupied, shift) }
 }
 
 #[inline]
