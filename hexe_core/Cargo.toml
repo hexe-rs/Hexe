@@ -21,6 +21,7 @@ uncon        = { version = "1.1.0", default-features = false }
 uncon_derive = { version = "1.1.1", default-features = false }
 rand         = { version = "0.4.1", default-features = false, optional = true }
 serde        = { version = "1.0.0", default-features = false, optional = true }
+packed_simd  = { version = "0.3.0", features = ["into_bits"], optional = true }
 
 [dev-dependencies]
 rand              = "0.4.1"
@@ -32,4 +33,4 @@ version_check = "0.1"
 [features]
 default = ["std", "memchr/libc"]
 std     = ["memchr/use_std", "uncon/std", "uncon_derive/std"]
-simd    = []
+simd    = ["packed_simd"]

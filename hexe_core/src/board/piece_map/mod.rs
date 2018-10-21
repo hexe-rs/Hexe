@@ -3,7 +3,7 @@
 use core::{fmt, hash, mem, ops, ptr, str};
 
 #[cfg(feature = "simd")]
-use core::simd::u8x64;
+use packed_simd::u8x64;
 
 use castle;
 use misc::Contained;

@@ -1,9 +1,9 @@
 //! A `BitBoard`-segmented chess board representation.
 
 use core::{hash, ops, mem};
-#[cfg(feature = "simd")]
-use core::simd::u8x64;
 
+#[cfg(feature = "simd")]
+use packed_simd::u8x64;
 use uncon::*;
 
 use prelude::*;
@@ -153,7 +153,7 @@ impl MultiBoard {
     #[cfg(feature = "simd")]
     #[inline]
     fn simd(&self) -> u8x64 {
-        u8x64::load_unaligned(self.bytes())
+        u8x64::from_slice_unaligned(self.bytes())
     }
 
     #[inline]

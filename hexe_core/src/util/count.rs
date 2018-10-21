@@ -1,5 +1,5 @@
 #[cfg(feature = "simd")]
-use core::simd::{FromBits, u8x64};
+use packed_simd::{FromBits, u8x64};
 
 /// A type that can efficiently return the count of a given value within itself.
 pub trait Count<T> {
@@ -21,7 +21,7 @@ impl<'a> Count<u8> for &'a [u8; 64] {
     #[inline]
     #[cfg(feature = "simd")]
     fn count(self, needle: u8) -> usize {
-        u8x64::load_unaligned(self).count(needle)
+        u8x64::from_slice_unaligned(self).count(needle)
     }
 
     #[inline]

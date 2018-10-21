@@ -54,7 +54,6 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 #![cfg_attr(all(test, nightly), feature(test))]
-#![cfg_attr(feature = "simd", feature(stdsimd))]
 
 // no_std //////////////////////////////////////////////////////////////////////
 #[cfg(feature = "std")]
@@ -68,6 +67,9 @@ extern crate test;
 // External Crates /////////////////////////////////////////////////////////////
 #[cfg(any(test, feature = "rand"))]
 extern crate rand;
+
+#[cfg(feature = "simd")]
+extern crate packed_simd;
 
 #[cfg(test)]
 #[macro_use]
