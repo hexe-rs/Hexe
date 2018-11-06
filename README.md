@@ -14,9 +14,22 @@
 
 <p align="center"><em>(pronounced "Hekseh")</em></p>
 
-[![Travis Status][travis-badge]][travis]
-[![AppVeyor Status][appv-badge]][appv]
-![LoC](https://tokei.rs/b1/github/hexe-rs/Hexe)
+<div align="center">
+    <a href="https://travis-ci.org/hexe-rs/Hexe">
+        <img src="https://travis-ci.org/hexe-rs/Hexe.svg?branch=master" alt="Travis Status">
+    </a>
+    <a href="hhttps://ci.appveyor.com/project/nvzqz/hexe">
+        <img src="https://ci.appveyor.com/api/projects/status/github/hexe-rs/Hexe?svg=true" alt="AppVeyor Status">
+    </a>
+    <img src="https://tokei.rs/b1/github/hexe-rs/Hexe" alt="Lines of code">
+    <br>
+    <a href="https://www.patreon.com/nvzqz">
+        <img src="https://c5.patreon.com/external/logo/become_a_patron_button.png" alt="Become a Patron!" height="35">
+    </a>
+    <a href="https://www.paypal.me/nvzqz">
+        <img src="https://buymecoffee.intm.org/img/button-paypal-white.png" alt="Buy me a coffee" height="35">
+    </a>
+</div>
 
 ## What is Hexe?
 
